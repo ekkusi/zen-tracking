@@ -1,0 +1,11 @@
+overwrite: true
+generates:
+  src/types/user.ts:
+    schema: ./src/graphql/user/schema.graphql
+    plugins:
+      - typescript
+      - typescript-resolvers
+    config:
+      contextType: ./customContext#CustomContext
+    scalars:
+      Date: Date

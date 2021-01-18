@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+		"target": "esnext",
+		"rootDir": "src",
+    "baseUrl": "src",
+    "outDir": "lib",
+    "module": "commonjs",
+    "noEmit": false,
+    "declaration": true,
+    "allowJs": false,
+		"paths": {
+			"@/*": ["*"],
+    },
+    "typeRoots": ["src/types", "node_modules/@types"]
+  },
+  "include": [
+    "src"
+  ],
+}

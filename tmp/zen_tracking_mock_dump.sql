@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS "User";
+
+CREATE TABLE "User" (
+  name VARCHAR(254) PRIMARY KEY NOT NULL,
+  password VARCHAR(254) NOT NULL,
+  is_private BOOLEAN 
+);

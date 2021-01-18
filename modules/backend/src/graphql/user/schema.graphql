@@ -1,0 +1,37 @@
+# import Date from "../scalars/schema.graphql"
+
+extend type Query {
+    getUser(name: ID!): User!
+    getUsers: [User!]
+    checkUser(name: ID!, password: String!): UserCheckResult!
+  }
+
+extend type Mutation {
+  addUser(name: ID!, password: String!, isPrivate: Boolean): User!
+  addMarking(userName: ID!, marking: MarkingInput!): Marking!
+}
+
+enum UserCheckResult {
+  USER_AND_PASSWORD_FOUND
+  USER_NOT_FOUND_BUT_CREATED
+  INVALID_PASSWORD
+}
+
+type User {
+  name: ID!
+  isPrivate: Boolean!
+  markings: [Marking!]!
+}
+
+type Marking {
+  id: ID!
+  date: Date!
+  activities: [String!]
+  comment: String
+}
+
+input MarkingInput {
+  date: Date!
+  activities: [String!]
+  comment: String
+}

@@ -1,46 +1,93 @@
-# Getting Started with Create React App
+# Track-your-streak
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Prerequirements
 
-## Available Scripts
+* Nodejs (version 12 or earlier)
+* Yarn
+* Docker
 
-In the project directory, you can run:
+## Installation and setup
 
-### `yarn start`
+* Clone this repository
+  ```bash
+  git clone https://bitbucket.wihuri.fi/scm/prav/pravda-gdsn-admin.git
+  ```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+* Install packages
+  ```bash
+  yarn
+  ```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Setup database
+* Set DATABASE_URL env variable to modules/backend/prisma .env file that points to live database.
 
-### `yarn test`
+If you want to use docker-compose to host database, DATABASE_URL should point to "postgresql://user:password@localhost:5432/zen-tracking"
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* Run local Postgres database by running:
+  ```bash
+  docker-compose up
+  ```
 
-### `yarn build`
+* Create a database named "zen-tracking"
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+If you have database running through docker-compose, you can do this manually by going to postgre admin (http://localhost:5050) and setting database manually there. To do this need to first create new server with name "pravda", host name "postgres", port "5432", maintenance database "zen-tracking", username "user" and password "password". If database named "zen-tracking"" isn't created automatically when server is created, create one.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Default email postgreadmin is "default@email.com" and password is "password"
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* Import database dump (needs to be done on first start, works for database running through docker-compose):
+  ```bash
+  yarn postgreimport
+  ```
 
-### `yarn eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Develop
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+* Start docker to run local postgre database (needs to be up for backend to work)
+  ```bash
+  docker-compose up
+  ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+* Start backend and frontend development servers
+  ```bash
+  yarn develop
+  ```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Build modules and run production build
 
-## Learn More
+* Build modules
+  ```bash
+  yarn build:all
+  ```
+* Run production build
+  ```bash
+  yarn run:prod
+  ```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# Other
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Generate backend types from graphql (do this after updating .graphql files)
+  ```bash
+  yarn generate:backend
+  ```
+### Update backend prisma model and client (do this after modifying database models)
+  ```bash
+  yarn update-prisma
+  ```
+
+# Docker
+
+NOTE: Docker needs to be up to run the following commands
+
+* Import (from tmp/zen_tracking_mock_dump.sql)
+  ```bash
+  yarn postgreimport
+  ```
+
+* Dump (to tmp/zen_tracking_mock_dump.sql)
+  ```bash
+  yarn postgredump
+  ```
+
+* NOTE:
+If you run into errors with project dependencies with e.g. eslint (not running in VSCode or in general), run 'yarn install' in the root of the project.
+Adding new dependencies to submodules might cause these errors.

@@ -1,26 +1,18 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
-  },
-  "include": [
-    "src"
-  ]
+	"exclude": ["node_modules"],
+	"compilerOptions": {
+		"jsx": "react",
+		// Import non-ES modules as default imports.
+		"esModuleInterop": true,
+		"noEmit": true,
+		"skipLibCheck": true,
+		// Process & infer types from .js files.
+		"allowJs": true,
+		"resolveJsonModule": true,
+		// Disallow features that require cross-file information for emit.
+		"isolatedModules": false,
+		// Search under node_modules for non-relative imports.
+		"moduleResolution": "node",
+		"strict": true
+	}
 }
