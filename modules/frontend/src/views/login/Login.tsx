@@ -177,8 +177,8 @@ const Login = (): JSX.Element => {
               }
               colorScheme="teal"
             >
-              Jos tämä on ensimmäinen kirjautumisesi ja haluat haluat rikkoa
-              yhteisöllisyyttä pitämällä tietosi itselläsi piilossa muilta
+              Jos tämä on ensimmäinen kirjautumisesi ja haluat rikkoa
+              yhteisöllisyyttä pitämällä tietosi piilossa muilta
               kanssazenittäjiltä, niin ruksi tämä.
             </Checkbox>
             {error && <Text color="warning">{error}</Text>}
