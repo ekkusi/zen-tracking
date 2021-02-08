@@ -6,6 +6,12 @@ const theme: Theme = extendTheme({
       p: {
         marginBottom: "2",
       },
+      a: {
+        color: chakraTheme.colors.teal[500],
+        _hover: {
+          color: chakraTheme.colors.teal[700],
+        },
+      },
     },
   },
   colors: {

@@ -62,7 +62,7 @@ const AddMarking = (): JSX.Element => {
             date: new Date().toString(),
             comment,
           },
-          userName: "tere",
+          userName: user?.name || null,
         },
       });
       if (data && user) {

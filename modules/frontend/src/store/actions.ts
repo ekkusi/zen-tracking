@@ -9,7 +9,13 @@ const actions = {
   ): void => {
     if (user) localStorage.setItem("currentUser", user.name);
     else localStorage.removeItem("currentUser");
-    store.setState({ currentUser: user });
+    store.setState({ ...store.state, currentUser: user });
+  },
+  updateError: (
+    store: Store<GlobalState, ActionTypes>,
+    error: string | null
+  ): void => {
+    store.setState({ ...store.state, error });
   },
 };
 

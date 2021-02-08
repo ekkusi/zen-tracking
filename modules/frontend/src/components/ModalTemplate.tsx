@@ -14,9 +14,10 @@ import React from "react";
 import { PrimaryButton } from "./primitives/Button";
 
 type ModalTemplateProps = {
-  openButtonLabel: string;
-  headerLabel: string;
   children: JSX.Element;
+  renderOpenButton?: boolean;
+  openButtonLabel?: string;
+  headerLabel?: string;
   modalFooter?: JSX.Element;
   openButtonProps?: ButtonProps;
   closeButtonLabel?: string;
@@ -24,6 +25,7 @@ type ModalTemplateProps = {
 };
 
 const ModalTemplate = ({
+  renderOpenButton,
   openButtonProps,
   openButtonLabel,
   headerLabel,
@@ -36,9 +38,11 @@ const ModalTemplate = ({
 
   return (
     <>
-      <PrimaryButton onClick={onOpen} {...openButtonProps}>
-        {openButtonLabel}
-      </PrimaryButton>
+      {renderOpenButton && (
+        <PrimaryButton onClick={onOpen} {...openButtonProps}>
+          {openButtonLabel}
+        </PrimaryButton>
+      )}
 
       <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
         <ModalOverlay />
@@ -61,6 +65,9 @@ const ModalTemplate = ({
 };
 
 ModalTemplate.defaultProps = {
+  renderOpenButton: true,
+  openButtonLabel: "Avaa modal",
+  headerLabel: "Modal",
   openButtonProps: {},
   closeButtonLabel: "Sulje",
   modalFooter: null,

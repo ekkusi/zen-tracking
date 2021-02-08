@@ -2,9 +2,9 @@ import React from "react";
 import { ChakraProvider, Container } from "@chakra-ui/react";
 import { BrowserRouter } from "react-router-dom";
 import ApolloProvider from "apollo/ApolloProvider";
+import Routes from "routes/Routes";
+import { ThemeProvider } from "styled-components";
 import useGlobal from "./store";
-import Login from "./views/login/Login";
-import MainView from "./views/main/Main";
 
 import theme from "./theme";
 
@@ -13,11 +13,15 @@ const App = (): JSX.Element => {
 
   return (
     <ChakraProvider theme={theme}>
-      <ApolloProvider>
-        <Container maxWidth="1000px" minHeight="100vh">
-          {user ? <MainView /> : <Login />}
-        </Container>
-      </ApolloProvider>
+      <ThemeProvider theme={theme}>
+        <ApolloProvider>
+          <BrowserRouter>
+            <Container maxWidth="1000px" minHeight="100vh">
+              <Routes />
+            </Container>
+          </BrowserRouter>
+        </ApolloProvider>
+      </ThemeProvider>
     </ChakraProvider>
   );
 };

@@ -9,13 +9,9 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import {
-  UserCheckResult,
-  UserCheckStatus,
-} from "@ekeukko/zen-tracking-backend/lib/types/user";
+import { UserCheckStatus } from "@ekeukko/zen-tracking-backend/lib/types/user";
 import { PrimaryButton } from "components/primitives/Button";
 import { PrimaryInput } from "components/primitives/Input";
-import { GetUserQueryResult, GET_USER } from "generalQueries";
 import React, { useEffect, useState } from "react";
 import useGlobal from "store";
 import { CheckUserQueryResult, CHECK_USER } from "./loginQueries";
@@ -37,23 +33,6 @@ const Login = (): JSX.Element => {
 
   const client = useApolloClient();
 
-  const updateCurrentUser = async (name: string) => {
-    setLoading(true);
-    const result: ApolloQueryResult<GetUserQueryResult> = await client.query({
-      query: GET_USER,
-      variables: {
-        name,
-      },
-    });
-    const { data } = result;
-    if (data) {
-      updateUser(data.getUser);
-    } else {
-      console.log(result.error);
-    }
-    setLoading(false);
-  };
-
   // Change opacity of current indexz and move to next index in opacity animations
   const changeOpacity = () => {
     console.log("Changing opacity, current index ", animationIndex);
@@ -64,13 +43,6 @@ const Login = (): JSX.Element => {
   };
 
   useEffect(() => {
-    const currentUser = localStorage.getItem("currentUser");
-    if (currentUser && !user && !loading) {
-      updateCurrentUser(currentUser);
-    }
-    if (!currentUser && user) {
-      updateUser(null);
-    }
     // Animate boxes to appear in two second intervals, useEffect is automatically called again if state is changed
     // Start first animation immediately (still setTimeout to not change before first render)
     if (animationIndex === 0) {

@@ -5,6 +5,7 @@ import { GlobalState, ActionTypes } from "./types";
 
 const initialState: GlobalState = {
   currentUser: null,
+  error: null,
 };
 
 const useGlobal = globalHook<GlobalState, ActionTypes>(

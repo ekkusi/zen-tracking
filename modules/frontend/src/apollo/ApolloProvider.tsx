@@ -7,12 +7,17 @@ import {
   ApolloLink,
 } from "@apollo/client";
 import { onError } from "@apollo/link-error";
+import useGlobal from "store";
 
 const CustomApolloProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }): JSX.Element => {
+  const [error, setError] = useGlobal(
+    (state) => state.error,
+    (actions) => actions.updateError
+  );
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
       graphQLErrors.forEach(({ message, locations, path }) =>
@@ -22,6 +27,9 @@ const CustomApolloProvider = ({
       );
     } else if (networkError) {
       console.error(`[Network error]: ${networkError}`);
+      setError(
+        `Jotakin meni vikaan tietojesi hakemisessa. Kokeile kirjautua uudestaan. Mikäli tämä virheviesti esiintyy uudelleen, ota yhteyttä ekeukkoon!`
+      );
     }
   });
 
