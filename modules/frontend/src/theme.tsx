@@ -19,6 +19,7 @@ const theme: Theme = extendTheme({
       light: chakraTheme.colors.green[300],
       dark: chakraTheme.colors.green[700],
     },
+    warning: chakraTheme.colors.red[600],
   },
 });
 

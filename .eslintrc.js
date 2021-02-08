@@ -40,5 +40,6 @@ module.exports = {
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "import/prefer-default-export": "off",
+    "no-console": "off",
   },
 };

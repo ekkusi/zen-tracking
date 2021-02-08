@@ -50,11 +50,11 @@ export type User = {
   markings: Array<Marking>;
 };
 
-export enum UserCheckResult {
-  UserAndPasswordFound = "USER_AND_PASSWORD_FOUND",
-  UserNotFoundButCreated = "USER_NOT_FOUND_BUT_CREATED",
-  InvalidPassword = "INVALID_PASSWORD",
-}
+export type UserCheckResult = {
+  __typename?: "UserCheckResult";
+  user?: Maybe<User>;
+  status: UserCheckStatus;
+};
 
 export type Mutation = {
   __typename?: "Mutation";
@@ -86,6 +86,12 @@ export type Marking = {
   activities?: Maybe<Array<Scalars["String"]>>;
   comment?: Maybe<Scalars["String"]>;
 };
+
+export enum UserCheckStatus {
+  UserAndPasswordFound = "USER_AND_PASSWORD_FOUND",
+  UserNotFoundButCreated = "USER_NOT_FOUND_BUT_CREATED",
+  InvalidPassword = "INVALID_PASSWORD",
+}
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -208,10 +214,11 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars["String"]>;
   User: ResolverTypeWrapper<User>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
-  UserCheckResult: UserCheckResult;
+  UserCheckResult: ResolverTypeWrapper<UserCheckResult>;
   Mutation: ResolverTypeWrapper<{}>;
   MarkingInput: MarkingInput;
   Marking: ResolverTypeWrapper<Marking>;
+  UserCheckStatus: UserCheckStatus;
   Date: ResolverTypeWrapper<Scalars["Date"]>;
 };
 
@@ -222,6 +229,7 @@ export type ResolversParentTypes = {
   String: Scalars["String"];
   User: User;
   Boolean: Scalars["Boolean"];
+  UserCheckResult: UserCheckResult;
   Mutation: {};
   MarkingInput: MarkingInput;
   Marking: Marking;
@@ -262,6 +270,15 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserCheckResultResolvers<
+  ContextType = CustomContext,
+  ParentType extends ResolversParentTypes["UserCheckResult"] = ResolversParentTypes["UserCheckResult"]
+> = {
+  user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes["UserCheckStatus"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -306,6 +323,7 @@ export interface DateScalarConfig
 export type Resolvers<ContextType = CustomContext> = {
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  UserCheckResult?: UserCheckResultResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Marking?: MarkingResolvers<ContextType>;
   Date?: GraphQLScalarType;

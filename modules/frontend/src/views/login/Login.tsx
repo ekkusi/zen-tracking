@@ -9,17 +9,18 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { UserCheckResult } from "@ekeukko/zen-tracking-backend/lib/types/user";
+import {
+  UserCheckResult,
+  UserCheckStatus,
+} from "@ekeukko/zen-tracking-backend/lib/types/user";
 import { PrimaryButton } from "components/primitives/Button";
 import { PrimaryInput } from "components/primitives/Input";
+import { GetUserQueryResult, GET_USER } from "generalQueries";
 import React, { useEffect, useState } from "react";
+import useGlobal from "store";
 import { CheckUserQueryResult, CHECK_USER } from "./loginQueries";
 
-type LoginProps = {
-  login: (username: string) => void;
-};
-
-const Login = ({ login }: LoginProps): JSX.Element => {
+const Login = (): JSX.Element => {
   const [opacityValues, setOpacityValues] = useState([0, 0, 0]);
   const [animationIndex, setAnimationIndex] = useState(0);
   const [formValues, setFormValues] = useState({
@@ -27,7 +28,31 @@ const Login = ({ login }: LoginProps): JSX.Element => {
     password: "",
     isPrivateUser: false,
   });
+  const [user, updateUser] = useGlobal(
+    (store) => store.currentUser,
+    (actions) => actions.updateUser
+  );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
+
   const client = useApolloClient();
+
+  const updateCurrentUser = async (name: string) => {
+    setLoading(true);
+    const result: ApolloQueryResult<GetUserQueryResult> = await client.query({
+      query: GET_USER,
+      variables: {
+        name,
+      },
+    });
+    const { data } = result;
+    if (data) {
+      updateUser(data.getUser);
+    } else {
+      console.log(result.error);
+    }
+    setLoading(false);
+  };
 
   // Change opacity of current indexz and move to next index in opacity animations
   const changeOpacity = () => {
@@ -39,6 +64,13 @@ const Login = ({ login }: LoginProps): JSX.Element => {
   };
 
   useEffect(() => {
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser && !user && !loading) {
+      updateCurrentUser(currentUser);
+    }
+    if (!currentUser && user) {
+      updateUser(null);
+    }
     // Animate boxes to appear in two second intervals, useEffect is automatically called again if state is changed
     // Start first animation immediately (still setTimeout to not change before first render)
     if (animationIndex === 0) {
@@ -50,21 +82,21 @@ const Login = ({ login }: LoginProps): JSX.Element => {
   });
 
   const handleFormSubmit = async () => {
+    setLoading(true);
     const result: ApolloQueryResult<CheckUserQueryResult> = await client.query({
       query: CHECK_USER,
       variables: { name: formValues.name, password: formValues.password },
     });
     const data = result.data.checkUser;
-    if (data === UserCheckResult.UserAndPasswordFound) {
-      login(formValues.name);
-    } else if (data === UserCheckResult.UserNotFoundButCreated) {
+    if (data.status === UserCheckStatus.UserAndPasswordFound) {
+      updateUser(data.user || null);
+    } else if (data.status === UserCheckStatus.UserNotFoundButCreated) {
       alert("Account created!");
-      console.log("Account created!");
-      login(formValues.name);
+      updateUser(data.user || null);
     } else {
-      alert("Given password was incorrect");
-      console.log("Given password was incorrect");
+      setError("Antamasi salasana oli väärä");
     }
+    setLoading(false);
   };
 
   const handleInputKeyPress = (
@@ -145,11 +177,16 @@ const Login = ({ login }: LoginProps): JSX.Element => {
               }
               colorScheme="teal"
             >
-              Jos tämä on ensimmäinen kirjautumisesi sekä haluat haluat rikkoa
-              yhteisöllisyyttä ja pitää tietosi omana hyvänäsi piilossa muilta
+              Jos tämä on ensimmäinen kirjautumisesi ja haluat haluat rikkoa
+              yhteisöllisyyttä pitämällä tietosi itselläsi piilossa muilta
               kanssazenittäjiltä, niin ruksi tämä.
             </Checkbox>
-            <PrimaryButton onClick={handleFormSubmit}>
+            {error && <Text color="warning">{error}</Text>}
+            <PrimaryButton
+              isLoading={loading}
+              loadingText="Kirjautuminen käynnissä"
+              onClick={handleFormSubmit}
+            >
               Kirjaudu sisään
             </PrimaryButton>
           </Stack>

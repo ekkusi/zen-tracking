@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonProps,
   Modal,
   ModalBody,
@@ -8,7 +7,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
   useDisclosure,
   UseDisclosureProps,
 } from "@chakra-ui/react";
@@ -42,7 +40,7 @@ const ModalTemplate = ({
         {openButtonLabel}
       </PrimaryButton>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{headerLabel}</ModalHeader>

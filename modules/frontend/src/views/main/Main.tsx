@@ -1,32 +1,16 @@
-import { Box, Heading, Spinner, Stack, Tag, Text } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { QueryResult, useQuery } from "@apollo/client";
-import { User, Marking } from "@ekeukko/zen-tracking-backend/lib/types/user";
+import { Box, Heading, Stack, Tag, Text } from "@chakra-ui/react";
+import React from "react";
+import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/user";
 import { PrimaryButton } from "components/primitives/Button";
 import ModalTemplate from "components/ModalTemplate";
-import { GetUserQueryResult, GET_USER } from "./queries";
+import useGlobal from "store";
 import AddMarking from "./AddMarking";
 
-type MainProps = {
-  logout: () => void;
-};
-
-const Main = ({ logout }: MainProps): JSX.Element => {
-  const [user, setUser] = useState<User | null>();
-  const currentUser = localStorage.getItem("currentUser");
-
-  const { loading, error, data }: QueryResult<GetUserQueryResult> = useQuery(
-    GET_USER,
-    {
-      variables: { name: currentUser },
-    }
+const Main = (): JSX.Element => {
+  const [user, updateUser] = useGlobal(
+    (store) => store.currentUser,
+    (actions) => actions.updateUser
   );
-
-  useEffect(() => {
-    if (!user && data) {
-      setUser({ ...data.getUser });
-    }
-  }, [data, user]);
 
   return (
     <Box>
@@ -58,12 +42,12 @@ const Main = ({ logout }: MainProps): JSX.Element => {
             </Text>
           </>
         </ModalTemplate>
-        <PrimaryButton ml="3" onClick={logout}>
+        <PrimaryButton ml="3" onClick={() => updateUser(null)}>
           Kirjaudu ulos
         </PrimaryButton>
       </Box>
       <Heading as="h1" size="xl" mt="5" mb="5">
-        Tervehdys {currentUser}:) Tervetuloa seuraamaan zenisi kasvamista!
+        Tervehdys {user?.name}:) Tervetuloa seuraamaan zenisi kasvamista!
       </Heading>
       <Heading as="h2" size="lg" fontWeight="normal" mb="5">
         <Text as="span" fontStyle="italic">
@@ -71,15 +55,19 @@ const Main = ({ logout }: MainProps): JSX.Element => {
         </Text>{" "}
         herää kello 7 ja vietä rauhallinen aamu ilman ruutujen häirintää.
       </Heading>
-      {loading && <Spinner loading={loading} color="primary.regular" />}
       {user && user.markings.length > 0 ? (
         <Box mb="3">
           <Heading as="h2" size="lg" mb="2">
-            Olet merkannut {user.markings.length} päivän osalta!
+            Suorituksesi: {user.markings.length}
           </Heading>
           <Stack direction="row">
             {user.markings.map((it: Marking) => (
-              <Tag type="solid" bg="secondary.regular" color="white">
+              <Tag
+                key={it.id}
+                type="solid"
+                bg="secondary.regular"
+                color="white"
+              >
                 {new Date(it.date).toISOString()}
               </Tag>
             ))}

@@ -1,10 +1,5 @@
+import { FetchResult, useApolloClient } from "@apollo/client";
 import {
-  ApolloQueryResult,
-  FetchResult,
-  useApolloClient,
-} from "@apollo/client";
-import {
-  Button,
   Checkbox,
   FormControl,
   FormLabel,
@@ -16,6 +11,7 @@ import ModalTemplate from "components/ModalTemplate";
 import { PrimaryButton } from "components/primitives/Button";
 import { PrimaryInput, PrimaryTextArea } from "components/primitives/Input";
 import React, { useState } from "react";
+import useGlobal from "store";
 import { AddMarkingMutationResult, ADD_MARKING } from "./queries";
 
 const activityLabels = {
@@ -26,7 +22,10 @@ const activityLabels = {
 };
 
 const AddMarking = (): JSX.Element => {
-  const currentUser = localStorage.getItem("currentUser");
+  const [user, updateUser] = useGlobal(
+    (state) => state.currentUser,
+    (actions) => actions.updateUser
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [formValues, setFormValues] = useState({
     activities: {
@@ -38,28 +37,47 @@ const AddMarking = (): JSX.Element => {
     comment: "",
     customActivity: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
+
   const client = useApolloClient();
 
   const saveAndClose = async () => {
+    setLoading(true);
     const { activities, comment, customActivity } = formValues;
     const checkedActivities = Object.keys(activities).filter(
       // @ts-ignore
       (it) => activityLabels[it]
     );
     if (customActivity.length > 0) checkedActivities.push(customActivity);
-    const result: FetchResult<AddMarkingMutationResult> = await client.mutate({
-      mutation: ADD_MARKING,
-      variables: {
-        marking: {
-          activities: checkedActivities,
-          date: new Date().toString(),
-          comment,
+
+    try {
+      const {
+        data,
+      }: FetchResult<AddMarkingMutationResult> = await client.mutate({
+        mutation: ADD_MARKING,
+        variables: {
+          marking: {
+            activities: checkedActivities,
+            date: new Date().toString(),
+            comment,
+          },
+          userName: "tere",
         },
-        userName: currentUser,
-      },
-    });
-    console.log(result);
-    onClose();
+      });
+      if (data && user) {
+        updateUser({
+          ...user,
+          markings: [...user.markings, data.addMarking],
+        });
+      }
+      setLoading(false);
+
+      onClose();
+    } catch (e) {
+      setLoading(false);
+      setError("Jokin meni vikaan merkkauksen lisäämisessä");
+    }
   };
 
   return (
@@ -70,12 +88,19 @@ const AddMarking = (): JSX.Element => {
       openButtonProps={{ size: "md" }}
       modalFooter={
         <>
-          <PrimaryButton mr={3} onClick={saveAndClose}>
-            Tallenna
+          <PrimaryButton
+            isLoading={loading}
+            loadingText="Lisätään merkkausta"
+            mr={3}
+            onClick={saveAndClose}
+          >
+            Lisää
           </PrimaryButton>
-          <PrimaryButton mr={3} onClick={onClose}>
-            Sulje
-          </PrimaryButton>
+          {!loading && (
+            <PrimaryButton mr={3} onClick={onClose}>
+              Sulje
+            </PrimaryButton>
+          )}
         </>
       }
     >
@@ -130,6 +155,7 @@ const AddMarking = (): JSX.Element => {
             }
           />
         </FormControl>
+        {error && <Text color="warning">{error}</Text>}
       </Stack>
     </ModalTemplate>
   );
