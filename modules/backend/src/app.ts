@@ -3,7 +3,7 @@ import path from "path";
 import graphqlApi from "./graphql/server";
 
 const app = express();
-const port = 4000; // default port to listen, set to 443 to test without port in url
+const port = process.env.PORT || 4000; // default port to listen, set to 443 to test without port in url
 
 graphqlApi(app);
 
