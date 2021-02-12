@@ -43,12 +43,13 @@
     "generate-prisma": "yarn --cwd modules/backend prisma-generate",
     "gen:theme-typings": "chakra-cli tokens ./modules/frontend/src/theme.ts",
     "lint": "eslint modules/backend/src --ext ts,js && eslint modules/frontend/src --ext tsx,ts,js",
-    "run:prod": "yarn --cwd modules/backend prod",
+    "start": "yarn --cwd modules/backend prod",
     "develop": "lerna run --parallel start",
     "stop:all": "lerna run --parallel stop",
     "patch-chakra-theme": "patch-package @chakra-ui/theme",
     "postgredump": "docker-compose exec postgres sh -c \"pg_dump --clean --no-owner --no-privileges --if-exists -U user -d zen-tracking -f /tmp/zen_tracking_mock_dump.sql\"",
     "postgredump-plain": "docker-compose exec postgres sh -c \"pg_dump --schema-only --clean --no-owner --no-privileges --if-exists -U user -d zen-tracking -f /tmp/zen_tracking_mock_dump_plain.sql\"",
-    "postgreimport": "docker-compose exec postgres sh -c \"psql -U user -d zen-tracking -f /tmp/zen_tracking_mock_dump.sql\""
+    "postgreimport": "docker-compose exec postgres sh -c \"psql -U user -d zen-tracking -f /tmp/zen_tracking_mock_dump.sql\"",
+    "heroku-postbuild": "yarn install && patch-package && yarn:build:all"
   }
 }
