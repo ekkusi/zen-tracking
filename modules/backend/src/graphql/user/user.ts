@@ -91,7 +91,6 @@ const mutationResolvers = {
   ): Promise<Marking> => {
     const { prisma } = context;
     const { userName, marking } = args;
-    console.log("Adding marking:", JSON.stringify(marking));
     const createdMarking = await prisma.marking.create({
       data: UserMapper.mapMarkingInput(userName, marking),
     });
