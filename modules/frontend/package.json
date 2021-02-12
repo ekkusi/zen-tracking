@@ -15,9 +15,10 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
-    "date-fns": "^2.16.1",
+    "date-fns": "^2.17.0",
     "framer-motion": "^3.1.4",
     "react": "^17.0.1",
+    "react-calendar": "^3.3.1",
     "react-dom": "^17.0.1",
     "react-loading-overlay": "^1.0.1",
     "react-router-dom": "^5.2.0",
@@ -33,7 +34,8 @@
     "eject": "react-scripts eject",
     "format": "prettier --write src/**/*.ts{,x}",
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
-    "stop": "kill -9 $(lsof -t -i:3000)"
+    "stop": "kill -9 $(lsof -t -i:3000)",
+    "gen:theme-typings": "chakra-cli tokens ./src/theme.ts --out=../../node_modules/@chakra-ui/theme/dist/types/custom-theme.d.ts"
   },
   "browserslist": {
     "production": [
@@ -48,6 +50,9 @@
     ]
   },
   "devDependencies": {
+    "@chakra-ui/cli": "^1.2.0",
+    "@types/date-fns": "^2.6.0",
+    "@types/react-calendar": "^3.1.3",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.7",
     "@types/use-global-hook": "^0.1.3"

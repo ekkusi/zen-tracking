@@ -55,20 +55,27 @@ const Login = (): JSX.Element => {
 
   const handleFormSubmit = async () => {
     setLoading(true);
-    const result: ApolloQueryResult<CheckUserQueryResult> = await client.query({
-      query: CHECK_USER,
-      variables: { name: formValues.name, password: formValues.password },
-    });
-    const data = result.data.checkUser;
-    if (data.status === UserCheckStatus.UserAndPasswordFound) {
-      updateUser(data.user || null);
-    } else if (data.status === UserCheckStatus.UserNotFoundButCreated) {
-      alert("Account created!");
-      updateUser(data.user || null);
-    } else {
-      setError("Antamasi salasana oli väärä");
+    try {
+      const result: ApolloQueryResult<CheckUserQueryResult> = await client.query(
+        {
+          query: CHECK_USER,
+          variables: { name: formValues.name, password: formValues.password },
+        }
+      );
+      const data = result.data.checkUser;
+      if (data.status === UserCheckStatus.UserAndPasswordFound) {
+        updateUser(data.user || null);
+      } else if (data.status === UserCheckStatus.UserNotFoundButCreated) {
+        alert("Account created!");
+        updateUser(data.user || null);
+      } else {
+        setError("Antamasi salasana oli väärä");
+      }
+      setLoading(false);
+    } catch (err) {
+      setError("Jotakin meni vikaan kirjautumisessa");
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleInputKeyPress = (

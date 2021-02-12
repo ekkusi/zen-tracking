@@ -43,7 +43,7 @@ ${({ isOverlined, theme }) =>
       &&:hover,
       &&:read-only,
       &&:disabled {
-        color: ${theme.colors.red[600]};
+        color: ${theme.colors.warning};
         text-decoration: line-through;
       }
     `}
@@ -57,7 +57,7 @@ ${({ hasError, theme }) =>
       &&:read-only,
       &&:disabled {
         color: ${theme.colors.black};
-        border-color: ${theme.colors.red[600]};
+        border-color: ${theme.colors.warning};
         background-color: ${theme.colors.red[50]};
         text-decoration: none;
         border-width: 1px;

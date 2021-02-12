@@ -4,6 +4,7 @@ import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/user";
 import { PrimaryButton } from "components/primitives/Button";
 import ModalTemplate from "components/ModalTemplate";
 import useGlobal from "store";
+import MarkingCalendar from "../../components/MarkingCalendar";
 import AddMarking from "./AddMarking";
 
 const Main = (): JSX.Element => {
@@ -60,7 +61,7 @@ const Main = (): JSX.Element => {
           <Heading as="h2" size="lg" mb="2">
             Suorituksesi: {user.markings.length}
           </Heading>
-          <Stack direction="row">
+          <Stack direction="row" mb="10">
             {user.markings.map((it: Marking) => (
               <Tag
                 key={it.id}
@@ -68,10 +69,11 @@ const Main = (): JSX.Element => {
                 bg="secondary.regular"
                 color="white"
               >
-                {new Date(it.date).toISOString()}
+                {it.date}
               </Tag>
             ))}
           </Stack>
+          <MarkingCalendar markings={user.markings} />
         </Box>
       ) : (
         <>

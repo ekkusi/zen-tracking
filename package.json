@@ -20,6 +20,7 @@
     "husky": "^4.3.7",
     "lerna": "^3.22.1",
     "lint-staged": "^10.5.3",
+    "patch-package": "^6.2.2",
     "prettier": "^2.2.1",
     "typescript": "^4.0.3"
   },
@@ -34,16 +35,18 @@
     ]
   },
   "scripts": {
-    "setup": "yarn install && yarn --cwd modules/backend build",
+    "setup": "yarn install && yarn --cwd modules/backend build && patch-package",
     "build:backend": "yarn --cwd modules/backend build",
     "build:frontend": "yarn --cwd modules/frontend build",
     "build:all": "lerna run build && yarn",
     "generate:backend": "yarn --cwd modules/backend generate-types",
     "generate-prisma": "yarn --cwd modules/backend prisma-generate",
+    "gen:theme-typings": "chakra-cli tokens ./modules/frontend/src/theme.ts",
     "lint": "eslint modules/backend/src --ext ts,js && eslint modules/frontend/src --ext tsx,ts,js",
     "run:prod": "yarn --cwd modules/backend prod",
     "develop": "lerna run --parallel start",
     "stop:all": "lerna run --parallel stop",
+    "patch-chakra-theme": "patch-package @chakra-ui/theme",
     "postgredump": "docker-compose exec postgres sh -c \"pg_dump --clean -U user -d zen-tracking -f /tmp/zen_tracking_mock_dump.sql\"",
     "postgreimport": "docker-compose exec postgres sh -c \"psql -U user -d zen-tracking -f /tmp/zen_tracking_mock_dump.sql\""
   }
