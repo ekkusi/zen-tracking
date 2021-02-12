@@ -50,6 +50,7 @@
     "postgredump": "docker-compose exec postgres sh -c \"pg_dump --clean --no-owner --no-privileges --if-exists -U user -d zen-tracking -f /tmp/zen_tracking_mock_dump.sql\"",
     "postgredump-plain": "docker-compose exec postgres sh -c \"pg_dump --schema-only --clean --no-owner --no-privileges --if-exists -U user -d zen-tracking -f /tmp/zen_tracking_mock_dump_plain.sql\"",
     "postgreimport": "docker-compose exec postgres sh -c \"psql -U user -d zen-tracking -f /tmp/zen_tracking_mock_dump.sql\"",
-    "heroku-postbuild": "yarn build:all"
+    "heroku-prebuild": "export NPM_CONFIG_PRODUCTION=false",
+    "heroku-postbuild": "patch-package && yarn build:all && export NPM_CONFIG_PRODUCTION=true"
   }
 }
