@@ -17,6 +17,8 @@ const Routes = (): JSX.Element => {
   const client = useApolloClient();
   const currentUser = localStorage.getItem("currentUser");
 
+  console.log(!!currentUser);
+
   const updateCurrentUser = async (name: string) => {
     setLoading(true);
     try {

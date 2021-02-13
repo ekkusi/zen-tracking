@@ -74,7 +74,6 @@ export type MutationAddMarkingArgs = {
 };
 
 export type MarkingInput = {
-  date: Scalars["Date"];
   activities?: Maybe<Array<Scalars["String"]>>;
   comment?: Maybe<Scalars["String"]>;
 };

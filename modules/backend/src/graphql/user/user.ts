@@ -33,10 +33,11 @@ const queryResolvers = {
     });
     if (user) {
       const markings = await prisma.marking.findMany({
-        where: { userName: user.name },
+        where: { user_name: user.name },
       });
       return UserMapper.mapUser(user, markings);
     }
+
     throw new Error("No user found with given name");
   },
   checkUser: async (
@@ -48,7 +49,9 @@ const queryResolvers = {
     const user = await prisma.user.findUnique({
       where: { name: args.name },
     });
+
     if (user) {
+      // User found and password is correct
       if (user.password === args.password) {
         const userWithMarkings = await queryResolvers.getUser(
           parent,
@@ -60,8 +63,10 @@ const queryResolvers = {
           status: UserCheckStatus.UserAndPasswordFound,
         };
       }
+      // User found, but password is incorrect
       return { status: UserCheckStatus.InvalidPassword };
     }
+    // If user is not created, create user
     const createdUser = await prisma.user.create({
       data: { ...args },
     });
@@ -80,7 +85,7 @@ const mutationResolvers = {
   ): Promise<User> => {
     const { prisma } = context;
     const user = await prisma.user.create({
-      data: { ...args, isPrivate: args.isPrivate || undefined },
+      data: { ...args, is_private: args.isPrivate || undefined },
     });
     return UserMapper.mapUser(user, []);
   },

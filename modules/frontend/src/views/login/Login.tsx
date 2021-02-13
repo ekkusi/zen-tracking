@@ -54,27 +54,32 @@ const Login = (): JSX.Element => {
   });
 
   const handleFormSubmit = async () => {
-    setLoading(true);
-    try {
-      const result: ApolloQueryResult<CheckUserQueryResult> = await client.query(
-        {
-          query: CHECK_USER,
-          variables: { name: formValues.name, password: formValues.password },
+    if (!formValues.name) setError("Käyttäjätunnus ei voi olla tyhjä");
+    else if (!formValues.password) setError("Salasana ei voi olla tyhjä");
+    else {
+      setError(undefined);
+      setLoading(true);
+      try {
+        const result: ApolloQueryResult<CheckUserQueryResult> = await client.query(
+          {
+            query: CHECK_USER,
+            variables: { name: formValues.name, password: formValues.password },
+          }
+        );
+        const data = result.data.checkUser;
+        if (data.status === UserCheckStatus.UserAndPasswordFound) {
+          updateUser(data.user || null);
+        } else if (data.status === UserCheckStatus.UserNotFoundButCreated) {
+          alert("Account created!");
+          updateUser(data.user || null);
+        } else {
+          setError("Antamasi salasana oli väärä");
         }
-      );
-      const data = result.data.checkUser;
-      if (data.status === UserCheckStatus.UserAndPasswordFound) {
-        updateUser(data.user || null);
-      } else if (data.status === UserCheckStatus.UserNotFoundButCreated) {
-        alert("Account created!");
-        updateUser(data.user || null);
-      } else {
-        setError("Antamasi salasana oli väärä");
+        setLoading(false);
+      } catch (err) {
+        setError("Jotakin meni vikaan kirjautumisessa");
+        setLoading(false);
       }
-      setLoading(false);
-    } catch (err) {
-      setError("Jotakin meni vikaan kirjautumisessa");
-      setLoading(false);
     }
   };
 

@@ -11,13 +11,9 @@ const dateScalar = new GraphQLScalarType({
   name: "Date",
   description: "Date custom scalar type",
   serialize(value) {
-    console.log("serializing");
-
     return new Date(value); // Convert outgoing Date
   },
   parseValue(value) {
-    console.log("parsing");
-
     return new Date(value); // Convert incoming value to Date
   },
   parseLiteral(ast) {

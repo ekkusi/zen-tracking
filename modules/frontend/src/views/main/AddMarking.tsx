@@ -59,7 +59,6 @@ const AddMarking = (): JSX.Element => {
         variables: {
           marking: {
             activities: checkedActivities,
-            date: new Date().toString(),
             comment,
           },
           userName: user?.name || null,

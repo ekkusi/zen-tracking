@@ -1,6 +1,6 @@
 import { Tag } from "@chakra-ui/react";
 import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/user";
-import { isSameDay } from "date-fns";
+import { isSameDay, format } from "date-fns";
 import React from "react";
 import ReactCalendar, {
   CalendarProps,
@@ -38,7 +38,6 @@ const Calendar = ({ markings, ...rest }: CalendarPropTypes): JSX.Element => {
     // Add class to tiles in month view only
     if (view === "month") {
       // Check if a date React-Calendar wants to check is on the list of dates to add class to
-      console.log(date, markings);
       if (markings.some((it) => isSameDay(new Date(it.date), new Date(date)))) {
         return "react-calendar__tile--marked";
       }
@@ -50,9 +49,8 @@ const Calendar = ({ markings, ...rest }: CalendarPropTypes): JSX.Element => {
     // Add class to tiles in month view only
     if (view === "month") {
       // Check if a date React-Calendar wants to check is on the list of dates to add class to
-      console.log(date, markings);
       if (markings.some((it) => isSameDay(new Date(it.date), new Date(date)))) {
-        return <Tag colorScheme="teal">{date.toISOString()}</Tag>;
+        // return <Tag colorScheme="teal">{format(date, "yyyy-MM-dd")}</Tag>;
       }
     }
     return null;

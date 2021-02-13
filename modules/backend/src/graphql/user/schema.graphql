@@ -36,7 +36,6 @@ type UserCheckResult {
 }
 
 input MarkingInput {
-  date: Date!
   activities: [String!]
   comment: String
 }

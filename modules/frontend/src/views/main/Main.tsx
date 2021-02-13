@@ -4,6 +4,7 @@ import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/user";
 import { PrimaryButton } from "components/primitives/Button";
 import ModalTemplate from "components/ModalTemplate";
 import useGlobal from "store";
+import { format } from "date-fns";
 import MarkingCalendar from "../../components/MarkingCalendar";
 import AddMarking from "./AddMarking";
 
@@ -12,6 +13,8 @@ const Main = (): JSX.Element => {
     (store) => store.currentUser,
     (actions) => actions.updateUser
   );
+
+  console.log(user);
 
   return (
     <Box>
@@ -69,7 +72,7 @@ const Main = (): JSX.Element => {
                 bg="secondary.regular"
                 color="white"
               >
-                {it.date}
+                {format(new Date(it.date), "yyyy.MM.dd HH:mm:ss")}
               </Tag>
             ))}
           </Stack>

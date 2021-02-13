@@ -9,6 +9,7 @@ export class UserMapper {
   public static mapUser(user: PrismaUser, userMarkings: PrismaMarking[]): User {
     return {
       ...user,
+      isPrivate: user.is_private,
       markings: userMarkings.map((marking) => UserMapper.mapMarking(marking)),
     } as User;
   }
