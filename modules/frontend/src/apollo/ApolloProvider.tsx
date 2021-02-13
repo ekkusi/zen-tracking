@@ -9,6 +9,8 @@ import {
 import { onError } from "@apollo/link-error";
 import useGlobal from "store";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const CustomApolloProvider = ({
   children,
 }: {
@@ -33,7 +35,9 @@ const CustomApolloProvider = ({
     }
   });
 
-  const httpLink = new HttpLink({ uri: "http://localhost:4000/graphql" });
+  const httpLink = new HttpLink({
+    uri: isProduction ? "/graphql" : "http://localhost:4000/graphql",
+  });
 
   const client = new ApolloClient({
     link: ApolloLink.from([errorLink, httpLink]),

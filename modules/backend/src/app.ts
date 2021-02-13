@@ -3,7 +3,7 @@ import path from "path";
 import graphqlApi from "./graphql/server";
 
 const app = express();
-const port = process.env.PORT || 4000; // default port to listen, set to 443 to test without port in url
+const port = process.env.PORT || 5000; // default port to listen, set to 443 to test without port in url
 
 graphqlApi(app);
 
@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === "production") {
   app.get("*", (req, res) => res.sendFile(indexHtml));
 }
 
-const server = app.listen(port, () => {
+app.listen(port, () => {
   console.log(`server started at http://localhost:${port}`);
 });
 
