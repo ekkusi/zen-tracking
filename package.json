@@ -35,7 +35,7 @@
     ]
   },
   "scripts": {
-    "setup": "yarn install && yarn --cwd modules/backend build",
+    "setup": "yarn install && yarn generate-prisma && yarn --cwd modules/backend build",
     "build:backend": "yarn --cwd modules/backend build",
     "build:frontend": "yarn --cwd modules/frontend build",
     "build:all": "lerna run build",
