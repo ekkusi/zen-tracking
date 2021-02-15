@@ -1,14 +1,15 @@
 import { ApolloQueryResult, useApolloClient } from "@apollo/client";
 import { Text } from "@chakra-ui/react";
-import LoadingOverlay from "components/LoadingOverlay";
-import ModalTemplate from "components/ModalTemplate";
+import LoadingOverlay from "components/general/LoadingOverlay";
+import ModalTemplate from "components/general/ModalTemplate";
 import { GetUserQueryResult, GET_USER } from "generalQueries";
 import React, { useEffect, useState } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import useGlobal from "store";
-import Login from "views/login/Login";
-import Main from "views/main/Main";
+import LoginPage from "views/login/LoginPage";
+import MainPage from "views/main/MainPage";
 import NotFoundPage from "views/NotFoundPage";
+import WelcomePage from "views/welcome/WelcomePage";
 
 const Routes = (): JSX.Element => {
   const [globalState, globalActions] = useGlobal();
@@ -16,8 +17,6 @@ const Routes = (): JSX.Element => {
 
   const client = useApolloClient();
   const currentUser = localStorage.getItem("currentUser");
-
-  console.log(!!currentUser);
 
   const updateCurrentUser = async (name: string) => {
     setLoading(true);
@@ -66,7 +65,7 @@ const Routes = (): JSX.Element => {
       <Route
         path="/login"
         render={() => {
-          if (!globalState.currentUser) return <Login />;
+          if (!globalState.currentUser) return <LoginPage />;
           return <Redirect to="/" />;
         }}
       />
@@ -81,7 +80,8 @@ const Routes = (): JSX.Element => {
 
           return (
             <Switch>
-              <Route exact path="/" render={() => <Main />} />
+              <Route exact path="/" render={() => <MainPage />} />
+              <Route path="/welcome" render={() => <WelcomePage />} />
               <Route path="*" render={() => <NotFoundPage />} />
             </Switch>
           );
