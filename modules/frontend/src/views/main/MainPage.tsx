@@ -56,11 +56,11 @@ const MainPage = (): JSX.Element => {
           Kirjaudu ulos
         </PrimaryButton>
       </Box>
-      <Heading.H1 mt="5" mb="5">
-        Tervehdys {user?.name}:) Tervetuloa seuraamaan zenisi kasvamista!
+      <Heading.H1 mt="5">
+        Tervehdys {user?.name} ja tervetuloa seuraamaan zenisi kasvamista :){" "}
       </Heading.H1>
-      <Heading.H2 fontWeight="normal" mb="5">
-        <Text as="span" fontStyle="italic">
+      <Heading.H2 fontWeight="normal" mb={{ base: "6", md: "10" }}>
+        <Text as="span" fontStyle="italic" fontSize="inherit">
           Tammikuun haaste:
         </Text>{" "}
         herää kello 7 ja vietä rauhallinen aamu ilman ruutujen häirintää.
@@ -68,27 +68,14 @@ const MainPage = (): JSX.Element => {
       <Box mb="7">
         {user && user.markings.length > 0 ? (
           <>
-            <Heading.H2 mb="5" textAlign={{ base: "left", sm: "center" }}>
+            <Heading.H2 mb="4" textAlign={{ base: "left", sm: "center" }}>
               Putkesi pituus:{" "}
-              <Text as="span" fontWeight="bold">
+              <Text as="span" fontWeight="bold" fontSize="inherit">
                 {DateUtil.getDateStreak(
                   user.markings.map((it) => new Date(it.date))
                 )}{" "}
               </Text>
             </Heading.H2>
-
-            {/* <Stack direction="row" mb="10">
-            {user.markings.map((it: Marking) => (
-              <Tag
-                key={it.id}
-                type="solid"
-                bg="secondary.regular"
-                color="white"
-              >
-                {DateUtil.format(it.date)}
-              </Tag>
-            ))}
-          </Stack> */}
             <MarkingCalendar markings={user.markings} />
           </>
         ) : (
@@ -108,14 +95,19 @@ const MainPage = (): JSX.Element => {
               ? "Olet jo merkannut tänään"
               : "Merkkaa tämä päivä",
             openButtonProps: {
-              size: "lg",
-              fontSize: "xl",
+              fontSize: { base: "lg", md: "xl" },
               fontWeight: "normal",
               textTransform: "none",
-              py: "8",
-              px: "7",
+              py: { base: 6, md: 8 },
+              px: { base: 5, md: 7 },
               isDisabled: hasUserMarkedToday(),
-              leftIcon: <CheckIcon w={8} h={8} mb="1px" />,
+              leftIcon: (
+                <CheckIcon
+                  w={{ base: 6, md: 8 }}
+                  h={{ base: 6, md: 8 }}
+                  mb="1px"
+                />
+              ),
             },
           }}
         />

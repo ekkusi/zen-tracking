@@ -53,6 +53,7 @@ const StyledCalendar = styled(ReactCalendar)`
       &:disabled {
         background: ${({ theme }) => theme.colors.gray[100]};
         pointer-events: none;
+        opacity: 0.6;
       }
     }
     &__month-view {
@@ -72,6 +73,7 @@ const StyledCalendar = styled(ReactCalendar)`
         &:disabled {
           background: ${({ theme }) => theme.colors.gray[100]};
           pointer-events: none;
+          opacity: 0.6;
         }
       }
       & button:enabled {

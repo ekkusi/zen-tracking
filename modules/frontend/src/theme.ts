@@ -14,6 +14,19 @@ const theme: Theme = extendTheme({
       },
     },
   },
+  components: {
+    Button: {
+      baseStyle: {},
+      defaultProps: {
+        textTransform: "italic",
+      },
+    },
+    Text: {
+      baseStyle: {
+        fontSize: { base: "md", md: "lg" },
+      },
+    },
+  },
   colors: {
     primary: {
       regular: chakraTheme.colors.teal[500],
