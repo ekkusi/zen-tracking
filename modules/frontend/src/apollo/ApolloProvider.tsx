@@ -16,10 +16,10 @@ const CustomApolloProvider = ({
 }: {
   children: React.ReactNode;
 }): JSX.Element => {
-  const [error, setError] = useGlobal(
+  const setError = useGlobal(
     (state) => state.error,
     (actions) => actions.updateError
-  );
+  )[1];
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
       graphQLErrors.forEach(({ message, locations, path }) =>

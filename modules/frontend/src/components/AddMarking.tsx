@@ -7,12 +7,14 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import ModalTemplate from "components/ModalTemplate";
+import ModalTemplate, {
+  ModalTemplateProps,
+} from "components/general/ModalTemplate";
 import { PrimaryButton } from "components/primitives/Button";
 import { PrimaryInput, PrimaryTextArea } from "components/primitives/Input";
 import React, { useState } from "react";
 import useGlobal from "store";
-import { AddMarkingMutationResult, ADD_MARKING } from "./queries";
+import { AddMarkingMutationResult, ADD_MARKING } from "../views/main/queries";
 
 const activityLabels = {
   meditation: "Meditaatio",
@@ -21,7 +23,11 @@ const activityLabels = {
   journaling: "Kirjottelu",
 };
 
-const AddMarking = (): JSX.Element => {
+type AddMarkingProps = {
+  modalTemplateProps: Omit<ModalTemplateProps, "children">;
+};
+
+const AddMarking = ({ modalTemplateProps }: AddMarkingProps): JSX.Element => {
   const [user, updateUser] = useGlobal(
     (state) => state.currentUser,
     (actions) => actions.updateUser
@@ -102,6 +108,7 @@ const AddMarking = (): JSX.Element => {
           )}
         </>
       }
+      {...modalTemplateProps}
     >
       <Stack pt="0">
         <Stack>

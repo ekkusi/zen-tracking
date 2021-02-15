@@ -22,10 +22,10 @@ const theme: Theme = extendTheme({
     },
     secondary: {
       regular: chakraTheme.colors.green[500],
-      light: chakraTheme.colors.green[300],
+      light: chakraTheme.colors.green[400],
       dark: chakraTheme.colors.green[700],
     },
-    warning: chakraTheme.colors.red[600],
+    warning: chakraTheme.colors.red[700],
   },
 });
 

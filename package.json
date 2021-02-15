@@ -35,7 +35,7 @@
     ]
   },
   "scripts": {
-    "setup": "yarn install && yarn --cwd modules/backend build && yarn patch-package",
+    "setup": "yarn install && yarn --cwd modules/backend build",
     "build:backend": "yarn --cwd modules/backend build",
     "build:frontend": "yarn --cwd modules/frontend build",
     "build:all": "lerna run build",
@@ -47,6 +47,7 @@
     "run:prod": "yarn --cwd modules/backend prod",
     "develop": "lerna run --parallel start",
     "stop:all": "lerna run --parallel stop",
+    "postinstall": "yarn patch-package",
     "patch-chakra-theme": "patch-package @chakra-ui/theme",
     "postgredump": "docker-compose exec postgres sh -c \"pg_dump --clean --no-owner --no-privileges --if-exists -U user -d zen-tracking -f /tmp/zen_tracking_local_dump.sql\"",
     "postgredump-plain": "docker-compose exec postgres sh -c \"pg_dump --schema-only --clean --no-owner --no-privileges --if-exists -U user -d zen-tracking -f /tmp/zen_tracking_local_dump_plain.sql\"",

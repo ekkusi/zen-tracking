@@ -1,29 +1,62 @@
-import { Tag } from "@chakra-ui/react";
 import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/user";
-import { isSameDay, format } from "date-fns";
+import { isSameDay } from "date-fns";
 import React from "react";
 import ReactCalendar, {
   CalendarProps,
   CalendarTileProperties,
 } from "react-calendar";
 import styled from "styled-components";
+import DateUtil from "util/DateUtil";
 
 const StyledCalendar = styled(ReactCalendar)`
   width: 100%;
 
   .react-calendar {
     &__tile {
+      padding: 0;
+      position: relative;
+      & > abbr {
+        display: block;
+        padding: ${({ theme }) => `${theme.space[4]} ${theme.space[2]}`};
+      }
       &:hover {
         background: ${({ theme }) => theme.colors.primary.light};
+        color: ${({ theme }) => theme.colors.white};
       }
       &--now {
-        background: ${({ theme }) => theme.colors.primary.regular};
+        background: ${({ theme }) => theme.colors.white};
         &:hover {
           background: ${({ theme }) => theme.colors.primary.light};
         }
       }
       &--marked {
-        background: ${({ theme }) => theme.colors.secondary.regular};
+        &:after {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          content: "\u2715"; /* use the hex value here... */
+          font-size: 50px;
+          color: ${({ theme }) => theme.colors.black};
+          text-align: center;
+        }
+      }
+      &--active {
+        background: ${({ theme }) => theme.colors.primary.regular};
+        &:hover {
+          background: ${({ theme }) => theme.colors.primary.light};
+        }
+        &:enabled {
+          background: ${({ theme }) => theme.colors.primary.regular};
+        }
+      }
+    }
+    &__month-view {
+      &__days__day {
+        color: ${({ theme }) => theme.colors.black};
+        &--weekend {
+          color: ${({ theme }) => theme.colors.black};
+        }
       }
     }
   }
@@ -38,19 +71,13 @@ const Calendar = ({ markings, ...rest }: CalendarPropTypes): JSX.Element => {
     // Add class to tiles in month view only
     if (view === "month") {
       // Check if a date React-Calendar wants to check is on the list of dates to add class to
-      if (markings.some((it) => isSameDay(new Date(it.date), new Date(date)))) {
+      if (
+        DateUtil.dateIsIn(
+          date,
+          markings.map((it) => new Date(it.date))
+        )
+      ) {
         return "react-calendar__tile--marked";
-      }
-    }
-    return null;
-  };
-
-  const tileContent = ({ date, view }: CalendarTileProperties) => {
-    // Add class to tiles in month view only
-    if (view === "month") {
-      // Check if a date React-Calendar wants to check is on the list of dates to add class to
-      if (markings.some((it) => isSameDay(new Date(it.date), new Date(date)))) {
-        // return <Tag colorScheme="teal">{format(date, "yyyy-MM-dd")}</Tag>;
       }
     }
     return null;
@@ -59,7 +86,15 @@ const Calendar = ({ markings, ...rest }: CalendarPropTypes): JSX.Element => {
   return (
     <StyledCalendar
       tileClassName={tileClassName}
-      tileContent={tileContent}
+      formatMonth={(locale, date) =>
+        DateUtil.format(date, { formatString: "LLLL" })
+      }
+      formatMonthYear={(locale, date) =>
+        DateUtil.format(date, { formatString: "LLLL yyyy" })
+      }
+      maxDate={new Date("2021-12-31")}
+      minDate={new Date("2021-01-01")}
+      locale="fi-FI"
       {...rest}
     />
   );

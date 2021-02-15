@@ -11,9 +11,9 @@ import {
   UseDisclosureProps,
 } from "@chakra-ui/react";
 import React from "react";
-import { PrimaryButton } from "./primitives/Button";
+import { PrimaryButton } from "../primitives/Button";
 
-type ModalTemplateProps = {
+export type ModalTemplateProps = {
   children: JSX.Element;
   renderOpenButton?: boolean;
   openButtonLabel?: string;

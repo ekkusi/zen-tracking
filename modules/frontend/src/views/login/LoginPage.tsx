@@ -5,18 +5,19 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Heading,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import { UserCheckStatus } from "@ekeukko/zen-tracking-backend/lib/types/user";
 import { PrimaryButton } from "components/primitives/Button";
 import { PrimaryInput } from "components/primitives/Input";
+import Heading from "components/primitives/Heading";
 import React, { useEffect, useState } from "react";
 import useGlobal from "store";
+import { useHistory } from "react-router-dom";
 import { CheckUserQueryResult, CHECK_USER } from "./loginQueries";
 
-const Login = (): JSX.Element => {
+const LoginPage = (): JSX.Element => {
   const [opacityValues, setOpacityValues] = useState([0, 0, 0]);
   const [animationIndex, setAnimationIndex] = useState(0);
   const [formValues, setFormValues] = useState({
@@ -24,18 +25,18 @@ const Login = (): JSX.Element => {
     password: "",
     isPrivateUser: false,
   });
-  const [user, updateUser] = useGlobal(
+  const updateUser = useGlobal(
     (store) => store.currentUser,
     (actions) => actions.updateUser
-  );
+  )[1];
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
+  const history = useHistory();
 
   const client = useApolloClient();
 
   // Change opacity of current indexz and move to next index in opacity animations
   const changeOpacity = () => {
-    console.log("Changing opacity, current index ", animationIndex);
     const newValues = [...opacityValues];
     newValues[animationIndex] = 100;
     setOpacityValues(newValues);
@@ -70,8 +71,8 @@ const Login = (): JSX.Element => {
         if (data.status === UserCheckStatus.UserAndPasswordFound) {
           updateUser(data.user || null);
         } else if (data.status === UserCheckStatus.UserNotFoundButCreated) {
-          alert("Account created!");
           updateUser(data.user || null);
+          history.push("/welcome");
         } else {
           setError("Antamasi salasana oli väärä");
         }
@@ -81,6 +82,7 @@ const Login = (): JSX.Element => {
         setLoading(false);
       }
     }
+    return undefined;
   };
 
   const handleInputKeyPress = (
@@ -92,8 +94,7 @@ const Login = (): JSX.Element => {
   return (
     <Flex>
       <Box>
-        <Heading
-          as="h1"
+        <Heading.H1
           size="4xl"
           mt="10"
           mb="3"
@@ -101,10 +102,8 @@ const Login = (): JSX.Element => {
           transition="opacity 2s"
         >
           Tervehdys!
-        </Heading>
-        <Heading
-          as="h2"
-          size="lg"
+        </Heading.H1>
+        <Heading.H2
           fontWeight="normal"
           mb="4"
           opacity={opacityValues[1]}
@@ -115,16 +114,16 @@ const Login = (): JSX.Element => {
           <Text as="span" fontWeight="bold" fontStyle="italic">
             Unleash your inner ZEN
           </Text>{" "}
-          yhteisön (<strong>HUOM!</strong> ei siis kultti) Suomen osaseuraan ja
-          ota ensiaskeleet kohti kehon, mielen sekä sydämen hyvinvointia.
-        </Heading>
+          yhteisöön (<strong>HUOM!</strong> ei siis kultti) ja ota ensiaskeleet
+          kohti kehon, mielen sekä sydämen hyvinvointia.
+        </Heading.H2>
         <Box opacity={opacityValues[2]} transition="opacity 2s">
-          <Heading as="h3" size="md" mb="4">
+          <Heading.H3 mb="4">
             Syötä vain alla olevaan laatikkoon nimesi tai nimimerkki (esim.
             henkiolentosi tai edellisen meditaatiosi mantra) ja salasana, niin
             olet valmis aloittamaan terveellisen putkesi seuraamisen muiden
             kanssazenittäjien seurassa!
-          </Heading>
+          </Heading.H3>
           <Stack spacing="4">
             <FormControl>
               <FormLabel id="name">Tunnus</FormLabel>
@@ -180,4 +179,4 @@ const Login = (): JSX.Element => {
   );
 };
 
-export default Login;
+export default LoginPage;
