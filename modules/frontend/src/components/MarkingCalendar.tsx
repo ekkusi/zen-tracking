@@ -13,11 +13,11 @@ const StyledCalendar = styled(ReactCalendar)`
 
   .react-calendar {
     &__tile {
-      padding: 0;
+      padding: ${({ theme }) => `${theme.space[4]} ${theme.space[2]}`};
+
       position: relative;
       & > abbr {
         display: block;
-        padding: ${({ theme }) => `${theme.space[4]} ${theme.space[2]}`};
       }
       &:hover {
         background: ${({ theme }) => theme.colors.primary.light};
@@ -50,6 +50,10 @@ const StyledCalendar = styled(ReactCalendar)`
           background: ${({ theme }) => theme.colors.primary.regular};
         }
       }
+      &:disabled {
+        background: ${({ theme }) => theme.colors.gray[100]};
+        pointer-events: none;
+      }
     }
     &__month-view {
       &__days__day {
@@ -57,6 +61,21 @@ const StyledCalendar = styled(ReactCalendar)`
         &--weekend {
           color: ${({ theme }) => theme.colors.black};
         }
+      }
+    }
+    &__navigation {
+      & button {
+        &:hover,
+        &:enabled:hover {
+          background: ${({ theme }) => theme.colors.primary.light};
+        }
+        &:disabled {
+          background: ${({ theme }) => theme.colors.gray[100]};
+          pointer-events: none;
+        }
+      }
+      & button:enabled {
+        background: ${({ theme }) => theme.colors.white};
       }
     }
   }
@@ -92,7 +111,7 @@ const Calendar = ({ markings, ...rest }: CalendarPropTypes): JSX.Element => {
       formatMonthYear={(locale, date) =>
         DateUtil.format(date, { formatString: "LLLL yyyy" })
       }
-      maxDate={new Date("2021-12-31")}
+      maxDate={new Date()}
       minDate={new Date("2021-01-01")}
       locale="fi-FI"
       {...rest}
