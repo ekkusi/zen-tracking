@@ -1,6 +1,8 @@
-import { CustomContext } from "@/types/customContext";
 import { readFileSync } from "fs";
 import path from "path";
+import { CustomContext } from "../../types/customContext";
+
+import { hash, compare } from "../../utils/auth";
 import {
   QueryGetUserArgs,
   Resolvers as UserResolvers,
@@ -51,8 +53,9 @@ const queryResolvers = {
     });
 
     if (user) {
+      const isPasswordCorrect = await compare(args.password, user.password);
       // User found and password is correct
-      if (user.password === args.password) {
+      if (isPasswordCorrect) {
         const userWithMarkings = await queryResolvers.getUser(
           parent,
           { name: args.name },
@@ -66,9 +69,10 @@ const queryResolvers = {
       // User found, but password is incorrect
       return { status: UserCheckStatus.InvalidPassword };
     }
+    const hashedPassword = await hash(args.password);
     // If user is not created, create user
     const createdUser = await prisma.user.create({
-      data: { ...args },
+      data: { ...args, password: hashedPassword },
     });
     return {
       user: UserMapper.mapUser(createdUser, []),
