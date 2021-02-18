@@ -10,6 +10,7 @@ import {
   useDisclosure,
   UseDisclosureProps,
 } from "@chakra-ui/react";
+import Heading from "components/primitives/Heading";
 import React from "react";
 import { PrimaryButton } from "../primitives/Button";
 
@@ -47,7 +48,11 @@ const ModalTemplate = ({
       <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{headerLabel}</ModalHeader>
+          <ModalHeader>
+            <Heading.H2 mb="0" fontWeight="bold">
+              {headerLabel}
+            </Heading.H2>
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>{children}</ModalBody>
 

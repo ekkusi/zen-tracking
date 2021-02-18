@@ -95,9 +95,9 @@ const LoginPage = (): JSX.Element => {
     <Flex>
       <Box>
         <Heading.H1
-          size="4xl"
-          mt="10"
-          mb="3"
+          fontSize={{ base: "5xl", md: "6xl" }}
+          mt={{ base: "8", md: "10" }}
+          mb={{ base: "2", md: "3" }}
           opacity={opacityValues[0]}
           transition="opacity 2s"
         >
@@ -105,7 +105,6 @@ const LoginPage = (): JSX.Element => {
         </Heading.H1>
         <Heading.H2
           fontWeight="normal"
-          mb="4"
           opacity={opacityValues[1]}
           transition="opacity 2s"
         >
@@ -118,12 +117,12 @@ const LoginPage = (): JSX.Element => {
           kohti kehon, mielen sekä sydämen hyvinvointia.
         </Heading.H2>
         <Box opacity={opacityValues[2]} transition="opacity 2s">
-          <Heading.H3 mb="4">
+          <Text>
             Syötä vain alla olevaan laatikkoon nimesi tai nimimerkki (esim.
             henkiolentosi tai edellisen meditaatiosi mantra) ja salasana, niin
             olet valmis aloittamaan terveellisen putkesi seuraamisen muiden
             kanssazenittäjien seurassa!
-          </Heading.H3>
+          </Text>
           <Stack spacing="4">
             <FormControl>
               <FormLabel id="name">Tunnus</FormLabel>
@@ -160,9 +159,11 @@ const LoginPage = (): JSX.Element => {
               }
               colorScheme="teal"
             >
-              Jos tämä on ensimmäinen kirjautumisesi ja haluat rikkoa
-              yhteisöllisyyttä pitämällä tietosi piilossa muilta
-              kanssazenittäjiltä, niin ruksi tämä.
+              <Text as="span" fontSize="sm">
+                Jos tämä on ensimmäinen kirjautumisesi ja haluat rikkoa
+                yhteisöllisyyttä pitämällä tietosi piilossa muilta
+                kanssazenittäjiltä, niin ruksi tämä.
+              </Text>
             </Checkbox>
             {error && <Text color="warning">{error}</Text>}
             <PrimaryButton

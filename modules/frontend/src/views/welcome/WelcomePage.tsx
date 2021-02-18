@@ -1,5 +1,5 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { Fade, Flex, Text } from "@chakra-ui/react";
+import { Box, Fade, Flex, Text } from "@chakra-ui/react";
 import { PrimaryButton } from "components/primitives/Button";
 import Heading from "components/primitives/Heading";
 import React from "react";
@@ -13,28 +13,31 @@ const WelcomePage = (): JSX.Element => {
     <Fade in>
       <Flex
         width="100%"
-        direction="column"
+        height="100vh"
+        justify="center"
         alignItems="center"
-        pt="400px"
         transition="opacity 2s"
       >
-        <Heading.H1 fontSize="6xl">Tervetuloa {user && user.name}!</Heading.H1>
-        <Text fontSize="xl" mb="5">
-          Käyttäjäsi on nyt luotu!
-        </Text>
+        <Flex direction="column" alignItems="center" mb="50px">
+          <Heading.H1 fontSize={{ base: "4xl", sm: "6xl" }}>
+            Tervetuloa {user && user.name}!
+          </Heading.H1>
+          <Text fontSize={{ base: "lg", sm: "xl" }} mb={{ base: "3", sm: "5" }}>
+            Käyttäjäsi on nyt luotu!
+          </Text>
 
-        <Link to="/">
-          <PrimaryButton
-            size="lg"
-            fontSize="lg"
-            fontWeight="normal"
-            borderRadius="8px"
-            p={[10, 7]}
-            rightIcon={<ArrowForwardIcon w={8} h={8} />}
-          >
-            Aloita zenin kasvattaminen!
-          </PrimaryButton>
-        </Link>
+          <Link to="/">
+            <PrimaryButton
+              fontSize={{ base: "md", sm: "lg" }}
+              fontWeight="normal"
+              borderRadius="8px"
+              p={{ base: [8, 5], sm: [10, 7] }}
+              rightIcon={<ArrowForwardIcon w={8} h={8} />}
+            >
+              Aloita zenin kasvattaminen!
+            </PrimaryButton>
+          </Link>
+        </Flex>
       </Flex>
     </Fade>
   );
