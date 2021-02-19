@@ -34,7 +34,7 @@ const MainPage = (): JSX.Element => {
             <Text>
               Kun olet mielestäsi onnistunut suorittamaan kyseisen tehtävän
               päivän osalta, paina alta päivä suoritetuksi ja saat suorituksen
-              putkeesi kasvattamaan vihreätä linjaa!
+              kasvattamaan putkeasi!
             </Text>
             <Text>
               Voit halutessasi lisätä merkkaukseen aamun aktiviteetin, mikäli
@@ -47,8 +47,8 @@ const MainPage = (): JSX.Element => {
             <Text>
               Voit myös lisätä päivästä kommentin aamun fiiliksistä,
               aktiviteetin suoriutumisesta tai mistä vaan! Näiden kommenttien
-              pohjalta voit reflektoida haastetta jälkeenpäin, kun muisti alkaa
-              yksittäisten päivien osalta pettää:)
+              pohjalta voit reflektoida haastetta jälkeenpäin, kun muisti on
+              alkanut yksittäisten päivien osalta hämärtyä:)
             </Text>
           </>
         </ModalTemplate>
@@ -60,7 +60,7 @@ const MainPage = (): JSX.Element => {
         Tervehdys {user?.name} ja tervetuloa seuraamaan zenisi kasvamista :){" "}
       </Heading.H1>
       <Heading.H2 fontWeight="normal" mb={{ base: "6", md: "10" }}>
-        <Text as="span" fontStyle="italic" fontSize="inherit">
+        <Text as="span" fontStyle="italic">
           Tammikuun haaste:
         </Text>{" "}
         herää kello 7 ja vietä rauhallinen aamu ilman ruutujen häirintää.
@@ -70,7 +70,7 @@ const MainPage = (): JSX.Element => {
           <>
             <Heading.H2 mb="4" textAlign={{ base: "left", sm: "center" }}>
               Putkesi pituus:{" "}
-              <Text as="span" fontWeight="bold" fontSize="inherit">
+              <Text as="span" fontWeight="bold">
                 {DateUtil.getDateStreak(
                   user.markings.map((it) => new Date(it.date))
                 )}{" "}
