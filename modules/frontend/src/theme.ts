@@ -5,6 +5,7 @@ const theme: Theme = extendTheme({
     global: {
       p: {
         marginBottom: "2",
+        fontSize: { base: "md", md: "lg" },
       },
       a: {
         color: chakraTheme.colors.teal[500],
@@ -19,11 +20,6 @@ const theme: Theme = extendTheme({
       baseStyle: {},
       defaultProps: {
         textTransform: "italic",
-      },
-    },
-    Text: {
-      baseStyle: {
-        fontSize: { base: "md", md: "lg" },
       },
     },
   },
