@@ -1,16 +1,24 @@
 import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/user";
-import { isSameDay } from "date-fns";
-import React from "react";
+import { addHours, isSameDay } from "date-fns";
+import React, { useState } from "react";
 import ReactCalendar, {
   CalendarProps,
   CalendarTileProperties,
+  DateCallback,
 } from "react-calendar";
 import styled from "styled-components";
 import DateUtil from "util/DateUtil";
+import EditMarking from "./EditMarking";
 
 const StyledCalendar = styled(ReactCalendar)`
-  width: 100%;
+  --color: ${({ theme }) => theme.colors.black};
+  --bg-color: ${({ theme }) => theme.colors.white};
+  --active-bg-color: ${({ theme }) => theme.colors.primary.regular};
+  --hover-bg-color: ${({ theme }) => theme.colors.primary.light};
+  --hover-color: ${({ theme }) => theme.colors.white};
+  --disabled-bg-color: ${({ theme }) => theme.colors.gray[100]};
 
+  width: 100%;
   .react-calendar {
     &__tile {
       padding: ${({ theme }) => `${theme.space[4]} ${theme.space[2]}`};
@@ -20,13 +28,13 @@ const StyledCalendar = styled(ReactCalendar)`
         display: block;
       }
       &:hover {
-        background: ${({ theme }) => theme.colors.primary.light};
-        color: ${({ theme }) => theme.colors.white};
+        background: var(--hover-bg-color);
+        color: var(--hover-color);
       }
       &--now {
-        background: ${({ theme }) => theme.colors.white};
+        background: var(--bg-color);
         &:hover {
-          background: ${({ theme }) => theme.colors.primary.light};
+          background: var(--hover-bg-color);
         }
       }
       &--marked {
@@ -37,30 +45,41 @@ const StyledCalendar = styled(ReactCalendar)`
           transform: translate(-50%, -50%);
           content: "\u2715"; /* use the hex value here... */
           font-size: 50px;
-          color: ${({ theme }) => theme.colors.black};
+          color: var(--color);
           text-align: center;
         }
       }
       &--active {
-        background: ${({ theme }) => theme.colors.primary.regular};
-        &:hover {
-          background: ${({ theme }) => theme.colors.primary.light};
+        background: var(--bg-color);
+        &:hover,
+        &:enabled:hover {
+          background: var(--hover-bg-color);
         }
         &:enabled {
-          background: ${({ theme }) => theme.colors.primary.regular};
+          background: var(---bg-color);
+        }
+      }
+      &--custom-active {
+        background: var(--active-bg-color);
+        &:hover,
+        &:enabled:hover {
+          background: var(--hover-bg-color);
+        }
+        &:enabled {
+          background: var(--active-bg-color);
         }
       }
       &:disabled {
-        background: ${({ theme }) => theme.colors.gray[100]};
+        background: var(--disabled-bg-color);
         pointer-events: none;
         opacity: 0.6;
       }
     }
     &__month-view {
       &__days__day {
-        color: ${({ theme }) => theme.colors.black};
+        color: var(--color);
         &--weekend {
-          color: ${({ theme }) => theme.colors.black};
+          color: var(--color);
         }
       }
     }
@@ -68,16 +87,16 @@ const StyledCalendar = styled(ReactCalendar)`
       & button {
         &:hover,
         &:enabled:hover {
-          background: ${({ theme }) => theme.colors.primary.light};
+          background: var(--hover-bg-color);
         }
         &:disabled {
-          background: ${({ theme }) => theme.colors.gray[100]};
+          background: var(--disabled-bg-color);
           pointer-events: none;
           opacity: 0.6;
         }
       }
       & button:enabled {
-        background: ${({ theme }) => theme.colors.white};
+        background: var(--bg-color);
       }
     }
   }
@@ -87,8 +106,18 @@ type CalendarPropTypes = CalendarProps & {
   markings: Marking[];
 };
 
-const Calendar = ({ markings, ...rest }: CalendarPropTypes): JSX.Element => {
+const MIN_DATE = new Date("2021-01-01");
+const MAX_DATE = new Date();
+
+const MarkingCalendar = ({
+  markings,
+  ...rest
+}: CalendarPropTypes): JSX.Element => {
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [markingInEdit, setMarkingInEdit] = useState<Marking | null>();
+  const [dateInEdit, setDateInEdit] = useState<Date | null>();
   const tileClassName = ({ date, view }: CalendarTileProperties) => {
+    const classNames = [];
     // Add class to tiles in month view only
     if (view === "month") {
       // Check if a date React-Calendar wants to check is on the list of dates to add class to
@@ -98,27 +127,61 @@ const Calendar = ({ markings, ...rest }: CalendarPropTypes): JSX.Element => {
           markings.map((it) => new Date(it.date))
         )
       ) {
-        return "react-calendar__tile--marked";
+        classNames.push("react-calendar__tile--marked");
+      }
+      if (dateInEdit && isSameDay(dateInEdit, date)) {
+        classNames.push("react-calendar__tile--custom-active");
       }
     }
-    return null;
+    return classNames;
+  };
+
+  const onClickDay: DateCallback = (date) => {
+    // Convert clicked date to be at time 12:00 instead of 00:00 to make ISOString to give the same day instead of day before
+    const midDayDate = addHours(date, 12);
+    const markingMatch = markings.find((it) =>
+      isSameDay(new Date(it.date), midDayDate)
+    );
+    setDateInEdit(midDayDate);
+    if (markingMatch) {
+      setMarkingInEdit(markingMatch);
+    }
+    setIsEditOpen(true);
   };
 
   return (
-    <StyledCalendar
-      tileClassName={tileClassName}
-      formatMonth={(locale, date) =>
-        DateUtil.format(date, { formatString: "LLLL" })
-      }
-      formatMonthYear={(locale, date) =>
-        DateUtil.format(date, { formatString: "LLLL yyyy" })
-      }
-      maxDate={new Date()}
-      minDate={new Date("2021-01-01")}
-      locale="fi-FI"
-      {...rest}
-    />
+    <>
+      <EditMarking
+        marking={markingInEdit}
+        date={dateInEdit}
+        modalTemplateProps={{
+          hasOpenButton: false,
+          disclosureProps: {
+            isOpen: !!isEditOpen,
+            onClose: () => {
+              setMarkingInEdit(null);
+              setIsEditOpen(false);
+              setDateInEdit(null);
+            },
+          },
+        }}
+      />
+      <StyledCalendar
+        tileClassName={tileClassName}
+        formatMonth={(locale, date) =>
+          DateUtil.format(date, { formatString: "LLLL" })
+        }
+        formatMonthYear={(locale, date) =>
+          DateUtil.format(date, { formatString: "LLLL yyyy" })
+        }
+        onClickDay={onClickDay}
+        maxDate={MAX_DATE}
+        minDate={MIN_DATE}
+        locale="fi-FI"
+        {...rest}
+      />
+    </>
   );
 };
 
-export default Calendar;
+export default MarkingCalendar;

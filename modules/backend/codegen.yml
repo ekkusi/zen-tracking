@@ -7,5 +7,5 @@ generates:
       - typescript-resolvers
     config:
       contextType: ./customContext#CustomContext
-    scalars:
-      Date: Date
+      scalars:
+        Date: string

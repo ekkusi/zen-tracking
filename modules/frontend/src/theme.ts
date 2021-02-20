@@ -3,6 +3,11 @@ import { extendTheme, Theme, theme as chakraTheme } from "@chakra-ui/react";
 const theme: Theme = extendTheme({
   styles: {
     global: {
+      "html, body, #root": {
+        margin: 0,
+        width: "100%",
+        height: "100%",
+      },
       p: {
         marginBottom: "2",
         fontSize: { base: "md", md: "lg" },

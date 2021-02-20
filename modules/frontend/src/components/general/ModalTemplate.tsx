@@ -2,6 +2,7 @@ import {
   ButtonProps,
   Modal,
   ModalBody,
+  ModalBodyProps,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
@@ -16,17 +17,18 @@ import { PrimaryButton } from "../primitives/Button";
 
 export type ModalTemplateProps = {
   children: JSX.Element;
-  renderOpenButton?: boolean;
+  hasOpenButton?: boolean;
   openButtonLabel?: string;
   headerLabel?: string;
   modalFooter?: JSX.Element;
   openButtonProps?: ButtonProps;
   closeButtonLabel?: string;
   disclosureProps?: UseDisclosureProps;
+  modalBodyProps?: ModalBodyProps;
 };
 
 const ModalTemplate = ({
-  renderOpenButton,
+  hasOpenButton,
   openButtonProps,
   openButtonLabel,
   headerLabel,
@@ -34,12 +36,13 @@ const ModalTemplate = ({
   children,
   closeButtonLabel,
   disclosureProps,
+  modalBodyProps,
 }: ModalTemplateProps): JSX.Element => {
   const { isOpen, onClose, onOpen } = useDisclosure({ ...disclosureProps });
 
   return (
     <>
-      {renderOpenButton && (
+      {hasOpenButton && (
         <PrimaryButton onClick={onOpen} {...openButtonProps}>
           {openButtonLabel}
         </PrimaryButton>
@@ -54,7 +57,7 @@ const ModalTemplate = ({
             </Heading.H2>
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>{children}</ModalBody>
+          <ModalBody {...modalBodyProps}>{children}</ModalBody>
 
           <ModalFooter>
             {modalFooter || (
@@ -70,13 +73,14 @@ const ModalTemplate = ({
 };
 
 ModalTemplate.defaultProps = {
-  renderOpenButton: true,
+  hasOpenButton: true,
   openButtonLabel: "Avaa modal",
   headerLabel: "Modal",
   openButtonProps: {},
   closeButtonLabel: "Sulje",
   modalFooter: null,
   disclosureProps: null,
+  modalBodyProps: {},
 };
 
 export default ModalTemplate;

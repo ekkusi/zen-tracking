@@ -47,10 +47,9 @@ class DateUtil {
     if (todayToLastMarkDiff > 1) return 0; // If latest date isnt today or yesterday, return 0
 
     let streakLength = 1;
-    for (let i = sortedDates.length - 1; i > 0; i -= 1) {
-      const differenceToNextMarking = differenceInCalendarDays(
-        sortedDates[i],
-        sortedDates[i - 1]
+    for (let i = 1; i < sortedDates.length; i += 1) {
+      const differenceToNextMarking = Math.abs(
+        differenceInCalendarDays(sortedDates[i], sortedDates[i - 1])
       );
       if (differenceToNextMarking === 1) streakLength += 1;
       else return streakLength;

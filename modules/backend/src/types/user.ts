@@ -24,7 +24,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  Date: any;
+  Date: string;
 };
 
 export type Query = {
@@ -60,6 +60,8 @@ export type Mutation = {
   __typename?: "Mutation";
   addUser: User;
   addMarking: Marking;
+  editMarking: Marking;
+  deleteMarking: Scalars["Boolean"];
 };
 
 export type MutationAddUserArgs = {
@@ -70,19 +72,27 @@ export type MutationAddUserArgs = {
 
 export type MutationAddMarkingArgs = {
   userName: Scalars["ID"];
+  marking?: Maybe<MarkingInput>;
+};
+
+export type MutationEditMarkingArgs = {
+  id: Scalars["ID"];
   marking: MarkingInput;
 };
 
+export type MutationDeleteMarkingArgs = {
+  id: Scalars["ID"];
+};
+
 export type MarkingInput = {
-  activities?: Maybe<Array<Scalars["String"]>>;
   comment?: Maybe<Scalars["String"]>;
+  date?: Maybe<Scalars["Date"]>;
 };
 
 export type Marking = {
   __typename?: "Marking";
   id: Scalars["ID"];
   date: Scalars["Date"];
-  activities?: Maybe<Array<Scalars["String"]>>;
   comment?: Maybe<Scalars["String"]>;
 };
 
@@ -295,7 +305,19 @@ export type MutationResolvers<
     ResolversTypes["Marking"],
     ParentType,
     ContextType,
-    RequireFields<MutationAddMarkingArgs, "userName" | "marking">
+    RequireFields<MutationAddMarkingArgs, "userName">
+  >;
+  editMarking?: Resolver<
+    ResolversTypes["Marking"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationEditMarkingArgs, "id" | "marking">
+  >;
+  deleteMarking?: Resolver<
+    ResolversTypes["Boolean"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteMarkingArgs, "id">
   >;
 };
 
@@ -305,11 +327,6 @@ export type MarkingResolvers<
 > = {
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   date?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
-  activities?: Resolver<
-    Maybe<Array<ResolversTypes["String"]>>,
-    ParentType,
-    ContextType
-  >;
   comment?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
