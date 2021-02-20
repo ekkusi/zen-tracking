@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import path from "path";
-import { GraphQLScalarType, Kind } from "graphql";
+import { GraphQLScalarType } from "graphql";
 
 export const typeDef = readFileSync(
   path.join(__dirname, "schema.graphql"),

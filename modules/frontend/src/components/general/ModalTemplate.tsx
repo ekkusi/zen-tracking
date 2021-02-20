@@ -2,6 +2,7 @@ import {
   ButtonProps,
   Modal,
   ModalBody,
+  ModalBodyProps,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
@@ -23,6 +24,7 @@ export type ModalTemplateProps = {
   openButtonProps?: ButtonProps;
   closeButtonLabel?: string;
   disclosureProps?: UseDisclosureProps;
+  modalBodyProps?: ModalBodyProps;
 };
 
 const ModalTemplate = ({
@@ -34,6 +36,7 @@ const ModalTemplate = ({
   children,
   closeButtonLabel,
   disclosureProps,
+  modalBodyProps,
 }: ModalTemplateProps): JSX.Element => {
   const { isOpen, onClose, onOpen } = useDisclosure({ ...disclosureProps });
 
@@ -54,7 +57,7 @@ const ModalTemplate = ({
             </Heading.H2>
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>{children}</ModalBody>
+          <ModalBody {...modalBodyProps}>{children}</ModalBody>
 
           <ModalFooter>
             {modalFooter || (
@@ -77,6 +80,7 @@ ModalTemplate.defaultProps = {
   closeButtonLabel: "Sulje",
   modalFooter: null,
   disclosureProps: null,
+  modalBodyProps: {},
 };
 
 export default ModalTemplate;

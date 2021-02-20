@@ -15,7 +15,6 @@ export class UserMapper {
   }
 
   public static mapMarking(marking: PrismaMarking): Marking {
-    console.log("mapMarking", JSON.stringify(marking));
     return {
       ...marking,
       date: marking.date.toISOString(),
@@ -30,7 +29,6 @@ export class UserMapper {
     return {
       ...marking,
       date: marking.date ? new Date(marking.date) : undefined,
-      activities: marking.activities || undefined,
       User: { connect: { name: userName } },
     };
   }
@@ -38,16 +36,9 @@ export class UserMapper {
   public static mapEditMarkingInput(
     marking: MarkingInput
   ): Prisma.MarkingUpdateInput {
-    console.log("mapEditMarkingDate:", marking.date);
-    console.log(
-      "mapEditMarkingDate after convert:",
-      new Date(marking.date || 0)
-    );
-
     return {
       ...marking,
       date: marking.date ? new Date(marking.date) : undefined,
-      activities: marking.activities || undefined,
     };
   }
 }

@@ -103,8 +103,10 @@ const mutationResolvers = {
   ): Promise<Marking> => {
     const { prisma } = context;
     const { userName, marking } = args;
+    console.log("addMarking args:", JSON.stringify(marking));
+
     const createdMarking = await prisma.marking.create({
-      data: UserMapper.mapCreateMarkingInput(userName, marking),
+      data: UserMapper.mapCreateMarkingInput(userName, marking || {}),
     });
     return UserMapper.mapMarking(createdMarking);
   },
@@ -115,7 +117,7 @@ const mutationResolvers = {
   ): Promise<Marking> => {
     const { prisma } = context;
     const { id, marking } = args;
-    console.log("editMarking: ", JSON.stringify(marking));
+    console.log("editMarking args:", JSON.stringify(marking));
     try {
       const editMarking = await prisma.marking.update({
         where: { id },

@@ -8,7 +8,7 @@ extend type Query {
 
 extend type Mutation {
   addUser(name: ID!, password: String!, isPrivate: Boolean): User!
-  addMarking(userName: ID!, marking: MarkingInput!): Marking!
+  addMarking(userName: ID!, marking: MarkingInput): Marking!
   editMarking(id: ID!, marking: MarkingInput!): Marking!
   deleteMarking(id: ID!): Boolean!
 }
@@ -28,7 +28,6 @@ type User {
 type Marking {
   id: ID!
   date: Date!
-  activities: [String!]
   comment: String
 }
 
@@ -38,7 +37,6 @@ type UserCheckResult {
 }
 
 input MarkingInput {
-  activities: [String!]
   comment: String
   date: Date
 }

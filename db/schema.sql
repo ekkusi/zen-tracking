@@ -14,6 +14,5 @@ CREATE TABLE "Marking" (
     date timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     user_name varchar(254) NOT NULL,
     comment varchar(254),
-    activities text[],
     FOREIGN KEY (user_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE
 );

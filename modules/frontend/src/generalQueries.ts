@@ -5,7 +5,6 @@ const markingDataFragment = gql`
   fragment MarkingData on Marking {
     id
     date
-    activities
     comment
   }
 `;
