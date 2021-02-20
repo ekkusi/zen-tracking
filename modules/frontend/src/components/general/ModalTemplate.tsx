@@ -16,7 +16,7 @@ import { PrimaryButton } from "../primitives/Button";
 
 export type ModalTemplateProps = {
   children: JSX.Element;
-  renderOpenButton?: boolean;
+  hasOpenButton?: boolean;
   openButtonLabel?: string;
   headerLabel?: string;
   modalFooter?: JSX.Element;
@@ -26,7 +26,7 @@ export type ModalTemplateProps = {
 };
 
 const ModalTemplate = ({
-  renderOpenButton,
+  hasOpenButton,
   openButtonProps,
   openButtonLabel,
   headerLabel,
@@ -39,7 +39,7 @@ const ModalTemplate = ({
 
   return (
     <>
-      {renderOpenButton && (
+      {hasOpenButton && (
         <PrimaryButton onClick={onOpen} {...openButtonProps}>
           {openButtonLabel}
         </PrimaryButton>
@@ -70,7 +70,7 @@ const ModalTemplate = ({
 };
 
 ModalTemplate.defaultProps = {
-  renderOpenButton: true,
+  hasOpenButton: true,
   openButtonLabel: "Avaa modal",
   headerLabel: "Modal",
   openButtonProps: {},

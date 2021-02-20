@@ -13,6 +13,8 @@ import {
   QueryCheckUserArgs,
   MutationAddUserArgs,
   MutationAddMarkingArgs,
+  MutationEditMarkingArgs,
+  MutationDeleteMarkingArgs,
   Marking,
 } from "../../types/user";
 import { UserMapper } from "./UserMapper";
@@ -61,6 +63,7 @@ const queryResolvers = {
           { name: args.name },
           context
         );
+        console.log("checkUser returning:", JSON.stringify(userWithMarkings));
         return {
           user: userWithMarkings,
           status: UserCheckStatus.UserAndPasswordFound,
@@ -101,9 +104,41 @@ const mutationResolvers = {
     const { prisma } = context;
     const { userName, marking } = args;
     const createdMarking = await prisma.marking.create({
-      data: UserMapper.mapMarkingInput(userName, marking),
+      data: UserMapper.mapCreateMarkingInput(userName, marking),
     });
     return UserMapper.mapMarking(createdMarking);
+  },
+  editMarking: async (
+    parent: ResolversParentTypes["Mutation"],
+    args: MutationEditMarkingArgs,
+    context: CustomContext
+  ): Promise<Marking> => {
+    const { prisma } = context;
+    const { id, marking } = args;
+    console.log("editMarking: ", JSON.stringify(marking));
+    try {
+      const editMarking = await prisma.marking.update({
+        where: { id },
+        data: UserMapper.mapEditMarkingInput(marking),
+      });
+      return UserMapper.mapMarking(editMarking);
+    } catch (error) {
+      throw new Error(`editMarking error: marking with id ${id} not found`);
+    }
+  },
+  deleteMarking: async (
+    parent: ResolversParentTypes["Mutation"],
+    args: MutationDeleteMarkingArgs,
+    context: CustomContext
+  ): Promise<boolean> => {
+    const { prisma } = context;
+    const { id } = args;
+    try {
+      await prisma.marking.delete({ where: { id } });
+      return true;
+    } catch (error) {
+      throw new Error(`deleteMarking error: marking with id ${id} not found`);
+    }
   },
 };
 

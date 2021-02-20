@@ -1,12 +1,14 @@
 import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/user";
-import { isSameDay } from "date-fns";
-import React from "react";
+import { isSameDay, setDate } from "date-fns";
+import React, { useState } from "react";
 import ReactCalendar, {
   CalendarProps,
   CalendarTileProperties,
+  DateCallback,
 } from "react-calendar";
 import styled from "styled-components";
 import DateUtil from "util/DateUtil";
+import EditMarking from "./EditMarking";
 
 const StyledCalendar = styled(ReactCalendar)`
   width: 100%;
@@ -88,6 +90,9 @@ type CalendarPropTypes = CalendarProps & {
 };
 
 const Calendar = ({ markings, ...rest }: CalendarPropTypes): JSX.Element => {
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [markingInEdit, setMarkingInEdit] = useState<Marking | null>();
+  const [dateInEdit, setDateInEdit] = useState<Date | null>();
   const tileClassName = ({ date, view }: CalendarTileProperties) => {
     // Add class to tiles in month view only
     if (view === "month") {
@@ -104,20 +109,51 @@ const Calendar = ({ markings, ...rest }: CalendarPropTypes): JSX.Element => {
     return null;
   };
 
+  const onClickDay: DateCallback = (date) => {
+    const markingMatch = markings.find((it) =>
+      isSameDay(new Date(it.date), date)
+    );
+    setDateInEdit(date);
+    if (markingMatch) {
+      setMarkingInEdit(markingMatch);
+    }
+    setIsEditOpen(true);
+  };
+
   return (
-    <StyledCalendar
-      tileClassName={tileClassName}
-      formatMonth={(locale, date) =>
-        DateUtil.format(date, { formatString: "LLLL" })
-      }
-      formatMonthYear={(locale, date) =>
-        DateUtil.format(date, { formatString: "LLLL yyyy" })
-      }
-      maxDate={new Date()}
-      minDate={new Date("2021-01-01")}
-      locale="fi-FI"
-      {...rest}
-    />
+    <>
+      <EditMarking
+        marking={markingInEdit}
+        date={dateInEdit}
+        modalTemplateProps={{
+          hasOpenButton: false,
+          disclosureProps: {
+            isOpen: !!isEditOpen,
+            onClose: () => {
+              console.log("onClose from MarkingCalendar");
+
+              setMarkingInEdit(null);
+              setIsEditOpen(false);
+              setDateInEdit(null);
+            },
+          },
+        }}
+      />
+      <StyledCalendar
+        tileClassName={tileClassName}
+        formatMonth={(locale, date) =>
+          DateUtil.format(date, { formatString: "LLLL" })
+        }
+        formatMonthYear={(locale, date) =>
+          DateUtil.format(date, { formatString: "LLLL yyyy" })
+        }
+        onClickDay={onClickDay}
+        maxDate={new Date()}
+        minDate={new Date("2021-01-01")}
+        locale="fi-FI"
+        {...rest}
+      />
+    </>
   );
 };
 

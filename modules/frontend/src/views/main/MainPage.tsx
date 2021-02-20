@@ -7,7 +7,7 @@ import useGlobal from "store";
 import Heading from "components/primitives/Heading";
 import DateUtil from "util/DateUtil";
 import MarkingCalendar from "../../components/MarkingCalendar";
-import AddMarking from "../../components/AddMarking";
+import AddMarking from "../../components/EditMarking";
 
 const MainPage = (): JSX.Element => {
   const [user, updateUser] = useGlobal(

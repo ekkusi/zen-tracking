@@ -24,7 +24,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  Date: any;
+  Date: string;
 };
 
 export type Query = {
@@ -60,6 +60,8 @@ export type Mutation = {
   __typename?: "Mutation";
   addUser: User;
   addMarking: Marking;
+  editMarking: Marking;
+  deleteMarking: Scalars["Boolean"];
 };
 
 export type MutationAddUserArgs = {
@@ -73,9 +75,19 @@ export type MutationAddMarkingArgs = {
   marking: MarkingInput;
 };
 
+export type MutationEditMarkingArgs = {
+  id: Scalars["ID"];
+  marking: MarkingInput;
+};
+
+export type MutationDeleteMarkingArgs = {
+  id: Scalars["ID"];
+};
+
 export type MarkingInput = {
   activities?: Maybe<Array<Scalars["String"]>>;
   comment?: Maybe<Scalars["String"]>;
+  date?: Maybe<Scalars["Date"]>;
 };
 
 export type Marking = {
@@ -296,6 +308,18 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationAddMarkingArgs, "userName" | "marking">
+  >;
+  editMarking?: Resolver<
+    ResolversTypes["Marking"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationEditMarkingArgs, "id" | "marking">
+  >;
+  deleteMarking?: Resolver<
+    ResolversTypes["Boolean"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteMarkingArgs, "id">
   >;
 };
 

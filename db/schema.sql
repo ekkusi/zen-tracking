@@ -11,7 +11,7 @@ CREATE TABLE "User" (
 
 CREATE TABLE "Marking" (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    date timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    date timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     user_name varchar(254) NOT NULL,
     comment varchar(254),
     activities text[],

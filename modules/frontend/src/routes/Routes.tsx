@@ -51,7 +51,7 @@ const Routes = (): JSX.Element => {
   return (
     <>
       <ModalTemplate
-        renderOpenButton={false}
+        hasOpenButton={false}
         headerLabel="Huppista! Jotakin meni pyllylleen:/"
         disclosureProps={{
           isOpen: !!globalState.error,

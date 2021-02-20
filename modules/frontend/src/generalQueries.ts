@@ -1,19 +1,29 @@
 import { gql } from "@apollo/client";
 import { User } from "@ekeukko/zen-tracking-backend/lib/types/user";
 
-export const fragments = {
-  userData: gql`
-    fragment UserData on User {
-      name
-      isPrivate
-      markings {
-        id
-        date
-        activities
-        comment
-      }
+const markingDataFragment = gql`
+  fragment MarkingData on Marking {
+    id
+    date
+    activities
+    comment
+  }
+`;
+
+const userDataFragment = gql`
+  fragment UserData on User {
+    name
+    isPrivate
+    markings {
+      ...MarkingData
     }
-  `,
+  }
+  ${markingDataFragment}
+`;
+
+export const fragments = {
+  markingData: markingDataFragment,
+  userData: userDataFragment,
 };
 
 export const GET_USER = gql`

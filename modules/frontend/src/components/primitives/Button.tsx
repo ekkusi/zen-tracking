@@ -3,6 +3,8 @@ import styled from "styled-components";
 
 const PrimaryButton = styled(Button)<ButtonProps>``;
 
+const AlertButton = styled(Button)<ButtonProps>``;
+
 const BaseButton: any = {
   textTransform: "uppercase",
   borderRadius: "sm",
@@ -28,8 +30,20 @@ PrimaryButton.defaultProps = {
   bg: "primary.regular",
   variant: "solid",
   _hover: {
-    bg: "green.500",
+    bg: "secondary.regular",
   },
 };
 
-export { PrimaryButton };
+AlertButton.defaultProps = {
+  ...BaseButton,
+  color: "warning",
+  background: "white",
+  borderColor: "warning",
+  variant: "outline",
+  _hover: {
+    color: "white",
+    background: "warning",
+  },
+};
+
+export { PrimaryButton, AlertButton };
