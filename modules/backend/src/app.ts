@@ -1,11 +1,24 @@
 import express from "express";
 import path from "path";
 import graphqlApi from "./graphql/server";
+import quoteOfTheDay from "./utils/getQuoteOfTheDay";
 
 const app = express();
 const port = process.env.PORT || 4000; // default port to listen, set to 443 to test without port in url
 
 graphqlApi(app);
+
+app.get("/quote", async (req, res, next) => {
+  try {
+    const quote = await quoteOfTheDay();
+    res.json({
+      quote: quote.quote,
+    });
+    return { ...quote };
+  } catch (error) {
+    return next(error);
+  }
+});
 
 if (process.env.NODE_ENV === "production") {
   // Compute the build path and index.html path
