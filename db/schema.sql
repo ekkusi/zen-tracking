@@ -16,3 +16,8 @@ CREATE TABLE "Marking" (
     comment varchar(254),
     FOREIGN KEY (user_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+CREATE TABLE "Quote" (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  quote varchar(254) NOT NULL
+);

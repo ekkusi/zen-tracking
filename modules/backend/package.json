@@ -10,6 +10,7 @@
     "@graphql-codegen/typescript-resolvers": "^1.18.1",
     "@prisma/cli": "^2.14.0",
     "@types/bcrypt": "^3.0.0",
+    "@types/textract": "^2.4.0",
     "copyfiles": "^2.4.1",
     "nodemon": "^2.0.7",
     "shx": "^0.3.3",
@@ -24,7 +25,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^15.4.0",
-    "lodash.merge": "^4.6.2"
+    "lodash.merge": "^4.6.2",
+    "textract": "^2.5.0"
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development nodemon -V",
@@ -36,6 +38,7 @@
     "prisma-generate": "yarn prisma generate",
     "prisma-migrate": "prisma migrate dev --preview-feature",
     "update-prisma": "yarn prisma-introspect && yarn prisma-generate",
-    "stop": "kill -9 $(lsof -t -i:4000)"
+    "stop": "kill -9 $(lsof -t -i:4000)",
+    "generate-quotes": "ts-node ./src/utils/extractText.ts"
   }
 }
