@@ -24,8 +24,7 @@ import {
   EDIT_MARKING,
 } from "../views/main/queries";
 
-type EditMarkingProps = {
-  modalTemplateProps?: Omit<ModalTemplateProps, "children">;
+type EditMarkingProps = Omit<ModalTemplateProps, "children"> & {
   marking?: Marking | null;
   date?: Date | null;
 };
@@ -39,9 +38,9 @@ const defaultFormValues: FormValues = {
 };
 
 const EditMarking = ({
-  modalTemplateProps,
   marking,
   date,
+  ...modalTemplateProps
 }: EditMarkingProps): JSX.Element => {
   const [user, updateUser] = useGlobal(
     (state) => state.currentUser,
@@ -53,15 +52,12 @@ const EditMarking = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
 
-  // Take disclosureProps if exist, otherwise empty obj so we can desctructure in next call
-  const disclosureProps = modalTemplateProps?.disclosureProps
-    ? modalTemplateProps?.disclosureProps
-    : {};
-  const { isOpen, onOpen, onClose } = useDisclosure({
-    ...disclosureProps,
+  const disclosureProps = useDisclosure({
+    isOpen: modalTemplateProps.isOpen,
+    onOpen: modalTemplateProps.onOpen,
     onClose: () => {
-      if (modalTemplateProps?.disclosureProps?.onClose) {
-        modalTemplateProps?.disclosureProps?.onClose();
+      if (modalTemplateProps.onClose) {
+        modalTemplateProps.onClose();
       }
       setIsInitialStateSet(false);
       setFormValues(defaultFormValues); // Reset formvalues on close
@@ -144,7 +140,7 @@ const EditMarking = ({
         });
       }
       setLoading(false);
-      onClose();
+      disclosureProps.onClose();
     } catch (e) {
       setLoading(false);
       setError(`Jokin meni vikaan merkkauksen muokkauksessa: ${e.message}`);
@@ -176,7 +172,7 @@ const EditMarking = ({
           `No marking passed to EditMarking as prop, this error shouldn't be shown -> something is wrong with THA CODE`
         );
       }
-      onClose();
+      disclosureProps.onClose();
       setLoading(false);
     } catch (e) {
       setLoading(false);
@@ -188,7 +184,6 @@ const EditMarking = ({
     <ModalTemplate
       openButtonLabel="Lisää merkkaus"
       headerLabel={marking ? "Muokataan merkkausta" : "Lisää merkkaus"}
-      disclosureProps={{ isOpen, onOpen, onClose }}
       openButtonProps={{ size: "md" }}
       modalBodyProps={{ pt: "0" }}
       modalFooter={
@@ -204,6 +199,7 @@ const EditMarking = ({
             </AlertButton>
           )}
           <PrimaryButton
+            isDisabled
             isLoading={loading}
             loadingText={marking ? "Tallenetaan..." : "Lisätään..."}
             mr={3}
@@ -212,13 +208,14 @@ const EditMarking = ({
             {marking ? "Tallenna" : "Lisää"}
           </PrimaryButton>
           {!loading && (
-            <PrimaryButton mr={3} onClick={onClose}>
+            <PrimaryButton mr={3} onClick={disclosureProps.onClose}>
               Sulje
             </PrimaryButton>
           )}
         </>
       }
       {...modalTemplateProps}
+      {...disclosureProps}
     >
       <Stack pt="0">
         <Stack>
@@ -257,7 +254,6 @@ const EditMarking = ({
 };
 
 EditMarking.defaultProps = {
-  modalTemplateProps: {},
   marking: undefined,
   date: undefined,
 };

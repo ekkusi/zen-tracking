@@ -1,5 +1,5 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { Box, Fade, Flex, Text } from "@chakra-ui/react";
+import { Fade, Flex, Text } from "@chakra-ui/react";
 import { PrimaryButton } from "components/primitives/Button";
 import Heading from "components/primitives/Heading";
 import React from "react";

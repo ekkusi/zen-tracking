@@ -11,7 +11,7 @@ import DateUtil from "util/DateUtil";
 import EditMarking from "./EditMarking";
 
 const StyledCalendar = styled(ReactCalendar)`
-  --color: ${({ theme }) => theme.colors.black};
+  --color: ${({ theme }) => theme.colors.text.primary};
   --bg-color: ${({ theme }) => theme.colors.white};
   --active-bg-color: ${({ theme }) => theme.colors.primary.regular};
   --hover-bg-color: ${({ theme }) => theme.colors.primary.light};
@@ -154,16 +154,12 @@ const MarkingCalendar = ({
       <EditMarking
         marking={markingInEdit}
         date={dateInEdit}
-        modalTemplateProps={{
-          hasOpenButton: false,
-          disclosureProps: {
-            isOpen: !!isEditOpen,
-            onClose: () => {
-              setMarkingInEdit(null);
-              setIsEditOpen(false);
-              setDateInEdit(null);
-            },
-          },
+        hasOpenButton={false}
+        isOpen={!!isEditOpen}
+        onClose={() => {
+          setMarkingInEdit(null);
+          setIsEditOpen(false);
+          setDateInEdit(null);
         }}
       />
       <StyledCalendar
