@@ -73,6 +73,12 @@ Default email postgreadmin is "default@email.com" and password is "password"
   ```bash
   yarn update-prisma
   ```
+### Bash scripts
+
+In /scripts folders there is some bash scripts to help development. `dumpdb.sh` and `importdb.sh` scripts are to help importing/dumping dbs.
+
+`download-quote-images.sh` is used to update frontend/public/photos/quotes, which are used in quote of the day feature. NOTE: To run this script, you need
+to have [instagram-scraper](https://github.com/arc298/instagram-scraper) installed.
 
 # Docker
 

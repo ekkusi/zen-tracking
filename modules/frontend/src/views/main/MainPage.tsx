@@ -1,24 +1,39 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Icon, Text } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
-import React from "react";
+import { FaInstagram } from "react-icons/fa";
+import React, { useState } from "react";
 import { PrimaryButton } from "components/primitives/Button";
 import ModalTemplate from "components/general/ModalTemplate";
 import useGlobal from "store";
 import Heading from "components/primitives/Heading";
 import DateUtil from "util/DateUtil";
+import ImageModal from "components/general/ImageModal";
 import MarkingCalendar from "../../components/MarkingCalendar";
 import AddMarking from "../../components/EditMarking";
+
+import config from "../../config.json";
+
+const quoteCreditsUrl = "https://www.instagram.com/motivaatiolauseet/";
 
 const MainPage = (): JSX.Element => {
   const [user, updateUser] = useGlobal(
     (store) => store.currentUser,
     (actions) => actions.updateUser
   );
+  const [quoteOfTheDayUrl, setQuoteOfTheDayUrl] = useState<string>();
 
   const hasUserMarkedToday = () => {
     return DateUtil.dateIsIn(
       new Date(),
       user ? user.markings.map((it) => new Date(it.date)) : []
+    );
+  };
+
+  const openQuoteOfTheDay = () => {
+    setQuoteOfTheDayUrl(
+      `${config.QUOTE_PHOTOS_BASE_URL}/quote-${Math.ceil(
+        Math.random() * config.NUMBER_OF_QUOTE_PHOTOS
+      )}.jpg`
     );
   };
 
@@ -55,7 +70,26 @@ const MainPage = (): JSX.Element => {
         <PrimaryButton ml="3" onClick={() => updateUser(null)}>
           Kirjaudu ulos
         </PrimaryButton>
+        <PrimaryButton onClick={openQuoteOfTheDay} float="right">
+          Quote of the Day
+        </PrimaryButton>
       </Box>
+      {quoteOfTheDayUrl && (
+        <ImageModal
+          isOpen={!!quoteOfTheDayUrl}
+          onClose={() => setQuoteOfTheDayUrl(undefined)}
+          src={quoteOfTheDayUrl}
+          alt={quoteOfTheDayUrl}
+          imgText={
+            <>
+              <Text as="a" color="white" target="_blank" href={quoteCreditsUrl}>
+                <Icon as={FaInstagram} mb="2px" mr="1" />
+                motivaatiolauseet
+              </Text>
+            </>
+          }
+        />
+      )}
       <Heading.H1 mt="5">
         Tervehdys {user?.name} ja tervetuloa seuraamaan zenisi kasvamista :){" "}
       </Heading.H1>
@@ -90,25 +124,25 @@ const MainPage = (): JSX.Element => {
       </Box>
       <Flex justifyContent={{ base: "flex-start", sm: "center" }}>
         <AddMarking
-          modalTemplateProps={{
-            openButtonLabel: hasUserMarkedToday()
+          openButtonLabel={
+            hasUserMarkedToday()
               ? "Olet jo merkannut tänään"
-              : "Merkkaa tämä päivä",
-            openButtonProps: {
-              fontSize: { base: "lg", md: "xl" },
-              fontWeight: "normal",
-              textTransform: "none",
-              py: { base: 6, md: 8 },
-              px: { base: 5, md: 7 },
-              isDisabled: hasUserMarkedToday(),
-              leftIcon: (
-                <CheckIcon
-                  w={{ base: 6, md: 8 }}
-                  h={{ base: 6, md: 8 }}
-                  mb="1px"
-                />
-              ),
-            },
+              : "Merkkaa tämä päivä"
+          }
+          openButtonProps={{
+            fontSize: { base: "lg", md: "xl" },
+            fontWeight: "normal",
+            textTransform: "none",
+            py: { base: 6, md: 8 },
+            px: { base: 5, md: 7 },
+            isDisabled: hasUserMarkedToday(),
+            leftIcon: (
+              <CheckIcon
+                w={{ base: 6, md: 8 }}
+                h={{ base: 6, md: 8 }}
+                mb="1px"
+              />
+            ),
           }}
         />
       </Flex>

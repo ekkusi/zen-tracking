@@ -1,5 +1,21 @@
 import { extendTheme, Theme, theme as chakraTheme } from "@chakra-ui/react";
 
+const customColors = {
+  primary: {
+    regular: "#53afff",
+    light: "#53afff88",
+  },
+  secondary: {
+    regular: "#ecf2f7",
+    light: "#ecf2f788",
+  },
+  text: {
+    primary: "#162838",
+    light: "#8A939B",
+  },
+  warning: chakraTheme.colors.red[700],
+};
+
 const theme: Theme = extendTheme({
   styles: {
     global: {
@@ -7,15 +23,16 @@ const theme: Theme = extendTheme({
         margin: 0,
         width: "100%",
         height: "100%",
+        color: customColors.text.primary,
       },
       p: {
         marginBottom: "2",
         fontSize: { base: "md", md: "lg" },
       },
       a: {
-        color: chakraTheme.colors.teal[500],
+        color: customColors.primary.regular,
         _hover: {
-          color: chakraTheme.colors.teal[700],
+          opacity: 0.7,
         },
       },
     },
@@ -29,17 +46,7 @@ const theme: Theme = extendTheme({
     },
   },
   colors: {
-    primary: {
-      regular: chakraTheme.colors.teal[500],
-      light: chakraTheme.colors.teal[300],
-      dark: chakraTheme.colors.teal[700],
-    },
-    secondary: {
-      regular: chakraTheme.colors.green[500],
-      light: chakraTheme.colors.green[400],
-      dark: chakraTheme.colors.green[700],
-    },
-    warning: chakraTheme.colors.red[700],
+    ...customColors,
   },
 });
 

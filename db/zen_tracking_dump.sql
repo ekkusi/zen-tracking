@@ -5,7 +5,7 @@
 -- Dumped from database version 13.1 (Ubuntu 13.1-1.pgdg20.04+1)
 -- Dumped by pg_dump version 13.2
 
--- Started on 2021-02-20 20:12:53 EET
+-- Started on 2021-02-22 13:07:18 EET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -97,7 +97,7 @@ ALTER TABLE ONLY public."Marking"
     ADD CONSTRAINT "Marking_user_name_fkey" FOREIGN KEY (user_name) REFERENCES public."User"(name) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
--- Completed on 2021-02-20 20:12:57 EET
+-- Completed on 2021-02-22 13:07:25 EET
 
 --
 -- PostgreSQL database dump complete

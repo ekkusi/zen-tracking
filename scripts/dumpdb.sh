@@ -8,7 +8,7 @@ source "../modules/backend/prisma/.env" # Take vars from prisma config
 set +a
 
 databaseUrl=$DATABASE_URL_PROD # Defaults to modules/backend/prisma/.env DATABASE_URL_PROD variable
-filePath="zen_tracking_dump.sql"
+filePath=filePath="$(cd ../db; pwd)/zen_tracking_dump.sql"
 
 while getopts ":d:f:" opt; do
   case $opt in

@@ -5,40 +5,59 @@ import {
   ModalBodyProps,
   ModalCloseButton,
   ModalContent,
+  ModalContentProps,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  ModalProps,
   useDisclosure,
-  UseDisclosureProps,
 } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import React from "react";
 import { PrimaryButton } from "../primitives/Button";
 
-export type ModalTemplateProps = {
+export type ModalTemplateProps = Omit<
+  ModalProps,
+  "children" | "isOpen" | "onClose" | "onOpen"
+> & {
   children: JSX.Element;
   hasOpenButton?: boolean;
+  hasHeader?: boolean;
+  hasFooter?: boolean;
   openButtonLabel?: string;
   headerLabel?: string;
   modalFooter?: JSX.Element;
   openButtonProps?: ButtonProps;
   closeButtonLabel?: string;
-  disclosureProps?: UseDisclosureProps;
+  isOpen?: boolean;
+  onClose?: () => void;
+  onOpen?: () => void;
   modalBodyProps?: ModalBodyProps;
+  modalContentProps?: ModalContentProps;
 };
 
 const ModalTemplate = ({
-  hasOpenButton,
-  openButtonProps,
-  openButtonLabel,
-  headerLabel,
-  modalFooter,
   children,
-  closeButtonLabel,
-  disclosureProps,
+  hasOpenButton = true,
+  hasHeader = true,
+  hasFooter = true,
+  openButtonProps = {},
+  openButtonLabel = "Avaa modal",
+  headerLabel = "Modal",
+  closeButtonLabel = "Sulje",
+  isOpen: customIsOpen,
+  onOpen: customOnOpen,
+  onClose: customOnClose,
+  modalFooter,
+  modalContentProps,
   modalBodyProps,
+  ...rest
 }: ModalTemplateProps): JSX.Element => {
-  const { isOpen, onClose, onOpen } = useDisclosure({ ...disclosureProps });
+  const { isOpen, onClose, onOpen } = useDisclosure({
+    isOpen: customIsOpen,
+    onOpen: customOnOpen,
+    onClose: customOnClose,
+  });
 
   return (
     <>
@@ -48,39 +67,38 @@ const ModalTemplate = ({
         </PrimaryButton>
       )}
 
-      <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        motionPreset="slideInBottom"
+        autoFocus={false}
+        {...rest}
+      >
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
-            <Heading.H2 mb="0" fontWeight="bold">
-              {headerLabel}
-            </Heading.H2>
-          </ModalHeader>
+        <ModalContent {...modalContentProps}>
+          {hasHeader && (
+            <ModalHeader>
+              <Heading.H2 mb="0" fontWeight="bold">
+                {headerLabel}
+              </Heading.H2>
+            </ModalHeader>
+          )}
           <ModalCloseButton />
           <ModalBody {...modalBodyProps}>{children}</ModalBody>
 
-          <ModalFooter>
-            {modalFooter || (
-              <PrimaryButton mr={3} onClick={onClose}>
-                {closeButtonLabel}
-              </PrimaryButton>
-            )}
-          </ModalFooter>
+          {hasFooter && (
+            <ModalFooter>
+              {modalFooter || (
+                <PrimaryButton mr={3} onClick={onClose}>
+                  {closeButtonLabel}
+                </PrimaryButton>
+              )}
+            </ModalFooter>
+          )}
         </ModalContent>
       </Modal>
     </>
   );
-};
-
-ModalTemplate.defaultProps = {
-  hasOpenButton: true,
-  openButtonLabel: "Avaa modal",
-  headerLabel: "Modal",
-  openButtonProps: {},
-  closeButtonLabel: "Sulje",
-  modalFooter: null,
-  disclosureProps: null,
-  modalBodyProps: {},
 };
 
 export default ModalTemplate;

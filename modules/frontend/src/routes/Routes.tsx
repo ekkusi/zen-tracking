@@ -53,10 +53,8 @@ const Routes = (): JSX.Element => {
       <ModalTemplate
         hasOpenButton={false}
         headerLabel="Huppista! Jotakin meni pyllylleen:/"
-        disclosureProps={{
-          isOpen: !!globalState.error,
-          onClose: () => globalActions.updateError(null),
-        }}
+        isOpen={!!globalState.error}
+        onClose={() => globalActions.updateError(null)}
       >
         <Text color="warning" fontWeight="bold">
           {globalState.error}

@@ -16,10 +16,8 @@ const BaseButton: any = {
     opacity: 1,
   },
   _disabled: {
-    bg: "gray.200",
-    color: "white",
     cursor: "not-allowed",
-    opacity: 1,
+    opacity: 0.3,
     border: "none",
   },
 };
@@ -30,7 +28,7 @@ PrimaryButton.defaultProps = {
   bg: "primary.regular",
   variant: "solid",
   _hover: {
-    bg: "secondary.regular",
+    bg: "primary.light",
   },
 };
 

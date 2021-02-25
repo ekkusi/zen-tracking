@@ -8,7 +8,7 @@ source "../modules/backend/prisma/.env" # Take vars from prisma config
 set +a
 
 databaseUrl=$DATABASE_URL # Defaults to modules/backend/prisma/.env DATABASE_URL variable
-filePath="schema.sql"
+filePath="$(cd ../db; pwd)/schema.sql"
 
 while getopts ":d:f:" opt; do
   case $opt in
