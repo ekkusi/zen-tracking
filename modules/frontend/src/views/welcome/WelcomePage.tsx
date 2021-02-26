@@ -31,7 +31,8 @@ const WelcomePage = (): JSX.Element => {
               fontSize={{ base: "md", sm: "lg" }}
               fontWeight="normal"
               borderRadius="8px"
-              p={{ base: [8, 5], sm: [10, 7] }}
+              px={{ base: "8", sm: "10" }}
+              py={{ base: "5", sm: "7" }}
               rightIcon={<ArrowForwardIcon w={8} h={8} />}
             >
               Aloita zenin kasvattaminen!

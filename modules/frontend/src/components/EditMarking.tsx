@@ -199,7 +199,6 @@ const EditMarking = ({
             </AlertButton>
           )}
           <PrimaryButton
-            isDisabled
             isLoading={loading}
             loadingText={marking ? "Tallenetaan..." : "Lisätään..."}
             mr={3}

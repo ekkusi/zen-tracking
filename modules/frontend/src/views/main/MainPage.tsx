@@ -70,7 +70,11 @@ const MainPage = (): JSX.Element => {
         <PrimaryButton ml="3" onClick={() => updateUser(null)}>
           Kirjaudu ulos
         </PrimaryButton>
-        <PrimaryButton onClick={openQuoteOfTheDay} float="right">
+        <PrimaryButton
+          variant="outline"
+          onClick={openQuoteOfTheDay}
+          float="right"
+        >
           Quote of the Day
         </PrimaryButton>
       </Box>
