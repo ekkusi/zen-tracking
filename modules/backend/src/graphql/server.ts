@@ -18,10 +18,17 @@ import {
   resolvers as customScalarResolvers,
 } from "./scalars/customScalars";
 
-const prisma = new PrismaClient();
+import createLoaders from "./loaders";
+
+const isProd = process.env.NODE_ENV === "production";
+
+const prisma = new PrismaClient({
+  log: isProd ? [] : ["query", "info", "warn", "error"],
+});
 
 export default (app: Application): ApolloServer => {
-  const context = { prisma };
+  const loaders = createLoaders(prisma);
+  const context = { prisma, ...loaders };
 
   const queryTypeDef = gql`
     type Query {

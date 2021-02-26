@@ -6,11 +6,11 @@ import {
 import { User, Marking, MarkingInput } from "../../types/user";
 
 export class UserMapper {
-  public static mapUser(user: PrismaUser, userMarkings: PrismaMarking[]): User {
+  public static mapUser(user: PrismaUser): User {
     return {
       ...user,
       isPrivate: user.is_private,
-      markings: userMarkings.map((marking) => UserMapper.mapMarking(marking)),
+      markings: [], // Graphql should handle getting markings from User.markings resolver, return empty array here to handle ts errors
     } as User;
   }
 
