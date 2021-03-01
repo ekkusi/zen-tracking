@@ -120,9 +120,9 @@ const MainPage = (): JSX.Element => {
       </Heading.H1>
       <Heading.H2 fontWeight="normal" mb={{ base: "6", md: "10" }}>
         <Text as="span" fontStyle="italic">
-          Tammikuun haaste:
+          Maaliskuun haaste:
         </Text>{" "}
-        herää kello 7 ja vietä rauhallinen aamu ilman ruutujen häirintää.
+        mikä haaste onkaan mielessä:) Kohta tullee mahollisuus tehä oma haaste!
       </Heading.H2>
       {hasUserMarkedToday() ? (
         "Olet jo merkannut tänään"
