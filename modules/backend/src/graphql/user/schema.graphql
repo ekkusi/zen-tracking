@@ -1,5 +1,12 @@
 # import Date from "../scalars/schema.graphql"
 
+# This is here to prevent error from graphql-code-generator documents field
+query GetUsers {
+  getUsers {
+    name
+  }
+}
+
 extend type Query {
   getUser(name: ID!): User!
   getUsers: [User!]

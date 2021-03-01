@@ -1,5 +1,7 @@
 import { FetchResult, useApolloClient } from "@apollo/client";
 import {
+  Box,
+  Flex,
   FormControl,
   FormLabel,
   Stack,
@@ -186,18 +188,9 @@ const EditMarking = ({
       headerLabel={marking ? "Muokataan merkkausta" : "Lisää merkkaus"}
       openButtonProps={{ size: "md" }}
       modalBodyProps={{ pt: "0" }}
+      modalFooterProps={{ justifyContent: "flex-start" }}
       modalFooter={
         <>
-          {marking && (
-            <AlertButton
-              isLoading={loading}
-              loadingText="Poista merkkaus"
-              mr={3}
-              onClick={deleteAndClose}
-            >
-              Poista
-            </AlertButton>
-          )}
           <PrimaryButton
             isLoading={loading}
             loadingText={marking ? "Tallenetaan..." : "Lisätään..."}
@@ -206,10 +199,16 @@ const EditMarking = ({
           >
             {marking ? "Tallenna" : "Lisää"}
           </PrimaryButton>
-          {!loading && (
-            <PrimaryButton mr={3} onClick={disclosureProps.onClose}>
-              Sulje
-            </PrimaryButton>
+          {marking ? (
+            <AlertButton
+              isLoading={loading}
+              loadingText="Poista merkkaus"
+              onClick={deleteAndClose}
+            >
+              Poista
+            </AlertButton>
+          ) : (
+            <Box />
           )}
         </>
       }
@@ -235,7 +234,7 @@ const EditMarking = ({
             Valinnainen kommentti päivän suorituksesta
           </FormLabel>
           <PrimaryTextArea
-            placeholder="Aamu meni ihan kivasti... vähän meinas demonit iskeä, mutta onneks löysin sisäisen Excaliburini ja karkotin ne takasin syövereihinsä:)"
+            placeholder="Päivä meni ihan kivasti... vähän meinas demonit iskeä, mutta onneks löysin sisäisen Excaliburini ja karkotin ne takasin syövereihinsä:)"
             type="text"
             value={formValues.comment}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>

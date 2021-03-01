@@ -7,6 +7,7 @@ import {
   ModalContent,
   ModalContentProps,
   ModalFooter,
+  ModalFooterProps,
   ModalHeader,
   ModalOverlay,
   ModalProps,
@@ -34,6 +35,7 @@ export type ModalTemplateProps = Omit<
   onOpen?: () => void;
   modalBodyProps?: ModalBodyProps;
   modalContentProps?: ModalContentProps;
+  modalFooterProps?: ModalFooterProps;
 };
 
 const ModalTemplate = ({
@@ -51,6 +53,7 @@ const ModalTemplate = ({
   modalFooter,
   modalContentProps,
   modalBodyProps,
+  modalFooterProps,
   ...rest
 }: ModalTemplateProps): JSX.Element => {
   const { isOpen, onClose, onOpen } = useDisclosure({
@@ -77,7 +80,7 @@ const ModalTemplate = ({
         <ModalOverlay />
         <ModalContent {...modalContentProps}>
           {hasHeader && (
-            <ModalHeader>
+            <ModalHeader pr="10">
               <Heading.H2 mb="0" fontWeight="bold">
                 {headerLabel}
               </Heading.H2>
@@ -87,7 +90,7 @@ const ModalTemplate = ({
           <ModalBody {...modalBodyProps}>{children}</ModalBody>
 
           {hasFooter && (
-            <ModalFooter>
+            <ModalFooter {...modalFooterProps}>
               {modalFooter || (
                 <PrimaryButton mr={3} onClick={onClose}>
                   {closeButtonLabel}

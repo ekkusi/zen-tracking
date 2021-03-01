@@ -39,45 +39,66 @@ const MainPage = (): JSX.Element => {
 
   return (
     <Box pt="5">
-      <Box>
+      <Flex
+        flexDirection={{ base: "column", sm: "row" }}
+        justifyContent={{ base: "center", sm: "flex-start" }}
+      >
         <ModalTemplate
           openButtonLabel="Ohjeita"
+          openButtonProps={{ mb: { base: "2", sm: "0" } }}
           headerLabel="Ohjeita"
           closeButtonLabel="Sulje ohjeet"
         >
           <>
             <Text>
-              Kun olet mielestäsi onnistunut suorittamaan kyseisen tehtävän
-              päivän osalta, paina alta päivä suoritetuksi ja saat suorituksen
+              Kun olet mielestäsi onnistunut suorittamaan haasteen kyseisen
+              päivän osalta, merkkaa alta päivä suoritetuksi ja saat suorituksen
               kasvattamaan putkeasi!
             </Text>
             <Text>
-              Voit halutessasi lisätä merkkaukseen aamun aktiviteetin, mikäli
-              haluat kartoittaa myös suorituksiasi näissä aktiviteeteissa.
-              Listassa on valmiina muutamia yleisiä zeniä kasvattavia
-              vaihtoehtoja, mutta koska jokainen zeni on uniikki lumihiutale,
-              voit myös lisätä oman zeniä kasvattavan aktiviteettisi olemassa
-              olevaan listaan.
+              Voit lisätä halutessasi kommentin päivän suorituksesta, päivän
+              fiiliksistä tai mistä vaan! Näiden kommenttien pohjalta voit
+              esimerkiksi reflektoida haastetta jälkeenpäin, kun muisti on
+              alkanut yksittäisten päivien osalta hämärtyä.
             </Text>
             <Text>
-              Voit myös lisätä päivästä kommentin aamun fiiliksistä,
-              aktiviteetin suoriutumisesta tai mistä vaan! Näiden kommenttien
-              pohjalta voit reflektoida haastetta jälkeenpäin, kun muisti on
-              alkanut yksittäisten päivien osalta hämärtyä:)
+              Mikäli et ole piilottanut tietojasi muilta käyttäjiltä
+              kirjautuessasi sisään ensimmäistä kertaa, näkyvät nämä kommentit
+              muille samaista haastetta suorittaville käyttäjille. Tällä tavoin
+              voi kaikki haluavat suorittaa haastetta yhdessä ja katsoa, kuinka
+              muilla sujuu samaisen haasteen eteneminen!
+            </Text>
+            <Heading.H3 fontWeight="bold">
+              Merkkausten muokkaus jälkikäteen
+            </Heading.H3>
+            <Text>
+              Merkattuasi ensimmäisen suorituksen voit muokata jo tekemiäsi
+              merkkauksia painamalla kalenterista jotakin päivää, jolloin
+              muokkausikkuna aukeaa. Jos päivällä on jo merkkaus, voit tästä
+              ikkunasta joko muokata merkkauksen tietoja tai poistaa
+              merkkauksen. Jos avatulla päivällä ei ole vielä merkkausta, voit
+              tästä lisätä merkkauksen jälkikäteen, mikäli et edellisinä päivinä
+              sitä ehtinyt tekemään. Etukäteen et kuitenkaan tulevia päiviä voi
+              merkata, koska tarkoituksena on merkkailla suorituksia vasta
+              niiden toteuduttua:)
             </Text>
           </>
         </ModalTemplate>
-        <PrimaryButton ml="3" onClick={() => updateUser(null)}>
-          Kirjaudu ulos
-        </PrimaryButton>
         <PrimaryButton
+          ml={{ base: "0", sm: "3" }}
+          mb={{ base: "2", sm: "0" }}
           variant="outline"
           onClick={openQuoteOfTheDay}
-          float="right"
         >
           Quote of the Day
         </PrimaryButton>
-      </Box>
+        <PrimaryButton
+          onClick={() => updateUser(null)}
+          ml={{ base: "0", sm: "auto" }}
+        >
+          Kirjaudu ulos
+        </PrimaryButton>
+      </Flex>
       {quoteOfTheDayUrl && (
         <ImageModal
           isOpen={!!quoteOfTheDayUrl}
@@ -103,7 +124,27 @@ const MainPage = (): JSX.Element => {
         </Text>{" "}
         herää kello 7 ja vietä rauhallinen aamu ilman ruutujen häirintää.
       </Heading.H2>
-      <Box mb="7">
+      {hasUserMarkedToday() ? (
+        "Olet jo merkannut tänään"
+      ) : (
+        <Flex justifyContent={{ base: "flex-start", sm: "center" }} mb="7">
+          <AddMarking
+            openButtonLabel="Merkkaa päivän suoritus"
+            openButtonProps={{
+              isDisabled: hasUserMarkedToday(),
+              size: "lg",
+              leftIcon: (
+                <CheckIcon
+                  w={{ base: 6, md: 8 }}
+                  h={{ base: 6, md: 8 }}
+                  mb="1px"
+                />
+              ),
+            }}
+          />
+        </Flex>
+      )}
+      <Box>
         {user && user.markings.length > 0 ? (
           <>
             <Heading.H2 mb="4" textAlign={{ base: "left", sm: "center" }}>
@@ -118,38 +159,16 @@ const MainPage = (): JSX.Element => {
           </>
         ) : (
           <>
-            <Heading.H2>Sinulla ei vielä ole merkkauksia.</Heading.H2>
+            <Heading.H2 fontWeight="bold">
+              Sinulla ei vielä ole merkkauksia.
+            </Heading.H2>
             <Text fontSize="lg">
-              Aloita ensimmäisen päivän merkkaaminen alta. Ylhäältä löydät
-              tarvittaessa lisäohjeita.
+              Aloita ensimmäisen merkkaaminen ylemmästä painikkeesta painamalla.
+              Ylhäältä löydät tarvittaessa lisäohjeita.
             </Text>
           </>
         )}
       </Box>
-      <Flex justifyContent={{ base: "flex-start", sm: "center" }}>
-        <AddMarking
-          openButtonLabel={
-            hasUserMarkedToday()
-              ? "Olet jo merkannut tänään"
-              : "Merkkaa tämä päivä"
-          }
-          openButtonProps={{
-            fontSize: { base: "lg", md: "xl" },
-            fontWeight: "normal",
-            textTransform: "none",
-            py: { base: 6, md: 8 },
-            px: { base: 5, md: 7 },
-            isDisabled: hasUserMarkedToday(),
-            leftIcon: (
-              <CheckIcon
-                w={{ base: 6, md: 8 }}
-                h={{ base: 6, md: 8 }}
-                mb="1px"
-              />
-            ),
-          }}
-        />
-      </Flex>
     </Box>
   );
 };

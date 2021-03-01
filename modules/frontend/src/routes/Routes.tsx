@@ -31,7 +31,7 @@ const Routes = (): JSX.Element => {
       globalActions.updateUser(data.getUser);
     } catch (err) {
       globalActions.updateError(
-        `Käyttäjääsi ei löytynyt tai istunto on vanhentunut. Kokeile kirjautua uudestaan.`
+        `Käyttäjääsi ei löytynyt tai istuntosi on vanhentunut. Kokeile kirjautua uudestaan.`
       );
       localStorage.removeItem("currentUser");
     }

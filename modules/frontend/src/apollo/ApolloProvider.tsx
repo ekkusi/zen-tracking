@@ -20,19 +20,23 @@ const CustomApolloProvider = ({
     (state) => state.error,
     (actions) => actions.updateError
   )[1];
-  const errorLink = onError(({ graphQLErrors, networkError }) => {
+  const errorLink = onError(({ graphQLErrors }) => {
     if (graphQLErrors) {
-      graphQLErrors.forEach(({ message, locations, path }) =>
-        console.error(
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-        )
-      );
-    } else if (networkError) {
-      console.error(`[Network error]: ${networkError}`);
-      setError(
-        `Jotakin meni vikaan tietojesi hakemisessa. Kokeile kirjautua uudestaan. Mikäli tämä virheviesti esiintyy uudelleen, ota yhteyttä ekeukkoon!`
-      );
+      const errorStrings = graphQLErrors.map((error) => {
+        console.error(error);
+        return error.message;
+      });
+      setError(errorStrings.join("\n"));
     }
+
+    // GraphQlErrors should handle this aswell now like when graphql query is bad on client -> giving bad request.
+    // If there comes some case, where this is better than above, remove comments and modify
+    // if (networkError) {
+    //   console.error(`[Network error]: ${networkError}`);
+    //   setError(
+    //     `Jotakin meni vikaan tietojesi hakemisessa. Kokeile kirjautua uudestaan. Mikäli tämä virheviesti esiintyy uudelleen, ota yhteyttä ekeukkoon!`
+    //   );
+    // }
   });
 
   const httpLink = new HttpLink({

@@ -7,12 +7,14 @@ import styled from "styled-components";
 
 const BaseButtonProps: ChakraButtonProps = {
   textTransform: "uppercase",
-  fontWeight: "bold",
+  fontWeight: "normal",
   size: "md",
-  fontSize: "xs",
   fontFamily: "body",
   border: "2px solid",
   borderRadius: "md",
+  width: "auto",
+  height: "auto",
+  whiteSpace: "normal",
   _hover: {
     opacity: 1,
   },
@@ -29,7 +31,13 @@ type ButtonProps = Omit<ChakraButtonProps, "bg" | "color" | "variant"> & {
   variant?: string;
 };
 
-const Button = ({ color, bg, variant, ...rest }: ButtonProps): JSX.Element => {
+const Button = ({
+  color,
+  bg,
+  variant,
+  size,
+  ...rest
+}: ButtonProps): JSX.Element => {
   let variantProps: ButtonProps;
   switch (variant) {
     case "outline": {
@@ -55,15 +63,45 @@ const Button = ({ color, bg, variant, ...rest }: ButtonProps): JSX.Element => {
       variantProps = {
         bg,
         color,
+        borderColor: bg,
         _hover: {
           opacity: 0.7,
         },
       };
     }
   }
+  let sizeProps: ButtonProps;
+  switch (size) {
+    case "sm": {
+      sizeProps = {
+        px: { base: 2, sm: 3 },
+        py: { base: 2, sm: 4 },
+        fontWeight: "bold",
+        fontSize: "xxs",
+      };
+      break;
+    }
+    case "lg": {
+      sizeProps = {
+        fontSize: { base: "lg", md: "xl" },
+        textTransform: "none",
+        px: { base: 4, sm: 5 },
+        py: { base: 4, sm: 5 },
+      };
+      break;
+    }
+    // If no value for prop is given -> represents md size
+    default: {
+      sizeProps = {
+        fontSize: { base: "xs", md: "sm" },
+        py: { base: 3, sm: 3 },
+        px: { base: 3, sm: 5 },
+      };
+    }
+  }
 
   // Prioritize variantProps -> generic custom props -> BaseButtonProps
-  const props = { ...BaseButtonProps, ...rest, ...variantProps };
+  const props = { ...BaseButtonProps, ...rest, ...variantProps, ...sizeProps };
   return <ChakraButton {...props} />;
 };
 
@@ -87,10 +125,8 @@ PrimaryButton.defaultProps = {
 };
 
 AlertButton.defaultProps = {
-  color: "warning",
-  bg: "white",
-  borderColor: "warning",
-  variant: "outline",
+  color: "white",
+  bg: "warning",
 };
 
 export { PrimaryButton, AlertButton };

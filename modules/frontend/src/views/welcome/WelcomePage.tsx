@@ -17,6 +17,7 @@ const WelcomePage = (): JSX.Element => {
         justify="center"
         alignItems="center"
         transition="opacity 2s"
+        textAlign="center"
       >
         <Flex direction="column" alignItems="center" mb="50px">
           <Heading.H1 fontSize={{ base: "4xl", sm: "6xl" }}>
@@ -28,11 +29,7 @@ const WelcomePage = (): JSX.Element => {
 
           <Link to="/">
             <PrimaryButton
-              fontSize={{ base: "md", sm: "lg" }}
-              fontWeight="normal"
-              borderRadius="8px"
-              px={{ base: "8", sm: "10" }}
-              py={{ base: "5", sm: "7" }}
+              size="lg"
               rightIcon={<ArrowForwardIcon w={8} h={8} />}
             >
               Aloita zenin kasvattaminen!

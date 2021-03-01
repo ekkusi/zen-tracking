@@ -1,14 +1,9 @@
 import { readFileSync } from "fs";
 import path from "path";
-import { Marking as PrismaMarking } from "@prisma/client";
 
-import DataLoader from "dataloader";
 import { hash, compare } from "../../utils/auth";
-import {
-  Resolvers as UserResolvers,
-  UserCheckStatus,
-  Marking,
-} from "../../types/user";
+import { Resolvers as UserResolvers } from "../../types/user-resolvers";
+import { UserCheckStatus } from "../../types/user";
 import { UserMapper } from "./UserMapper";
 
 // Construct a schema, using GraphQL schema language
@@ -19,13 +14,11 @@ export const typeDef = readFileSync(
 
 export const resolvers: UserResolvers = {
   User: {
-    markings: async ({ name }, _, { markingLoader }): Promise<Marking[]> => {
+    markings: async ({ name }, _, { loaders: { markingLoader } }) => {
       const markings = await markingLoader.load(name);
 
-      // @ts-ignore
       if (markings[name]) {
-        // @ts-ignore
-        return markings[name].map((it) => UserMapper.mapMarking(it));
+        return markings[name];
       }
       return [];
     },

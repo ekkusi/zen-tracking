@@ -18,7 +18,12 @@ import { useHistory } from "react-router-dom";
 import { CheckUserQueryResult, CHECK_USER } from "./loginQueries";
 
 const LoginPage = (): JSX.Element => {
-  const [opacityValues, setOpacityValues] = useState([0, 0, 0]);
+  const hasLoggedInBefore = localStorage.getItem("hasLoggedInBefore");
+
+  // If user has visited logged in before already, show form straight away
+  const [opacityValues, setOpacityValues] = useState(
+    hasLoggedInBefore ? [1, 1, 1] : [0, 0, 0]
+  );
   const [animationIndex, setAnimationIndex] = useState(0);
   const [formValues, setFormValues] = useState({
     name: "",
@@ -46,11 +51,14 @@ const LoginPage = (): JSX.Element => {
   useEffect(() => {
     // Animate boxes to appear in two second intervals, useEffect is automatically called again if state is changed
     // Start first animation immediately (still setTimeout to not change before first render)
-    if (animationIndex === 0) {
-      setTimeout(changeOpacity, 50);
-    }
-    if (animationIndex < opacityValues.length) {
-      setTimeout(changeOpacity, 1000);
+    // If user has already visited login page, no need to animate
+    if (!hasLoggedInBefore) {
+      if (animationIndex === 0) {
+        setTimeout(changeOpacity, 50);
+      }
+      if (animationIndex < opacityValues.length) {
+        setTimeout(changeOpacity, 1000);
+      }
     }
   });
 
@@ -58,6 +66,8 @@ const LoginPage = (): JSX.Element => {
     if (!formValues.name) setError("Käyttäjätunnus ei voi olla tyhjä");
     else if (!formValues.password) setError("Salasana ei voi olla tyhjä");
     else {
+      // Set hasLoggedInBefore to prevent next visit animations, if this is not set already
+      if (!hasLoggedInBefore) localStorage.setItem("hasLoggedInBefore", "true");
       setError(undefined);
       setLoading(true);
       try {
