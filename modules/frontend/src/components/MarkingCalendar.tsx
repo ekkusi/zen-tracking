@@ -19,6 +19,9 @@ const StyledCalendar = styled(ReactCalendar)`
   --disabled-bg-color: ${({ theme }) => theme.colors.gray[100]};
 
   width: 100%;
+  border-radius: 10px;
+  border-color: ${({ theme }) => theme.colors.gray[300]};
+  box-shadow: 3px 3px 5px -5px black;
   .react-calendar {
     &__tile {
       padding: ${({ theme }) => `${theme.space[4]} ${theme.space[2]}`};

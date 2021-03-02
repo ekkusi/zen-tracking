@@ -5,6 +5,8 @@ import { hash, compare } from "../../utils/auth";
 import { Resolvers as UserResolvers } from "../../types/user-resolvers";
 import { UserCheckStatus } from "../../types/user";
 import { UserMapper } from "./UserMapper";
+import { UserValidator } from "./UserValidator";
+import ValidationError from "../../utils/ValidationError";
 
 // Construct a schema, using GraphQL schema language
 export const typeDef = readFileSync(
@@ -73,29 +75,43 @@ export const resolvers: UserResolvers = {
       });
       return UserMapper.mapUser(user);
     },
-    addMarking: async (_, args, { prisma }) => {
+    addMarking: async (_, args, { prisma, loaders }) => {
       const { userName, marking } = args;
       console.log("addMarking args:", JSON.stringify(marking));
+
+      // Check validity and throw error if not valid
+      const validity = await UserValidator.validateAddMarking(args);
+      if (validity instanceof ValidationError) throw validity;
+
       const createdMarking = await prisma.marking.create({
         data: UserMapper.mapCreateMarkingInput(userName, marking || {}),
       });
+
+      // Clear markingLoader cache for user after create
+      loaders.markingLoader.clear(createdMarking.user_name);
       return UserMapper.mapMarking(createdMarking);
     },
-    editMarking: async (_, { id, marking }, { prisma }) => {
+    editMarking: async (_, { id, marking }, { prisma, loaders }) => {
       console.log("editMarking args:", JSON.stringify(marking));
       try {
         const editMarking = await prisma.marking.update({
           where: { id },
           data: UserMapper.mapEditMarkingInput(marking),
         });
+
+        // Clear markingLoader cache for user after update
+        loaders.markingLoader.clear(editMarking.user_name);
         return UserMapper.mapMarking(editMarking);
       } catch (error) {
         throw new Error(`editMarking error: marking with id ${id} not found`);
       }
     },
-    deleteMarking: async (_, { id }, { prisma }) => {
+    deleteMarking: async (_, { id }, { prisma, loaders }) => {
       try {
-        await prisma.marking.delete({ where: { id } });
+        const deletedMarking = await prisma.marking.delete({ where: { id } });
+
+        // Clear markingLoader cache for user after delete
+        loaders.markingLoader.clear(deletedMarking.user_name);
         return true;
       } catch (error) {
         throw new Error(`deleteMarking error: marking with id ${id} not found`);

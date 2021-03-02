@@ -23,6 +23,7 @@ import {
 import createLoaders from "./loaders";
 
 import prisma from "./client";
+import ValidationError from "../utils/ValidationError";
 
 export default (app: Application): ApolloServer => {
   const loaders = createLoaders(prisma);
@@ -56,6 +57,10 @@ export default (app: Application): ApolloServer => {
     formatError: (error) => {
       // If error is ApolloError, return original error. You could create other custom errors here like InputError etc.
       if (error.originalError instanceof ApolloError) {
+        return error;
+      }
+
+      if (error.originalError instanceof ValidationError) {
         return error;
       }
 
