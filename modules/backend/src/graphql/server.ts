@@ -6,7 +6,6 @@ import {
   makeExecutableSchema,
 } from "apollo-server-express";
 import { Application } from "express";
-import { PrismaClient } from "@prisma/client";
 import merge from "lodash.merge";
 import { v4 as generateId } from "uuid";
 
@@ -23,12 +22,7 @@ import {
 
 import createLoaders from "./loaders";
 
-const isProd = process.env.NODE_ENV === "production";
-
-// If in development, log prisma queries and errors
-const prisma = new PrismaClient({
-  log: isProd ? [] : ["query", "info", "warn", "error"],
-});
+import prisma from "./client";
 
 export default (app: Application): ApolloServer => {
   const loaders = createLoaders(prisma);

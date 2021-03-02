@@ -73,9 +73,9 @@ export const resolvers: UserResolvers = {
       });
       return UserMapper.mapUser(user);
     },
-    addMarking: async (_, { userName, marking }, { prisma }) => {
+    addMarking: async (_, args, { prisma }) => {
+      const { userName, marking } = args;
       console.log("addMarking args:", JSON.stringify(marking));
-
       const createdMarking = await prisma.marking.create({
         data: UserMapper.mapCreateMarkingInput(userName, marking || {}),
       });
