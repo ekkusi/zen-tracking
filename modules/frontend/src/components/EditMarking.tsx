@@ -61,6 +61,7 @@ const EditMarking = ({
       if (modalTemplateProps.onClose) {
         modalTemplateProps.onClose();
       }
+      setError(undefined);
       setIsInitialStateSet(false);
       setFormValues(defaultFormValues); // Reset formvalues on close
     },

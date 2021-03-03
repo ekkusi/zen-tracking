@@ -9,6 +9,8 @@ import {
 } from "../../types/user-resolvers";
 import { UserCheckStatus } from "../../types/user";
 import { UserMapper } from "./UserMapper";
+import { UserValidator } from "./UserValidator";
+import ValidationError from "../../utils/ValidationError";
 
 // Construct a schema, using GraphQL schema language
 export const typeDef = readFileSync(

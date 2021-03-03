@@ -125,7 +125,7 @@ const MainPage = (): JSX.Element => {
         mikä haaste onkaan mielessä:) Kohta tullee mahollisuus tehä oma haaste!
       </Heading.H2>
       {hasUserMarkedToday() ? (
-        "Olet jo merkannut tänään"
+        <Text>Olet jo merkannut tänään</Text>
       ) : (
         <Flex justifyContent={{ base: "flex-start", sm: "center" }} mb="7">
           <AddMarking
@@ -149,7 +149,7 @@ const MainPage = (): JSX.Element => {
           <>
             <Heading.H2 mb="4" textAlign={{ base: "left", sm: "center" }}>
               Putkesi pituus:{" "}
-              <Text as="span" fontWeight="bold">
+              <Text as="span">
                 {DateUtil.getDateStreak(
                   user.markings.map((it) => new Date(it.date))
                 )}{" "}

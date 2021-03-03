@@ -10,11 +10,11 @@ CREATE TABLE "User" (
 );
 
 CREATE TABLE "Marking" (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  date timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  user_name varchar(254) NOT NULL,
-  comment varchar(254),
-  FOREIGN KEY (user_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    date timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_name varchar(254) NOT NULL,
+    comment varchar(2000),
+    FOREIGN KEY (user_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE "Quote" (
