@@ -70,6 +70,8 @@ Default email postgreadmin is "default@email.com" and password is "password"
 
 ### Generate backend types from graphql (do this after updating .graphql files)
 
+NOTE: Backend needs to be running to run this. Graphql-code-generator fetches graphql schema from http://localhost:4000/graphql to take types from.
+
 ```bash
 yarn generate:backend
 ```

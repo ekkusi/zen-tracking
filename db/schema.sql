@@ -10,14 +10,22 @@ CREATE TABLE "User" (
 );
 
 CREATE TABLE "Marking" (
-    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    date timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    user_name varchar(254) NOT NULL,
-    comment varchar(254),
-    FOREIGN KEY (user_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  date timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  user_name varchar(254) NOT NULL,
+  comment varchar(254),
+  FOREIGN KEY (user_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE "Quote" (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   quote varchar(254) NOT NULL
+);
+
+CREATE TABLE "Challenge" (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name varchar(254) PRIMARY KEY NOT NULL,
+  startDate timestamp with time zone,
+  endDate timestamp with time zone CHECK (startDate > endDate),
+
 );

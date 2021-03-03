@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/user";
-import { fragments } from "generalQueries";
+import { markingDataFragment } from "fragments";
 
 export const ADD_MARKING = gql`
   mutation addMarking($userName: ID!, $marking: MarkingInput!) {
@@ -8,7 +8,7 @@ export const ADD_MARKING = gql`
       ...MarkingData
     }
   }
-  ${fragments.markingData}
+  ${markingDataFragment}
 `;
 
 export type AddMarkingMutationResult = {
@@ -21,19 +21,11 @@ export const EDIT_MARKING = gql`
       ...MarkingData
     }
   }
-  ${fragments.markingData}
+  ${markingDataFragment}
 `;
-
-export type EditMarkingMutationResult = {
-  editMarking: Marking;
-};
 
 export const DELETE_MARKING = gql`
   mutation deleteMarking($id: ID!) {
     deleteMarking(id: $id)
   }
 `;
-
-export type DeleteMarkingMutationResult = {
-  deleteMarking: boolean;
-};

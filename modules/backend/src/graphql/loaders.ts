@@ -2,6 +2,7 @@ import { DataLoaders } from "@/types/customContext";
 import { MarkingsLoadResult } from "@/types/dataLoader";
 import { PrismaClient } from "@prisma/client";
 import DataLoader from "dataloader";
+import { ChallengeMapper } from "./challenge/ChallengeMapper";
 import { UserMapper } from "./user/UserMapper";
 
 // Data loaders to cache and bundle queries to prisma to prevent querying too many times
@@ -21,7 +22,9 @@ export default (prisma: PrismaClient): DataLoaders => {
           where: { user_name: { in: keyStrings } },
         });
 
-        const mappedMarkings = markings.map((it) => UserMapper.mapMarking(it));
+        const mappedMarkings = markings.map((it) =>
+          ChallengeMapper.mapMarking(it)
+        );
 
         // This needs to return a promise array
         return Promise.all(

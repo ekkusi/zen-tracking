@@ -11,15 +11,18 @@ import merge from "lodash.merge";
 import { v4 as generateId } from "uuid";
 
 import { GraphQLError } from "graphql";
-import {
-  typeDef as userTypeDef,
-  resolvers as userResolvers,
-} from "./user/user";
 
 import {
   typeDef as customScalarTypeDef,
   resolvers as customScalarResolvers,
 } from "./scalars/customScalars";
+
+import {
+  typeDef as userTypeDef,
+  resolvers as userResolvers,
+} from "./user/user";
+
+import { typeDef as challengeTypeDef } from "./challenge/challenge";
 
 import createLoaders from "./loaders";
 
@@ -43,7 +46,12 @@ export default (app: Application): ApolloServer => {
     }
   `;
 
-  const typeDefs = [queryTypeDef, customScalarTypeDef, userTypeDef];
+  const typeDefs = [
+    queryTypeDef,
+    customScalarTypeDef,
+    userTypeDef,
+    challengeTypeDef,
+  ];
 
   const resolvers = merge(
     {},

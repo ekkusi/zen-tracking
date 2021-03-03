@@ -3,11 +3,10 @@ import {
   GraphQLScalarType,
   GraphQLScalarTypeConfig,
 } from "graphql";
-import { User } from "@prisma/client";
-import * as Types from "./user";
+import * as Types from "./challenge";
+
 import { CustomContext } from "./customContext";
 
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = {
   [X in Exclude<keyof T, K>]?: T[X];
 } &
@@ -136,25 +135,11 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Types.Scalars["Boolean"]>;
   Date: ResolverTypeWrapper<Types.Scalars["Date"]>;
   UserCheckStatus: Types.UserCheckStatus;
-  User: ResolverTypeWrapper<User>;
-  UserCheckResult: ResolverTypeWrapper<
-    Omit<Types.UserCheckResult, "user"> & {
-      user?: Types.Maybe<ResolversTypes["User"]>;
-    }
-  >;
+  User: ResolverTypeWrapper<Types.User>;
+  UserCheckResult: ResolverTypeWrapper<Types.UserCheckResult>;
   ChallengeStatus: Types.ChallengeStatus;
-  Challenge: ResolverTypeWrapper<
-    Omit<Types.Challenge, "creator" | "participations"> & {
-      creator: ResolversTypes["User"];
-      participations: Array<ResolversTypes["ChallengeParticipation"]>;
-    }
-  >;
-  ChallengeParticipation: ResolverTypeWrapper<
-    Omit<Types.ChallengeParticipation, "challenge" | "user"> & {
-      challenge: ResolversTypes["Challenge"];
-      user: ResolversTypes["User"];
-    }
-  >;
+  Challenge: ResolverTypeWrapper<Types.Challenge>;
+  ChallengeParticipation: ResolverTypeWrapper<Types.ChallengeParticipation>;
   CreateChallengeInput: Types.CreateChallengeInput;
   UpdateChallengeInput: Types.UpdateChallengeInput;
   Marking: ResolverTypeWrapper<Types.Marking>;
@@ -169,21 +154,10 @@ export type ResolversParentTypes = {
   Mutation: {};
   Boolean: Types.Scalars["Boolean"];
   Date: Types.Scalars["Date"];
-  User: User;
-  UserCheckResult: Omit<Types.UserCheckResult, "user"> & {
-    user?: Types.Maybe<ResolversParentTypes["User"]>;
-  };
-  Challenge: Omit<Types.Challenge, "creator" | "participations"> & {
-    creator: ResolversParentTypes["User"];
-    participations: Array<ResolversParentTypes["ChallengeParticipation"]>;
-  };
-  ChallengeParticipation: Omit<
-    Types.ChallengeParticipation,
-    "challenge" | "user"
-  > & {
-    challenge: ResolversParentTypes["Challenge"];
-    user: ResolversParentTypes["User"];
-  };
+  User: Types.User;
+  UserCheckResult: Types.UserCheckResult;
+  Challenge: Types.Challenge;
+  ChallengeParticipation: Types.ChallengeParticipation;
   CreateChallengeInput: Types.CreateChallengeInput;
   UpdateChallengeInput: Types.UpdateChallengeInput;
   Marking: Types.Marking;
@@ -242,7 +216,7 @@ export type MutationResolvers<
     ResolversTypes["Marking"],
     ParentType,
     ContextType,
-    RequireFields<Types.MutationAddMarkingArgs, "userName" | "participationId">
+    RequireFields<Types.MutationAddMarkingArgs, "participationId" | "userName">
   >;
   addUser?: Resolver<
     ResolversTypes["User"],
@@ -325,8 +299,8 @@ export type UserCheckResultResolvers<
   ContextType = CustomContext,
   ParentType extends ResolversParentTypes["UserCheckResult"] = ResolversParentTypes["UserCheckResult"]
 > = {
-  status?: Resolver<ResolversTypes["UserCheckStatus"], ParentType, ContextType>;
   user?: Resolver<Types.Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes["UserCheckStatus"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

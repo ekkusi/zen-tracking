@@ -24,6 +24,9 @@
     "prettier": "^2.2.1",
     "typescript": "^4.0.3"
   },
+  "resolutions":{
+    "graphql":"^15.0.0"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -39,7 +42,7 @@
     "build:backend": "yarn --cwd modules/backend build",
     "build:frontend": "yarn --cwd modules/frontend build",
     "build:all": "lerna run build",
-    "generate:backend": "yarn --cwd modules/backend generate-types",
+    "generate-types": "yarn --cwd modules/backend generate-types",
     "generate-prisma": "yarn --cwd modules/backend prisma-generate",
     "gen:theme-typings": "chakra-cli tokens ./modules/frontend/src/theme.ts",
     "lint": "eslint modules/backend/src --ext ts,js && eslint modules/frontend/src --ext tsx,ts,js",

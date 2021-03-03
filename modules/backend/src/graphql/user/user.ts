@@ -1,8 +1,12 @@
 import { readFileSync } from "fs";
 import path from "path";
 
+import { User } from "@prisma/client";
 import { hash, compare } from "../../utils/auth";
-import { Resolvers as UserResolvers } from "../../types/user-resolvers";
+import {
+  Resolvers as UserResolvers,
+  ResolversTypes,
+} from "../../types/user-resolvers";
 import { UserCheckStatus } from "../../types/user";
 import { UserMapper } from "./UserMapper";
 
@@ -14,14 +18,7 @@ export const typeDef = readFileSync(
 
 export const resolvers: UserResolvers = {
   User: {
-    markings: async ({ name }, _, { loaders: { markingLoader } }) => {
-      const markings = await markingLoader.load(name);
-
-      if (markings[name]) {
-        return markings[name];
-      }
-      return [];
-    },
+    isPrivate: (user) => user.is_private,
   },
   Query: {
     getUser: async (_, { name }, { prisma }) => {
@@ -29,14 +26,15 @@ export const resolvers: UserResolvers = {
         where: { name },
       });
       if (user) {
-        return UserMapper.mapUser(user);
+        return user;
       }
 
       throw new Error("No user found with given name");
     },
     getUsers: async (_, __, { prisma }) => {
-      const users = await prisma.user.findMany();
-      return users.map((it) => UserMapper.mapUser(it));
+      const users: User[] = await prisma.user.findMany();
+      return users;
+      // eturn users.map((it) => UserMapper.mapUser(it));
     },
     checkUser: async (_, { name, password }, { prisma }) => {
       const user = await prisma.user.findUnique({
@@ -48,7 +46,7 @@ export const resolvers: UserResolvers = {
         // User found and password is correct
         if (isPasswordCorrect) {
           return {
-            user: UserMapper.mapUser(user),
+            user,
             status: UserCheckStatus.UserAndPasswordFound,
           };
         }
@@ -61,7 +59,7 @@ export const resolvers: UserResolvers = {
         data: { name, password: hashedPassword },
       });
       return {
-        user: UserMapper.mapUser(createdUser),
+        user,
         status: UserCheckStatus.UserNotFoundButCreated,
       };
     },
@@ -71,35 +69,7 @@ export const resolvers: UserResolvers = {
       const user = await prisma.user.create({
         data: { ...args, is_private: args.isPrivate || undefined },
       });
-      return UserMapper.mapUser(user);
-    },
-    addMarking: async (_, { userName, marking }, { prisma }) => {
-      console.log("addMarking args:", JSON.stringify(marking));
-
-      const createdMarking = await prisma.marking.create({
-        data: UserMapper.mapCreateMarkingInput(userName, marking || {}),
-      });
-      return UserMapper.mapMarking(createdMarking);
-    },
-    editMarking: async (_, { id, marking }, { prisma }) => {
-      console.log("editMarking args:", JSON.stringify(marking));
-      try {
-        const editMarking = await prisma.marking.update({
-          where: { id },
-          data: UserMapper.mapEditMarkingInput(marking),
-        });
-        return UserMapper.mapMarking(editMarking);
-      } catch (error) {
-        throw new Error(`editMarking error: marking with id ${id} not found`);
-      }
-    },
-    deleteMarking: async (_, { id }, { prisma }) => {
-      try {
-        await prisma.marking.delete({ where: { id } });
-        return true;
-      } catch (error) {
-        throw new Error(`deleteMarking error: marking with id ${id} not found`);
-      }
+      return user;
     },
   },
 };

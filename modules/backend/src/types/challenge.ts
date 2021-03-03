@@ -14,7 +14,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   /** Date custom scalar type */
-  Date: any;
+  Date: string;
 };
 
 export type Query = {
@@ -55,15 +55,15 @@ export type Mutation = {
 };
 
 export type MutationAddMarkingArgs = {
-  userName: Scalars["ID"];
-  participationId: Scalars["ID"];
   marking?: Maybe<MarkingInput>;
+  participationId: Scalars["ID"];
+  userName: Scalars["ID"];
 };
 
 export type MutationAddUserArgs = {
-  isPrivate?: Maybe<Scalars["Boolean"]>;
   name: Scalars["ID"];
   password: Scalars["String"];
+  isPrivate?: Maybe<Scalars["Boolean"]>;
 };
 
 export type MutationCreateChallengeArgs = {
@@ -97,9 +97,9 @@ export type MutationUpdateChallengeArgs = {
 };
 
 export enum UserCheckStatus {
-  InvalidPassword = "INVALID_PASSWORD",
   UserAndPasswordFound = "USER_AND_PASSWORD_FOUND",
   UserNotFoundButCreated = "USER_NOT_FOUND_BUT_CREATED",
+  InvalidPassword = "INVALID_PASSWORD",
 }
 
 export type User = {
@@ -112,14 +112,14 @@ export type User = {
 
 export type UserCheckResult = {
   __typename?: "UserCheckResult";
-  status: UserCheckStatus;
   user?: Maybe<User>;
+  status: UserCheckStatus;
 };
 
 export enum ChallengeStatus {
-  Suggestion = "SUGGESTION",
   Active = "ACTIVE",
   Closed = "CLOSED",
+  Suggestion = "SUGGESTION",
 }
 
 export type Challenge = {
@@ -142,18 +142,18 @@ export type ChallengeParticipation = {
 };
 
 export type CreateChallengeInput = {
-  name: Scalars["String"];
-  status: ChallengeStatus;
   creatorId: Scalars["ID"];
-  startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
+  name: Scalars["String"];
+  startDate?: Maybe<Scalars["Date"]>;
+  status: ChallengeStatus;
 };
 
 export type UpdateChallengeInput = {
-  name?: Maybe<Scalars["String"]>;
-  status?: Maybe<ChallengeStatus>;
-  startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
+  name?: Maybe<Scalars["String"]>;
+  startDate?: Maybe<Scalars["Date"]>;
+  status?: Maybe<ChallengeStatus>;
 };
 
 export type Marking = {
