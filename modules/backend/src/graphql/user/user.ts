@@ -3,9 +3,7 @@ import path from "path";
 
 import { User } from "@prisma/client";
 import { hash, compare } from "../../utils/auth";
-import {
-  Resolvers as UserResolvers,
-} from "../../types/resolvers";
+import { Resolvers as UserResolvers } from "../../types/resolvers";
 import { UserCheckStatus } from "../../types/schema";
 import { loaderResetors } from "../loaders";
 
@@ -18,11 +16,13 @@ export const typeDef = readFileSync(
 export const resolvers: UserResolvers = {
   User: {
     isPrivate: (user) => user.is_private,
-    participations: async ({ name }, _, { loaders: { userParticipationsLoader }}) => {
+    participations: async (
+      { name },
+      _,
+      { loaders: { userParticipationsLoader } }
+    ) => {
       const participations = await userParticipationsLoader.load(name);
-      console.log(
-        `User.participations : ${JSON.stringify(participations)}`
-      );
+      console.log(`User.participations : ${JSON.stringify(participations)}`);
       return participations;
     },
   },
@@ -65,7 +65,7 @@ export const resolvers: UserResolvers = {
         data: { name, password: hashedPassword },
       });
       return {
-        user,
+        user: createdUser,
         status: UserCheckStatus.UserNotFoundButCreated,
       };
     },
@@ -81,7 +81,9 @@ export const resolvers: UserResolvers = {
       // Clear participations loader cache
       await loaderResetors.clearParticipationsCacheByUser(name, loaders);
       // This is temp solution, because prisma doesn't support NOT NULL constraint and ON DELETE CASCADE. Prisma delete results in relation delete violation.
-      const deletedUsers = await prisma.$executeRaw(`DELETE FROM "User" WHERE name='${name}';`);
+      const deletedUsers = await prisma.$executeRaw(
+        `DELETE FROM "User" WHERE name='${name}';`
+      );
       if (deletedUsers > 0) return true; // If more than 0 rows are affected by above query
       return false;
     },

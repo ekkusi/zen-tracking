@@ -1,14 +1,18 @@
-import { Prisma, Marking as PrismaMarking } from "@prisma/client";
-import { Marking, MarkingInput, CreateChallengeInput, UpdateChallengeInput } from "../../types/schema";
+import { Prisma } from "@prisma/client";
+import {
+  MarkingInput,
+  CreateChallengeInput,
+  UpdateChallengeInput,
+} from "../../types/schema";
 
 export class ChallengeMapper {
   public static mapCreateMarkingInput(
     participationId: string,
-    marking: MarkingInput,
+    marking: MarkingInput
   ): Prisma.MarkingCreateInput {
     return {
       ...marking,
-      ChallengeParticipation: { connect: {id: participationId} },
+      ChallengeParticipation: { connect: { id: participationId } },
       date: marking.date ? new Date(marking.date) : undefined,
     };
   }
@@ -22,16 +26,20 @@ export class ChallengeMapper {
     };
   }
 
-  public static mapCreateChallengeInput(challenge: CreateChallengeInput): Prisma.ChallengeCreateInput {
+  public static mapCreateChallengeInput(
+    challenge: CreateChallengeInput
+  ): Prisma.ChallengeCreateInput {
     return {
       ...challenge,
-      User: {connect: { name: challenge.creatorName }},
+      User: { connect: { name: challenge.creatorName } },
       end_date: challenge.startDate ? new Date(challenge.startDate) : undefined,
       start_date: challenge.endDate ? new Date(challenge.endDate) : undefined,
-    }
+    };
   }
 
-  public static mapEditChallengeInput(args: UpdateChallengeInput): Prisma.ChallengeUpdateInput {
+  public static mapEditChallengeInput(
+    args: UpdateChallengeInput
+  ): Prisma.ChallengeUpdateInput {
     return {
       ...args,
       name: args.name ? args.name : undefined,
@@ -39,6 +47,6 @@ export class ChallengeMapper {
       description: args.description ? args.description : undefined,
       end_date: args.startDate ? new Date(args.startDate) : undefined,
       start_date: args.endDate ? new Date(args.endDate) : undefined,
-    }
+    };
   }
 }

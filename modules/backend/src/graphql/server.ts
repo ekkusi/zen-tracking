@@ -26,7 +26,6 @@ import {
   resolvers as challengeResolvers,
 } from "./challenge/challenge";
 
-
 import prisma from "./client";
 import ValidationError from "../utils/ValidationError";
 import dataLoaders from "./loaders";
