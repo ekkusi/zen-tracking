@@ -115,6 +115,10 @@ export const resolvers: Resolvers = {
     },
     editMarking: async (_, { id, marking }, { prisma, loaders }) => {
       console.log("editMarking args:", JSON.stringify(marking));
+      // Check validity and throw error if not valid
+      const validity = await ChallengeValidator.validateMarkingInput(marking);
+      if (validity instanceof ValidationError) throw validity;
+
       const editMarking = await prisma.marking.update({
         where: { id },
         data: ChallengeMapper.mapEditMarkingInput(marking),

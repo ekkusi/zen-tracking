@@ -1,5 +1,5 @@
 import { addDays, format, startOfDay } from "date-fns";
-import { MutationAddMarkingArgs } from "../../types/schema";
+import { MarkingInput, MutationAddMarkingArgs } from "../../types/schema";
 import ValidationError from "../../utils/ValidationError";
 import prisma from "../client";
 
@@ -26,6 +26,23 @@ export default class ChallengeValidator {
     if (markingInBetween) {
       return new ValidationError(
         `Olet jo merkannut päivälle ${format(dateToCheck, "yyyy-MM-dd")}.`
+      );
+    }
+    if (args.marking) {
+      const validateInput = ChallengeValidator.validateMarkingInput(
+        args.marking
+      );
+      if (typeof validateInput !== "boolean") return validateInput;
+    }
+    return true;
+  }
+
+  public static async validateMarkingInput(
+    input: MarkingInput
+  ): Promise<boolean | ValidationError> {
+    if (input.comment && input.comment.length > 2000) {
+      return new ValidationError(
+        `Merkkauksen kommentti saa olla enintään 2000 merkkiä pitkä.`
       );
     }
     return true;
