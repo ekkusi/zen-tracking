@@ -1,4 +1,8 @@
-import { User } from "@ekeukko/zen-tracking-backend/lib/types/user";
+import { User as BaseUser, ChallengeParticipation } from "@ekeukko/zen-tracking-backend/lib/types/schema";
+
+export type User = BaseUser & {
+  activeParticipation?: ChallengeParticipation;
+};
 
 export type ActionTypes = {
   updateUser: (user: User | null) => void;

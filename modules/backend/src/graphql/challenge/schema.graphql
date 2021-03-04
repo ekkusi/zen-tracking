@@ -4,17 +4,19 @@
 # Above imports are for graphql-code-generator
 
 extend type Query {
-  getChallenge(id: ID!): Challenge!
+  getChallenge(id: ID!): Challenge
   getChallenges: [Challenge!]!
+  getParticipations(challengeId: ID!): [ChallengeParticipation!]!
+  getMarkings(participationId: ID!): [Marking!]!
 }
 
 extend type Mutation {
   createChallenge(challenge: CreateChallengeInput!): Challenge!
-  updateChallenge(args: UpdateChallengeInput!): Challenge!
+  updateChallenge(id: ID!, args: UpdateChallengeInput!): Challenge!
   deleteChallenge(id: ID!): Boolean!
   createParticipation(challengeId: ID!, userName: ID!): ChallengeParticipation!
   deleteParticipation(id: ID!): Boolean!
-  addMarking(userName: ID!, participationId: ID!, marking: MarkingInput): Marking!
+  addMarking(participationId: ID!, marking: MarkingInput): Marking!
   editMarking(id: ID!, marking: MarkingInput!): Marking!
   deleteMarking(id: ID!): Boolean!
 }
@@ -45,13 +47,15 @@ type ChallengeParticipation {
 input CreateChallengeInput {
   name: String!
   status: ChallengeStatus!
-  creatorId: ID!
+  description: String!
+  creatorName: ID!
   startDate: Date
   endDate: Date
 }
 
 input UpdateChallengeInput {
   name: String
+  description: String
   status: ChallengeStatus
   startDate: Date
   endDate: Date

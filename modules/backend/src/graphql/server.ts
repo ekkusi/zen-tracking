@@ -21,16 +21,18 @@ import {
   resolvers as userResolvers,
 } from "./user/user";
 
-import { typeDef as challengeTypeDef } from "./challenge/challenge";
+import {
+  typeDef as challengeTypeDef,
+  resolvers as challengeResolvers,
+} from "./challenge/challenge";
 
-import createLoaders from "./loaders";
 
 import prisma from "./client";
 import ValidationError from "../utils/ValidationError";
+import dataLoaders from "./loaders";
 
 export default (app: Application): ApolloServer => {
-  const loaders = createLoaders(prisma);
-  const context = { prisma, loaders };
+  const context = { prisma, loaders: dataLoaders };
 
   const queryTypeDef = gql`
     type Query {
@@ -51,7 +53,8 @@ export default (app: Application): ApolloServer => {
   const resolvers = merge(
     {},
     customScalarResolvers,
-    userResolvers as IResolvers
+    userResolvers as IResolvers,
+    challengeResolvers as IResolvers
   );
 
   const schema = makeExecutableSchema({

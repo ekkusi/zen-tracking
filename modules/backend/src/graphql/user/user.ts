@@ -5,12 +5,9 @@ import { User } from "@prisma/client";
 import { hash, compare } from "../../utils/auth";
 import {
   Resolvers as UserResolvers,
-  ResolversTypes,
-} from "../../types/user-resolvers";
-import { UserCheckStatus } from "../../types/user";
-import { UserMapper } from "./UserMapper";
-import { UserValidator } from "./UserValidator";
-import ValidationError from "../../utils/ValidationError";
+} from "../../types/resolvers";
+import { UserCheckStatus } from "../../types/schema";
+import { loaderResetors } from "../loaders";
 
 // Construct a schema, using GraphQL schema language
 export const typeDef = readFileSync(
@@ -21,6 +18,13 @@ export const typeDef = readFileSync(
 export const resolvers: UserResolvers = {
   User: {
     isPrivate: (user) => user.is_private,
+    participations: async ({ name }, _, { loaders: { userParticipationsLoader }}) => {
+      const participations = await userParticipationsLoader.load(name);
+      console.log(
+        `User.participations : ${JSON.stringify(participations)}`
+      );
+      return participations;
+    },
   },
   Query: {
     getUser: async (_, { name }, { prisma }) => {
@@ -72,6 +76,14 @@ export const resolvers: UserResolvers = {
         data: { ...args, is_private: args.isPrivate || undefined },
       });
       return user;
+    },
+    deleteUser: async (_, { name }, { prisma, loaders }) => {
+      // Clear participations loader cache
+      await loaderResetors.clearParticipationsCacheByUser(name, loaders);
+      // This is temp solution, because prisma doesn't support NOT NULL constraint and ON DELETE CASCADE. Prisma delete results in relation delete violation.
+      const deletedUsers = await prisma.$executeRaw(`DELETE FROM "User" WHERE name='${name}';`);
+      if (deletedUsers > 0) return true; // If more than 0 rows are affected by above query
+      return false;
     },
   },
 };

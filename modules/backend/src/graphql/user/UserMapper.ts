@@ -1,5 +1,5 @@
 import { User as PrismaUser } from "@prisma/client";
-import { User } from "../../types/user";
+import { User } from "../../types/schema";
 
 export class UserMapper {
   public static mapUser(user: PrismaUser): User {

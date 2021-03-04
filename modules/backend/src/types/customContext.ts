@@ -1,9 +1,12 @@
-import { PrismaClient } from "@prisma/client";
+import { Challenge, ChallengeParticipation, Marking, PrismaClient, User } from "@prisma/client";
 import DataLoader from "dataloader";
-import { MarkingsLoadResult } from "./dataLoader";
 
 export type DataLoaders = {
-  markingLoader: DataLoader<string, MarkingsLoadResult, string>;
+  markingsLoader: DataLoader<string, Marking[], string>;
+  challengeLoader: DataLoader<string, Challenge, string>;
+  userLoader: DataLoader<string, User, string>;
+  challengeParticipationsLoader: DataLoader<string, ChallengeParticipation[], string>;
+  userParticipationsLoader: DataLoader<string, ChallengeParticipation[], string>;
 };
 
 export type CustomContext = {

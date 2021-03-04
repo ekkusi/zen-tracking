@@ -35,7 +35,7 @@ echo
 echo -e "Dumping db from: $databaseUrl:"
 echo -e "Dumping db to: $filePath \n"
 
-pg_dump $databaseUrl --file=$filePath --verbose --clean --no-owner --schema-only --no-privileges --if-exists
+pg_dump $databaseUrl --file=$filePath --verbose --clean --no-owner --no-privileges --if-exists
 
 echo "Done!"
 exit 0

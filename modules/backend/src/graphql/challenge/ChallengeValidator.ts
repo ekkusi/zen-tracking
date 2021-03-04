@@ -3,7 +3,7 @@ import { addDays, format, startOfDay } from "date-fns";
 import ValidationError from "../../utils/ValidationError";
 import prisma from "../client";
 
-export class UserValidator {
+export default class ChallengeValidator {
   public static async validateAddMarking(
     args: MutationAddMarkingArgs
   ): Promise<boolean | ValidationError> {
