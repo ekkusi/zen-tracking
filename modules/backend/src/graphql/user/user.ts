@@ -91,20 +91,21 @@ export const resolvers: UserResolvers = {
       loaders.markingLoader.clear(createdMarking.user_name);
       return UserMapper.mapMarking(createdMarking);
     },
-    editMarking: async (_, { id, marking }, { prisma, loaders }) => {
-      console.log("editMarking args:", JSON.stringify(marking));
-      try {
-        const editMarking = await prisma.marking.update({
-          where: { id },
-          data: UserMapper.mapEditMarkingInput(marking),
-        });
+    editMarking: async (_, args, { prisma, loaders }) => {
+      console.log("editMarking args:", JSON.stringify(args));
+      const { id, marking } = args;
+      // Check validity and throw error if not valid
+      const validity = await UserValidator.validateMarkingInput(marking);
+      if (validity instanceof ValidationError) throw validity;
 
-        // Clear markingLoader cache for user after update
-        loaders.markingLoader.clear(editMarking.user_name);
-        return UserMapper.mapMarking(editMarking);
-      } catch (error) {
-        throw new Error(`editMarking error: marking with id ${id} not found`);
-      }
+      const editMarking = await prisma.marking.update({
+        where: { id },
+        data: UserMapper.mapEditMarkingInput(marking),
+      });
+
+      // Clear markingLoader cache for user after update
+      loaders.markingLoader.clear(editMarking.user_name);
+      return UserMapper.mapMarking(editMarking);
     },
     deleteMarking: async (_, { id }, { prisma, loaders }) => {
       try {

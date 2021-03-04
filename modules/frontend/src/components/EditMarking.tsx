@@ -39,6 +39,8 @@ const defaultFormValues: FormValues = {
   comment: "",
 };
 
+const MAX_COMMENT_LENGTH = 2000;
+
 const EditMarking = ({
   marking,
   date,
@@ -238,6 +240,7 @@ const EditMarking = ({
             placeholder="Päivä meni ihan kivasti... vähän meinas demonit iskeä, mutta onneks löysin sisäisen Excaliburini ja karkotin ne takasin syövereihinsä:)"
             type="text"
             value={formValues.comment}
+            maxLength={MAX_COMMENT_LENGTH}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
               setFormValues({
                 ...formValues,
@@ -245,6 +248,9 @@ const EditMarking = ({
               })
             }
           />
+          <Text as="span" display="block" color="secondary" fontSize="sm">
+            {formValues.comment.length}/{MAX_COMMENT_LENGTH} merkkiä
+          </Text>
         </FormControl>
         {error && <Text color="warning">{error}</Text>}
       </Stack>
