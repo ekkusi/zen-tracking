@@ -16,7 +16,7 @@ export class UserValidator {
     const nextDayDate = addDays(startOfDayDate, 1);
     const markingInBetween = await prisma.marking.findFirst({
       where: {
-        user_name: "eke",
+        user_name: args.userName,
         date: {
           lte: nextDayDate.toISOString(),
           gte: startOfDayDate.toISOString(),
