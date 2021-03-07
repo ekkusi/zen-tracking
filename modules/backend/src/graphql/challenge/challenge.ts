@@ -1,12 +1,10 @@
 import { readFileSync } from "fs";
 import path from "path";
 import { formatIsoString } from "../../utils/dateUtils";
-import { ChallengeStatus } from "../../types/schema";
 
 import { Resolvers } from "../../types/resolvers";
 import { ChallengeMapper } from "./ChallengeMapper";
 import ChallengeValidator from "./ChallengeValidator";
-import ValidationError from "../../utils/ValidationError";
 import { loaderResetors } from "../loaders";
 
 // Construct a schema, using GraphQL schema language
@@ -19,9 +17,6 @@ export const resolvers: Resolvers = {
   ChallengeParticipation: {
     markings: async ({ id }, _, { loaders: { markingsLoader } }) => {
       const markings = await markingsLoader.load(id);
-      console.log(
-        `ChallengeParticipation.markings : ${JSON.stringify(markings)}`
-      );
       return markings;
     },
     challenge: async (
@@ -40,22 +35,20 @@ export const resolvers: Resolvers = {
   },
   Challenge: {
     creator: async ({ creator_name }, _, { loaders: { userLoader } }) => {
-      const user = await userLoader.load(creator_name || "");
+      const user = await userLoader.load(creator_name);
       return user;
     },
     endDate: ({ end_date }) => (end_date ? formatIsoString(end_date) : null),
     startDate: ({ start_date }) =>
       start_date ? formatIsoString(start_date) : null,
-    status: ({ status }) => status as ChallengeStatus,
+    status: ({ start_date, end_date }) =>
+      ChallengeMapper.mapChallengeStatus(start_date, end_date),
     participations: async (
       { id },
       _,
       { loaders: { challengeParticipationsLoader } }
     ) => {
       const participations = await challengeParticipationsLoader.load(id);
-      console.log(
-        `Challenge.participations : ${JSON.stringify(participations)}`
-      );
       return participations;
     },
   },
@@ -69,15 +62,16 @@ export const resolvers: Resolvers = {
       });
       return challenge;
     },
-    getChallenges: async (_, __, { prisma }) => {
-      console.log("getChallenges starting");
+    getChallenges: async (_, __, { prisma, loaders }) => {
+      loaders.userLoader.clearAll();
+      loaders.challengeParticipationsLoader.clearAll();
+      loaders.challengeLoader.clearAll();
       const challenges = await prisma.challenge.findMany();
-      console.log(`getChallenges result: ${JSON.stringify(challenges)}`);
       return challenges || [];
     },
-    getParticipations: async (_, { challengeId }, { prisma }) => {
+    getUserParticipations: async (_, { userName }, { prisma }) => {
       const participations = await prisma.challengeParticipation.findMany({
-        where: { challenge_id: challengeId },
+        where: { user_name: userName },
       });
       return participations;
     },
@@ -96,11 +90,11 @@ export const resolvers: Resolvers = {
     ) => {
       console.log("addMarking args:", JSON.stringify(marking));
       // Validate marking
-      const validate = await ChallengeValidator.validateAddMarking({
+      const validationError = await ChallengeValidator.validateAddMarking({
         participationId,
         marking,
       });
-      if (validate instanceof ValidationError) throw validate;
+      if (validationError) throw validationError;
 
       const createdMarking = await prisma.marking.create({
         data: ChallengeMapper.mapCreateMarkingInput(
@@ -116,8 +110,10 @@ export const resolvers: Resolvers = {
     editMarking: async (_, { id, marking }, { prisma, loaders }) => {
       console.log("editMarking args:", JSON.stringify(marking));
       // Check validity and throw error if not valid
-      const validity = await ChallengeValidator.validateMarkingInput(marking);
-      if (validity instanceof ValidationError) throw validity;
+      const validationError = await ChallengeValidator.validateMarkingInput(
+        marking
+      );
+      if (validationError) throw validationError;
 
       const editMarking = await prisma.marking.update({
         where: { id },

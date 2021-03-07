@@ -6,6 +6,10 @@
 - Yarn
 - Docker
 
+### Optional
+
+- Python, tesseract and fin.traineddata, for [generate-quotes](#generate-quotes)
+
 ## Installation and setup
 
 - Clone this repository
@@ -14,10 +18,20 @@
   git clone https://bitbucket.wihuri.fi/scm/prav/pravda-gdsn-admin.git
   ```
 
-- Install packages
+- Install packages, generate prisma client and build backend
   ```bash
-  yarn
+  yarn setup
   ```
+
+  Which runs all these:
+
+    ```bash
+      yarn install
+      yarn generate-prisma
+      yarn build:backend
+    ```
+
+On first setup, you also need to:
 
 ### Setup database
 
@@ -37,9 +51,9 @@ If you have database running through docker-compose, you can do this manually by
 
 Default email postgreadmin is "default@email.com" and password is "password"
 
-- Import database dump (needs to be done on first start, works for database running through docker-compose):
+- Import database dump and generate mock data (needs to be done on first start, works for database running through docker-compose):
   ```bash
-  yarn postgreimport
+  yarn setup-db-and-prisma
   ```
 
 ## Develop
@@ -55,6 +69,15 @@ Default email postgreadmin is "default@email.com" and password is "password"
   yarn develop
   ```
 
+- For better frontend logging, run these separately (in frontend folder):
+  ```bash
+  yarn start-react 
+  yarn apollo:update-types --watch
+  ```
+  Apollo-codegen logging doesn't show all (at the time of writing this) the logs in a best way when ran with `concurrently`,
+  so it is advised to run commands shown above separately for a better development experience. If you don't need to update
+  query typing generation (`apollo client:codegen`), you can leave the latter command out. 
+
 ## Build modules and run production build
 
 - Build modules
@@ -68,12 +91,20 @@ Default email postgreadmin is "default@email.com" and password is "password"
 
 # Other
 
-### Generate backend types from graphql (do this after updating .graphql files)
+### Generate backend types from graphql (do this after updating .graphql files, normally this is running on watch with develop, so no need to worry)
 
 NOTE: Backend needs to be running to run this. Graphql-code-generator fetches graphql schema from http://localhost:4000/graphql to take types from.
 
 ```bash
-yarn generate:backend
+yarn generate-types:backend
+```
+
+### Update frontend graphql query types
+
+NOTE: Backend needs to be running to run this. Apollo client:codegen fetches graphql schema from http://localhost:4000/graphql to take types from.
+
+```bash
+yarn generate-types:frontend
 ```
 
 ### Update backend prisma model and client (do this after modifying database models)

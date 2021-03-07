@@ -2,10 +2,12 @@ import { readFileSync } from "fs";
 import path from "path";
 
 import { User } from "@prisma/client";
+import ValidationError from "@/utils/ValidationError";
 import { hash, compare } from "../../utils/auth";
 import { Resolvers as UserResolvers } from "../../types/resolvers";
 import { UserCheckStatus } from "../../types/schema";
 import { loaderResetors } from "../loaders";
+import UserValidator from "./UserValidator";
 
 // Construct a schema, using GraphQL schema language
 export const typeDef = readFileSync(
@@ -22,7 +24,7 @@ export const resolvers: UserResolvers = {
       { loaders: { userParticipationsLoader } }
     ) => {
       const participations = await userParticipationsLoader.load(name);
-      console.log(`User.participations : ${JSON.stringify(participations)}`);
+      // console.log(`User.participations : ${JSON.stringify(participations)}`);
       return participations;
     },
   },
@@ -60,7 +62,9 @@ export const resolvers: UserResolvers = {
         return { status: UserCheckStatus.InvalidPassword };
       }
       const hashedPassword = await hash(password);
-      // If user is not created, create user
+      // If user is not created, create user after validating
+      const validationError = UserValidator.validateCreateUser(name);
+      if (validationError) throw validationError;
       const createdUser = await prisma.user.create({
         data: { name, password: hashedPassword },
       });

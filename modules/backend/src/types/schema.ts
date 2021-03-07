@@ -25,7 +25,7 @@ export type Query = {
   checkUser: UserCheckResult;
   getChallenge?: Maybe<Challenge>;
   getChallenges: Array<Challenge>;
-  getParticipations: Array<ChallengeParticipation>;
+  getUserParticipations: Array<ChallengeParticipation>;
   getMarkings: Array<Marking>;
 };
 
@@ -42,8 +42,8 @@ export type QueryGetChallengeArgs = {
   id: Scalars["ID"];
 };
 
-export type QueryGetParticipationsArgs = {
-  challengeId: Scalars["ID"];
+export type QueryGetUserParticipationsArgs = {
+  userName: Scalars["ID"];
 };
 
 export type QueryGetMarkingsArgs = {
@@ -132,8 +132,9 @@ export type UserCheckResult = {
 
 export enum ChallengeStatus {
   Suggestion = "SUGGESTION",
+  Upcoming = "UPCOMING",
   Active = "ACTIVE",
-  Closed = "CLOSED",
+  Ended = "ENDED",
 }
 
 export type Challenge = {
@@ -157,7 +158,6 @@ export type ChallengeParticipation = {
 
 export type CreateChallengeInput = {
   name: Scalars["String"];
-  status: ChallengeStatus;
   description: Scalars["String"];
   creatorName: Scalars["ID"];
   startDate?: Maybe<Scalars["Date"]>;
@@ -167,7 +167,6 @@ export type CreateChallengeInput = {
 export type UpdateChallengeInput = {
   name?: Maybe<Scalars["String"]>;
   description?: Maybe<Scalars["String"]>;
-  status?: Maybe<ChallengeStatus>;
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
 };

@@ -11,7 +11,6 @@ model Challenge {
   id                     String                   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name                   String                   @db.VarChar(254)
   description            String
-  status                 challenge_status
   creator_name           String                   @db.VarChar(254)
   start_date             DateTime?                @db.Timestamptz(6)
   end_date               DateTime?                @db.Timestamptz(6)
@@ -30,7 +29,7 @@ model ChallengeParticipation {
 
 model Marking {
   id                     String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  date                   DateTime               @default(now()) @db.Timestamptz(6)
+  date                   DateTime               @db.Timestamptz(6)
   participation_id       String                 @db.Uuid
   comment                String?                @db.VarChar(2000)
   ChallengeParticipation ChallengeParticipation @relation(fields: [participation_id], references: [id])
@@ -47,10 +46,4 @@ model User {
   is_private             Boolean                  @default(false)
   Challenge              Challenge[]
   ChallengeParticipation ChallengeParticipation[]
-}
-
-enum challenge_status {
-  SUGGESTION
-  ACTIVE
-  CLOSED
 }

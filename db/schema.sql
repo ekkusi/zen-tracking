@@ -18,16 +18,13 @@ CREATE TABLE "Quote" (
   quote varchar(254) NOT NULL
 );
 
-CREATE TYPE challenge_status AS ENUM ('SUGGESTION' , 'ACTIVE' , 'CLOSED');
-
 CREATE TABLE "Challenge" (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   name varchar(254) NOT NULL,
   description text NOT NULL,
-  status challenge_status NOT NULL,
   creator_name varchar(254) NOT NULL,
   start_date timestamp with time zone,
-  end_date timestamp with time zone CHECK (start_date > end_date), 
+  end_date timestamp with time zone CHECK (start_date < end_date), 
   FOREIGN KEY (creator_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -41,22 +38,39 @@ CREATE TABLE "ChallengeParticipation" (
 
 CREATE TABLE "Marking" (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  date timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  date timestamp with time zone NOT NULL,
   participation_id uuid NOT NULL,
   comment varchar(2000),
   FOREIGN KEY (participation_id) REFERENCES "ChallengeParticipation"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-INSERT INTO "User" (name, password, is_private)
-VALUES 
-  ('Erkkipena', 'salasana', true),
-  ('Maakari', 'salasana', false);
+-- ################## Mock data, commented because this comes from backend init-mock-data scripts ############### --
 
-INSERT INTO "Challenge" (name, description, status, creator_name)
-VALUES ('Lenkittelyvä', 'Joka päivä jonkinlainen lenkki, kävellen tai juosten', 'SUGGESTION', 'Maakari');
+-- $2b$10$k1s1L0VXxCz48AKsRUDKEOGXhgJmihXhShEgFeh3JWfkmTXNlxmfe -> salasana, all users password are salasana in mock
+-- INSERT INTO "User" (name, password, is_private)
+-- VALUES 
+--   ('Erkkipena', '$2b$10$k1s1L0VXxCz48AKsRUDKEOGXhgJmihXhShEgFeh3JWfkmTXNlxmfe', true),
+--   ('Maakari', '$2b$10$k1s1L0VXxCz48AKsRUDKEOGXhgJmihXhShEgFeh3JWfkmTXNlxmfe', false),
+--   ('ekeukko', '$2b$10$k1s1L0VXxCz48AKsRUDKEOGXhgJmihXhShEgFeh3JWfkmTXNlxmfe', false),
+--   ('Marttila', '$2b$10$k1s1L0VXxCz48AKsRUDKEOGXhgJmihXhShEgFeh3JWfkmTXNlxmfe', false);
 
-INSERT INTO "ChallengeParticipation" (challenge_id, user_name)
-VALUES ((SELECT id FROM "Challenge" WHERE name = 'Lenkittelyvä'), 'Erkkipena');
 
-INSERT INTO "Marking" (participation_id, comment)
-VALUES ((SELECT id FROM "ChallengeParticipation" WHERE user_name = 'Erkkipena'), 'Ihanpa mukava lenkki');
+-- INSERT INTO "Challenge" (name, description, creator_name)
+-- VALUES 
+--   ('Lenkittelyvä - käynnissä oleva', 'Joka päivä jonkinlainen lenkki, kävellen tai juosten',  'ekeukko'),
+--   ('Meditointia - mennyt', 'Joka päivä jonkinlainen lenkki, kävellen tai juosten',  'Maakari'),
+--   ('Raakavegaanius - tuleva', 'Joka päivä jonkinlainen lenkki, kävellen tai juosten','Erkkipena'),
+--   ('Raakavegaanius - ehdotus', 'Joka päivä jonkinlainen lenkki, kävellen tai juosten', 'Maakari');
+
+-- INSERT INTO "ChallengeParticipation" (challenge_id, user_name)
+-- VALUES ((SELECT id FROM "Challenge" WHERE name = 'Lenkittelyvä - käynnissä oleva'), 'Erkkipena');
+
+-- INSERT INTO "Marking" (participation_id, comment, date)
+-- VALUES 
+--   ((SELECT id FROM "ChallengeParticipation" WHERE user_name = 'Erkkipena'), 'Ihanpa mukava lenkki', '2021-03-05 12:00:00+02'),
+--   ((SELECT id FROM "ChallengeParticipation" WHERE user_name = 'Erkkipena'), 'Ihanpa mukava lenkki', '2021-03-04 12:00:00+02'),
+--   ((SELECT id FROM "ChallengeParticipation" WHERE user_name = 'Erkkipena'), 'Ihanpa mukava lenkki', '2021-03-03 12:00:00+02'),
+--   ((SELECT id FROM "ChallengeParticipation" WHERE user_name = 'Erkkipena'), 'Ihanpa mukava lenkki', '2021-03-02 12:00:00+02'),
+--   ((SELECT id FROM "ChallengeParticipation" WHERE user_name = 'Erkkipena'), 'Ihanpa mukava lenkki', '2021-03-01 12:00:00+02'),
+--   ((SELECT id FROM "ChallengeParticipation" WHERE user_name = 'Erkkipena'), 'Ihanpa mukava lenkki', '2021-02-28 12:00:00+02'),
+--   ((SELECT id FROM "ChallengeParticipation" WHERE user_name = 'Erkkipena'), 'Ihanpa mukava lenkki', '2021-02-28 12:00:00+02');

@@ -1,0 +1,103 @@
+{
+  "users": [
+    {
+      "name": "Erkkipena",
+      "password": "salasana",
+      "is_private": true
+    },
+    {
+      "name": "Maakari",
+      "password": "salasana",
+      "is_private": false
+    },
+    {
+      "name": "ekeukko",
+      "password": "salasana",
+      "is_private": false
+    },
+    {
+      "name": "Marttila",
+      "password": "salasana",
+      "is_private": false
+    }
+  ],
+  "challenges": [
+    {
+      "name": "Lenkittelyvä - käynnissä oleva",
+      "description": "Joka päivä jonkinlainen lenkki, kävellen tai juosten",
+      "creator_name": "ekeukko",
+      "start_date": "2021-03-01T00:00:00+02:00",
+      "end_date": "2021-03-30T00:00:00+02:00",
+      "participations": [
+        {
+          "user_name": "ekeukko",
+          "markings": [
+            {
+              "comment": "Ihanpa mukava lenkki",
+              "date": "2021-03-05T12:00:00+02:00"
+            },
+            {
+              "comment": "Ihanpa mukava lenkki",
+              "date": "2021-03-04T12:00:00+02:00"
+            },
+            {
+              "comment": "Ihanpa mukava lenkki",
+              "date": "2021-03-03T12:00:00+02:00"
+            }
+          ]
+        },
+        {
+          "user_name": "Maakari",
+          "markings": [
+            {
+              "comment": "Kakka lenkki",
+              "date": "2021-03-04T12:00:00+02:00"
+            },
+            {
+              "comment": "Ihanpa mukava lenkki",
+              "date": "2021-03-02T12:00:00+02:00"
+            },
+            {
+              "comment": "Kakka lenkki",
+              "date": "2021-03-01T12:00:00+02:00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Meditointia - mennyt",
+      "description": "Istu ja ajattele joka päivä",
+      "creator_name": "ekeukko",
+      "start_date": "2021-02-01T00:00:00+02:00",
+      "end_date": "2021-02-28T23:59:59+02:00",
+      "participations": [
+        {
+          "user_name": "ekeukko",
+          "markings": [
+            {
+              "comment": "Tulipaha ajateltua 10min",
+              "date": "2021-02-26T12:00:00+02:00"
+            },
+            {
+              "comment": "Ajattelua 10min",
+              "date": "2021-02-27T12:00:00+02:00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Raakavegaanius - tuleva",
+      "description": "Kuukauden ajan vihanneksia ja hetelmiä. Kylmänä vaan.",
+      "creator_name": "Maakari",
+      "start_date": "2021-04-01T00:00:00+02:00",
+      "end_date": "2021-04-30T23:59:59+02:00"
+    },
+    {
+      "name": "Budjettikuu - ehdotus",
+      "description": "Kuukausi 50e/viikko budjetilla.",
+      "creator_name": "Erkkipena"
+    }
+  ]
+}

@@ -6,7 +6,7 @@
 extend type Query {
   getChallenge(id: ID!): Challenge
   getChallenges: [Challenge!]!
-  getParticipations(challengeId: ID!): [ChallengeParticipation!]!
+  getUserParticipations(userName: ID!): [ChallengeParticipation!]!
   getMarkings(participationId: ID!): [Marking!]!
 }
 
@@ -23,8 +23,9 @@ extend type Mutation {
 
 enum ChallengeStatus {
   SUGGESTION
+  UPCOMING
   ACTIVE
-  CLOSED
+  ENDED
 }
 
 type Challenge {
@@ -46,7 +47,6 @@ type ChallengeParticipation {
 
 input CreateChallengeInput {
   name: String!
-  status: ChallengeStatus!
   description: String!
   creatorName: ID!
   startDate: Date
@@ -56,7 +56,6 @@ input CreateChallengeInput {
 input UpdateChallengeInput {
   name: String
   description: String
-  status: ChallengeStatus
   startDate: Date
   endDate: Date
 }

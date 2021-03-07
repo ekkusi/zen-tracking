@@ -6,7 +6,7 @@ import prisma from "../client";
 export default class ChallengeValidator {
   public static async validateAddMarking(
     args: MutationAddMarkingArgs
-  ): Promise<boolean | ValidationError> {
+  ): Promise<ValidationError | null> {
     let dateToCheck;
     // If date is given, use that, otherwise fallback to current day
     if (args.marking?.date) dateToCheck = new Date(args.marking.date);
@@ -32,19 +32,19 @@ export default class ChallengeValidator {
       const validateInput = ChallengeValidator.validateMarkingInput(
         args.marking
       );
-      if (typeof validateInput !== "boolean") return validateInput;
+      if (validateInput instanceof ValidationError) return validateInput;
     }
-    return true;
+    return null;
   }
 
   public static async validateMarkingInput(
     input: MarkingInput
-  ): Promise<boolean | ValidationError> {
+  ): Promise<ValidationError | null> {
     if (input.comment && input.comment.length > 2000) {
       return new ValidationError(
         `Merkkauksen kommentti saa olla enintään 2000 merkkiä pitkä.`
       );
     }
-    return true;
+    return null;
   }
 }

@@ -213,11 +213,11 @@ export type QueryResolvers<
     ParentType,
     ContextType
   >;
-  getParticipations?: Resolver<
+  getUserParticipations?: Resolver<
     Array<ResolversTypes["ChallengeParticipation"]>,
     ParentType,
     ContextType,
-    RequireFields<Types.QueryGetParticipationsArgs, "challengeId">
+    RequireFields<Types.QueryGetUserParticipationsArgs, "userName">
   >;
   getMarkings?: Resolver<
     Array<ResolversTypes["Marking"]>,
