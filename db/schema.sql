@@ -3,7 +3,6 @@ DROP TABLE IF EXISTS "ChallengeParticipation";
 DROP TABLE IF EXISTS "Challenge";
 DROP TABLE IF EXISTS "User";
 DROP TABLE IF EXISTS "Quote";
-DROP TYPE IF EXISTS "challenge_status";
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 

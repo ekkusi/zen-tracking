@@ -19,23 +19,24 @@
   ```
 
 - Install packages, generate prisma client and build backend
+
   ```bash
   yarn setup
   ```
 
   Which runs all these:
 
-    ```bash
-      yarn install
-      yarn generate-prisma
-      yarn build:backend
-    ```
+  ```bash
+    yarn install
+    yarn generate-prisma
+    yarn build:backend
+  ```
 
 On first setup, you also need to:
 
 ### Setup database
 
-- Set DATABASE_URL env variable to modules/backend/prisma .env file that points to live database.
+- Set DATABASE_URL env variable to modules/backend/prisma .env file that points to live database. If there is no .env file here yet, create one.
 
 If you want to use docker-compose to host database, DATABASE_URL should point to "postgresql://user:password@localhost:5432/zen-tracking"
 
@@ -65,18 +66,19 @@ Default email postgreadmin is "default@email.com" and password is "password"
   ```
 
 - Start backend and frontend development servers
+
   ```bash
   yarn develop
   ```
 
 - For better frontend logging, run these separately (in frontend folder):
   ```bash
-  yarn start-react 
+  yarn start-react
   yarn apollo:update-types --watch
   ```
   Apollo-codegen logging doesn't show all (at the time of writing this) the logs in a best way when ran with `concurrently`,
   so it is advised to run commands shown above separately for a better development experience. If you don't need to update
-  query typing generation (`apollo client:codegen`), you can leave the latter command out. 
+  query typing generation (`apollo client:codegen`), you can leave the latter command out.
 
 ## Build modules and run production build
 
