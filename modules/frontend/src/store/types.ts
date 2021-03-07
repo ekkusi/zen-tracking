@@ -1,15 +1,18 @@
-import { User as BaseUser, ChallengeParticipation } from "@ekeukko/zen-tracking-backend/lib/types/schema";
-
-export type User = BaseUser & {
-  activeParticipation?: ChallengeParticipation;
-};
+import {
+  ParsedChallengeParticipation,
+  ParsedUser,
+} from "types/parsedBackendTypes";
 
 export type ActionTypes = {
-  updateUser: (user: User | null) => void;
+  updateUser: (user: ParsedUser | null) => void;
   updateError: (error: string | null) => void;
+  updateActiveParticipation: (
+    participation: ParsedChallengeParticipation | null
+  ) => void;
 };
 
 export type GlobalState = {
-  currentUser: User | null;
+  currentUser: ParsedUser;
+  activeParticipation: ParsedChallengeParticipation | null;
   error: string | null;
 };

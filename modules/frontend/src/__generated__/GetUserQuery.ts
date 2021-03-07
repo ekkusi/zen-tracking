@@ -4,19 +4,19 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: getUser
+// GraphQL query operation: GetUserQuery
 // ====================================================
 
-export interface getUser_getUser {
+export interface GetUserQuery_getUser {
   __typename: "User";
   name: string;
   isPrivate: boolean;
 }
 
-export interface getUser {
-  getUser: getUser_getUser;
+export interface GetUserQuery {
+  getUser: GetUserQuery_getUser;
 }
 
-export interface getUserVariables {
+export interface GetUserQueryVariables {
   name: string;
 }

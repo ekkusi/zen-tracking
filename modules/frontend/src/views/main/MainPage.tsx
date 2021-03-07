@@ -8,6 +8,7 @@ import useGlobal from "store";
 import Heading from "components/primitives/Heading";
 import DateUtil from "util/DateUtil";
 import ImageModal from "components/general/ImageModal";
+import { Link } from "react-router-dom";
 import MarkingCalendar from "../../components/MarkingCalendar";
 import AddMarking from "../../components/EditMarking";
 
@@ -20,12 +21,15 @@ const MainPage = (): JSX.Element => {
     (store) => store.currentUser,
     (actions) => actions.updateUser
   );
+  const [activeParticipation] = useGlobal((store) => store.activeParticipation);
   const [quoteOfTheDayUrl, setQuoteOfTheDayUrl] = useState<string>();
 
   const hasUserMarkedToday = () => {
     return DateUtil.dateIsIn(
       new Date(),
-      user ? user.markings.map((it) => new Date(it.date)) : []
+      activeParticipation
+        ? activeParticipation.markings.map((it) => new Date(it.date))
+        : []
     );
   };
 
@@ -38,7 +42,7 @@ const MainPage = (): JSX.Element => {
   };
 
   return (
-    <Box pt="5">
+    <Box>
       <Flex
         flexDirection={{ base: "column", sm: "row" }}
         justifyContent={{ base: "center", sm: "flex-start" }}
@@ -116,7 +120,7 @@ const MainPage = (): JSX.Element => {
         />
       )}
       <Heading.H1 mt="5">
-        Tervehdys {user?.name} ja tervetuloa seuraamaan zenisi kasvamista :){" "}
+        Tervehdys {user.name} ja tervetuloa seuraamaan zenisi kasvamista :){" "}
       </Heading.H1>
       <Heading.H2 fontWeight="normal" mb={{ base: "6", md: "10" }}>
         <Text as="span" fontStyle="italic">
@@ -124,12 +128,20 @@ const MainPage = (): JSX.Element => {
         </Text>{" "}
         mikä haaste onkaan mielessä:) Kohta tullee mahollisuus tehä oma haaste!
       </Heading.H2>
-      {hasUserMarkedToday() ? (
-        <Text>Olet jo merkannut tänään</Text>
+      {!activeParticipation ? (
+        <Text>
+          Valitse haaste merkataksesi suoritus. Jos et ole liittynyt
+          haasteeseen, pääset tutustumaan ja liittymään haasteisiin{" "}
+          <Link to="/challenges">täältä.</Link>
+        </Text>
       ) : (
         <Flex justifyContent={{ base: "flex-start", sm: "center" }} mb="7">
           <AddMarking
-            openButtonLabel="Merkkaa päivän suoritus"
+            openButtonLabel={
+              hasUserMarkedToday()
+                ? "Olet jo merkannut tänään"
+                : "Merkkaa päivän suoritus"
+            }
             openButtonProps={{
               isDisabled: hasUserMarkedToday(),
               size: "lg",
@@ -145,17 +157,17 @@ const MainPage = (): JSX.Element => {
         </Flex>
       )}
       <Box>
-        {user && user.markings.length > 0 ? (
+        {activeParticipation && activeParticipation.markings.length > 0 ? (
           <>
             <Heading.H2 mb="4" textAlign={{ base: "left", sm: "center" }}>
               Putkesi pituus:{" "}
               <Text as="span">
                 {DateUtil.getDateStreak(
-                  user.markings.map((it) => new Date(it.date))
+                  activeParticipation.markings.map((it) => new Date(it.date))
                 )}{" "}
               </Text>
             </Heading.H2>
-            <MarkingCalendar markings={user.markings} />
+            <MarkingCalendar markings={activeParticipation.markings} />
           </>
         ) : (
           <>

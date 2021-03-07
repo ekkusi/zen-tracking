@@ -1,9 +1,8 @@
 import { gql } from "@apollo/client";
-import { UserCheckResult } from "@ekeukko/zen-tracking-backend/lib/types/user";
-import { userDataFragment } from "fragments";
+import { userDataFragment, markingDataFragment } from "fragments";
 
 export const CHECK_USER = gql`
-  query checkUser($name: ID!, $password: String!) {
+  query CheckUserQuery($name: ID!, $password: String!) {
     checkUser(name: $name, password: $password) {
       status
       user {
@@ -12,4 +11,19 @@ export const CHECK_USER = gql`
     }
   }
   ${userDataFragment}
+`;
+
+export const GET_USER_PARTICIPATIONS = gql`
+  query GetUserParticipationsQuery($userName: ID!) {
+    getUserParticipations(userName: $userName) {
+      id
+      challenge {
+        name
+      }
+      markings {
+        ...MarkingData
+      }
+    }
+  }
+  ${markingDataFragment}
 `;

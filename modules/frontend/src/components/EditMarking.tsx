@@ -1,14 +1,13 @@
-import { FetchResult, useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 import {
   Box,
-  Flex,
   FormControl,
   FormLabel,
   Stack,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/user";
+import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/schema";
 import ModalTemplate, {
   ModalTemplateProps,
 } from "components/general/ModalTemplate";
@@ -18,11 +17,20 @@ import React, { useEffect, useState } from "react";
 import useGlobal from "store";
 import DateUtil from "util/DateUtil";
 import {
-  AddMarkingMutationResult,
+  AddMarkingMutation,
+  AddMarkingMutationVariables,
+} from "views/main/__generated__/AddMarkingMutation";
+import {
+  DeleteMarkingMutation,
+  DeleteMarkingMutationVariables,
+} from "views/main/__generated__/DeleteMarkingMutation";
+import {
+  EditMarkingMutation,
+  EditMarkingMutationVariables,
+} from "views/main/__generated__/EditMarkingMutation";
+import {
   ADD_MARKING,
-  DeleteMarkingMutationResult,
   DELETE_MARKING,
-  EditMarkingMutationResult,
   EDIT_MARKING,
 } from "../views/main/queries";
 
@@ -46,10 +54,14 @@ const EditMarking = ({
   date,
   ...modalTemplateProps
 }: EditMarkingProps): JSX.Element => {
-  const [user, updateUser] = useGlobal(
-    (state) => state.currentUser,
-    (actions) => actions.updateUser
+  const [activeParticipation, updateActiveParticipation] = useGlobal(
+    (state) => state.activeParticipation,
+    (actions) => actions.updateActiveParticipation
   );
+  const updateError = useGlobal(
+    (state) => state.error,
+    (actions) => actions.updateError
+  )[1];
 
   const [formValues, setFormValues] = useState<FormValues>(defaultFormValues);
   const [isInitialStateSet, setIsInitialStateSet] = useState(false); // To check if initial state is set to avoid further re-renders
@@ -84,6 +96,14 @@ const EditMarking = ({
   }, [formValues, isInitialStateSet, marking]);
 
   const saveAndClose = async () => {
+    // This shouldn't get triggered, activeParticipation should be found if EditMarking is open
+    if (!activeParticipation) {
+      updateError(
+        "Ei voida tallentaa merkkausta, koska nykyistä haastetta ei ole valittuna"
+      );
+      return;
+    }
+
     setLoading(true);
     const { comment } = formValues;
 
@@ -92,24 +112,25 @@ const EditMarking = ({
       let newMarkings: Marking[] | null = null;
       // If marking exists, edit that
       if (marking) {
-        const result: FetchResult<EditMarkingMutationResult> = await client.mutate(
-          {
-            mutation: EDIT_MARKING,
-            variables: {
-              id: marking.id,
-              marking: {
-                comment,
-              },
+        const result = await client.mutate<
+          EditMarkingMutation,
+          EditMarkingMutationVariables
+        >({
+          mutation: EDIT_MARKING,
+          variables: {
+            id: marking.id,
+            marking: {
+              comment,
             },
-          }
-        );
-        if (result.data && user) {
+          },
+        });
+        if (result.data) {
           // Update edited marking if mutate returns data. User should always be defined here.
           const editedMarking = result.data.editMarking;
-          const editedMarkingIndex = user.markings.findIndex(
+          const editedMarkingIndex = activeParticipation.markings.findIndex(
             (it) => it.id === editedMarking.id
           );
-          newMarkings = [...user.markings];
+          newMarkings = [...activeParticipation.markings];
           if (editedMarkingIndex >= 0) {
             newMarkings[editedMarkingIndex] = editedMarking;
           } else {
@@ -120,27 +141,31 @@ const EditMarking = ({
       }
       // Otherwise create new marking
       else {
-        const result: FetchResult<AddMarkingMutationResult> = await client.mutate(
-          {
-            mutation: ADD_MARKING,
-            variables: {
-              marking: {
-                comment,
-                date,
-              },
-              userName: user?.name || null,
+        const result = await client.mutate<
+          AddMarkingMutation,
+          AddMarkingMutationVariables
+        >({
+          mutation: ADD_MARKING,
+          variables: {
+            marking: {
+              comment,
+              date,
             },
-          }
-        );
-        if (result.data && user)
+            participationId: activeParticipation.id,
+          },
+        });
+        if (result.data)
           // Add created marking if mutate returns data. User should always be defined here.
-          newMarkings = [...user.markings, result.data.addMarking];
+          newMarkings = [
+            ...activeParticipation.markings,
+            result.data.addMarking,
+          ];
       }
 
       // Update user markings in frontend also, no need to refetch from backend
-      if (newMarkings && user) {
-        updateUser({
-          ...user,
+      if (newMarkings) {
+        updateActiveParticipation({
+          ...activeParticipation,
           markings: newMarkings,
         });
       }
@@ -153,23 +178,33 @@ const EditMarking = ({
   };
 
   const deleteAndClose = async () => {
+    // This shouldn't get triggered, activeParticipation should be found if EditMarking is open
+    if (!activeParticipation) {
+      updateError(
+        "Ei voida poistaa merkkausta, koska nykyistä haastetta ei ole valittuna"
+      );
+      return;
+    }
     setLoading(true);
 
     try {
       if (marking) {
-        const {
-          data,
-        }: FetchResult<DeleteMarkingMutationResult> = await client.mutate({
+        const { data } = await client.mutate<
+          DeleteMarkingMutation,
+          DeleteMarkingMutationVariables
+        >({
           mutation: DELETE_MARKING,
           variables: {
             id: marking.id,
           },
         });
-        if (data && user) {
-          // Delete marking from user in frontend also, no need to refetch from backend
-          updateUser({
-            ...user,
-            markings: user.markings.filter((it) => it.id !== marking.id),
+        if (data) {
+          // Delete marking from activeParticipation in frontend also, no need to refetch from backend
+          updateActiveParticipation({
+            ...activeParticipation,
+            markings: activeParticipation.markings.filter(
+              (it) => it.id !== marking.id
+            ),
           });
         }
       } else {

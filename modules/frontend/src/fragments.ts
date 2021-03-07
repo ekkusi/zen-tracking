@@ -13,5 +13,14 @@ export const userDataFragment = gql`
     name
     isPrivate
   }
-  ${markingDataFragment}
+`;
+
+export const challengeDataFragment = gql`
+  fragment ChallengeData on Challenge {
+    id
+    name
+    status
+    startDate
+    endDate
+  }
 `;

@@ -13,7 +13,7 @@ const App = (): JSX.Element => {
       <ThemeProvider theme={theme}>
         <ApolloProvider>
           <BrowserRouter>
-            <Container maxWidth="1000px" pb="5">
+            <Container maxWidth="1000px" py="5">
               <Routes />
             </Container>
           </BrowserRouter>

@@ -29,7 +29,8 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently -n react,apollo-codegen \"yarn start-react\" \"yarn apollo:update-types --watch\"",
+    "start-react": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -37,7 +38,8 @@
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "stop": "kill -9 $(lsof -t -i:3000)",
     "gen:theme-typings": "chakra-cli tokens ./src/theme.ts --out=../../node_modules/@chakra-ui/theme/dist/types/custom-theme.d.ts",
-    "apollo:update-types": "apollo client:codegen --target typescript --globalTypesFile src/__generated__/globalTypes.ts && rm -rf __generated__"
+    "apollo:update-types": "apollo client:codegen --target typescript --globalTypesFile src/__generated__/globalTypes.ts",
+    "apollo:update-types-clean": "yarn apollo:update-types && rm -rf __generated__"
   },
   "browserslist": {
     "production": [

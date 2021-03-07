@@ -3,14 +3,17 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { ChallengeStatus } from "./globalTypes";
+
 // ====================================================
-// GraphQL mutation operation: deleteMarking
+// GraphQL fragment: ChallengeData
 // ====================================================
 
-export interface deleteMarking {
-  deleteMarking: boolean;
-}
-
-export interface deleteMarkingVariables {
+export interface ChallengeData {
+  __typename: "Challenge";
   id: string;
+  name: string;
+  status: ChallengeStatus;
+  startDate: any | null;
+  endDate: any | null;
 }

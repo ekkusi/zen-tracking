@@ -6,21 +6,21 @@
 import { MarkingInput } from "./../../../__generated__/globalTypes";
 
 // ====================================================
-// GraphQL mutation operation: addMarking
+// GraphQL mutation operation: AddMarkingMutation
 // ====================================================
 
-export interface addMarking_addMarking {
+export interface AddMarkingMutation_addMarking {
   __typename: "Marking";
   id: string;
   date: any;
   comment: string | null;
 }
 
-export interface addMarking {
-  addMarking: addMarking_addMarking;
+export interface AddMarkingMutation {
+  addMarking: AddMarkingMutation_addMarking;
 }
 
-export interface addMarkingVariables {
-  userName: string;
+export interface AddMarkingMutationVariables {
+  participationId: string;
   marking: MarkingInput;
 }

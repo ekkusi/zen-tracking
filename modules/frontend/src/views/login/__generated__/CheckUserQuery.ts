@@ -6,26 +6,26 @@
 import { UserCheckStatus } from "./../../../__generated__/globalTypes";
 
 // ====================================================
-// GraphQL query operation: checkUser
+// GraphQL query operation: CheckUserQuery
 // ====================================================
 
-export interface checkUser_checkUser_user {
+export interface CheckUserQuery_checkUser_user {
   __typename: "User";
   name: string;
   isPrivate: boolean;
 }
 
-export interface checkUser_checkUser {
+export interface CheckUserQuery_checkUser {
   __typename: "UserCheckResult";
   status: UserCheckStatus;
-  user: checkUser_checkUser_user | null;
+  user: CheckUserQuery_checkUser_user | null;
 }
 
-export interface checkUser {
-  checkUser: checkUser_checkUser;
+export interface CheckUserQuery {
+  checkUser: CheckUserQuery_checkUser;
 }
 
-export interface checkUserVariables {
+export interface CheckUserQueryVariables {
   name: string;
   password: string;
 }
