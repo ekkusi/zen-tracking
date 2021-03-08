@@ -31,13 +31,13 @@ type ButtonProps = Omit<ChakraButtonProps, "bg" | "color" | "variant"> & {
   variant?: string;
 };
 
-const Button = ({
+export const generateBaseButtonProps = ({
   color,
   bg,
   variant,
   size,
   ...rest
-}: ButtonProps): JSX.Element => {
+}: ButtonProps): ChakraButtonProps => {
   let variantProps: ButtonProps;
   switch (variant) {
     case "outline": {
@@ -101,8 +101,18 @@ const Button = ({
   }
 
   // Prioritize variantProps -> generic custom props -> BaseButtonProps
-  const props = { ...BaseButtonProps, ...rest, ...variantProps, ...sizeProps };
-  return <ChakraButton {...props} />;
+  const props: ChakraButtonProps = {
+    ...BaseButtonProps,
+    ...rest,
+    ...variantProps,
+    ...sizeProps,
+  };
+  return props;
+};
+
+const Button = (props: ButtonProps): JSX.Element => {
+  const formattedProps = generateBaseButtonProps(props);
+  return <ChakraButton {...formattedProps} />;
 };
 
 Button.defaultProps = {
@@ -112,6 +122,8 @@ Button.defaultProps = {
 };
 
 export default Button;
+
+/* IconButton */
 
 /* ----------- Some default styles for buttons ---------- */
 

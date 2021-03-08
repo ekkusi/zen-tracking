@@ -16,6 +16,8 @@ import {
   GetUserQuery,
   GetUserQueryVariables,
 } from "__generated__/GetUserQuery";
+import DesignPage from "views/design/DesignPage";
+import ViewContainer from "views/ViewContainer";
 
 const Routes = (): JSX.Element => {
   const [globalState, globalActions] = useGlobal();
@@ -92,12 +94,15 @@ const Routes = (): JSX.Element => {
           }
 
           return (
-            <Switch>
-              <Route exact path="/" render={() => <MainPage />} />
-              <Route path="/welcome" render={() => <WelcomePage />} />
-              <Route path="/challenges" render={() => <ChallengesPage />} />
-              <Route path="*" render={() => <NotFoundPage />} />
-            </Switch>
+            <ViewContainer>
+              <Switch>
+                <Route exact path="/" render={() => <MainPage />} />
+                <Route path="/welcome" render={() => <WelcomePage />} />
+                <Route path="/challenges" render={() => <ChallengesPage />} />
+                <Route path="/design" render={() => <DesignPage />} />
+                <Route path="*" render={() => <NotFoundPage />} />
+              </Switch>
+            </ViewContainer>
           );
         }}
       />

@@ -1,5 +1,5 @@
 import React from "react";
-import { ChakraProvider, Container } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter } from "react-router-dom";
 import ApolloProvider from "apollo/ApolloProvider";
 import Routes from "routes/Routes";
@@ -13,9 +13,7 @@ const App = (): JSX.Element => {
       <ThemeProvider theme={theme}>
         <ApolloProvider>
           <BrowserRouter>
-            <Container maxWidth="1000px" py="5">
-              <Routes />
-            </Container>
+            <Routes />
           </BrowserRouter>
         </ApolloProvider>
       </ThemeProvider>

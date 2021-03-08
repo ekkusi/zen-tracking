@@ -2,7 +2,7 @@ import { Box, Image, ImageProps, Text } from "@chakra-ui/react";
 import React from "react";
 import ModalTemplate from "./ModalTemplate";
 
-type ImageModalProps = ImageProps & {
+export type ImageModalProps = ImageProps & {
   isOpen: boolean;
   onClose: () => void;
   imgText?: string | JSX.Element;
