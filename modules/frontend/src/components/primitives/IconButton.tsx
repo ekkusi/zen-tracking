@@ -1,6 +1,7 @@
 import React from "react";
 import {
   ButtonProps,
+  forwardRef,
   IconButton as ChakraIconButton,
   IconButtonProps as ChakraIconButtonProps,
 } from "@chakra-ui/react";
@@ -13,9 +14,16 @@ type IconButtonProps = Omit<
   bg?: string;
   color?: string;
   variant?: string;
+  withRef?: boolean;
 };
 
-const IconButton = (props: IconButtonProps) => {
+const IconButtonDefaultProps = {
+  color: "white",
+  bg: "primary.regular",
+  variant: "solid",
+};
+
+const generateIconProps = (props: IconButtonProps): ChakraIconButtonProps => {
   const formattedProps = generateBaseButtonProps(props);
   let sizeProps: ButtonProps;
   switch (props.size) {
@@ -59,13 +67,25 @@ const IconButton = (props: IconButtonProps) => {
       };
     }
   }
-  return <ChakraIconButton {...props} {...formattedProps} {...sizeProps} />;
+  return { ...props, ...formattedProps, ...sizeProps };
 };
 
-IconButton.defaultProps = {
-  color: "white",
-  bg: "primary.regular",
-  variant: "solid",
+const IconButton = (props: IconButtonProps): JSX.Element => {
+  const formattedProps = generateIconProps(props);
+  return <ChakraIconButton {...formattedProps} />;
 };
+
+IconButton.defaultProps = IconButtonDefaultProps;
 
 export default IconButton;
+
+const IconButtonWithRef = forwardRef(
+  (props: IconButtonProps, ref): JSX.Element => {
+    const formattedProps = generateIconProps(props);
+    return <ChakraIconButton ref={ref} {...formattedProps} />;
+  }
+);
+
+export { IconButtonWithRef };
+
+IconButtonWithRef.defaultProps = IconButtonDefaultProps;

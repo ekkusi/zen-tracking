@@ -2,6 +2,7 @@ import { useApolloClient } from "@apollo/client";
 import {
   Box,
   Checkbox,
+  Container,
   Flex,
   FormControl,
   FormLabel,
@@ -133,7 +134,7 @@ const LoginPage = (): JSX.Element => {
   };
 
   return (
-    <Flex>
+    <Container maxWidth="1000px">
       <Box>
         <Heading.H1
           fontSize={{ base: "5xl", md: "6xl" }}
@@ -217,7 +218,7 @@ const LoginPage = (): JSX.Element => {
           </Stack>
         </Box>
       </Box>
-    </Flex>
+    </Container>
   );
 };
 

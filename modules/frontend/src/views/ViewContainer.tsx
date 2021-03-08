@@ -8,7 +8,7 @@ const ViewContainer = ({ children }: ViewContainerProps): JSX.Element => {
   return (
     <>
       <Navigation />
-      <Container maxWidth="1000px" pb="5" pt="50px">
+      <Container maxWidth="1000px" py="5">
         {children}
       </Container>
     </>

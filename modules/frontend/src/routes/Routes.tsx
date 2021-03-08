@@ -26,8 +26,6 @@ const Routes = (): JSX.Element => {
   const client = useApolloClient();
   const currentUser = localStorage.getItem("currentUser");
 
-  console.log(globalState);
-
   const isGlobalUserAuthorized = (): boolean => {
     return globalState.currentUser.name !== notAuthorizedUser.name;
   };
@@ -94,15 +92,37 @@ const Routes = (): JSX.Element => {
           }
 
           return (
-            <ViewContainer>
+            <>
               <Switch>
-                <Route exact path="/" render={() => <MainPage />} />
+                <Route
+                  exact
+                  path="/"
+                  render={() => (
+                    <ViewContainer>
+                      <MainPage />
+                    </ViewContainer>
+                  )}
+                />
+                <Route
+                  path="/challenges"
+                  render={() => (
+                    <ViewContainer>
+                      <ChallengesPage />{" "}
+                    </ViewContainer>
+                  )}
+                />
+                <Route
+                  path="/design"
+                  render={() => (
+                    <ViewContainer>
+                      <DesignPage />
+                    </ViewContainer>
+                  )}
+                />
                 <Route path="/welcome" render={() => <WelcomePage />} />
-                <Route path="/challenges" render={() => <ChallengesPage />} />
-                <Route path="/design" render={() => <DesignPage />} />
                 <Route path="*" render={() => <NotFoundPage />} />
               </Switch>
-            </ViewContainer>
+            </>
           );
         }}
       />

@@ -1,13 +1,31 @@
-import { Box, BoxProps, Flex, Text } from "@chakra-ui/react";
+import {
+  As,
+  Box,
+  BoxProps,
+  ChakraComponent,
+  Flex,
+  forwardRef,
+  propNames,
+  Text,
+} from "@chakra-ui/react";
 import { AlertButton, PrimaryButton } from "components/primitives/Button";
 import Heading from "components/primitives/Heading";
+import {
+  CustomDomComponent,
+  isValidMotionProp,
+  motion,
+  MotionProps,
+} from "framer-motion";
 import React from "react";
+import chakraMotionWrapper from "util/chakraMotionWrapper";
 
 const RoundedBox = ({ children }: BoxProps): JSX.Element => (
   <Box mb="5" p="5" boxShadow="2px 2px 10px -3px black" borderRadius="5px">
     {children}
   </Box>
 );
+
+const MotionBox = chakraMotionWrapper(Box);
 
 const DesignPage = () => {
   return (
@@ -50,6 +68,9 @@ const DesignPage = () => {
           <Text>Tekstiä</Text>
         </Flex>
       </RoundedBox>
+      <MotionBox mb="5" drag="x" dragConstraints={{ left: -100, right: 100 }}>
+        <Text>Testi</Text>
+      </MotionBox>
     </Box>
   );
 };

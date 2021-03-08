@@ -2,6 +2,7 @@ import React from "react";
 import {
   Button as ChakraButton,
   ButtonProps as ChakraButtonProps,
+  forwardRef,
 } from "@chakra-ui/react";
 import styled from "styled-components";
 
@@ -23,6 +24,12 @@ const BaseButtonProps: ChakraButtonProps = {
     opacity: 0.3,
     border: "none",
   },
+};
+
+const ButtonDefaultProps = {
+  color: "white",
+  bg: "primary.regular",
+  variant: "solid",
 };
 
 type ButtonProps = Omit<ChakraButtonProps, "bg" | "color" | "variant"> & {
@@ -115,13 +122,20 @@ const Button = (props: ButtonProps): JSX.Element => {
   return <ChakraButton {...formattedProps} />;
 };
 
-Button.defaultProps = {
-  color: "white",
-  bg: "primary.regular",
-  variant: "solid",
-};
+Button.defaultProps = ButtonDefaultProps;
 
 export default Button;
+
+// If needs to be used with Framer-motion or pass as prop, use ButtonWithRef
+
+const ButtonWithRef = forwardRef((props: ButtonProps, ref) => {
+  const formattedProps = generateBaseButtonProps(props);
+  return <ChakraButton ref={ref} {...formattedProps} />;
+});
+
+export { ButtonWithRef };
+
+ButtonWithRef.defaultProps = ButtonDefaultProps;
 
 /* IconButton */
 

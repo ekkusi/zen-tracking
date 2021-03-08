@@ -10,14 +10,16 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { RiMenuLine } from "react-icons/ri";
 import { Link, LinkProps } from "react-router-dom";
 import useGlobal from "store";
-import styled from "styled-components";
+import theme from "theme";
+import chakraMotionWrapper from "util/chakraMotionWrapper";
 import InstructionsModal from "./InstructionsModal";
 import { PrimaryButton } from "./primitives/Button";
-import IconButton from "./primitives/IconButton";
+import { IconButtonWithRef } from "./primitives/IconButton";
 import QuoteOfTheDay from "./QuoteOfTheDay";
 
 type NavigationProps = Omit<DrawerProps, "children" | "isOpen" | "onClose"> & {
@@ -33,14 +35,7 @@ type NavigationLinkProps = Omit<LinkProps, "to"> & {
   to?: string;
 };
 
-const StyledLink = styled(Link)`
-  ${({ theme }) => `
-    display: block;
-    padding: ${theme.space[1]} ${theme.space[2]};
-    font-size: ${theme.fontSizes.xl};
-    text-align: center;
-  `}
-`;
+const MotionText = chakraMotionWrapper(Text);
 
 const NavigationLink = ({
   to = "#",
@@ -48,9 +43,23 @@ const NavigationLink = ({
   ...rest
 }: NavigationLinkProps) => {
   return (
-    <StyledLink to={to} {...rest}>
+    <MotionText
+      as={Link}
+      to={to}
+      display="block"
+      textAlign="center"
+      fontSize="xl"
+      py="1"
+      whileHover={{
+        scale: 1.2,
+      }}
+      whileTap={{
+        scale: 1.2,
+      }}
+      {...rest}
+    >
       {children}
-    </StyledLink>
+    </MotionText>
   );
 };
 
@@ -66,13 +75,21 @@ const NavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
       boxShadow="2px -2px 20px -5px black"
       width="100%"
     >
-      <IconButton
+      <IconButtonWithRef
+        as={motion.button}
         aria-label="Open navigation"
         size="md"
         ml="4"
         icon={<RiMenuLine />}
         onClick={onOpenDrawer}
+        _hover={{ opacity: 1 }}
+        whileHover={{
+          rotate: 180,
+          boxShadow: `0 0 15px 0px ${theme.colors.primary.regular}`,
+        }}
+        transition={{ ease: "ease" }}
       />
+
       <QuoteOfTheDay
         openButtonProps={{
           display: { base: "none", sm: "block" },
@@ -106,6 +123,22 @@ const Navigation = ({
   });
   const [areInstructionsOpen, setAreInstructionsOpen] = useState(false);
 
+  const listAnimations = {
+    xPosEnd: (i: number) => ({
+      x: 0,
+      transition: {
+        duration: 0.4,
+        delay: i * 0.1,
+      },
+    }),
+    xPosStart: {
+      x: -200,
+      transition: {
+        when: "afterChildren",
+      },
+    },
+  };
+
   return (
     <>
       <NavigationBar onOpenDrawer={onOpen} />
@@ -114,40 +147,58 @@ const Navigation = ({
         isOpen={areInstructionsOpen}
         onClose={() => setAreInstructionsOpen(false)}
       />
-      <Drawer isOpen={isOpen} placement="left" onClose={onClose} {...rest}>
+      <Drawer
+        isOpen={isOpen}
+        placement="left"
+        onClose={onClose}
+        {...rest}
+        size="sm"
+      >
         <DrawerOverlay>
           <DrawerContent>
             <DrawerCloseButton />
-            <DrawerHeader>Navigointijata</DrawerHeader>
+            <DrawerHeader>Navigointijatata</DrawerHeader>
 
             <DrawerBody px="0">
-              <PrimaryButton
-                onClick={() => updateUser(null)}
-                display={{ base: "block", sm: "none" }}
+              <Flex
+                direction="column"
+                justifyContent="center"
+                display={{ base: "flex", sm: "none" }}
+                mb="5"
               >
-                Kirjaudu ulos
-              </PrimaryButton>
-              <QuoteOfTheDay
-                openButtonProps={{ display: { base: "block", sm: "none" } }}
-              />
+                <PrimaryButton onClick={() => updateUser(null)} mb="2" mx="2">
+                  Kirjaudu ulos
+                </PrimaryButton>
+                <QuoteOfTheDay openButtonProps={{ mx: "2" }} />
+              </Flex>
 
-              <NavigationLink to="/" onClick={() => onClose()}>
-                Etusivu
-              </NavigationLink>
-              <NavigationLink to="/challenges" onClick={() => onClose()}>
-                Haasteet
-              </NavigationLink>
-              <NavigationLink
-                onClick={() => setAreInstructionsOpen(!areInstructionsOpen)}
-              >
-                Ohjeet
-              </NavigationLink>
+              <motion.ul initial="xPosStart" animate="xPosEnd">
+                <motion.li variants={listAnimations} custom={0}>
+                  <NavigationLink to="/" onClick={() => onClose()}>
+                    Etusivu
+                  </NavigationLink>
+                </motion.li>
+                <motion.li variants={listAnimations} custom={1}>
+                  <NavigationLink to="/challenges" onClick={() => onClose()}>
+                    Haasteet
+                  </NavigationLink>
+                </motion.li>
+                <motion.li variants={listAnimations} custom={2}>
+                  <NavigationLink
+                    onClick={() => setAreInstructionsOpen(!areInstructionsOpen)}
+                  >
+                    Ohjeet
+                  </NavigationLink>
+                </motion.li>
 
-              {process.env.NODE_ENV === "development" && (
-                <NavigationLink to="/design" onClick={() => onClose()}>
-                  Design
-                </NavigationLink>
-              )}
+                {process.env.NODE_ENV === "development" && (
+                  <motion.li variants={listAnimations} custom={3}>
+                    <NavigationLink to="/design" onClick={() => onClose()}>
+                      Design
+                    </NavigationLink>
+                  </motion.li>
+                )}
+              </motion.ul>
             </DrawerBody>
           </DrawerContent>
         </DrawerOverlay>
