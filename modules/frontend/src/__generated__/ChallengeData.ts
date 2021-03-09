@@ -21,5 +21,6 @@ export interface ChallengeData {
   status: ChallengeStatus;
   startDate: any | null;
   endDate: any | null;
+  description: string;
   creator: ChallengeData_creator;
 }

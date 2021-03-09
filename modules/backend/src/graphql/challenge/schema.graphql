@@ -31,6 +31,7 @@ enum ChallengeStatus {
 type Challenge {
   id: ID!
   name: String!
+  description: String!
   startDate: Date
   endDate: Date
   status: ChallengeStatus!

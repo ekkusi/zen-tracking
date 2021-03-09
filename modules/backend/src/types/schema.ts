@@ -141,10 +141,10 @@ export type Challenge = {
   __typename?: "Challenge";
   id: Scalars["ID"];
   name: Scalars["String"];
+  description: Scalars["String"];
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
   status: ChallengeStatus;
-  creator: User;
   participations: Array<ChallengeParticipation>;
 };
 

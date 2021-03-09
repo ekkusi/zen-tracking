@@ -44,7 +44,7 @@ const MainPage = (): JSX.Element => {
 
       {!activeParticipation ? (
         <>
-          <Text>
+          <Text mb="4">
             Et ole vielä liittynyt haasteisiin tai valinnut aktiivista
             haastetta. Pääset tutustumaan ja liittymään haasteisiin alta.
           </Text>
@@ -64,7 +64,7 @@ const MainPage = (): JSX.Element => {
                 />
               }
             >
-              Haaasteisiin
+              Haasteisiin
             </MotionButton>
           </Flex>
         </>

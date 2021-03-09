@@ -14,6 +14,11 @@ export interface GetChallengesQuery_getChallenges_creator {
   name: string;
 }
 
+export interface GetChallengesQuery_getChallenges_participations {
+  __typename: "ChallengeParticipation";
+  id: string;
+}
+
 export interface GetChallengesQuery_getChallenges {
   __typename: "Challenge";
   id: string;
@@ -21,7 +26,9 @@ export interface GetChallengesQuery_getChallenges {
   status: ChallengeStatus;
   startDate: any | null;
   endDate: any | null;
+  description: string;
   creator: GetChallengesQuery_getChallenges_creator;
+  participations: GetChallengesQuery_getChallenges_participations[];
 }
 
 export interface GetChallengesQuery {

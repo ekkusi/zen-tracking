@@ -5,6 +5,9 @@ export const GET_CHALLENGES = gql`
   query GetChallengesQuery {
     getChallenges {
       ...ChallengeData
+      participations {
+        id
+      }
     }
   }
   ${challengeDataFragment}

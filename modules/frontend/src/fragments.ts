@@ -22,6 +22,7 @@ export const challengeDataFragment = gql`
     status
     startDate
     endDate
+    description
     creator {
       name
     }

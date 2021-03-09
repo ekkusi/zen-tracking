@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, Spinner, Text } from "@chakra-ui/react";
+import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import { useQuery } from "@apollo/client";
 import useGlobal from "store";
@@ -8,6 +8,8 @@ import {
   GetChallengesQuery,
   GetChallengesQuery_getChallenges,
 } from "./__generated__/GetChallengesQuery";
+import ChallengesSeparator from "./ChallengesSeparator";
+import ChallengeCard from "./ChallengeCard";
 
 const ChallengesPage = (): JSX.Element => {
   const [error, setError] = useState<string>();
@@ -63,35 +65,35 @@ const ChallengesPage = (): JSX.Element => {
       </Text>
       {data && (
         <Box>
-          <Heading.H2>Omat haasteet</Heading.H2>
+          <ChallengesSeparator title="Omat haasteet" />
           {userChallenges.length > 0 ? (
-            userChallenges.map((it) => (
-              <Box key={it.id}>
-                <Heading.H3>{it.name}</Heading.H3>
-              </Box>
-            ))
+            <Flex wrap="wrap">
+              {userChallenges.map((it) => (
+                <ChallengeCard key={it.id} challenge={it} mr="2" mb="2" />
+              ))}
+            </Flex>
           ) : (
             <Text>Sinulla ei vielä ole haasteita</Text>
           )}
-          <Heading.H2>Kaikki haasteet:</Heading.H2>
+          <ChallengesSeparator title="Muut haasteet" />
           {otherChallenges.length > 0 ? (
-            otherChallenges.map((it) => (
-              <Box key={it.id}>
-                <Heading.H3>{it.name}</Heading.H3>
-              </Box>
-            ))
+            <Flex wrap="wrap">
+              {otherChallenges.map((it) => (
+                <ChallengeCard key={it.id} challenge={it} mr="2" mb="2" />
+              ))}
+            </Flex>
           ) : (
             <Text>Ei haasteita</Text>
           )}
         </Box>
       )}
       {loading && (
-        <>
-          <Text as="span" color="primary.regular">
+        <Flex alignItems="center" justifyContent="center" pt="4">
+          <Text as="span" color="primary.regular" mr="3">
             Ladataan haasteita
           </Text>
-          <Spinner mb="4" color="primary.regular" size="xl" thickness="3px" />
-        </>
+          <Spinner color="primary.regular" size="xl" thickness="3px" />
+        </Flex>
       )}
       {error && (
         <Text fontWeight="bold" color="warning">

@@ -335,6 +335,7 @@ export type ChallengeResolvers<
 > = {
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   startDate?: Resolver<
     Types.Maybe<ResolversTypes["Date"]>,
     ParentType,
