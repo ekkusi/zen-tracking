@@ -279,7 +279,10 @@ export type MutationResolvers<
     ResolversTypes["Boolean"],
     ParentType,
     ContextType,
-    RequireFields<Types.MutationDeleteParticipationArgs, "id">
+    RequireFields<
+      Types.MutationDeleteParticipationArgs,
+      "challengeId" | "userName"
+    >
   >;
   addMarking?: Resolver<
     ResolversTypes["Marking"],

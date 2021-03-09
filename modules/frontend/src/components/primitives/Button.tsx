@@ -56,6 +56,9 @@ export const generateBaseButtonProps = ({
           bg,
           color,
         },
+        _focus: {
+          borderColor: color,
+        },
         _disabled: {
           ...BaseButtonProps._disabled,
           _hover: {
@@ -73,6 +76,9 @@ export const generateBaseButtonProps = ({
         borderColor: bg,
         _hover: {
           opacity: 0.7,
+        },
+        _focus: {
+          borderColor: bg,
         },
       };
     }
@@ -145,6 +151,8 @@ const PrimaryButton = styled(Button)<ButtonProps>``;
 
 const AlertButton = styled(Button)<ButtonProps>``;
 
+const CancelButton = styled(Button)<ButtonProps>``;
+
 PrimaryButton.defaultProps = {
   color: "white",
   bg: "primary.regular",
@@ -155,4 +163,9 @@ AlertButton.defaultProps = {
   bg: "warning",
 };
 
-export { PrimaryButton, AlertButton };
+CancelButton.defaultProps = {
+  color: "gray.600",
+  bg: "white",
+};
+
+export { PrimaryButton, AlertButton, CancelButton };

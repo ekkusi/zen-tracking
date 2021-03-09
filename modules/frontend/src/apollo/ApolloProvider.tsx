@@ -22,6 +22,9 @@ const CustomApolloProvider = ({
   );
   const errorLink = onError(({ networkError, graphQLErrors }) => {
     let settingGlobalError = false; // Need this for networkError if check, because setGlobalError is not triggered instantly
+    console.log(networkError);
+    console.log(graphQLErrors);
+
     if (
       graphQLErrors &&
       graphQLErrors.length > 0 &&
@@ -31,8 +34,6 @@ const CustomApolloProvider = ({
       settingGlobalError = true;
       setGlobalError(graphQLErrors[0].message);
     }
-
-    console.log("Setting networkError");
 
     // If globalError is not yet set and networkError is returned, set this as global error
     if (networkError && !globalError && !settingGlobalError) {

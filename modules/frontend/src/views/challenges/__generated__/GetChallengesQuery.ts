@@ -14,9 +14,15 @@ export interface GetChallengesQuery_getChallenges_creator {
   name: string;
 }
 
+export interface GetChallengesQuery_getChallenges_participations_user {
+  __typename: "User";
+  name: string;
+}
+
 export interface GetChallengesQuery_getChallenges_participations {
   __typename: "ChallengeParticipation";
   id: string;
+  user: GetChallengesQuery_getChallenges_participations_user;
 }
 
 export interface GetChallengesQuery_getChallenges {

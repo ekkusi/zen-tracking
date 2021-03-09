@@ -90,11 +90,10 @@ export const resolvers: Resolvers = {
     ) => {
       console.log("addMarking args:", JSON.stringify(marking));
       // Validate marking
-      const validationError = await ChallengeValidator.validateAddMarking({
+      await ChallengeValidator.validateAddMarking({
         participationId,
         marking,
       });
-      if (validationError) throw validationError;
 
       const createdMarking = await prisma.marking.create({
         data: ChallengeMapper.mapCreateMarkingInput(
@@ -109,11 +108,8 @@ export const resolvers: Resolvers = {
     },
     editMarking: async (_, { id, marking }, { prisma, loaders }) => {
       console.log("editMarking args:", JSON.stringify(marking));
-      // Check validity and throw error if not valid
-      const validationError = await ChallengeValidator.validateMarkingInput(
-        marking
-      );
-      if (validationError) throw validationError;
+      // Check validity
+      await ChallengeValidator.validateMarkingInput(marking);
 
       const editMarking = await prisma.marking.update({
         where: { id },
@@ -156,19 +152,26 @@ export const resolvers: Resolvers = {
       if (deletedChallenges > 0) return true; // If more than 0 rows are affected by above query
       return false;
     },
-    createParticipation: async (_, { challengeId, userName }, { prisma }) => {
+    createParticipation: async (_, args, { prisma }) => {
+      await ChallengeValidator.validateCreateParticipation(args);
+      const { challengeId, userName } = args;
       const participation = await prisma.challengeParticipation.create({
         data: { challenge_id: challengeId, user_name: userName },
       });
       return participation;
     },
-    deleteParticipation: async (_, { id }, { prisma, loaders }) => {
+    deleteParticipation: async (_, args, { prisma, loaders }) => {
+      await ChallengeValidator.validateDeleteParticipation(args);
       // Clear partipationsLoader cache
-      await loaderResetors.clearParticipationsCache(id, loaders);
+      await loaderResetors.clearParticipationsCacheByUser(
+        args.userName,
+        loaders
+      );
       // This is temp solution, because prisma doesn't support NOT NULL constraint and ON DELETE CASCADE. Prisma delete results in relation delete violation.
       const deletedParticipations = await prisma.$executeRaw(
-        `DELETE FROM "ChallengeParticipation" WHERE id='${id}';`
+        `DELETE FROM "ChallengeParticipation" WHERE user_name='${args.userName}' AND challenge_id='${args.challengeId}';`
       );
+      console.log(`Deleted participations count: ${deletedParticipations}`);
       if (deletedParticipations > 0) return true; // If more than 0 rows are affected by above query
       return false;
     },

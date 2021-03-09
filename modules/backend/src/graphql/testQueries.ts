@@ -19,6 +19,9 @@ query GetChallenges {
     }
     participations {
       id
+      user {
+        name
+      }
       markings {
         ...MarkingData
       }
@@ -33,6 +36,10 @@ mutation Deletes {
 fragment ChallengeData on Challenge {
   id
   name
+  description
+  creator {
+    name
+  }
   status
   startDate
   endDate

@@ -94,7 +94,8 @@ export type MutationCreateParticipationArgs = {
 };
 
 export type MutationDeleteParticipationArgs = {
-  id: Scalars["ID"];
+  challengeId: Scalars["ID"];
+  userName: Scalars["ID"];
 };
 
 export type MutationAddMarkingArgs = {
@@ -145,6 +146,7 @@ export type Challenge = {
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
   status: ChallengeStatus;
+  creator: User;
   participations: Array<ChallengeParticipation>;
 };
 

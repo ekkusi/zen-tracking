@@ -15,7 +15,7 @@ extend type Mutation {
   updateChallenge(id: ID!, args: UpdateChallengeInput!): Challenge!
   deleteChallenge(id: ID!): Boolean!
   createParticipation(challengeId: ID!, userName: ID!): ChallengeParticipation!
-  deleteParticipation(id: ID!): Boolean!
+  deleteParticipation(challengeId: ID!, userName: ID!): Boolean!
   addMarking(participationId: ID!, marking: MarkingInput): Marking!
   editMarking(id: ID!, marking: MarkingInput!): Marking!
   deleteMarking(id: ID!): Boolean!

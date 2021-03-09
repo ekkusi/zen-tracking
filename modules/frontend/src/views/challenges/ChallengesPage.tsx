@@ -1,48 +1,74 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import { useQuery } from "@apollo/client";
 import useGlobal from "store";
+import { ChallengeStatus } from "__generated__/globalTypes";
 import { GET_CHALLENGES } from "./queries";
 import {
   GetChallengesQuery,
   GetChallengesQuery_getChallenges,
 } from "./__generated__/GetChallengesQuery";
 import ChallengesSeparator from "./ChallengesSeparator";
-import ChallengeCard from "./ChallengeCard";
+import ChallengesSection from "./ChallengesSection";
 
 const ChallengesPage = (): JSX.Element => {
   const [error, setError] = useState<string>();
-  const [userChallenges, setUserChallenges] = useState<
+  const user = useGlobal((state) => state.currentUser)[0];
+  const [challengesByUser, setChallengesByUser] = useState<
     GetChallengesQuery_getChallenges[]
   >([]);
+  const [
+    userParticipationChallenges,
+    setUserParticipationChallenges,
+  ] = useState<GetChallengesQuery_getChallenges[]>([]);
   const [otherChallenges, setOtherChallenges] = useState<
     GetChallengesQuery_getChallenges[]
   >([]);
-  const user = useGlobal((state) => state.currentUser)[0];
   const { data, loading, error: apolloError } = useQuery<GetChallengesQuery>(
     GET_CHALLENGES,
-    { skip: !!error }
+    { skip: !!error } // This stops looping useQuery when error is returned
   );
 
   if (apolloError) {
-    console.log(apolloError);
-
     setError(
       `Jotakin meni vikaan haasteiden hakemisessa: ${apolloError.message}`
     );
   }
 
+  // Return challenges that match status filter and are not already in user challenges
+  const getOtherChallenges = (status: ChallengeStatus) => {
+    return otherChallenges.filter(
+      (it) =>
+        it.status === status &&
+        !challengesByUser.find((challenge) => challenge.id === it.id)
+    );
+  };
+
   useEffect(() => {
     if (data) {
-      console.log("setting challenges");
-      const newUserChallenges = data.getChallenges.filter(
+      // TODO: This filtering should probably go to backend and put here as separate lazyQueries
+      // Challenges that are created by current user
+      const newChallengesByUser = data.getChallenges.filter(
         (it) => it.creator.name === user.name
       );
-      const newOtherChallenges = data.getChallenges.filter(
-        (it) => it.creator.name !== user.name
+      // Challenges that current user is participating in, but not the user
+      const newUserParticipationChallenges = data.getChallenges.filter(
+        (it) =>
+          !!it.participations.find(
+            (participation) => participation.user.name === user.name
+          )
       );
-      setUserChallenges(newUserChallenges);
+      // Other challenges
+      const newOtherChallenges = data.getChallenges.filter(
+        (it) =>
+          it.creator.name !== user.name &&
+          !it.participations.find(
+            (participation) => participation.user.name === user.name
+          )
+      );
+      setChallengesByUser(newChallengesByUser);
+      setUserParticipationChallenges(newUserParticipationChallenges);
       setOtherChallenges(newOtherChallenges);
     }
   }, [data, user]);
@@ -66,25 +92,31 @@ const ChallengesPage = (): JSX.Element => {
       {data && (
         <Box>
           <ChallengesSeparator title="Omat haasteet" />
-          {userChallenges.length > 0 ? (
-            <Flex wrap="wrap">
-              {userChallenges.map((it) => (
-                <ChallengeCard key={it.id} challenge={it} mr="2" mb="2" />
-              ))}
-            </Flex>
-          ) : (
-            <Text>Sinulla ei vielä ole haasteita</Text>
-          )}
+          <ChallengesSection
+            title="Luomasi haasteet"
+            challenges={challengesByUser}
+          />
+          <ChallengesSection
+            title="Ilmoittautumisesi"
+            challenges={userParticipationChallenges}
+          />
           <ChallengesSeparator title="Muut haasteet" />
-          {otherChallenges.length > 0 ? (
-            <Flex wrap="wrap">
-              {otherChallenges.map((it) => (
-                <ChallengeCard key={it.id} challenge={it} mr="2" mb="2" />
-              ))}
-            </Flex>
-          ) : (
-            <Text>Ei haasteita</Text>
-          )}
+          <ChallengesSection
+            title="Ehdotukset"
+            challenges={getOtherChallenges(ChallengeStatus.SUGGESTION)}
+          />
+          <ChallengesSection
+            title="Aktiiviset haasteet"
+            challenges={getOtherChallenges(ChallengeStatus.ACTIVE)}
+          />
+          <ChallengesSection
+            title="Tulevat haasteet"
+            challenges={getOtherChallenges(ChallengeStatus.UPCOMING)}
+          />
+          <ChallengesSection
+            title="Menneet haasteet"
+            challenges={getOtherChallenges(ChallengeStatus.ENDED)}
+          />
         </Box>
       )}
       {loading && (
