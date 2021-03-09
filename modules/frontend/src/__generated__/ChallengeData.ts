@@ -9,6 +9,11 @@ import { ChallengeStatus } from "./globalTypes";
 // GraphQL fragment: ChallengeData
 // ====================================================
 
+export interface ChallengeData_creator {
+  __typename: "User";
+  name: string;
+}
+
 export interface ChallengeData {
   __typename: "Challenge";
   id: string;
@@ -16,4 +21,5 @@ export interface ChallengeData {
   status: ChallengeStatus;
   startDate: any | null;
   endDate: any | null;
+  creator: ChallengeData_creator;
 }

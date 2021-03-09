@@ -60,7 +60,7 @@ const generateIconProps = (props: IconButtonProps): ChakraIconButtonProps => {
         px: { base: 2, sm: 3 },
         css: {
           svg: {
-            width: "1.3rem",
+            width: "1.5rem",
             height: "1.5rem",
           },
         },

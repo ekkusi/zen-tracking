@@ -35,7 +35,7 @@ const ImageModal = ({
       }}
     >
       <>
-        <Image borderRadius={borderRadius} boxSize="400px" {...imageProps} />
+        <Image borderRadius={borderRadius} boxSize="500px" {...imageProps} />
         {imgText && (
           <Box position="absolute" bottom="0" ml="3" mb="2">
             <Text as="span" mb="0" color="secondary.regular">

@@ -9,6 +9,11 @@ import { ChallengeStatus } from "./../../../__generated__/globalTypes";
 // GraphQL query operation: GetChallengesQuery
 // ====================================================
 
+export interface GetChallengesQuery_getChallenges_creator {
+  __typename: "User";
+  name: string;
+}
+
 export interface GetChallengesQuery_getChallenges {
   __typename: "Challenge";
   id: string;
@@ -16,6 +21,7 @@ export interface GetChallengesQuery_getChallenges {
   status: ChallengeStatus;
   startDate: any | null;
   endDate: any | null;
+  creator: GetChallengesQuery_getChallenges_creator;
 }
 
 export interface GetChallengesQuery {

@@ -1,37 +1,101 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Box, Spinner, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
-import { Link } from "react-router-dom";
 import { useQuery } from "@apollo/client";
+import useGlobal from "store";
 import { GET_CHALLENGES } from "./queries";
-import { GetChallengesQuery } from "./__generated__/GetChallengesQuery";
+import {
+  GetChallengesQuery,
+  GetChallengesQuery_getChallenges,
+} from "./__generated__/GetChallengesQuery";
 
 const ChallengesPage = (): JSX.Element => {
-  const { data, loading, error } = useQuery<GetChallengesQuery>(GET_CHALLENGES);
+  const [error, setError] = useState<string>();
+  const [userChallenges, setUserChallenges] = useState<
+    GetChallengesQuery_getChallenges[]
+  >([]);
+  const [otherChallenges, setOtherChallenges] = useState<
+    GetChallengesQuery_getChallenges[]
+  >([]);
+  const user = useGlobal((state) => state.currentUser)[0];
+  const { data, loading, error: apolloError } = useQuery<GetChallengesQuery>(
+    GET_CHALLENGES,
+    { skip: !!error }
+  );
+
+  if (apolloError) {
+    console.log(apolloError);
+
+    setError(
+      `Jotakin meni vikaan haasteiden hakemisessa: ${apolloError.message}`
+    );
+  }
+
+  useEffect(() => {
+    if (data) {
+      console.log("setting challenges");
+      const newUserChallenges = data.getChallenges.filter(
+        (it) => it.creator.name === user.name
+      );
+      const newOtherChallenges = data.getChallenges.filter(
+        (it) => it.creator.name !== user.name
+      );
+      setUserChallenges(newUserChallenges);
+      setOtherChallenges(newOtherChallenges);
+    }
+  }, [data, user]);
+
   return (
     <Box>
-      <Link to="/">Takaisin pääsivulle</Link>
-      <Heading.H1>Haasteet</Heading.H1>
+      {/* <ButtonWithRef as={Link} leftIcon={<ArrowBackIcon />} to="/" mb="3">
+        Takaisin etusivulle
+      </ButtonWithRef> */}
+      <Heading.H1
+        textAlign={{ base: "left", sm: "center" }}
+        fontSize={{ base: "4xl", sm: "5xl" }}
+        fontWeight="normal"
+      >
+        Haasteet
+      </Heading.H1>
       <Text>
         Tällä sivulla löytyy tulevat ja menevät haasteet. Alta voit luoda oman
         haasteen halutessasi.
       </Text>
       {data && (
         <Box>
+          <Heading.H2>Omat haasteet</Heading.H2>
+          {userChallenges.length > 0 ? (
+            userChallenges.map((it) => (
+              <Box key={it.id}>
+                <Heading.H3>{it.name}</Heading.H3>
+              </Box>
+            ))
+          ) : (
+            <Text>Sinulla ei vielä ole haasteita</Text>
+          )}
           <Heading.H2>Kaikki haasteet:</Heading.H2>
-          {data.getChallenges.map((it) => (
-            <Box key={it.id}>
-              <Heading.H3>{it.name}</Heading.H3>
-            </Box>
-          ))}
+          {otherChallenges.length > 0 ? (
+            otherChallenges.map((it) => (
+              <Box key={it.id}>
+                <Heading.H3>{it.name}</Heading.H3>
+              </Box>
+            ))
+          ) : (
+            <Text>Ei haasteita</Text>
+          )}
         </Box>
       )}
       {loading && (
-        <Spinner mb="4" color="primary.regular" size="xl" thickness="3px" />
+        <>
+          <Text as="span" color="primary.regular">
+            Ladataan haasteita
+          </Text>
+          <Spinner mb="4" color="primary.regular" size="xl" thickness="3px" />
+        </>
       )}
       {error && (
-        <Text color="warning">
-          Jotain meni vikaan haasteiden lataamisessa: {error}
+        <Text fontWeight="bold" color="warning">
+          {error}
         </Text>
       )}
     </Box>

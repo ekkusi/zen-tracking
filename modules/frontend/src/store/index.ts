@@ -1,5 +1,4 @@
 import React from "react";
-import { ParsedUser } from "types/parsedBackendTypes";
 import globalHook from "use-global-hook";
 import actions from "./actions";
 import { notAuthorizedUser } from "./notAuthenticatedUser";

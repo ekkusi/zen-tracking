@@ -1,8 +1,5 @@
-import { Marking, User } from "@ekeukko/zen-tracking-backend/lib/types/schema";
-import {
-  ParsedChallengeParticipation,
-  ParsedUser,
-} from "types/parsedBackendTypes";
+import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/schema";
+import { ParsedChallengeParticipation } from "types/parsedBackendTypes";
 
 export default class UserInfoUtil {
   // Return participation of user which has the latest markings

@@ -1,21 +1,6 @@
-import {
-  As,
-  Box,
-  BoxProps,
-  ChakraComponent,
-  Flex,
-  forwardRef,
-  propNames,
-  Text,
-} from "@chakra-ui/react";
+import { Box, BoxProps, Flex, Text } from "@chakra-ui/react";
 import { AlertButton, PrimaryButton } from "components/primitives/Button";
 import Heading from "components/primitives/Heading";
-import {
-  CustomDomComponent,
-  isValidMotionProp,
-  motion,
-  MotionProps,
-} from "framer-motion";
 import React from "react";
 import chakraMotionWrapper from "util/chakraMotionWrapper";
 

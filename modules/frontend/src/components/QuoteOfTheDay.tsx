@@ -37,6 +37,7 @@ const QuoteOfTheDay = ({
         onClose={() => setQuoteOfTheDayUrl(undefined)}
         src={quoteOfTheDayUrl}
         alt={quoteOfTheDayUrl}
+        boxSize="100%"
         imgText={
           <>
             <Text as="a" color="white" target="_blank" href={quoteCreditsUrl}>

@@ -69,12 +69,7 @@ const NavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
     (actions) => actions.updateUser
   )[1];
   return (
-    <Flex
-      height="80px"
-      alignItems="center"
-      boxShadow="2px -2px 20px -5px black"
-      width="100%"
-    >
+    <Flex height="80px" alignItems="center" width="100%">
       <IconButtonWithRef
         as={motion.button}
         aria-label="Open navigation"

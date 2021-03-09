@@ -92,8 +92,8 @@ export const generateBaseButtonProps = ({
       sizeProps = {
         fontSize: { base: "lg", md: "xl" },
         textTransform: "none",
-        px: { base: 4, sm: 5 },
-        py: { base: 4, sm: 5 },
+        px: { base: 6, sm: 7 },
+        py: { base: 3, sm: 5 },
       };
       break;
     }
