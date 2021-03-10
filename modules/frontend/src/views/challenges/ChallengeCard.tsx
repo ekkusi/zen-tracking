@@ -108,7 +108,7 @@ const ChallengeCard = ({
                       .finally(() => setIsDeleteModalOpen(false))
                   }
                 >
-                  Kyllä
+                  Poista
                 </AlertButton>
                 <CancelButton
                   isDisabled={deleteLoading}

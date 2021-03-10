@@ -1,5 +1,6 @@
 import { Box, BoxProps, Flex, Text } from "@chakra-ui/react";
 import { AlertButton, PrimaryButton } from "components/primitives/Button";
+import FileInput from "components/primitives/FileInput";
 import Heading from "components/primitives/Heading";
 import React from "react";
 import chakraMotionWrapper from "util/chakraMotionWrapper";
@@ -56,6 +57,8 @@ const DesignPage = () => {
       <MotionBox mb="5" drag="x" dragConstraints={{ left: -100, right: 100 }}>
         <Text>Testi</Text>
       </MotionBox>
+
+      <FileInput id="file" />
     </Box>
   );
 };
