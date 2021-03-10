@@ -1,4 +1,7 @@
 # import Date from "../scalars/schema.graphql"
+# import ChallengeParticipation from "../challenge/schema.graphql"
+
+# Above imports are for graphql-code-generator
 
 # This is here to prevent error from graphql-code-generator documents field
 query GetUsers {
@@ -15,9 +18,7 @@ extend type Query {
 
 extend type Mutation {
   addUser(name: ID!, password: String!, isPrivate: Boolean): User!
-  addMarking(userName: ID!, marking: MarkingInput): Marking!
-  editMarking(id: ID!, marking: MarkingInput!): Marking!
-  deleteMarking(id: ID!): Boolean!
+  deleteUser(name: ID!): Boolean!
 }
 
 enum UserCheckStatus {
@@ -29,21 +30,10 @@ enum UserCheckStatus {
 type User {
   name: ID!
   isPrivate: Boolean!
-  markings: [Marking!]!
-}
-
-type Marking {
-  id: ID!
-  date: Date!
-  comment: String
+  participations: [ChallengeParticipation!]!
 }
 
 type UserCheckResult {
   user: User
   status: UserCheckStatus!
-}
-
-input MarkingInput {
-  comment: String
-  date: Date
 }

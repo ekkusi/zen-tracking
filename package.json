@@ -8,6 +8,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.12.0",
     "@typescript-eslint/parser": "^4.12.0",
+    "concurrently": "^6.0.0",
     "cross-env": "^7.0.3",
     "eslint-config-airbnb": "18.2.1",
     "eslint-config-airbnb-typescript": "^12.0.0",
@@ -24,6 +25,9 @@
     "prettier": "^2.2.1",
     "typescript": "^4.0.3"
   },
+  "resolutions": {
+    "graphql": "^15.0.0"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -35,11 +39,13 @@
     ]
   },
   "scripts": {
-    "setup": "yarn install && yarn generate-prisma && yarn --cwd modules/backend build",
+    "setup": "yarn install && yarn generate-prisma && yarn build:backend",
+    "setup-db-and-prisma": "bash scripts/importdb.sh && yarn --cwd modules/backend update-prisma && yarn --cwd modules/backend init-mock-data",
     "build:backend": "yarn --cwd modules/backend build",
     "build:frontend": "yarn --cwd modules/frontend build",
     "build:all": "lerna run build",
-    "generate:backend": "yarn --cwd modules/backend generate-types",
+    "generate-types:backend": "yarn --cwd modules/backend generate-types",
+    "generate-types:frontend": "yarn --cwd modules/frontend apollo:update-types-clean",
     "generate-prisma": "yarn --cwd modules/backend prisma-generate",
     "gen:theme-typings": "chakra-cli tokens ./modules/frontend/src/theme.ts",
     "lint": "eslint modules/backend/src --ext ts,js && eslint modules/frontend/src --ext tsx,ts,js",

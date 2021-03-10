@@ -1,19 +1,25 @@
 overwrite: true
-documents: ./src/graphql/**/*.graphql
+schema: http://localhost:4000/graphql
+documents:  ./src/graphql/**/*.graphql
 generates:
-  src/types/user.ts:
-    schema: ./src/graphql/user/schema.graphql
+  src/types/schema.ts:
     plugins:
       - typescript
     config:
       scalars:
         Date: string
-  src/types/user-resolvers.ts:
-    schema: ./src/graphql/user/schema.graphql
+  src/types/resolvers.ts:
     preset: import-types
     presetConfig:
-      typesPath: ./user
+      typesPath: ./schema
     plugins:
       - typescript-resolvers
     config:
       contextType: ./customContext#CustomContext
+      mappers: 
+        Challenge: "@prisma/client#Challenge"
+        ChallengeParticipation: "@prisma/client#ChallengeParticipation"
+        Marking: "@prisma/client#Marking"
+        User: "@prisma/client#User"
+
+

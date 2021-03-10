@@ -2,7 +2,7 @@ import { Box, Image, ImageProps, Text } from "@chakra-ui/react";
 import React from "react";
 import ModalTemplate from "./ModalTemplate";
 
-type ImageModalProps = ImageProps & {
+export type ImageModalProps = ImageProps & {
   isOpen: boolean;
   onClose: () => void;
   imgText?: string | JSX.Element;
@@ -35,7 +35,7 @@ const ImageModal = ({
       }}
     >
       <>
-        <Image borderRadius={borderRadius} boxSize="400px" {...imageProps} />
+        <Image borderRadius={borderRadius} boxSize="500px" {...imageProps} />
         {imgText && (
           <Box position="absolute" bottom="0" ml="3" mb="2">
             <Text as="span" mb="0" color="secondary.regular">

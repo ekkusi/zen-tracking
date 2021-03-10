@@ -1,15 +1,23 @@
-import { ApolloQueryResult, useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 import { Text } from "@chakra-ui/react";
 import LoadingOverlay from "components/general/LoadingOverlay";
 import ModalTemplate from "components/general/ModalTemplate";
-import { GetUserQueryResult, GET_USER } from "generalQueries";
+import { GET_USER } from "generalQueries";
 import React, { useEffect, useState } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import useGlobal from "store";
+import { notAuthorizedUser } from "store/notAuthenticatedUser";
 import LoginPage from "views/login/LoginPage";
 import MainPage from "views/main/MainPage";
 import NotFoundPage from "views/NotFoundPage";
 import WelcomePage from "views/welcome/WelcomePage";
+import ChallengesPage from "views/challenges/ChallengesPage";
+import {
+  GetUserQuery,
+  GetUserQueryVariables,
+} from "__generated__/GetUserQuery";
+import DesignPage from "views/design/DesignPage";
+import ViewContainer from "views/ViewContainer";
 
 const Routes = (): JSX.Element => {
   const [globalState, globalActions] = useGlobal();
@@ -18,10 +26,14 @@ const Routes = (): JSX.Element => {
   const client = useApolloClient();
   const currentUser = localStorage.getItem("currentUser");
 
+  const isGlobalUserAuthorized = (): boolean => {
+    return globalState.currentUser.name !== notAuthorizedUser.name;
+  };
+
   const updateCurrentUser = async (name: string) => {
     setLoading(true);
     try {
-      const result: ApolloQueryResult<GetUserQueryResult> = await client.query({
+      const result = await client.query<GetUserQuery, GetUserQueryVariables>({
         query: GET_USER,
         variables: {
           name,
@@ -39,11 +51,14 @@ const Routes = (): JSX.Element => {
     setLoading(false);
   };
 
+  // Handle logging in with localStorage cache
   useEffect(() => {
-    if (currentUser && !globalState.currentUser && !loading) {
+    // If currentUser localStorage variable is set but globalStorage user is not set (== is "not-authorized" user) -> get and update user
+    if (currentUser && !isGlobalUserAuthorized() && !loading) {
       updateCurrentUser(currentUser);
     }
-    if (!currentUser && globalState.currentUser) {
+    // If localStorage currentUser is null but global storage is still logged in -> null global storage
+    if (!currentUser && isGlobalUserAuthorized()) {
       globalActions.updateUser(null);
     }
   });
@@ -63,7 +78,7 @@ const Routes = (): JSX.Element => {
       <Route
         path="/login"
         render={() => {
-          if (!globalState.currentUser) return <LoginPage />;
+          if (!isGlobalUserAuthorized()) return <LoginPage />;
           return <Redirect to="/" />;
         }}
       />
@@ -77,11 +92,37 @@ const Routes = (): JSX.Element => {
           }
 
           return (
-            <Switch>
-              <Route exact path="/" render={() => <MainPage />} />
-              <Route path="/welcome" render={() => <WelcomePage />} />
-              <Route path="*" render={() => <NotFoundPage />} />
-            </Switch>
+            <>
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={() => (
+                    <ViewContainer>
+                      <MainPage />
+                    </ViewContainer>
+                  )}
+                />
+                <Route
+                  path="/challenges"
+                  render={() => (
+                    <ViewContainer>
+                      <ChallengesPage />{" "}
+                    </ViewContainer>
+                  )}
+                />
+                <Route
+                  path="/design"
+                  render={() => (
+                    <ViewContainer>
+                      <DesignPage />
+                    </ViewContainer>
+                  )}
+                />
+                <Route path="/welcome" render={() => <WelcomePage />} />
+                <Route path="*" render={() => <NotFoundPage />} />
+              </Switch>
+            </>
           );
         }}
       />

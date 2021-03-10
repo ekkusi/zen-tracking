@@ -10,24 +10,28 @@ import merge from "lodash.merge";
 import { v4 as generateId } from "uuid";
 
 import { GraphQLError } from "graphql";
-import {
-  typeDef as userTypeDef,
-  resolvers as userResolvers,
-} from "./user/user";
 
 import {
   typeDef as customScalarTypeDef,
   resolvers as customScalarResolvers,
 } from "./scalars/customScalars";
 
-import createLoaders from "./loaders";
+import {
+  typeDef as userTypeDef,
+  resolvers as userResolvers,
+} from "./user/user";
+
+import {
+  typeDef as challengeTypeDef,
+  resolvers as challengeResolvers,
+} from "./challenge/challenge";
 
 import prisma from "./client";
 import ValidationError from "../utils/ValidationError";
+import dataLoaders from "./loaders";
 
 export default (app: Application): ApolloServer => {
-  const loaders = createLoaders(prisma);
-  const context = { prisma, loaders };
+  const context = { prisma, loaders: dataLoaders };
 
   const queryTypeDef = gql`
     type Query {
@@ -38,12 +42,18 @@ export default (app: Application): ApolloServer => {
     }
   `;
 
-  const typeDefs = [queryTypeDef, customScalarTypeDef, userTypeDef];
+  const typeDefs = [
+    queryTypeDef,
+    customScalarTypeDef,
+    userTypeDef,
+    challengeTypeDef,
+  ];
 
   const resolvers = merge(
     {},
     customScalarResolvers,
-    userResolvers as IResolvers
+    userResolvers as IResolvers,
+    challengeResolvers as IResolvers
   );
 
   const schema = makeExecutableSchema({

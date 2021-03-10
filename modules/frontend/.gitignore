@@ -1,0 +1,2 @@
+# if __generated__ folder done to root, exclude it from git
+/__generated__

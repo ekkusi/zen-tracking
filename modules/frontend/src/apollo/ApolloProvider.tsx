@@ -16,27 +16,31 @@ const CustomApolloProvider = ({
 }: {
   children: React.ReactNode;
 }): JSX.Element => {
-  const setError = useGlobal(
+  const [globalError, setGlobalError] = useGlobal(
     (state) => state.error,
     (actions) => actions.updateError
-  )[1];
-  const errorLink = onError(({ graphQLErrors }) => {
-    if (graphQLErrors) {
-      const errorStrings = graphQLErrors.map((error) => {
-        console.error(error);
-        return error.message;
-      });
-      setError(errorStrings.join("\n"));
+  );
+  const errorLink = onError(({ networkError, graphQLErrors }) => {
+    let settingGlobalError = false; // Need this for networkError if check, because setGlobalError is not triggered instantly
+    console.log(networkError);
+    console.log(graphQLErrors);
+
+    if (
+      graphQLErrors &&
+      graphQLErrors.length > 0 &&
+      !settingGlobalError &&
+      !globalError
+    ) {
+      settingGlobalError = true;
+      setGlobalError(graphQLErrors[0].message);
     }
 
-    // GraphQlErrors should handle this aswell now like when graphql query is bad on client -> giving bad request.
-    // If there comes some case, where this is better than above, remove comments and modify
-    // if (networkError) {
-    //   console.error(`[Network error]: ${networkError}`);
-    //   setError(
-    //     `Jotakin meni vikaan tietojesi hakemisessa. Kokeile kirjautua uudestaan. Mikäli tämä virheviesti esiintyy uudelleen, ota yhteyttä ekeukkoon!`
-    //   );
-    // }
+    // If globalError is not yet set and networkError is returned, set this as global error
+    if (networkError && !globalError && !settingGlobalError) {
+      setGlobalError(
+        `Jotakin meni vikaan tietojesi hakemisessa. Kokeile kirjautua uudestaan. Mikäli tämä virheviesti esiintyy uudelleen, ota yhteyttä ekeukkoon!`
+      );
+    }
   });
 
   const httpLink = new HttpLink({
