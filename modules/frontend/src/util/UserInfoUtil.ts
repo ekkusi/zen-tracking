@@ -7,10 +7,13 @@ export default class UserInfoUtil {
     participations: ParsedChallengeParticipation[]
   ): ParsedChallengeParticipation | null {
     if (participations.length === 0) return null;
-    const sortedParticipations = participations.sort((a, b) => {
+    console.log(participations);
+    const sortedParticipations = [...participations];
+    sortedParticipations.sort((a, b) => {
       const aLatestMarking = UserInfoUtil.getLatestMarking(a.markings);
       const bLatestMarking = UserInfoUtil.getLatestMarking(b.markings);
-      if (!aLatestMarking && !!bLatestMarking) return -1;
+      console.log(aLatestMarking, bLatestMarking);
+      if (!aLatestMarking && !bLatestMarking) return -1;
       if (!bLatestMarking) return -1;
       if (!aLatestMarking) return 1;
       return (
@@ -18,6 +21,7 @@ export default class UserInfoUtil {
         new Date(bLatestMarking.date).getTime()
       );
     });
+    console.log(sortedParticipations);
     return sortedParticipations[0];
   }
 

@@ -1,5 +1,10 @@
 {
   "watch": ["src"],
   "ext": "ts",
-  "exec": "ts-node ./src/app.ts"
+  "exec": "ts-node ./src/app.ts",
+  "events": {
+    "restart": "kill-port 4000",
+    "crash": "kill-port 4000"
+  },
+  "delay": "1500"
 }

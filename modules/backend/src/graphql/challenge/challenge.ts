@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
 import path from "path";
+import ValidationError from "../../utils/ValidationError";
 import { formatIsoString } from "../../utils/dateUtils";
 
 import { Resolvers } from "../../types/resolvers";
@@ -130,12 +131,24 @@ export const resolvers: Resolvers = {
       return false;
     },
     createChallenge: async (_, { challenge }, { prisma }) => {
+      const { creatorName, ...args } = challenge;
+      console.log(`Create challenge args:${JSON.stringify(args)}`);
+      ChallengeValidator.validateChallengeArgs(args);
       const createChallenge = await prisma.challenge.create({
         data: ChallengeMapper.mapCreateChallengeInput(challenge),
+      });
+      // Create participation to challenge creator automatically
+      await prisma.challengeParticipation.create({
+        data: {
+          challenge_id: createChallenge.id,
+          user_name: creatorName,
+        },
       });
       return createChallenge;
     },
     updateChallenge: async (_, { id, args }, { prisma }) => {
+      console.log(`updateChallenge args: ${JSON.stringify(args)}`);
+      ChallengeValidator.validateChallengeArgs(args);
       const updatedChallenge = await prisma.challenge.update({
         where: { id },
         data: ChallengeMapper.mapEditChallengeInput(args),
@@ -143,6 +156,7 @@ export const resolvers: Resolvers = {
       return updatedChallenge;
     },
     deleteChallenge: async (_, { id }, { prisma, loaders }) => {
+      throw new ValidationError("Et saa tehdä poistoa!!");
       // Clear partipationsLoader cache
       await loaderResetors.clearParticipationsCacheByChallenge(id, loaders);
       // This is temp solution, because prisma doesn't support NOT NULL constraint and ON DELETE CASCADE. Prisma delete results in relation delete violation.

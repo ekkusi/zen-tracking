@@ -1,3 +1,7 @@
+// You can copy this as start template to localhost:4000/graphql to start with
+// if you update something, update it here
+
+// Would be better if this was a .graphql file, but that messes up graphql-code-generator, so have to do this
 const queries = `
 query GetUsers {
   getUsers {

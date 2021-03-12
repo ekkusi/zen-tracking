@@ -7,8 +7,8 @@ export type ActionTypes = {
   updateUser: (user: ParsedUser | null) => void;
   updateError: (error: string | null) => void;
   updateActiveParticipation: (
-    participation: ParsedChallengeParticipation | null
-  ) => void;
+    participation?: ParsedChallengeParticipation | null
+  ) => Promise<void>;
 };
 
 export type GlobalState = {

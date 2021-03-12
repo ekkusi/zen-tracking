@@ -29,3 +29,25 @@ export const DELETE_PARTICIPATION = gql`
     deleteParticipation(challengeId: $challengeId, userName: $userName)
   }
 `;
+
+export const CREATE_CHALLENGE = gql`
+  mutation CreateChallengeMutation($challenge: CreateChallengeInput!) {
+    createChallenge(challenge: $challenge) {
+      id
+    }
+  }
+`;
+
+export const UPDATE_CHALLENGE = gql`
+  mutation UpdateChallengeMutation($id: ID!, $args: UpdateChallengeInput!) {
+    updateChallenge(id: $id, args: $args) {
+      id
+    }
+  }
+`;
+
+export const DELETE_CHALLENGE = gql`
+  mutation DeleteChallengeMutation($id: ID!) {
+    deleteChallenge(id: $id)
+  }
+`;

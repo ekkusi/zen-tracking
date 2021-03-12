@@ -34,12 +34,12 @@ export class ChallengeMapper {
   public static mapCreateChallengeInput(
     challenge: CreateChallengeInput
   ): Prisma.ChallengeCreateInput {
-    const { startDate, endDate, ...rest } = challenge;
+    const { startDate, endDate, creatorName, ...rest } = challenge;
     return {
       ...rest,
-      User: { connect: { name: challenge.creatorName } },
-      end_date: startDate ? formatIsoString(startDate) : undefined,
-      start_date: endDate ? formatIsoString(endDate) : undefined,
+      User: { connect: { name: creatorName } },
+      end_date: endDate ? formatIsoString(endDate) : undefined,
+      start_date: startDate ? formatIsoString(startDate) : undefined,
     };
   }
 
@@ -68,8 +68,8 @@ export class ChallengeMapper {
       ...rest,
       name: args.name ? args.name : undefined,
       description: args.description ? args.description : undefined,
-      end_date: startDate ? formatIsoString(startDate) : undefined,
-      start_date: endDate ? formatIsoString(endDate) : undefined,
+      end_date: endDate ? formatIsoString(endDate) : undefined,
+      start_date: startDate ? formatIsoString(startDate) : undefined,
     };
   }
 }
