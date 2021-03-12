@@ -18,6 +18,7 @@ export const GET_USER_PARTICIPATIONS = gql`
     getUserParticipations(userName: $userName) {
       id
       challenge {
+        id
         name
       }
       markings {

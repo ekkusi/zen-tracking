@@ -15,12 +15,7 @@ import React, { useEffect, useState } from "react";
 import useGlobal from "store";
 import { useHistory } from "react-router-dom";
 import { UserCheckStatus } from "__generated__/globalTypes";
-import UserInfoUtil from "util/UserInfoUtil";
-import { CHECK_USER, GET_USER_PARTICIPATIONS } from "./loginQueries";
-import {
-  GetUserParticipationsQuery,
-  GetUserParticipationsQueryVariables,
-} from "./__generated__/GetUserParticipationsQuery";
+import { CHECK_USER } from "./loginQueries";
 import {
   CheckUserQuery,
   CheckUserQueryVariables,
@@ -97,20 +92,7 @@ const LoginPage = (): JSX.Element => {
         // If user is returned from query, password is correct or user is created
         if (data.user) {
           updateUser(data.user);
-          const participationsResult = await client.query<
-            GetUserParticipationsQuery,
-            GetUserParticipationsQueryVariables
-          >({
-            query: GET_USER_PARTICIPATIONS,
-            variables: {
-              userName: data.user.name,
-            },
-          });
-          const participations =
-            participationsResult.data.getUserParticipations;
-          updateActiveParticipation(
-            UserInfoUtil.getLatestModifiedParticipation(participations)
-          );
+          await updateActiveParticipation();
         }
         if (data.status === UserCheckStatus.USER_NOT_FOUND_BUT_CREATED) {
           history.push("/welcome");

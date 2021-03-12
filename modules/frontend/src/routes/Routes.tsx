@@ -30,6 +30,10 @@ const Routes = (): JSX.Element => {
     return globalState.currentUser.name !== notAuthorizedUser.name;
   };
 
+  const resetGlobalError = () => {
+    globalActions.updateError(null);
+  };
+
   const updateCurrentUser = async (name: string) => {
     setLoading(true);
     try {
@@ -41,6 +45,8 @@ const Routes = (): JSX.Element => {
       });
       const { data } = result;
       globalActions.updateUser(data.getUser);
+      // Update activeParticipation as well when user is updated, wait for user to be updated first
+      await globalActions.updateActiveParticipation();
     } catch (err) {
       globalActions.updateError(
         `Käyttäjääsi ei löytynyt tai istuntosi on vanhentunut. Kokeile kirjautua uudestaan.`
@@ -53,14 +59,19 @@ const Routes = (): JSX.Element => {
 
   // Handle logging in with localStorage cache
   useEffect(() => {
+    let unmounted = false;
     // If currentUser localStorage variable is set but globalStorage user is not set (== is "not-authorized" user) -> get and update user
-    if (currentUser && !isGlobalUserAuthorized() && !loading) {
+    if (currentUser && !isGlobalUserAuthorized() && !loading && !unmounted) {
       updateCurrentUser(currentUser);
     }
     // If localStorage currentUser is null but global storage is still logged in -> null global storage
-    if (!currentUser && isGlobalUserAuthorized()) {
+    if (!currentUser && isGlobalUserAuthorized() && !unmounted) {
       globalActions.updateUser(null);
+      globalActions.updateActiveParticipation(null);
     }
+    return () => {
+      unmounted = true;
+    };
   });
 
   return (
@@ -69,7 +80,7 @@ const Routes = (): JSX.Element => {
         hasOpenButton={false}
         headerLabel="Huppista! Jotakin meni pyllylleen:/"
         isOpen={!!globalState.error}
-        onClose={() => globalActions.updateError(null)}
+        onClose={resetGlobalError}
       >
         <Text color="warning" fontWeight="bold">
           {globalState.error}

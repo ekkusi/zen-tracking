@@ -1,6 +1,6 @@
 import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/schema";
 import { addHours, isSameDay } from "date-fns";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactCalendar, {
   CalendarProps,
   CalendarTileProperties,
@@ -116,6 +116,7 @@ const MarkingCalendar = ({
   markings,
   ...rest
 }: CalendarPropTypes): JSX.Element => {
+  const unmounted = useRef(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [markingInEdit, setMarkingInEdit] = useState<Marking | null>();
   const [dateInEdit, setDateInEdit] = useState<Date | null>();
@@ -139,6 +140,12 @@ const MarkingCalendar = ({
     return classNames;
   };
 
+  useEffect(() => {
+    return () => {
+      unmounted.current = true;
+    };
+  }, []);
+
   const onClickDay: DateCallback = (date) => {
     // Convert clicked date to be at time 12:00 instead of 00:00 to make ISOString to give the same day instead of day before
     const midDayDate = addHours(date, 12);
@@ -160,9 +167,11 @@ const MarkingCalendar = ({
         hasOpenButton={false}
         isOpen={!!isEditOpen}
         onClose={() => {
-          setMarkingInEdit(null);
-          setIsEditOpen(false);
-          setDateInEdit(null);
+          if (!unmounted.current) {
+            setMarkingInEdit(null);
+            setIsEditOpen(false);
+            setDateInEdit(null);
+          }
         }}
       />
       <StyledCalendar

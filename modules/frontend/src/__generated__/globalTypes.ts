@@ -20,9 +20,24 @@ export enum UserCheckStatus {
   USER_NOT_FOUND_BUT_CREATED = "USER_NOT_FOUND_BUT_CREATED",
 }
 
+export interface CreateChallengeInput {
+  name: string;
+  description: string;
+  creatorName: string;
+  startDate?: any | null;
+  endDate?: any | null;
+}
+
 export interface MarkingInput {
   comment?: string | null;
   date?: any | null;
+}
+
+export interface UpdateChallengeInput {
+  name?: string | null;
+  description?: string | null;
+  startDate?: any | null;
+  endDate?: any | null;
 }
 
 //==============================================================

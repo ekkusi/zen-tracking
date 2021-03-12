@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { Flex, FlexProps, Text, useDisclosure } from "@chakra-ui/react";
+import { Flex, FlexProps, Text } from "@chakra-ui/react";
 import ModalTemplate from "components/general/ModalTemplate";
 import {
   AlertButton,
@@ -10,6 +10,7 @@ import Heading from "components/primitives/Heading";
 import React, { useState } from "react";
 import useGlobal from "store";
 import DateUtil from "util/DateUtil";
+import EditChallenge from "components/EditChallenge";
 import {
   DeteleParticipationMutation,
   DeteleParticipationMutationVariables,
@@ -23,13 +24,18 @@ import { GetChallengesQuery_getChallenges } from "./__generated__/GetChallengesQ
 
 type ChallengeCardProps = FlexProps & {
   challenge: GetChallengesQuery_getChallenges;
+  updateChallenges: () => Promise<void>;
 };
 
 const ChallengeCard = ({
   challenge,
+  updateChallenges,
   ...rest
 }: ChallengeCardProps): JSX.Element => {
   const user = useGlobal((state) => state.currentUser)[0];
+  const activeParticipation = useGlobal(
+    (state) => state.activeParticipation
+  )[0];
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [addParticipation, { loading: addLoading }] = useMutation<
     CreateParticipationMutation,
@@ -51,11 +57,36 @@ const ChallengeCard = ({
     },
   });
 
+  const updateModalOpen = (value: boolean) => {
+    setIsDeleteModalOpen(value);
+  };
+
+  const deleteParticipationCall = () => {
+    deleteParticipation()
+      .catch((e) => console.log(e))
+      .finally(async () => {
+        await updateChallenges();
+        updateModalOpen(false);
+      });
+  };
+
+  const createParticipation = () => {
+    addParticipation()
+      .catch((e) => console.log(e))
+      .finally(async () => {
+        await updateChallenges();
+      });
+  };
+
   const getUserParticipation = () => {
     const participation = challenge.participations.find(
       (it) => it.user.name === user.name
     );
     return participation;
+  };
+
+  const isUserChallengeCreator = () => {
+    return challenge.creator.name === user.name;
   };
 
   return (
@@ -70,7 +101,11 @@ const ChallengeCard = ({
       {...rest}
     >
       <Heading.H3 mb="0">{challenge.name}</Heading.H3>
-
+      {activeParticipation?.challenge.id === challenge.id && (
+        <Text as="span" color="primary.regular">
+          Aktiivinen haaste
+        </Text>
+      )}
       <Text as="span" fontStyle="italic" mb="0">
         {challenge.startDate && challenge.endDate
           ? `${DateUtil.format(challenge.startDate)} -
@@ -80,39 +115,43 @@ const ChallengeCard = ({
       <Text as="span" mb="3">
         Ilmoittautuneita: {challenge.participations.length}
       </Text>
+
       <Text fontSize="md" overflow="hidden">
         {challenge.description}
       </Text>
-      {challenge.creator.name !== user.name && !!getUserParticipation() ? (
+      {isUserChallengeCreator() && (
+        <EditChallenge
+          challenge={challenge}
+          openButtonLabel="Muokkaa"
+          openButtonProps={{ size: "xs", mt: "auto" }}
+        />
+      )}
+      {getUserParticipation() ? (
         <>
           <AlertButton
             color="white"
             bg="warning"
-            mt="auto"
-            onClick={() => setIsDeleteModalOpen(true)}
+            mt={isUserChallengeCreator() ? "2" : "auto"}
+            onClick={() => updateModalOpen(true)}
           >
             Poista ilmoittautuminen
           </AlertButton>
           <ModalTemplate
             hasOpenButton={false}
             isOpen={isDeleteModalOpen}
-            onClose={() => setIsDeleteModalOpen(false)}
+            onClose={() => updateModalOpen(false)}
             headerLabel="Poista ilmoittautuminen"
             modalFooter={
               <>
                 <AlertButton
                   isLoading={deleteLoading}
-                  onClick={() =>
-                    deleteParticipation()
-                      .catch((e) => console.log(e))
-                      .finally(() => setIsDeleteModalOpen(false))
-                  }
+                  onClick={deleteParticipationCall}
                 >
                   Poista
                 </AlertButton>
                 <CancelButton
                   isDisabled={deleteLoading}
-                  onClick={() => setIsDeleteModalOpen(false)}
+                  onClick={() => updateModalOpen(false)}
                 >
                   Peruuta
                 </CancelButton>
@@ -129,8 +168,8 @@ const ChallengeCard = ({
       ) : (
         <PrimaryButton
           isLoading={addLoading}
-          mt="auto"
-          onClick={() => addParticipation().catch((e) => console.log(e))}
+          mt={isUserChallengeCreator() ? "2" : "auto"}
+          onClick={createParticipation}
         >
           Ilmoittaudu
         </PrimaryButton>

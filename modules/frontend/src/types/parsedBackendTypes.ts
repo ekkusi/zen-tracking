@@ -4,7 +4,8 @@ import {
   User,
 } from "@ekeukko/zen-tracking-backend/lib/types/schema";
 
-export type ParsedChallenge = Omit<Partial<Challenge>, "name"> & {
+export type ParsedChallenge = Omit<Partial<Challenge>, "name" | "id"> & {
+  id: string;
   name: string;
 };
 

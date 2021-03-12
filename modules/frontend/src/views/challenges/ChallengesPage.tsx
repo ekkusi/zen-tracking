@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
-import { useQuery } from "@apollo/client";
+import { useApolloClient, useQuery } from "@apollo/client";
 import useGlobal from "store";
 import { ChallengeStatus } from "__generated__/globalTypes";
+import EditChallenge from "components/EditChallenge";
 import { GET_CHALLENGES } from "./queries";
 import {
   GetChallengesQuery,
@@ -15,6 +16,11 @@ import ChallengesSection from "./ChallengesSection";
 const ChallengesPage = (): JSX.Element => {
   const [error, setError] = useState<string>();
   const user = useGlobal((state) => state.currentUser)[0];
+  const updateActiveParticipation = useGlobal(
+    (state) => state.currentUser,
+    (actions) => actions.updateActiveParticipation
+  )[1];
+
   const [challengesByUser, setChallengesByUser] = useState<
     GetChallengesQuery_getChallenges[]
   >([]);
@@ -25,9 +31,15 @@ const ChallengesPage = (): JSX.Element => {
   const [otherChallenges, setOtherChallenges] = useState<
     GetChallengesQuery_getChallenges[]
   >([]);
-  const { data, loading, error: apolloError } = useQuery<GetChallengesQuery>(
+
+  const {
+    data,
+    loading,
+    error: apolloError,
+    refetch,
+  } = useQuery<GetChallengesQuery>(
     GET_CHALLENGES,
-    { skip: !!error } // This stops looping useQuery when error is returned
+    { skip: !!error, fetchPolicy: "no-cache" } // This stops looping useQuery when error is returned
   );
 
   if (apolloError) {
@@ -64,7 +76,9 @@ const ChallengesPage = (): JSX.Element => {
         (it) =>
           it.creator.name !== user.name &&
           !it.participations.find(
-            (participation) => participation.user.name === user.name
+            (participation) =>
+              participation.user.name === user.name &&
+              it.creator.name !== user.name
           )
       );
       setChallengesByUser(newChallengesByUser);
@@ -72,6 +86,11 @@ const ChallengesPage = (): JSX.Element => {
       setOtherChallenges(newOtherChallenges);
     }
   }, [data, user]);
+
+  const refetchChallenges = async () => {
+    await refetch();
+    await updateActiveParticipation();
+  };
 
   return (
     <Box>
@@ -89,33 +108,42 @@ const ChallengesPage = (): JSX.Element => {
         Tällä sivulla löytyy tulevat ja menevät haasteet. Alta voit luoda oman
         haasteen halutessasi.
       </Text>
+      <Flex justifyContent={{ base: "left", sm: "center" }}>
+        <EditChallenge onEdit={refetchChallenges} />
+      </Flex>
       {data && (
         <Box>
           <ChallengesSeparator title="Omat haasteet" />
           <ChallengesSection
             title="Luomasi haasteet"
             challenges={challengesByUser}
+            updateChallenges={refetchChallenges}
           />
           <ChallengesSection
             title="Ilmoittautumisesi"
             challenges={userParticipationChallenges}
+            updateChallenges={refetchChallenges}
           />
           <ChallengesSeparator title="Muut haasteet" />
           <ChallengesSection
             title="Ehdotukset"
             challenges={getOtherChallenges(ChallengeStatus.SUGGESTION)}
+            updateChallenges={refetchChallenges}
           />
           <ChallengesSection
             title="Aktiiviset haasteet"
             challenges={getOtherChallenges(ChallengeStatus.ACTIVE)}
+            updateChallenges={refetchChallenges}
           />
           <ChallengesSection
             title="Tulevat haasteet"
             challenges={getOtherChallenges(ChallengeStatus.UPCOMING)}
+            updateChallenges={refetchChallenges}
           />
           <ChallengesSection
             title="Menneet haasteet"
             challenges={getOtherChallenges(ChallengeStatus.ENDED)}
+            updateChallenges={refetchChallenges}
           />
         </Box>
       )}

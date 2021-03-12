@@ -9,6 +9,7 @@
 
 export interface GetUserParticipationsQuery_getUserParticipations_challenge {
   __typename: "Challenge";
+  id: string;
   name: string;
 }
 

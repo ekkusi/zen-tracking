@@ -70,12 +70,21 @@ const MainPage = (): JSX.Element => {
         </>
       ) : (
         <>
-          <Heading.H2 fontWeight="normal" mb={{ base: "6", md: "10" }}>
+          <Heading.H2 fontWeight="normal" mb="0">
             <Text as="span" fontStyle="italic">
               Haasteesi:
             </Text>{" "}
             {activeParticipation.challenge.name}
           </Heading.H2>
+          <Text
+            as={Link}
+            to="/challenges"
+            display="block"
+            mb={{ base: "6", md: "10" }}
+            fontSize="xl"
+          >
+            Selaa muita haasteita
+          </Text>
           <Flex justifyContent={{ base: "flex-start", sm: "center" }} mb="7">
             <AddMarking
               openButtonLabel={

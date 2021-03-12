@@ -2,22 +2,22 @@
   "users": [
     {
       "name": "Erkkipena",
-      "password": "salasana",
+      "password": "asd123",
       "is_private": true
     },
     {
       "name": "Maakari",
-      "password": "salasana",
+      "password": "asd123",
       "is_private": false
     },
     {
-      "name": "ekeukko",
-      "password": "salasana",
+      "name": "eke",
+      "password": "asd123",
       "is_private": false
     },
     {
       "name": "Marttila",
-      "password": "salasana",
+      "password": "asd123",
       "is_private": false
     }
   ],
@@ -25,12 +25,12 @@
     {
       "name": "Lenkittelyvä - käynnissä oleva",
       "description": "Joka päivä jonkinlainen lenkki, kävellen tai juosten",
-      "creator_name": "ekeukko",
+      "creator_name": "eke",
       "start_date": "2021-03-01T00:00:00+02:00",
       "end_date": "2021-03-30T00:00:00+02:00",
       "participations": [
         {
-          "user_name": "ekeukko",
+          "user_name": "eke",
           "markings": [
             {
               "comment": "Ihanpa mukava lenkki",
@@ -68,12 +68,12 @@
     {
       "name": "Meditointia - mennyt",
       "description": "Istu ja ajattele joka päivä",
-      "creator_name": "ekeukko",
+      "creator_name": "eke",
       "start_date": "2021-02-01T00:00:00+02:00",
       "end_date": "2021-02-28T23:59:59+02:00",
       "participations": [
         {
-          "user_name": "ekeukko",
+          "user_name": "eke",
           "markings": [
             {
               "comment": "Tulipaha ajateltua 10min",

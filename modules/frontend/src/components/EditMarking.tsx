@@ -13,7 +13,7 @@ import ModalTemplate, {
 } from "components/general/ModalTemplate";
 import { PrimaryButton, AlertButton } from "components/primitives/Button";
 import { PrimaryTextArea } from "components/primitives/Input";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useGlobal from "store";
 import DateUtil from "util/DateUtil";
 import {
@@ -54,6 +54,7 @@ const EditMarking = ({
   date,
   ...modalTemplateProps
 }: EditMarkingProps): JSX.Element => {
+  const unmounted = useRef(false);
   const [activeParticipation, updateActiveParticipation] = useGlobal(
     (state) => state.activeParticipation,
     (actions) => actions.updateActiveParticipation
@@ -90,10 +91,19 @@ const EditMarking = ({
         ...defaultFormValues,
       };
       if (marking.comment) newFormValues.comment = marking.comment;
-      setFormValues(newFormValues);
-      setIsInitialStateSet(true); // Set that initialstate is changed, so this wont trigger again
+      if (!unmounted.current) {
+        setFormValues(newFormValues);
+        setIsInitialStateSet(true); // Set that initialstate is changed, so this wont trigger again
+      }
     }
+    return () => {
+      unmounted.current = true;
+    };
   }, [formValues, isInitialStateSet, marking]);
+
+  const updateFormValues = (values: FormValues) => {
+    setFormValues(values);
+  };
 
   const saveAndClose = async () => {
     // This shouldn't get triggered, activeParticipation should be found if EditMarking is open
@@ -277,7 +287,7 @@ const EditMarking = ({
             value={formValues.comment}
             maxLength={MAX_COMMENT_LENGTH}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              setFormValues({
+              updateFormValues({
                 ...formValues,
                 comment: event.target.value,
               })
