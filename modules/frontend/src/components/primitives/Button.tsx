@@ -15,7 +15,7 @@ const BaseButtonProps: ChakraButtonProps = {
   borderRadius: "md",
   width: "auto",
   height: "auto",
-  whiteSpace: "normal",
+  whiteSpace: "nowrap",
   _hover: {
     opacity: 1,
   },

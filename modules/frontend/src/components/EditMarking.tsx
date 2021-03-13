@@ -1,6 +1,7 @@
 import { useApolloClient } from "@apollo/client";
 import {
   Box,
+  Flex,
   FormControl,
   FormLabel,
   Stack,
@@ -13,6 +14,7 @@ import ModalTemplate, {
 } from "components/general/ModalTemplate";
 import { PrimaryButton, AlertButton } from "components/primitives/Button";
 import { PrimaryTextArea } from "components/primitives/Input";
+import FileInput from "components/primitives/FileInput";
 import React, { useEffect, useRef, useState } from "react";
 import useGlobal from "store";
 import DateUtil from "util/DateUtil";
@@ -41,10 +43,12 @@ type EditMarkingProps = Omit<ModalTemplateProps, "children"> & {
 
 type FormValues = {
   comment: string;
+  photo?: File | null;
 };
 
 const defaultFormValues: FormValues = {
   comment: "",
+  photo: null,
 };
 
 const MAX_COMMENT_LENGTH = 2000;
@@ -115,7 +119,7 @@ const EditMarking = ({
     }
 
     setLoading(true);
-    const { comment } = formValues;
+    const { comment, photo } = formValues;
 
     try {
       // User markings after edit/create. Set to null if update fails to not trigger update in global state.
@@ -296,6 +300,34 @@ const EditMarking = ({
           <Text as="span" display="block" color="secondary" fontSize="sm">
             {formValues.comment.length}/{MAX_COMMENT_LENGTH} merkkiä
           </Text>
+          <Flex direction="row" alignItems="center">
+            <FileInput
+              id="editMarkingFileInput"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                updateFormValues({
+                  ...formValues,
+                  photo:
+                    event.target.files == null || event.target.files.length <= 0
+                      ? null
+                      : event.target.files[0],
+                });
+                console.log(event.target.files);
+              }}
+            />
+            <Text
+              as="span"
+              display="block"
+              color="secondary"
+              fontSize="sm"
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+            >
+              {formValues.photo == null
+                ? "Ei valittua tiedostoa"
+                : formValues.photo.name}
+            </Text>
+          </Flex>
         </FormControl>
         {error && <Text color="warning">{error}</Text>}
       </Stack>

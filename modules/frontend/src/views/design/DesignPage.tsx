@@ -58,7 +58,10 @@ const DesignPage = () => {
         <Text>Testi</Text>
       </MotionBox>
 
-      <FileInput id="file" />
+      <FileInput
+        id="file"
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {}}
+      />
     </Box>
   );
 };

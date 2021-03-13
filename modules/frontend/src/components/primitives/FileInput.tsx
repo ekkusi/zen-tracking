@@ -1,19 +1,26 @@
-import { Input } from "@chakra-ui/react";
+import { Box, Input } from "@chakra-ui/react";
 import React from "react";
 import { ButtonWithRef } from "./Button";
 
 type FileInputProps = {
   id: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const FileInput = ({ id }: FileInputProps): JSX.Element => {
+const FileInput = ({ id, onChange }: FileInputProps): JSX.Element => {
   return (
-    <>
-      <Input type="file" visibility="hidden" id={id} />
-      <ButtonWithRef as="label" for={id} p="2" w="auto">
+    <Box>
+      <Input
+        type="file"
+        visibility="hidden"
+        id={id}
+        onChange={onChange}
+        display="none"
+      />
+      <ButtonWithRef as="label" htmlFor={id} p="2" w="auto">
         Valitse tiedosto
       </ButtonWithRef>
-    </>
+    </Box>
   );
 };
 
