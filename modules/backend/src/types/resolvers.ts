@@ -140,6 +140,7 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Types.Scalars["Boolean"]>;
   Date: ResolverTypeWrapper<Types.Scalars["Date"]>;
+  DateFilter: Types.DateFilter;
   UserCheckStatus: Types.UserCheckStatus;
   User: ResolverTypeWrapper<User>;
   UserCheckResult: ResolverTypeWrapper<
@@ -164,6 +165,7 @@ export type ResolversParentTypes = {
   Mutation: {};
   Boolean: Types.Scalars["Boolean"];
   Date: Types.Scalars["Date"];
+  DateFilter: Types.DateFilter;
   User: User;
   UserCheckResult: Omit<Types.UserCheckResult, "user"> & {
     user?: Types.Maybe<ResolversParentTypes["User"]>;
@@ -211,7 +213,8 @@ export type QueryResolvers<
   getChallenges?: Resolver<
     Array<ResolversTypes["Challenge"]>,
     ParentType,
-    ContextType
+    ContextType,
+    RequireFields<Types.QueryGetChallengesArgs, never>
   >;
   getUserParticipations?: Resolver<
     Array<ResolversTypes["ChallengeParticipation"]>,
@@ -219,11 +222,23 @@ export type QueryResolvers<
     ContextType,
     RequireFields<Types.QueryGetUserParticipationsArgs, "userName">
   >;
+  getParticipation?: Resolver<
+    Types.Maybe<ResolversTypes["ChallengeParticipation"]>,
+    ParentType,
+    ContextType,
+    RequireFields<Types.QueryGetParticipationArgs, "challengeId">
+  >;
   getMarkings?: Resolver<
     Array<ResolversTypes["Marking"]>,
     ParentType,
     ContextType,
     RequireFields<Types.QueryGetMarkingsArgs, "participationId">
+  >;
+  getUserTransferParticipation?: Resolver<
+    Types.Maybe<ResolversTypes["ChallengeParticipation"]>,
+    ParentType,
+    ContextType,
+    RequireFields<Types.QueryGetUserTransferParticipationArgs, "userName">
   >;
 };
 
@@ -301,6 +316,15 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<Types.MutationDeleteMarkingArgs, "id">
+  >;
+  transferUserMarkings?: Resolver<
+    ResolversTypes["Boolean"],
+    ParentType,
+    ContextType,
+    RequireFields<
+      Types.MutationTransferUserMarkingsArgs,
+      "userName" | "challengeId"
+    >
   >;
 };
 

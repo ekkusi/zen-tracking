@@ -14,17 +14,14 @@ import { GraphQLError } from "graphql";
 import {
   typeDef as customScalarTypeDef,
   resolvers as customScalarResolvers,
-} from "./scalars/customScalars";
+} from "./shared";
 
-import {
-  typeDef as userTypeDef,
-  resolvers as userResolvers,
-} from "./user/user";
+import { typeDef as userTypeDef, resolvers as userResolvers } from "./user";
 
 import {
   typeDef as challengeTypeDef,
   resolvers as challengeResolvers,
-} from "./challenge/challenge";
+} from "./challenge";
 
 import prisma from "./client";
 import ValidationError from "../utils/ValidationError";

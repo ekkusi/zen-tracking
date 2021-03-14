@@ -1,6 +1,8 @@
 import {
   differenceInCalendarDays,
   format as dateFnsFormat,
+  isAfter,
+  isBefore,
   isSameDay,
 } from "date-fns";
 import locale from "date-fns/locale/fi";
@@ -36,6 +38,21 @@ class DateUtil {
 
   static dateIsIn(date: Date, dates: Date[]): boolean {
     return dates.some((it) => isSameDay(it, date));
+  }
+
+  static isBetween(date: Date, startDate: Date, endDate: Date): boolean {
+    return (
+      (isAfter(date, startDate) || isSameDay(date, startDate)) &&
+      (isBefore(date, endDate) || isSameDay(date, endDate))
+    );
+  }
+
+  static isSameDayOrBefore(date: Date, compareDate: Date): boolean {
+    return isSameDay(date, compareDate) || isBefore(date, compareDate);
+  }
+
+  static isSameDayOrAfter(date: Date, compareDate: Date): boolean {
+    return isSameDay(date, compareDate) || isAfter(date, compareDate);
   }
 
   static getDateStreak(dates: Date[]): number {

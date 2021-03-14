@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { userDataFragment, markingDataFragment } from "fragments";
+import { userDataFragment } from "fragments";
 
 export const CHECK_USER = gql`
   query CheckUserQuery($name: ID!, $password: String!) {
@@ -11,20 +11,4 @@ export const CHECK_USER = gql`
     }
   }
   ${userDataFragment}
-`;
-
-export const GET_USER_PARTICIPATIONS = gql`
-  query GetUserParticipationsQuery($userName: ID!) {
-    getUserParticipations(userName: $userName) {
-      id
-      challenge {
-        id
-        name
-      }
-      markings {
-        ...MarkingData
-      }
-    }
-  }
-  ${markingDataFragment}
 `;

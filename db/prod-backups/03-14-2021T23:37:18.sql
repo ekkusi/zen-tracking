@@ -1,8 +1,3 @@
-DROP TABLE IF EXISTS "Marking";
-DROP TABLE IF EXISTS "ChallengeParticipation";
-DROP TABLE IF EXISTS "Challenge";
-DROP TABLE IF EXISTS "User";
-DROP TABLE IF EXISTS "Quote";
 --
 -- PostgreSQL database dump
 --
@@ -10,7 +5,7 @@ DROP TABLE IF EXISTS "Quote";
 -- Dumped from database version 13.2 (Ubuntu 13.2-1.pgdg20.04+1)
 -- Dumped by pg_dump version 13.2
 
--- Started on 2021-03-13 10:26:13 EET
+-- Started on 2021-03-14 23:37:18 EET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -160,6 +155,7 @@ dc2c4414-5d93-41e9-97a3-472470758d14	2021-03-11 10:00:00+00	Päivänsäde63	Muka
 1f42e174-89a0-46d7-9673-177a938e8e82	2021-03-10 10:00:00+00	ekeukko	
 61d9d129-db34-460f-8e20-394f38c86f82	2021-03-09 10:00:00+00	ekeukko	
 18eb899c-21ca-44b2-9905-10f6cfdf8a06	2021-03-12 10:00:00+00	Päivänsäde63	Reissuun pakkaamisen lista vähän pyöri mielessä, mutta keksin vanhan rentoutumisharjoituksen miten jäsenet alkaa painaa alustaa vasten
+08f95a69-5d48-4d2b-881c-09943ac96b78	2021-03-13 10:00:00+00	Päivänsäde63	Rukalla. Ilman kelloa pötköttely.
 \.
 
 
@@ -284,7 +280,7 @@ ALTER TABLE ONLY public."Marking"
     ADD CONSTRAINT "Marking_user_name_fkey" FOREIGN KEY (user_name) REFERENCES public."User"(name) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
--- Completed on 2021-03-13 10:26:21 EET
+-- Completed on 2021-03-14 23:37:25 EET
 
 --
 -- PostgreSQL database dump complete

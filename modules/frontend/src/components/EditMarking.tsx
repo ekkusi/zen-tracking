@@ -55,9 +55,9 @@ const EditMarking = ({
   ...modalTemplateProps
 }: EditMarkingProps): JSX.Element => {
   const unmounted = useRef(false);
-  const [activeParticipation, updateActiveParticipation] = useGlobal(
+  const [activeParticipation, updateActiveParticipationMarkings] = useGlobal(
     (state) => state.activeParticipation,
-    (actions) => actions.updateActiveParticipation
+    (actions) => actions.updateActiveParticipationMarkings
   );
   const updateError = useGlobal(
     (state) => state.error,
@@ -174,10 +174,7 @@ const EditMarking = ({
 
       // Update user markings in frontend also, no need to refetch from backend
       if (newMarkings) {
-        updateActiveParticipation({
-          ...activeParticipation,
-          markings: newMarkings,
-        });
+        updateActiveParticipationMarkings(newMarkings);
       }
       setLoading(false);
       disclosureProps.onClose();
@@ -210,12 +207,9 @@ const EditMarking = ({
         });
         if (data) {
           // Delete marking from activeParticipation in frontend also, no need to refetch from backend
-          updateActiveParticipation({
-            ...activeParticipation,
-            markings: activeParticipation.markings.filter(
-              (it) => it.id !== marking.id
-            ),
-          });
+          updateActiveParticipationMarkings(
+            activeParticipation.markings.filter((it) => it.id !== marking.id)
+          );
         }
       } else {
         setError(

@@ -1,10 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
-import { useApolloClient, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import useGlobal from "store";
 import { ChallengeStatus } from "__generated__/globalTypes";
 import EditChallenge from "components/EditChallenge";
+import ChallengeSelect, {
+  OptionType,
+  SelectHandle,
+} from "components/ChallengeSelect";
+import { Link } from "react-router-dom";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { GET_CHALLENGES } from "./queries";
 import {
   GetChallengesQuery,
@@ -15,11 +21,15 @@ import ChallengesSection from "./ChallengesSection";
 
 const ChallengesPage = (): JSX.Element => {
   const [error, setError] = useState<string>();
+  const [loading, setLoading] = useState(false);
+
+  const selectRef = useRef<SelectHandle>(null);
+
   const user = useGlobal((state) => state.currentUser)[0];
-  const updateActiveParticipation = useGlobal(
-    (state) => state.currentUser,
+  const [activeParticipation, updateActiveParticipation] = useGlobal(
+    (store) => store.activeParticipation,
     (actions) => actions.updateActiveParticipation
-  )[1];
+  );
 
   const [challengesByUser, setChallengesByUser] = useState<
     GetChallengesQuery_getChallenges[]
@@ -32,12 +42,7 @@ const ChallengesPage = (): JSX.Element => {
     GetChallengesQuery_getChallenges[]
   >([]);
 
-  const {
-    data,
-    loading,
-    error: apolloError,
-    refetch,
-  } = useQuery<GetChallengesQuery>(
+  const { data, error: apolloError, refetch } = useQuery<GetChallengesQuery>(
     GET_CHALLENGES,
     { skip: !!error, fetchPolicy: "no-cache" } // This stops looping useQuery when error is returned
   );
@@ -64,11 +69,13 @@ const ChallengesPage = (): JSX.Element => {
       const newChallengesByUser = data.getChallenges.filter(
         (it) => it.creator.name === user.name
       );
-      // Challenges that current user is participating in, but not the user
+      // Challenges that current user is participating in, but not the creator
       const newUserParticipationChallenges = data.getChallenges.filter(
         (it) =>
           !!it.participations.find(
-            (participation) => participation.user.name === user.name
+            (participation) =>
+              participation.user.name === user.name &&
+              it.creator.name !== user.name
           )
       );
       // Other challenges
@@ -76,9 +83,7 @@ const ChallengesPage = (): JSX.Element => {
         (it) =>
           it.creator.name !== user.name &&
           !it.participations.find(
-            (participation) =>
-              participation.user.name === user.name &&
-              it.creator.name !== user.name
+            (participation) => participation.user.name === user.name
           )
       );
       setChallengesByUser(newChallengesByUser);
@@ -89,14 +94,19 @@ const ChallengesPage = (): JSX.Element => {
 
   const refetchChallenges = async () => {
     await refetch();
-    await updateActiveParticipation();
+    if (selectRef?.current) {
+      selectRef.current.refetchOptions();
+    }
+  };
+
+  const onActiveChallengeSelect = async (value: OptionType | null) => {
+    setLoading(true);
+    await updateActiveParticipation(value?.value ?? null);
+    setLoading(false);
   };
 
   return (
-    <Box>
-      {/* <ButtonWithRef as={Link} leftIcon={<ArrowBackIcon />} to="/" mb="3">
-        Takaisin etusivulle
-      </ButtonWithRef> */}
+    <Box pb="5">
       <Heading.H1
         textAlign={{ base: "left", sm: "center" }}
         fontSize={{ base: "4xl", sm: "5xl" }}
@@ -109,11 +119,42 @@ const ChallengesPage = (): JSX.Element => {
         haasteen halutessasi.
       </Text>
       <Flex justifyContent={{ base: "left", sm: "center" }}>
-        <EditChallenge onEdit={refetchChallenges} />
+        <EditChallenge
+          onEdit={refetchChallenges}
+          openButtonProps={{ size: "lg" }}
+        />
       </Flex>
       {data && (
         <Box>
           <ChallengesSeparator title="Omat haasteet" />
+          <Flex
+            direction="column"
+            alignItems={{ base: "left", sm: "center" }}
+            mb="6"
+          >
+            <Heading.H3 fontWeight="normal" mb="2">
+              Valitse aktiivinen haaste
+            </Heading.H3>
+            <ChallengeSelect
+              initialValue={
+                activeParticipation
+                  ? {
+                      value: activeParticipation.challenge.id,
+                      label: activeParticipation.challenge.name,
+                    }
+                  : undefined
+              }
+              onSelect={onActiveChallengeSelect}
+              isLoading={loading}
+              containerProps={{ mb: "2" }}
+              ref={selectRef}
+            />
+            <Text as={Link} to="/" fontWeight="bold" fontSize="lg">
+              Siirry merkkaamaan
+              <ArrowForwardIcon />
+            </Text>
+          </Flex>
+
           <ChallengesSection
             title="Luomasi haasteet"
             challenges={challengesByUser}

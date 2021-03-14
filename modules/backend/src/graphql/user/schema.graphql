@@ -1,8 +1,3 @@
-# import Date from "../scalars/schema.graphql"
-# import ChallengeParticipation from "../challenge/schema.graphql"
-
-# Above imports are for graphql-code-generator
-
 # This is here to prevent error from graphql-code-generator documents field
 query GetUsers {
   getUsers {

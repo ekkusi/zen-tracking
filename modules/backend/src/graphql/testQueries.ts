@@ -5,22 +5,26 @@
 const queries = `
 query GetUsers {
   getUsers {
-    ...UserData
-    participations {
-  		id
-      markings {
-        ...MarkingData
-      }
+    name
+  }
+}
+
+query GetTransferParticipation {
+  getUserTransferParticipation(userName: "ekeukko") {
+    challenge {
+      name
+    }
+    markings {
+      id
+      date
+      comment
     }
   }
 }
 
 query GetChallenges {
-  getChallenges {
+  getChallenges(status: ENDED) {
     ...ChallengeData
-    creator {
-      ...UserData
-    }
     participations {
       id
       user {
@@ -33,25 +37,69 @@ query GetChallenges {
   }
 }
 
+query GetParticipation{
+  getParticipation(challengeId: "5cb8db63-245f-4b68-b3ea-538eb661e9") {
+    id
+    challenge {
+      name
+    }
+  }
+}
+
+query GetParticipations {
+  getUserParticipations(userName: "eke")
+  {
+    id
+    challenge {
+      id
+      name
+    }
+    user {
+      name
+    }	
+    markings {
+      comment
+    }
+  }
+}
+
+mutation EditChallenge {
+  updateChallenge(id: "278f192e-f008-4065-88c8-0db8804836b5", args: {name: "NO_PARTICIPATION_MARKINGS_HOLDER"}) {
+    name
+    id
+  }
+}
+
+mutation TransferMarkings {
+  transferUserMarkings(userName: "eke", challengeId: "abf61797-dbe4-47e2-ad5a-9f337a133554")
+}
+
+mutation CreateChallenge {
+  createChallenge(challenge: {
+    name: "Haaste"
+    description: "Joku"
+    creatorName: "eke"
+    startDate: "2021-02-02"
+    endDate: "2021-02-02"
+  }) {
+    id
+    name
+    startDate
+    endDate
+  }
+}
+
 mutation Deletes {
-  deleteParticipation(id: "b33687e8-e171-4b42-abe8-e4758a019b33")
+  deleteParticipation(challengeId:"abf61797-dbe4-47e2-ad5a-9f337a133554", userName: "")
 }
 
 fragment ChallengeData on Challenge {
   id
   name
-  description
-  creator {
-    name
-  }
   status
   startDate
   endDate
-}
-
-fragment UserData on User {
-  name
-  isPrivate
+  description
 }
 
 fragment MarkingData on Marking {

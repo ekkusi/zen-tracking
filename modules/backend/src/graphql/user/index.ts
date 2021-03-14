@@ -2,7 +2,6 @@ import { readFileSync } from "fs";
 import path from "path";
 
 import { User } from "@prisma/client";
-import ValidationError from "@/utils/ValidationError";
 import { hash, compare } from "../../utils/auth";
 import { Resolvers as UserResolvers } from "../../types/resolvers";
 import { UserCheckStatus } from "../../types/schema";
@@ -40,6 +39,7 @@ export const resolvers: UserResolvers = {
       throw new Error("No user found with given name");
     },
     getUsers: async (_, __, { prisma }) => {
+      console.log("######## getUsers started #########");
       const users: User[] = await prisma.user.findMany();
       return users;
       // eturn users.map((it) => UserMapper.mapUser(it));

@@ -1,3 +1,4 @@
+import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/schema";
 import {
   ParsedChallengeParticipation,
   ParsedUser,
@@ -6,9 +7,8 @@ import {
 export type ActionTypes = {
   updateUser: (user: ParsedUser | null) => void;
   updateError: (error: string | null) => void;
-  updateActiveParticipation: (
-    participation?: ParsedChallengeParticipation | null
-  ) => Promise<void>;
+  updateActiveParticipation: (challengeId?: string | null) => Promise<void>;
+  updateActiveParticipationMarkings: (markings: Marking[]) => void;
 };
 
 export type GlobalState = {

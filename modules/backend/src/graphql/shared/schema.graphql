@@ -1,0 +1,8 @@
+scalar Date
+
+input DateFilter {
+  gte: String
+  gt: String
+  lte: String
+  lt: String
+}

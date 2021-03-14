@@ -1,25 +1,35 @@
 import { gql } from "@apollo/client";
 import { challengeDataFragment } from "fragments";
 
-export const GET_CHALLENGES = gql`
-  query GetChallengesQuery {
-    getChallenges {
-      ...ChallengeData
-      participations {
-        id
-        user {
-          name
-        }
+export const challengeWithParticipationsFragment = gql`
+  fragment ChallengeWithParticipationsFragment on Challenge {
+    ...ChallengeData
+    participations {
+      id
+      user {
+        name
       }
     }
   }
   ${challengeDataFragment}
 `;
 
+export const GET_CHALLENGES = gql`
+  query GetChallengesQuery {
+    getChallenges {
+      ...ChallengeWithParticipationsFragment
+    }
+  }
+  ${challengeWithParticipationsFragment}
+`;
+
 export const CREATE_PARTICIPATION = gql`
   mutation CreateParticipationMutation($challengeId: ID!, $userName: ID!) {
     createParticipation(challengeId: $challengeId, userName: $userName) {
       id
+      challenge {
+        id
+      }
     }
   }
 `;
@@ -33,17 +43,19 @@ export const DELETE_PARTICIPATION = gql`
 export const CREATE_CHALLENGE = gql`
   mutation CreateChallengeMutation($challenge: CreateChallengeInput!) {
     createChallenge(challenge: $challenge) {
-      id
+      ...ChallengeWithParticipationsFragment
     }
   }
+  ${challengeWithParticipationsFragment}
 `;
 
 export const UPDATE_CHALLENGE = gql`
   mutation UpdateChallengeMutation($id: ID!, $args: UpdateChallengeInput!) {
     updateChallenge(id: $id, args: $args) {
-      id
+      ...ChallengeWithParticipationsFragment
     }
   }
+  ${challengeWithParticipationsFragment}
 `;
 
 export const DELETE_CHALLENGE = gql`

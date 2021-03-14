@@ -19,11 +19,11 @@ CREATE TABLE "Quote" (
 
 CREATE TABLE "Challenge" (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name varchar(254) NOT NULL,
+  name varchar(254) NOT NULL UNIQUE,
   description text NOT NULL,
   creator_name varchar(254) NOT NULL,
   start_date timestamp with time zone,
-  end_date timestamp with time zone CHECK (start_date < end_date), 
+  end_date timestamp with time zone CHECK (start_date <= end_date), 
   FOREIGN KEY (creator_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -32,13 +32,15 @@ CREATE TABLE "ChallengeParticipation" (
   challenge_id uuid NOT NULL,
   user_name varchar(254) NOT NULL,
   FOREIGN KEY (challenge_id) REFERENCES "Challenge"(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  FOREIGN KEY (user_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE
+  FOREIGN KEY (user_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE,
+  UNIQUE (challenge_id, user_name)
 );
 
 CREATE TABLE "Marking" (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   date timestamp with time zone NOT NULL,
   participation_id uuid NOT NULL,
+  imageUrl varchar(254),
   comment varchar(2000),
   FOREIGN KEY (participation_id) REFERENCES "ChallengeParticipation"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );

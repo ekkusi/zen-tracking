@@ -1,15 +1,7 @@
-import { useApolloClient, useMutation } from "@apollo/client";
-import {
-  useDisclosure,
-  Stack,
-  FormLabel,
-  FormControl,
-  Text,
-  Flex,
-  Box,
-} from "@chakra-ui/react";
+import { useMutation } from "@apollo/client";
+import { useDisclosure, Text, Flex, Box } from "@chakra-ui/react";
 import { isValid } from "date-fns/esm";
-import React, { useEffect, useState } from "react";
+import React, { useState, useMemo } from "react";
 import useGlobal from "store";
 import {
   CREATE_CHALLENGE,
@@ -30,13 +22,23 @@ import {
   DeleteChallengeMutationVariables,
 } from "views/challenges/__generated__/DeleteChallengeMutation";
 import DateUtil from "util/DateUtil";
+import { Form, Formik } from "formik";
 import ModalTemplate, { ModalTemplateProps } from "./general/ModalTemplate";
 import { AlertButton, PrimaryButton } from "./primitives/Button";
-import { PrimaryInput, PrimaryTextArea } from "./primitives/Input";
+import FormField from "./general/form/FormField";
+import { PrimaryTextArea } from "./primitives/Input";
 
 type EditChallengeProps = Omit<ModalTemplateProps, "children"> & {
   challenge?: GetChallengesQuery_getChallenges | null;
-  onEdit?: () => Promise<void>;
+  onEdit?: (
+    challenge: GetChallengesQuery_getChallenges
+  ) => Promise<void> | void;
+  saveButtonLabel?: string;
+  requireDates?: boolean;
+  minStartDate?: Date;
+  maxStartDate?: Date;
+  minEndDate?: Date;
+  maxEndDate?: Date;
 };
 
 type FormValues = {
@@ -46,27 +48,22 @@ type FormValues = {
   endDate?: string;
 };
 
-const defaultFormValues: FormValues = {
-  name: "",
-  description: "",
-  startDate: "",
-  endDate: "",
-};
+const errorDateFormat = "dd.MM.yyyy";
 
 const EditChallenge = ({
   challenge,
   onEdit,
+  saveButtonLabel,
+  requireDates = false,
+  minStartDate,
+  maxStartDate,
+  minEndDate,
+  maxEndDate,
   ...modalTemplateProps
 }: EditChallengeProps): JSX.Element => {
   const user = useGlobal((state) => state.currentUser)[0];
-  const updateError = useGlobal(
-    (state) => state.error,
-    (actions) => actions.updateError
-  )[1];
 
-  const [formValues, setFormValues] = useState<FormValues>(defaultFormValues);
-  const [isInitialStateSet, setIsInitialStateSet] = useState(false); // To check if initial state is set to avoid further re-renders
-  const [error, setError] = useState<string>();
+  const [generalError, setGeneralError] = useState<string>();
 
   const [deleteChallenge, { loading: deleteLoading }] = useMutation<
     DeleteChallengeMutation,
@@ -83,10 +80,6 @@ const EditChallenge = ({
     UpdateChallengeMutationVariables
   >(UPDATE_CHALLENGE);
 
-  const isLoading = () => {
-    return deleteLoading || createLoading || updateLoading;
-  };
-
   const disclosureProps = useDisclosure({
     isOpen: modalTemplateProps.isOpen,
     onOpen: modalTemplateProps.onOpen,
@@ -94,61 +87,107 @@ const EditChallenge = ({
       if (modalTemplateProps.onClose) {
         modalTemplateProps.onClose();
       }
-      console.log("Setting initialState to false");
 
-      setError(undefined);
-      setIsInitialStateSet(false);
-      setFormValues(defaultFormValues); // Reset formvalues on close
+      setGeneralError(undefined);
     },
   });
 
-  useEffect(() => {
-    let unmounted = false;
-    // If marking is passed as prop, initialize form with it's values
-    if (challenge && !isInitialStateSet) {
-      const newFormValues = {
-        ...defaultFormValues,
-      };
-      const { name, description, startDate, endDate } = challenge;
-      if (name) newFormValues.name = name;
-      if (description) newFormValues.description = description;
-      if (startDate)
-        newFormValues.startDate = DateUtil.format(startDate, {
-          formatString: "yyyy-MM-dd",
-        });
-      if (endDate)
-        newFormValues.endDate = DateUtil.format(endDate, {
-          formatString: "yyyy-MM-dd",
-        });
-      console.log(newFormValues);
-
-      if (!unmounted) {
-        setFormValues(newFormValues);
-        setIsInitialStateSet(true); // Set that initialstate is changed, so this wont trigger again
-      }
-    }
-    return () => {
-      unmounted = true;
+  const initialValues = useMemo((): FormValues => {
+    const { name = "", description = "", startDate, endDate } = challenge || {};
+    return {
+      name,
+      description,
+      startDate: startDate
+        ? DateUtil.format(startDate, {
+            formatString: "yyyy-MM-dd",
+          })
+        : "",
+      endDate: endDate
+        ? DateUtil.format(endDate, {
+            formatString: "yyyy-MM-dd",
+          })
+        : "",
     };
-  }, [formValues, isInitialStateSet, challenge]);
+  }, [challenge]);
 
-  const updateFormValues = (values: FormValues) => {
-    console.log(values);
-
-    setFormValues(values);
+  const validateName = (value: string) => {
+    let error;
+    if (value.length === 0) error = "Nimi ei saa olla tyhjä";
+    return error;
   };
 
-  const saveAndClose = async () => {
-    const { startDate, endDate, ...rest } = formValues;
+  const validateDescription = (value: string) => {
+    let error;
 
+    if (value.length === 0) error = "Kuvaus ei saa olla tyhjä!";
+    return error;
+  };
+
+  const validateStartDate = (value: string | undefined) => {
+    let error;
+    const startDate = value ? new Date(value) : undefined;
+    if (startDate && !isValid(startDate))
+      error = "Alkupäivämäärä ei ole validissa muodossa";
+    if (
+      minStartDate &&
+      (!startDate || !DateUtil.isSameDayOrAfter(startDate, minStartDate))
+    )
+      error = `Alkupäivämäärä pitää olla vähintään ${DateUtil.format(
+        minStartDate,
+        {
+          formatString: errorDateFormat,
+        }
+      )}`;
+    if (
+      maxStartDate &&
+      (!startDate || !DateUtil.isSameDayOrBefore(startDate, maxStartDate))
+    )
+      error = `Alkupäivämäärä saa olla enintään ${DateUtil.format(
+        maxStartDate,
+        {
+          formatString: errorDateFormat,
+        }
+      )}`;
+    if (requireDates && !startDate)
+      error = "Alkupäivämäärä täytyy olla asetettu";
+    return error;
+  };
+
+  const validateEndDate = (value: string | undefined) => {
+    let error;
+    const endDate = value ? new Date(value) : undefined;
+    if (endDate && !isValid(endDate))
+      error = "Alkupäivämäärä ei ole oikeassa muodossa";
+
+    if (
+      minEndDate &&
+      (!endDate || !DateUtil.isSameDayOrAfter(endDate, minEndDate))
+    )
+      error = `Loppupäivämäärä pitää olla vähintään ${DateUtil.format(
+        minEndDate,
+        {
+          formatString: errorDateFormat,
+        }
+      )}`;
+    if (
+      maxEndDate &&
+      (!endDate || !DateUtil.isSameDayOrBefore(endDate, maxEndDate))
+    )
+      error = `Loppupäivämäärä saa olla enintään ${DateUtil.format(maxEndDate, {
+        formatString: errorDateFormat,
+      })}`;
+    if (requireDates && !endDate)
+      error = "Loppupäivämäärä täytyy olla asetettu";
+    return error;
+  };
+
+  const saveAndClose = async (values: FormValues) => {
     const input: FormValues = {
-      ...rest,
-      startDate: isValid(new Date(startDate || "")) ? startDate : undefined,
-      endDate: isValid(new Date(endDate || "")) ? endDate : undefined,
+      name: values.name,
+      description: values.description,
+      startDate: values.startDate ? values.startDate : undefined, // If string length === 0, pass undefined
+      endDate: values.endDate ? values.endDate : undefined, // If string length === 0, pass undefined
     };
-
-    console.log(input);
-
     try {
       // If challenge exists, edit that
       if (challenge) {
@@ -161,7 +200,7 @@ const EditChallenge = ({
           },
         });
         if (result.data && onEdit) {
-          await onEdit();
+          await onEdit(result.data.updateChallenge);
         }
       }
       // Otherwise create new challenge
@@ -175,30 +214,33 @@ const EditChallenge = ({
           },
         });
         if (result.data && onEdit) {
-          await onEdit();
+          await onEdit(result.data.createChallenge);
         }
       }
       disclosureProps.onClose();
     } catch (e) {
-      setError(e.message);
+      setGeneralError(e.message);
     }
   };
 
   const deleteAndClose = async () => {
     try {
       if (challenge) {
-        await deleteChallenge({
+        const result = await deleteChallenge({
           variables: {
             id: challenge.id,
           },
         });
+        if (result.data?.deleteChallenge && onEdit) {
+          await onEdit(challenge);
+        }
         disclosureProps.onClose();
       } else
-        setError(
+        setGeneralError(
           "Poistettavaa haastetta ei löytynyt, tämä on varmaakin virhe koodissa:("
         );
     } catch (e) {
-      setError(e.message);
+      setGeneralError(e.message);
     }
   };
 
@@ -209,100 +251,81 @@ const EditChallenge = ({
       openButtonProps={{ size: "md" }}
       modalBodyProps={{ pt: "0" }}
       modalFooterProps={{ justifyContent: "flex-start" }}
-      modalFooter={
-        <>
-          <PrimaryButton
-            isLoading={createLoading || updateLoading}
-            isDisabled={deleteLoading}
-            loadingText={challenge ? "Tallenetaan..." : "Luodaan..."}
-            mr={3}
-            onClick={saveAndClose}
-          >
-            {challenge ? "Tallenna" : "Luo haaste"}
-          </PrimaryButton>
-          {challenge ? (
-            <AlertButton
-              isLoading={deleteLoading}
-              isDisabled={createLoading || updateLoading}
-              loadingText="Poista"
-              onClick={deleteAndClose}
-            >
-              Poista
-            </AlertButton>
-          ) : (
-            <Box />
-          )}
-        </>
-      }
+      hasFooter={false}
       {...modalTemplateProps}
       {...disclosureProps}
     >
-      <Stack pt="0">
-        <FormControl pt="0">
-          <FormLabel htmlFor="name">Nimi</FormLabel>
-          <PrimaryInput
-            id="name"
+      <Formik
+        initialValues={initialValues}
+        onSubmit={saveAndClose}
+        validateOnChange={false}
+        validateOnBlur={false}
+      >
+        <Form>
+          <FormField
+            name="name"
+            type="text"
             placeholder="Kuukauven paasto!!"
-            type="text"
-            value={formValues.name}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              updateFormValues({
-                ...formValues,
-                name: event.target.value,
-              })
-            }
+            label="Nimi"
+            validate={validateName}
           />
-        </FormControl>
-        <Flex>
-          <FormControl pt="0">
-            <FormLabel htmlFor="startDate">Alkupäivämäärä</FormLabel>
-            <PrimaryInput
-              id="startDate"
-              placeholder="01.01.2021"
+          <Flex direction={{ base: "column", sm: "row" }}>
+            <FormField
+              name="startDate"
               type="date"
-              value={formValues.startDate}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                updateFormValues({
-                  ...formValues,
-                  startDate: event.target.value,
-                })
-              }
+              label="Alkupäivämäärä"
+              validate={validateStartDate}
+              containerProps={{
+                pt: "0",
+                mb: { base: "2", sm: "0" },
+                mr: { base: "0", sm: "3" },
+              }}
             />
-          </FormControl>
-          <FormControl pt="0">
-            <FormLabel htmlFor="endDate">Loppupäivämäärä</FormLabel>
-            <PrimaryInput
-              id="endDate"
-              placeholder="31.01.2021"
+            <FormField
+              name="endDate"
               type="date"
-              value={formValues.endDate}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                updateFormValues({
-                  ...formValues,
-                  endDate: event.target.value,
-                })
-              }
+              label="Loppupäivämäärä"
+              validate={validateEndDate}
+              containerProps={{
+                pt: "0",
+              }}
             />
-          </FormControl>
-        </Flex>
+          </Flex>
 
-        <FormControl pt="0">
-          <FormLabel htmlFor="description">Kuvaus</FormLabel>
-          <PrimaryTextArea
-            id="description"
-            placeholder="Kuvaus haasteesta..."
+          <FormField
+            as={PrimaryTextArea}
+            name="description"
             type="text"
-            value={formValues.description}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              updateFormValues({
-                ...formValues,
-                description: event.target.value,
-              })
-            }
+            placeholder="Kuvaus haasteesta..."
+            label="Kuvaus"
+            validate={validateDescription}
           />
-        </FormControl>
-        {error && <Text color="warning">{error}</Text>}
-      </Stack>
+          <Box my="5">
+            <PrimaryButton
+              type="submit"
+              isLoading={createLoading || updateLoading}
+              isDisabled={deleteLoading}
+              loadingText={challenge ? "Tallenetaan..." : "Luodaan..."}
+              mr={3}
+              // onClick={saveAndClose}
+            >
+              {saveButtonLabel || (challenge ? "Tallenna" : "Luo haaste")}
+            </PrimaryButton>
+            {challenge && (
+              <AlertButton
+                isLoading={deleteLoading}
+                isDisabled={createLoading || updateLoading}
+                loadingText="Poista"
+                onClick={deleteAndClose}
+              >
+                Poista
+              </AlertButton>
+            )}
+          </Box>
+
+          {generalError && <Text color="warning">{generalError}</Text>}
+        </Form>
+      </Formik>
     </ModalTemplate>
   );
 };

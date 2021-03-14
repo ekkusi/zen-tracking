@@ -18,16 +18,32 @@ import {
 } from "__generated__/GetUserQuery";
 import DesignPage from "views/design/DesignPage";
 import ViewContainer from "views/ViewContainer";
+import TransferMarkingsPage from "views/transfer-markings/TransferMarkingsPage";
+
+import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "@ekeukko/zen-tracking-backend/lib/config.json";
 
 const Routes = (): JSX.Element => {
   const [globalState, globalActions] = useGlobal();
   const [loading, setLoading] = useState(false);
 
+  const { updateUser, updateActiveParticipation } = globalActions;
+  const { activeParticipation, currentUser } = globalState;
+
   const client = useApolloClient();
-  const currentUser = localStorage.getItem("currentUser");
+  const localStorageUser = localStorage.getItem("currentUser");
+  const localStorageActiveParticipationId = localStorage.getItem(
+    "activeParticipationChallengeId"
+  );
 
   const isGlobalUserAuthorized = (): boolean => {
-    return globalState.currentUser.name !== notAuthorizedUser.name;
+    return currentUser.name !== notAuthorizedUser.name;
+  };
+
+  const shouldRenderTransferMarkings = (): boolean => {
+    return (
+      activeParticipation?.challenge.name ===
+      NO_PARTICIPATION_MARKINGS_HOLDER_NAME
+    );
   };
 
   const resetGlobalError = () => {
@@ -46,12 +62,15 @@ const Routes = (): JSX.Element => {
       const { data } = result;
       globalActions.updateUser(data.getUser);
       // Update activeParticipation as well when user is updated, wait for user to be updated first
-      await globalActions.updateActiveParticipation();
+      await globalActions.updateActiveParticipation(
+        localStorageActiveParticipationId ?? undefined
+      );
     } catch (err) {
       globalActions.updateError(
         `Käyttäjääsi ei löytynyt tai istuntosi on vanhentunut. Kokeile kirjautua uudestaan.`
       );
       localStorage.removeItem("currentUser");
+      localStorage.removeItem("activeParticipationChallengeId");
     }
 
     setLoading(false);
@@ -60,15 +79,29 @@ const Routes = (): JSX.Element => {
   // Handle logging in with localStorage cache
   useEffect(() => {
     let unmounted = false;
+
     // If currentUser localStorage variable is set but globalStorage user is not set (== is "not-authorized" user) -> get and update user
-    if (currentUser && !isGlobalUserAuthorized() && !loading && !unmounted) {
-      updateCurrentUser(currentUser);
+    if (
+      localStorageUser &&
+      !isGlobalUserAuthorized() &&
+      !loading &&
+      !unmounted
+    ) {
+      updateCurrentUser(localStorageUser);
     }
     // If localStorage currentUser is null but global storage is still logged in -> null global storage
-    if (!currentUser && isGlobalUserAuthorized() && !unmounted) {
-      globalActions.updateUser(null);
-      globalActions.updateActiveParticipation(null);
+    if (!localStorageUser && isGlobalUserAuthorized() && !unmounted) {
+      updateUser(null);
+      updateActiveParticipation(null);
     }
+    // If activeParticipation is not same as localstorage, null activeParticipation
+    // if (
+    //   activeParticipation &&
+    //   activeParticipation.challenge.id !==
+    //     localStorage.getItem("activeParticipationChallengeId")
+    // ) {
+    //   updateActiveParticipation(null);
+    // }
     return () => {
       unmounted = true;
     };
@@ -94,12 +127,24 @@ const Routes = (): JSX.Element => {
         }}
       />
       <Route
+        path="/transfer-markings"
+        render={() => {
+          if (shouldRenderTransferMarkings()) {
+            return <TransferMarkingsPage />;
+          }
+          return <Redirect to="/" />;
+        }}
+      />
+      <Route
         render={() => {
           if (loading) {
             return <LoadingOverlay />;
           }
-          if (!currentUser) {
+          if (!localStorageUser) {
             return <Redirect to="/login" />;
+          }
+          if (shouldRenderTransferMarkings()) {
+            return <Redirect to="/transfer-markings" />;
           }
 
           return (

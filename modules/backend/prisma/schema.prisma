@@ -9,7 +9,7 @@ datasource db {
 
 model Challenge {
   id                     String                   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name                   String                   @db.VarChar(254)
+  name                   String                   @unique @db.VarChar(254)
   description            String
   creator_name           String                   @db.VarChar(254)
   start_date             DateTime?                @db.Timestamptz(6)
@@ -25,16 +25,20 @@ model ChallengeParticipation {
   Challenge    Challenge @relation(fields: [challenge_id], references: [id])
   User         User      @relation(fields: [user_name], references: [name])
   Marking      Marking[]
+
+  @@unique([challenge_id, user_name], name: "ChallengeParticipation_challenge_id_user_name_key")
 }
 
 model Marking {
   id                     String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   date                   DateTime               @db.Timestamptz(6)
   participation_id       String                 @db.Uuid
+  imageurl               String?                @db.VarChar(254)
   comment                String?                @db.VarChar(2000)
   ChallengeParticipation ChallengeParticipation @relation(fields: [participation_id], references: [id])
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model Quote {
   id    String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   quote String @db.VarChar(254)

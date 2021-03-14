@@ -9,7 +9,14 @@ const CustomLoadingOverlay = ({
   loadingText,
 }: LoadingOverlayProps): JSX.Element => {
   return (
-    <Box position="absolute" top="0" left="0" width="100%" height="100%">
+    <Box
+      position="absolute"
+      top="0"
+      left="0"
+      width="100%"
+      height="100%"
+      zIndex="100"
+    >
       <Flex
         position="absolute"
         top="50%"

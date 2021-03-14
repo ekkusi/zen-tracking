@@ -1,8 +1,3 @@
-DROP TABLE IF EXISTS "Marking";
-DROP TABLE IF EXISTS "ChallengeParticipation";
-DROP TABLE IF EXISTS "Challenge";
-DROP TABLE IF EXISTS "User";
-DROP TABLE IF EXISTS "Quote";
 --
 -- PostgreSQL database dump
 --
@@ -10,7 +5,7 @@ DROP TABLE IF EXISTS "Quote";
 -- Dumped from database version 13.2 (Ubuntu 13.2-1.pgdg20.04+1)
 -- Dumped by pg_dump version 13.2
 
--- Started on 2021-03-13 10:26:13 EET
+-- Started on 2021-03-14 23:39:52 EET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -160,6 +155,17 @@ dc2c4414-5d93-41e9-97a3-472470758d14	2021-03-11 10:00:00+00	Päivänsäde63	Muka
 1f42e174-89a0-46d7-9673-177a938e8e82	2021-03-10 10:00:00+00	ekeukko	
 61d9d129-db34-460f-8e20-394f38c86f82	2021-03-09 10:00:00+00	ekeukko	
 18eb899c-21ca-44b2-9905-10f6cfdf8a06	2021-03-12 10:00:00+00	Päivänsäde63	Reissuun pakkaamisen lista vähän pyöri mielessä, mutta keksin vanhan rentoutumisharjoituksen miten jäsenet alkaa painaa alustaa vasten
+08f95a69-5d48-4d2b-881c-09943ac96b78	2021-03-13 10:00:00+00	Päivänsäde63	Rukalla. Ilman kelloa pötköttely.
+7352f776-6969-4a9c-add7-8b884bbbe448	2021-03-14 10:00:00+00	ekeukko	Pikanen kävely Mikaboin ja Alman kanssa. Mukavata höpöttelyä yksinäisyydestä ja muusta:)
+d50c1d00-6ec5-46c3-ac50-52f73d576084	2021-03-14 21:38:49.162563+00	testi1	awdawd
+c7929001-9b94-4944-9c53-ceee3b88becf	2021-03-04 10:00:00+00	testi1	
+801ddc54-9cd4-4dbf-a6d8-60ef43c52e11	2021-03-02 10:00:00+00	testi1	
+5cbc79ca-7267-4d94-836f-009d6fa034fe	2021-03-10 10:00:00+00	testi1	
+b5620fec-e767-44f9-ad39-8f7d8894e33f	2021-01-13 10:00:00+00	testi3	
+3afcaa13-36c2-4a48-80cd-a8167e2671e1	2021-01-22 10:00:00+00	testi3	
+5e6b4d2b-9984-48eb-9ba3-3f20f3a1f9d3	2021-01-24 10:00:00+00	testi3	
+778dedad-6525-460a-9777-3ae90c7c9471	2021-02-10 10:00:00+00	testi4	
+54717131-613b-4373-8aa3-43fac4ea4f0e	2021-02-19 10:00:00+00	testi4	
 \.
 
 
@@ -254,6 +260,10 @@ Sippi	$2b$10$SN.ez2U7La8lPGP3VJZLTe5WV1kDabuOYCoFAgcvO4dcD5zqanxYK	f
 Lohkaremies	$2b$10$IZNtrk5LWNA/tc.barT.y..pnBGKOajDXjyyVFNHCINvFuajkvEfO	f
 ekeukko	$2b$10$Ntf.c/z3Dszao9WKCgC7BeVcTJ/la39B3yvI1cPksufisPyjPA112	f
 LohkareMies	$2b$10$8FI1ghrl9Tk2t2Fv47yPzeGx9hjoyIfQw/hDxDzaZeZ5pbxTvGJDK	f
+testi1	$2b$10$m/AOh27GZVydiKVhCDuj3O1Bz4fNzRSrqwyL49lP97wVvh1Io1K.K	f
+testi2	$2b$10$1qM0s/9A3cIZEprZgZ146OdXr4KhLaNan8HSfhomJ9DBf6cJrf3Y.	f
+testi3	$2b$10$ieuFNRoaKfMmOCT9et.MB.VAZCcEAB.WhBFSn8l43KQYRv4taWCD2	f
+testi4	$2b$10$a.33EhACp/6vtwItdeGaCufUf0q9PcdEFmThH1NjZlnvCP5PAeXYW	f
 \.
 
 
@@ -284,7 +294,7 @@ ALTER TABLE ONLY public."Marking"
     ADD CONSTRAINT "Marking_user_name_fkey" FOREIGN KEY (user_name) REFERENCES public."User"(name) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
--- Completed on 2021-03-13 10:26:21 EET
+-- Completed on 2021-03-14 23:39:58 EET
 
 --
 -- PostgreSQL database dump complete
