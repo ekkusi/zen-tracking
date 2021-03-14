@@ -1,27 +1,59 @@
-import { ApolloQueryResult, useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 import { Text } from "@chakra-ui/react";
 import LoadingOverlay from "components/general/LoadingOverlay";
 import ModalTemplate from "components/general/ModalTemplate";
-import { GetUserQueryResult, GET_USER } from "generalQueries";
+import { GET_USER } from "generalQueries";
 import React, { useEffect, useState } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import useGlobal from "store";
+import { notAuthorizedUser } from "store/notAuthenticatedUser";
 import LoginPage from "views/login/LoginPage";
 import MainPage from "views/main/MainPage";
 import NotFoundPage from "views/NotFoundPage";
 import WelcomePage from "views/welcome/WelcomePage";
+import ChallengesPage from "views/challenges/ChallengesPage";
+import {
+  GetUserQuery,
+  GetUserQueryVariables,
+} from "__generated__/GetUserQuery";
+import DesignPage from "views/design/DesignPage";
+import ViewContainer from "views/ViewContainer";
+import TransferMarkingsPage from "views/transfer-markings/TransferMarkingsPage";
+
+import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "@ekeukko/zen-tracking-backend/lib/config.json";
 
 const Routes = (): JSX.Element => {
   const [globalState, globalActions] = useGlobal();
   const [loading, setLoading] = useState(false);
 
+  const { updateUser, updateActiveParticipation } = globalActions;
+  const { activeParticipation, currentUser } = globalState;
+
   const client = useApolloClient();
-  const currentUser = localStorage.getItem("currentUser");
+  const localStorageUser = localStorage.getItem("currentUser");
+  const localStorageActiveParticipationId = localStorage.getItem(
+    "activeParticipationChallengeId"
+  );
+
+  const isGlobalUserAuthorized = (): boolean => {
+    return currentUser.name !== notAuthorizedUser.name;
+  };
+
+  const shouldRenderTransferMarkings = (): boolean => {
+    return (
+      activeParticipation?.challenge.name ===
+      NO_PARTICIPATION_MARKINGS_HOLDER_NAME
+    );
+  };
+
+  const resetGlobalError = () => {
+    globalActions.updateError(null);
+  };
 
   const updateCurrentUser = async (name: string) => {
     setLoading(true);
     try {
-      const result: ApolloQueryResult<GetUserQueryResult> = await client.query({
+      const result = await client.query<GetUserQuery, GetUserQueryVariables>({
         query: GET_USER,
         variables: {
           name,
@@ -29,23 +61,50 @@ const Routes = (): JSX.Element => {
       });
       const { data } = result;
       globalActions.updateUser(data.getUser);
+      // Update activeParticipation as well when user is updated, wait for user to be updated first
+      await globalActions.updateActiveParticipation(
+        localStorageActiveParticipationId ?? undefined
+      );
     } catch (err) {
       globalActions.updateError(
         `Käyttäjääsi ei löytynyt tai istuntosi on vanhentunut. Kokeile kirjautua uudestaan.`
       );
       localStorage.removeItem("currentUser");
+      localStorage.removeItem("activeParticipationChallengeId");
     }
 
     setLoading(false);
   };
 
+  // Handle logging in with localStorage cache
   useEffect(() => {
-    if (currentUser && !globalState.currentUser && !loading) {
-      updateCurrentUser(currentUser);
+    let unmounted = false;
+
+    // If currentUser localStorage variable is set but globalStorage user is not set (== is "not-authorized" user) -> get and update user
+    if (
+      localStorageUser &&
+      !isGlobalUserAuthorized() &&
+      !loading &&
+      !unmounted
+    ) {
+      updateCurrentUser(localStorageUser);
     }
-    if (!currentUser && globalState.currentUser) {
-      globalActions.updateUser(null);
+    // If localStorage currentUser is null but global storage is still logged in -> null global storage
+    if (!localStorageUser && isGlobalUserAuthorized() && !unmounted) {
+      updateUser(null);
+      updateActiveParticipation(null);
     }
+    // If activeParticipation is not same as localstorage, null activeParticipation
+    // if (
+    //   activeParticipation &&
+    //   activeParticipation.challenge.id !==
+    //     localStorage.getItem("activeParticipationChallengeId")
+    // ) {
+    //   updateActiveParticipation(null);
+    // }
+    return () => {
+      unmounted = true;
+    };
   });
 
   return (
@@ -54,7 +113,7 @@ const Routes = (): JSX.Element => {
         hasOpenButton={false}
         headerLabel="Huppista! Jotakin meni pyllylleen:/"
         isOpen={!!globalState.error}
-        onClose={() => globalActions.updateError(null)}
+        onClose={resetGlobalError}
       >
         <Text color="warning" fontWeight="bold">
           {globalState.error}
@@ -63,7 +122,16 @@ const Routes = (): JSX.Element => {
       <Route
         path="/login"
         render={() => {
-          if (!globalState.currentUser) return <LoginPage />;
+          if (!isGlobalUserAuthorized()) return <LoginPage />;
+          return <Redirect to="/" />;
+        }}
+      />
+      <Route
+        path="/transfer-markings"
+        render={() => {
+          if (shouldRenderTransferMarkings()) {
+            return <TransferMarkingsPage />;
+          }
           return <Redirect to="/" />;
         }}
       />
@@ -72,16 +140,45 @@ const Routes = (): JSX.Element => {
           if (loading) {
             return <LoadingOverlay />;
           }
-          if (!currentUser) {
+          if (!localStorageUser) {
             return <Redirect to="/login" />;
+          }
+          if (shouldRenderTransferMarkings()) {
+            return <Redirect to="/transfer-markings" />;
           }
 
           return (
-            <Switch>
-              <Route exact path="/" render={() => <MainPage />} />
-              <Route path="/welcome" render={() => <WelcomePage />} />
-              <Route path="*" render={() => <NotFoundPage />} />
-            </Switch>
+            <>
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={() => (
+                    <ViewContainer>
+                      <MainPage />
+                    </ViewContainer>
+                  )}
+                />
+                <Route
+                  path="/challenges"
+                  render={() => (
+                    <ViewContainer>
+                      <ChallengesPage />{" "}
+                    </ViewContainer>
+                  )}
+                />
+                <Route
+                  path="/design"
+                  render={() => (
+                    <ViewContainer>
+                      <DesignPage />
+                    </ViewContainer>
+                  )}
+                />
+                <Route path="/welcome" render={() => <WelcomePage />} />
+                <Route path="*" render={() => <NotFoundPage />} />
+              </Switch>
+            </>
           );
         }}
       />

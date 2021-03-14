@@ -2,6 +2,7 @@ import React from "react";
 import {
   Button as ChakraButton,
   ButtonProps as ChakraButtonProps,
+  forwardRef,
 } from "@chakra-ui/react";
 import styled from "styled-components";
 
@@ -25,19 +26,25 @@ const BaseButtonProps: ChakraButtonProps = {
   },
 };
 
+const ButtonDefaultProps = {
+  color: "white",
+  bg: "primary.regular",
+  variant: "solid",
+};
+
 type ButtonProps = Omit<ChakraButtonProps, "bg" | "color" | "variant"> & {
   bg?: string;
   color?: string;
   variant?: string;
 };
 
-const Button = ({
+export const generateBaseButtonProps = ({
   color,
   bg,
   variant,
   size,
   ...rest
-}: ButtonProps): JSX.Element => {
+}: ButtonProps): ChakraButtonProps => {
   let variantProps: ButtonProps;
   switch (variant) {
     case "outline": {
@@ -48,6 +55,9 @@ const Button = ({
         _hover: {
           bg,
           color,
+        },
+        _focus: {
+          borderColor: color,
         },
         _disabled: {
           ...BaseButtonProps._disabled,
@@ -67,6 +77,9 @@ const Button = ({
         _hover: {
           opacity: 0.7,
         },
+        _focus: {
+          borderColor: bg,
+        },
       };
     }
   }
@@ -85,8 +98,8 @@ const Button = ({
       sizeProps = {
         fontSize: { base: "lg", md: "xl" },
         textTransform: "none",
-        px: { base: 4, sm: 5 },
-        py: { base: 4, sm: 5 },
+        px: { base: 6, sm: 7 },
+        py: { base: 3, sm: 5 },
       };
       break;
     }
@@ -101,23 +114,44 @@ const Button = ({
   }
 
   // Prioritize variantProps -> generic custom props -> BaseButtonProps
-  const props = { ...BaseButtonProps, ...rest, ...variantProps, ...sizeProps };
-  return <ChakraButton {...props} />;
+  const props: ChakraButtonProps = {
+    ...BaseButtonProps,
+    ...rest,
+    ...variantProps,
+    ...sizeProps,
+  };
+  return props;
 };
 
-Button.defaultProps = {
-  color: "white",
-  bg: "primary.regular",
-  variant: "solid",
+const Button = (props: ButtonProps): JSX.Element => {
+  const formattedProps = generateBaseButtonProps(props);
+  return <ChakraButton {...formattedProps} />;
 };
+
+Button.defaultProps = ButtonDefaultProps;
 
 export default Button;
+
+// If needs to be used with Framer-motion or pass as prop, use ButtonWithRef
+
+const ButtonWithRef = forwardRef((props: ButtonProps, ref) => {
+  const formattedProps = generateBaseButtonProps(props);
+  return <ChakraButton ref={ref} {...formattedProps} />;
+});
+
+export { ButtonWithRef };
+
+ButtonWithRef.defaultProps = ButtonDefaultProps;
+
+/* IconButton */
 
 /* ----------- Some default styles for buttons ---------- */
 
 const PrimaryButton = styled(Button)<ButtonProps>``;
 
 const AlertButton = styled(Button)<ButtonProps>``;
+
+const CancelButton = styled(Button)<ButtonProps>``;
 
 PrimaryButton.defaultProps = {
   color: "white",
@@ -129,4 +163,9 @@ AlertButton.defaultProps = {
   bg: "warning",
 };
 
-export { PrimaryButton, AlertButton };
+CancelButton.defaultProps = {
+  color: "gray.600",
+  bg: "white",
+};
+
+export { PrimaryButton, AlertButton, CancelButton };

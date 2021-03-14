@@ -1,173 +1,165 @@
-import { Box, Flex, Icon, Text } from "@chakra-ui/react";
-import { CheckIcon } from "@chakra-ui/icons";
-import { FaInstagram } from "react-icons/fa";
-import React, { useState } from "react";
-import { PrimaryButton } from "components/primitives/Button";
-import ModalTemplate from "components/general/ModalTemplate";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { ArrowForwardIcon, CheckIcon } from "@chakra-ui/icons";
+import React, { useState, useRef } from "react";
+import { ButtonWithRef } from "components/primitives/Button";
 import useGlobal from "store";
 import Heading from "components/primitives/Heading";
 import DateUtil from "util/DateUtil";
-import ImageModal from "components/general/ImageModal";
-import MarkingCalendar from "../../components/MarkingCalendar";
+import { Link } from "react-router-dom";
+import chakraMotionWrapper from "util/chakraMotionWrapper";
+import { motion } from "framer-motion";
+import ChallengeSelect, {
+  OptionType,
+  SelectHandle,
+} from "components/ChallengeSelect";
+import CustomLoadingOverlay from "components/general/LoadingOverlay";
 import AddMarking from "../../components/EditMarking";
+import MarkingCalendar from "../../components/MarkingCalendar";
 
-import config from "../../config.json";
+const MotionArrowForwardIcon = chakraMotionWrapper(ArrowForwardIcon);
+const MotionButton = motion(ButtonWithRef);
 
-const quoteCreditsUrl = "https://www.instagram.com/motivaatiolauseet/";
+const iconHoverVariants = {
+  rest: {
+    x: 0,
+  },
+  hover: {
+    x: 7,
+  },
+};
 
 const MainPage = (): JSX.Element => {
-  const [user, updateUser] = useGlobal(
-    (store) => store.currentUser,
-    (actions) => actions.updateUser
+  const user = useGlobal((store) => store.currentUser)[0];
+  const [activeParticipation, updateActiveParticipation] = useGlobal(
+    (store) => store.activeParticipation,
+    (actions) => actions.updateActiveParticipation
   );
-  const [quoteOfTheDayUrl, setQuoteOfTheDayUrl] = useState<string>();
+
+  const [loading, setLoading] = useState(false);
+
+  const selectRef = useRef<SelectHandle>(null);
 
   const hasUserMarkedToday = () => {
     return DateUtil.dateIsIn(
       new Date(),
-      user ? user.markings.map((it) => new Date(it.date)) : []
+      activeParticipation
+        ? activeParticipation.markings.map((it) => new Date(it.date))
+        : []
     );
   };
 
-  const openQuoteOfTheDay = () => {
-    setQuoteOfTheDayUrl(
-      `${config.QUOTE_PHOTOS_BASE_URL}/quote-${Math.ceil(
-        Math.random() * config.NUMBER_OF_QUOTE_PHOTOS
-      )}.jpg`
-    );
+  const onActiveChallengeSelect = async (value: OptionType | null) => {
+    setLoading(true);
+    await updateActiveParticipation(value?.value ?? null);
+    setLoading(false);
   };
 
   return (
-    <Box pt="5">
-      <Flex
-        flexDirection={{ base: "column", sm: "row" }}
-        justifyContent={{ base: "center", sm: "flex-start" }}
-      >
-        <ModalTemplate
-          openButtonLabel="Ohjeita"
-          openButtonProps={{ mb: { base: "2", sm: "0" } }}
-          headerLabel="Ohjeita"
-          closeButtonLabel="Sulje ohjeet"
-        >
-          <>
-            <Text>
-              Kun olet mielestäsi onnistunut suorittamaan haasteen kyseisen
-              päivän osalta, merkkaa alta päivä suoritetuksi ja saat suorituksen
-              kasvattamaan putkeasi!
-            </Text>
-            <Text>
-              Voit lisätä halutessasi kommentin päivän suorituksesta, päivän
-              fiiliksistä tai mistä vaan! Näiden kommenttien pohjalta voit
-              esimerkiksi reflektoida haastetta jälkeenpäin, kun muisti on
-              alkanut yksittäisten päivien osalta hämärtyä.
-            </Text>
-            <Text>
-              Mikäli et ole piilottanut tietojasi muilta käyttäjiltä
-              kirjautuessasi sisään ensimmäistä kertaa, näkyvät nämä kommentit
-              muille samaista haastetta suorittaville käyttäjille. Tällä tavoin
-              voi kaikki haluavat suorittaa haastetta yhdessä ja katsoa, kuinka
-              muilla sujuu samaisen haasteen eteneminen!
-            </Text>
-            <Heading.H3 fontWeight="bold">
-              Merkkausten muokkaus jälkikäteen
-            </Heading.H3>
-            <Text>
-              Merkattuasi ensimmäisen suorituksen voit muokata jo tekemiäsi
-              merkkauksia painamalla kalenterista jotakin päivää, jolloin
-              muokkausikkuna aukeaa. Jos päivällä on jo merkkaus, voit tästä
-              ikkunasta joko muokata merkkauksen tietoja tai poistaa
-              merkkauksen. Jos avatulla päivällä ei ole vielä merkkausta, voit
-              tästä lisätä merkkauksen jälkikäteen, mikäli et edellisinä päivinä
-              sitä ehtinyt tekemään. Etukäteen et kuitenkaan tulevia päiviä voi
-              merkata, koska tarkoituksena on merkkailla suorituksia vasta
-              niiden toteuduttua:)
-            </Text>
-          </>
-        </ModalTemplate>
-        <PrimaryButton
-          ml={{ base: "0", sm: "3" }}
-          mb={{ base: "2", sm: "0" }}
-          variant="outline"
-          onClick={openQuoteOfTheDay}
-        >
-          Quote of the Day
-        </PrimaryButton>
-        <PrimaryButton
-          onClick={() => updateUser(null)}
-          ml={{ base: "0", sm: "auto" }}
-        >
-          Kirjaudu ulos
-        </PrimaryButton>
-      </Flex>
-      {quoteOfTheDayUrl && (
-        <ImageModal
-          isOpen={!!quoteOfTheDayUrl}
-          onClose={() => setQuoteOfTheDayUrl(undefined)}
-          src={quoteOfTheDayUrl}
-          alt={quoteOfTheDayUrl}
-          imgText={
-            <>
-              <Text as="a" color="white" target="_blank" href={quoteCreditsUrl}>
-                <Icon as={FaInstagram} mb="2px" mr="1" />
-                motivaatiolauseet
-              </Text>
-            </>
-          }
-        />
-      )}
-      <Heading.H1 mt="5">
-        Tervehdys {user?.name} ja tervetuloa seuraamaan zenisi kasvamista :){" "}
-      </Heading.H1>
-      <Heading.H2 fontWeight="normal" mb={{ base: "6", md: "10" }}>
-        <Text as="span" fontStyle="italic">
-          Maaliskuun haaste:
-        </Text>{" "}
-        mikä haaste onkaan mielessä:) Kohta tullee mahollisuus tehä oma haaste!
-      </Heading.H2>
-      {hasUserMarkedToday() ? (
-        <Text>Olet jo merkannut tänään</Text>
-      ) : (
-        <Flex justifyContent={{ base: "flex-start", sm: "center" }} mb="7">
-          <AddMarking
-            openButtonLabel="Merkkaa päivän suoritus"
-            openButtonProps={{
-              isDisabled: hasUserMarkedToday(),
-              size: "lg",
-              leftIcon: (
-                <CheckIcon
-                  w={{ base: 6, md: 8 }}
-                  h={{ base: 6, md: 8 }}
-                  mb="1px"
+    <Box>
+      <Heading.H1 mt="5">Tervehdys {user.name}! :) </Heading.H1>
+
+      {!activeParticipation ? (
+        <>
+          <Text mb="4">
+            Et ole vielä liittynyt haasteisiin tai valinnut aktiivista
+            haastetta. Pääset tutustumaan ja liittymään haasteisiin alta.
+          </Text>
+          <Flex justifyContent={{ base: "flex-start", sm: "center" }}>
+            <MotionButton
+              size="lg"
+              as={Link}
+              to="/challenges"
+              initial="rest"
+              whileHover="hover"
+              rightIcon={
+                <MotionArrowForwardIcon
+                  size="xl"
+                  w={6}
+                  h={6}
+                  variants={iconHoverVariants}
                 />
-              ),
-            }}
+              }
+            >
+              Haasteisiin
+            </MotionButton>
+          </Flex>
+        </>
+      ) : (
+        <>
+          <Heading.H3 fontWeight="normal" mb="2">
+            Aktiivinen haaste
+          </Heading.H3>
+          <ChallengeSelect
+            initialValue={
+              activeParticipation
+                ? {
+                    value: activeParticipation.challenge.id,
+                    label: activeParticipation.challenge.name,
+                  }
+                : undefined
+            }
+            onSelect={onActiveChallengeSelect}
+            isLoading={loading}
+            containerProps={{ mb: "2" }}
+            ref={selectRef}
           />
-        </Flex>
+          <Text
+            as={Link}
+            to="/challenges"
+            display="block"
+            mb={{ base: "6", md: "10" }}
+            fontSize="xl"
+          >
+            Selaa muita haasteita
+          </Text>
+          <Flex justifyContent={{ base: "flex-start", sm: "center" }} mb="7">
+            <AddMarking
+              openButtonLabel={
+                hasUserMarkedToday()
+                  ? "Olet jo merkannut tänään"
+                  : "Merkkaa päivän suoritus"
+              }
+              openButtonProps={{
+                isDisabled: hasUserMarkedToday() || loading,
+                size: "lg",
+                leftIcon: (
+                  <CheckIcon
+                    w={{ base: 6, md: 8 }}
+                    h={{ base: 6, md: 8 }}
+                    mb="1px"
+                  />
+                ),
+              }}
+            />
+          </Flex>
+        </>
       )}
       <Box>
-        {user && user.markings.length > 0 ? (
-          <>
-            <Heading.H2 mb="4" textAlign={{ base: "left", sm: "center" }}>
-              Putkesi pituus:{" "}
-              <Text as="span">
-                {DateUtil.getDateStreak(
-                  user.markings.map((it) => new Date(it.date))
-                )}{" "}
+        {loading && <CustomLoadingOverlay />}
+        {activeParticipation &&
+          (activeParticipation.markings.length > 0 ? (
+            <>
+              <Heading.H2 mb="4" textAlign={{ base: "left", sm: "center" }}>
+                Putkesi pituus:{" "}
+                <Text as="span">
+                  {DateUtil.getDateStreak(
+                    activeParticipation.markings.map((it) => new Date(it.date))
+                  )}{" "}
+                </Text>
+              </Heading.H2>
+              <MarkingCalendar markings={activeParticipation.markings} />
+            </>
+          ) : (
+            <>
+              <Heading.H2 fontWeight="bold">
+                Sinulla ei vielä ole merkkauksia.
+              </Heading.H2>
+              <Text>
+                Aloita ensimmäisen merkkaaminen ylemmästä painikkeesta
+                painamalla. Valikosta löydät tarvittaessa lisäohjeita.
               </Text>
-            </Heading.H2>
-            <MarkingCalendar markings={user.markings} />
-          </>
-        ) : (
-          <>
-            <Heading.H2 fontWeight="bold">
-              Sinulla ei vielä ole merkkauksia.
-            </Heading.H2>
-            <Text fontSize="lg">
-              Aloita ensimmäisen merkkaaminen ylemmästä painikkeesta painamalla.
-              Ylhäältä löydät tarvittaessa lisäohjeita.
-            </Text>
-          </>
-        )}
+            </>
+          ))}
       </Box>
     </Box>
   );

@@ -1,29 +1,43 @@
-import { PrismaClient } from "@prisma/client";
-import { addDays, format, formatISO } from "date-fns";
+import prisma from "./graphql/client";
+import { hash, compare } from "./utils/auth";
 
-const prisma = new PrismaClient();
+const hashPassword = async () => {
+  const hashedPassword = await hash("salasana");
+  console.log(hashedPassword);
 
-const testFunction = async () => {
-  const currentDate = new Date(
-    "Current date: Tue Mar 02 2021 00:00:00 GMT+0200 (Eastern European Standard Time)"
-  );
-  console.log(`Default current date toString(): ${currentDate.toISOString()}`);
-  const currentDayString = new Date(
-    format(currentDate, "yyyy-MM-dd")
-  ).toISOString();
-  const nextDayDate = addDays(currentDate, 1);
-  const nextDayString = new Date(
-    formatISO(nextDayDate, { representation: "date" })
-  ).toISOString();
-  console.log(`Current date: ${currentDayString}`);
-  console.log(`Next date: ${nextDayString}`);
-  const markingInBetween = await prisma.marking.findFirst({
-    where: {
-      user_name: "eke",
-      date: { lte: nextDayString, gte: currentDayString },
-    },
-  });
-  console.log(JSON.stringify(markingInBetween));
+  console.log(`Is salasana: ${await compare("salasana", hashedPassword)}`);
 };
 
-testFunction();
+hashPassword();
+
+// const createMockData = async () => {
+//   const createUser = await prisma.user.create({
+//     data: {
+//       name: "ukko",
+//       password: "salasana",
+//     }
+//   })
+//   const createChallenge = await prisma.challenge.create({
+//     data: {
+//       name: "Toka haaste",
+//       description: "Tokan haasteen kuvaus",
+//       creator_name: createUser.name,
+//       status: "SUGGESTION"
+//     },
+//   });
+//   const createParticipation = await prisma.challengeParticipation.create({
+//     data: {
+//       user_name: createUser.name,
+//       challenge_id: createChallenge.id,
+//     }
+//   });
+//   const createMarking = await prisma.marking.create({
+//     data: {
+//       participation_id: createParticipation.id,
+//       comment: "Toka merkkaus",
+//     }
+//   });
+//   console.log("Create marking: " + JSON.stringify(createMarking));
+// };
+
+// createMockData();

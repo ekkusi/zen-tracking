@@ -1,21 +1,25 @@
-import { ApolloQueryResult, useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 import {
   Box,
   Checkbox,
-  Flex,
+  Container,
   FormControl,
   FormLabel,
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { UserCheckStatus } from "@ekeukko/zen-tracking-backend/lib/types/user";
 import { PrimaryButton } from "components/primitives/Button";
 import { PrimaryInput } from "components/primitives/Input";
 import Heading from "components/primitives/Heading";
 import React, { useEffect, useState } from "react";
 import useGlobal from "store";
 import { useHistory } from "react-router-dom";
-import { CheckUserQueryResult, CHECK_USER } from "./loginQueries";
+import { UserCheckStatus } from "__generated__/globalTypes";
+import { CHECK_USER } from "./loginQueries";
+import {
+  CheckUserQuery,
+  CheckUserQueryVariables,
+} from "./__generated__/CheckUserQuery";
 
 const LoginPage = (): JSX.Element => {
   const hasLoggedInBefore = localStorage.getItem("hasLoggedInBefore");
@@ -33,6 +37,10 @@ const LoginPage = (): JSX.Element => {
   const updateUser = useGlobal(
     (store) => store.currentUser,
     (actions) => actions.updateUser
+  )[1];
+  const updateActiveParticipation = useGlobal(
+    (store) => store.activeParticipation,
+    (actions) => actions.updateActiveParticipation
   )[1];
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
@@ -71,17 +79,20 @@ const LoginPage = (): JSX.Element => {
       setError(undefined);
       setLoading(true);
       try {
-        const result: ApolloQueryResult<CheckUserQueryResult> = await client.query(
-          {
-            query: CHECK_USER,
-            variables: { name: formValues.name, password: formValues.password },
-          }
-        );
+        const result = await client.query<
+          CheckUserQuery,
+          CheckUserQueryVariables
+        >({
+          query: CHECK_USER,
+          variables: { name: formValues.name, password: formValues.password },
+        });
         const data = result.data.checkUser;
-        if (data.status === UserCheckStatus.UserAndPasswordFound) {
-          updateUser(data.user || null);
-        } else if (data.status === UserCheckStatus.UserNotFoundButCreated) {
-          updateUser(data.user || null);
+        // If user is returned from query, password is correct or user is created
+        if (data.user) {
+          updateUser(data.user);
+          await updateActiveParticipation();
+        }
+        if (data.status === UserCheckStatus.USER_NOT_FOUND_BUT_CREATED) {
           history.push("/welcome");
         } else {
           setError("Antamasi salasana oli väärä");
@@ -102,7 +113,7 @@ const LoginPage = (): JSX.Element => {
   };
 
   return (
-    <Flex>
+    <Container maxWidth="1000px">
       <Box>
         <Heading.H1
           fontSize={{ base: "5xl", md: "6xl" }}
@@ -186,7 +197,7 @@ const LoginPage = (): JSX.Element => {
           </Stack>
         </Box>
       </Box>
-    </Flex>
+    </Container>
   );
 };
 

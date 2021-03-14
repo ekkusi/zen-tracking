@@ -1,0 +1,71 @@
+extend type Query {
+  getChallenge(id: ID!): Challenge
+  getChallenges(creatorName: ID, status: ChallengeStatus, startDate: DateFilter, endDate: DateFilter): [Challenge!]!
+  getUserParticipations(userName: ID!): [ChallengeParticipation!]!
+  getParticipation(challengeId: ID!): ChallengeParticipation
+  getMarkings(participationId: ID!): [Marking!]!
+  getUserTransferParticipation(userName: ID!): ChallengeParticipation
+}
+
+extend type Mutation {
+  createChallenge(challenge: CreateChallengeInput!): Challenge!
+  updateChallenge(id: ID!, args: UpdateChallengeInput!): Challenge!
+  deleteChallenge(id: ID!): Boolean!
+  createParticipation(challengeId: ID!, userName: ID!): ChallengeParticipation!
+  deleteParticipation(challengeId: ID!, userName: ID!): Boolean!
+  addMarking(participationId: ID!, marking: MarkingInput): Marking!
+  editMarking(id: ID!, marking: MarkingInput!): Marking!
+  deleteMarking(id: ID!): Boolean!
+  transferUserMarkings(userName: ID!, challengeId: ID!): Boolean!
+}
+
+enum ChallengeStatus {
+  SUGGESTION
+  UPCOMING
+  ACTIVE
+  ENDED
+}
+
+type Challenge {
+  id: ID!
+  name: String!
+  description: String!
+  startDate: Date
+  endDate: Date
+  status: ChallengeStatus!
+  creator: User!
+  participations: [ChallengeParticipation!]!
+}
+
+type ChallengeParticipation {
+  id: ID!
+  challenge: Challenge!
+  user: User!
+  markings: [Marking!]!
+}
+
+input CreateChallengeInput {
+  name: String!
+  description: String!
+  creatorName: ID!
+  startDate: Date
+  endDate: Date
+}
+
+input UpdateChallengeInput {
+  name: String
+  description: String
+  startDate: Date
+  endDate: Date
+}
+
+type Marking {
+  id: ID!
+  date: Date!
+  comment: String
+}
+
+input MarkingInput {
+  comment: String
+  date: Date
+}

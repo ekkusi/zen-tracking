@@ -1,18 +1,24 @@
 import { gql } from "@apollo/client";
-import { User } from "@ekeukko/zen-tracking-backend/lib/types/user";
+import { markingDataFragment, userDataFragment } from "fragments";
 
-const markingDataFragment = gql`
-  fragment MarkingData on Marking {
-    id
-    date
-    comment
+export const GET_USER = gql`
+  query GetUserQuery($name: ID!) {
+    getUser(name: $name) {
+      ...UserData
+    }
   }
+  ${userDataFragment}
 `;
 
-const userDataFragment = gql`
-  fragment UserData on User {
-    name
-    isPrivate
+const getUserParticipationInfoFragment = gql`
+  fragment GetUserParticipationInfo on ChallengeParticipation {
+    id
+    challenge {
+      id
+      name
+      startDate
+      endDate
+    }
     markings {
       ...MarkingData
     }
@@ -20,20 +26,41 @@ const userDataFragment = gql`
   ${markingDataFragment}
 `;
 
-export const fragments = {
-  markingData: markingDataFragment,
-  userData: userDataFragment,
-};
-
-export const GET_USER = gql`
-  query getUser($name: ID!) {
-    getUser(name: $name) {
-      ...UserData
+export const GET_USER_PARTICIPATIONS = gql`
+  query GetUserParticipationsQuery($userName: ID!) {
+    getUserParticipations(userName: $userName) {
+      ...GetUserParticipationInfo
     }
   }
-  ${fragments.userData}
+  ${getUserParticipationInfoFragment}
 `;
 
-export type GetUserQueryResult = {
-  getUser: User;
-};
+export const GET_PARTICIPATION = gql`
+  query GetParticipationQuery($challengeId: ID!) {
+    getParticipation(challengeId: $challengeId) {
+      ...GetUserParticipationInfo
+    }
+  }
+  ${getUserParticipationInfoFragment}
+`;
+
+export const GET_USER_TRANSFER_PARTICIPATION = gql`
+  query GetUserTransferParticipationQuery($userName: ID!) {
+    getUserTransferParticipation(userName: $userName) {
+      ...GetUserParticipationInfo
+    }
+  }
+  ${getUserParticipationInfoFragment}
+`;
+
+export const GET_USER_PARTICIPATIONS_PLAIN = gql`
+  query GetUserParticipationsPlainQuery($userName: ID!) {
+    getUserParticipations(userName: $userName) {
+      id
+      challenge {
+        id
+        name
+      }
+    }
+  }
+`;

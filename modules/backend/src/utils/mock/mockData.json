@@ -1,0 +1,123 @@
+{
+  "users": [
+    {
+      "name": "some-user",
+      "password": "asd123",
+      "is_private": true
+    },
+    {
+      "name": "private-user",
+      "password": "asd123",
+      "is_private": false
+    },
+    {
+      "name": "main-user",
+      "password": "asd123",
+      "is_private": false
+    },
+    {
+      "name": "user-with-old-participations",
+      "password": "asd123",
+      "is_private": false
+    }
+  ],
+  "challenges": [
+    {
+      "name": "NO_PARTICIPATION_MARKINGS_HOLDER",
+      "description": "Holder for markings with no participation",
+      "creator_name": "main-user",
+      "participations": [
+        {
+          "user_name": "user-with-old-participations",
+          "markings": [
+            {
+              "comment": "First comment",
+              "date": "2021-03-05T12:00:00+02:00"
+            },
+            {
+              "comment": "Last comment",
+              "date": "2021-03-14T12:00:00+02:00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Lenkittelyvä - käynnissä oleva",
+      "description": "Joka päivä jonkinlainen lenkki, kävellen tai juosten",
+      "creator_name": "main-user",
+      "start_date": "2021-03-01T00:00:00+02:00",
+      "end_date": "2021-03-30T00:00:00+02:00",
+      "participations": [
+        {
+          "user_name": "main-user",
+          "markings": [
+            {
+              "comment": "Ihanpa mukava lenkki",
+              "date": "2021-03-05T12:00:00+02:00"
+            },
+            {
+              "comment": "Ihanpa mukava lenkki",
+              "date": "2021-03-04T12:00:00+02:00"
+            },
+            {
+              "comment": "Ihanpa mukava lenkki",
+              "date": "2021-03-03T12:00:00+02:00"
+            }
+          ]
+        },
+        {
+          "user_name": "some-user",
+          "markings": [
+            {
+              "comment": "Kakka lenkki",
+              "date": "2021-03-04T12:00:00+02:00"
+            },
+            {
+              "comment": "Ihanpa mukava lenkki",
+              "date": "2021-03-02T12:00:00+02:00"
+            },
+            {
+              "comment": "Kakka lenkki",
+              "date": "2021-03-01T12:00:00+02:00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Meditointia - mennyt",
+      "description": "Istu ja ajattele joka päivä",
+      "creator_name": "main-user",
+      "start_date": "2021-02-01T00:00:00+02:00",
+      "end_date": "2021-02-28T23:59:59+02:00",
+      "participations": [
+        {
+          "user_name": "main-user",
+          "markings": [
+            {
+              "comment": "Tulipaha ajateltua 10min",
+              "date": "2021-02-26T12:00:00+02:00"
+            },
+            {
+              "comment": "Ajattelua 10min",
+              "date": "2021-02-27T12:00:00+02:00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Raakavegaanius - tuleva",
+      "description": "Kuukauden ajan vihanneksia ja hetelmiä. Kylmänä vaan.",
+      "creator_name": "some-user",
+      "start_date": "2021-04-01T00:00:00+02:00",
+      "end_date": "2021-04-30T23:59:59+02:00"
+    },
+    {
+      "name": "Budjettikuu - ehdotus",
+      "description": "Kuukausi 50e/viikko budjetilla.",
+      "creator_name": "private-user"
+    }
+  ]
+}
