@@ -68,7 +68,7 @@ const ChallengeSelect = forwardRef(
     }));
 
     return (
-      <Box width={{ base: "auto", sm: "400px" }} {...containerProps}>
+      <Box width={{ base: "100%", sm: "400px" }} {...containerProps}>
         <Select
           isLoading={loading || isLoading}
           isDisabled={loading || isLoading}
