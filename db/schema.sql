@@ -40,7 +40,6 @@ CREATE TABLE "Marking" (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   date timestamp with time zone NOT NULL,
   participation_id uuid NOT NULL,
-  imageUrl varchar(254),
   comment varchar(2000),
   FOREIGN KEY (participation_id) REFERENCES "ChallengeParticipation"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
