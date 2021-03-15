@@ -3,6 +3,7 @@ import { Store } from "use-global-hook";
 import UserInfoUtil from "util/UserInfoUtil";
 import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/schema";
 import { GetUserTransferParticipationQuery } from "__generated__/GetUserTransferParticipationQuery";
+import LogRocket from "logrocket";
 import {
   GetUserParticipationsQuery,
   GetUserParticipationsQueryVariables,
@@ -20,8 +21,10 @@ const actions = {
     store: Store<GlobalState, ActionTypes>,
     user: ParsedUser | null
   ): void => {
-    if (user) localStorage.setItem("currentUser", user.name);
-    else localStorage.removeItem("currentUser");
+    if (user) {
+      localStorage.setItem("currentUser", user.name);
+      LogRocket.identify(user.name);
+    } else localStorage.removeItem("currentUser");
     store.setState({ ...store.state, currentUser: user || notAuthorizedUser });
   },
   updateError: (
