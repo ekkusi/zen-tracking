@@ -4,14 +4,9 @@ import { BrowserRouter } from "react-router-dom";
 import ApolloProvider from "apollo/ApolloProvider";
 import Routes from "routes/Routes";
 import { ThemeProvider } from "styled-components";
-import LogRocket from "logrocket";
 
 import ScrollToTop from "components/ScrollToTop";
 import theme from "./theme";
-
-if (process.env.NODE_ENV === "production") {
-  LogRocket.init("6hrsm3/zen-tracking");
-}
 
 const App = (): JSX.Element => {
   return (

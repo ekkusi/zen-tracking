@@ -23,7 +23,11 @@ const actions = {
   ): void => {
     if (user) {
       localStorage.setItem("currentUser", user.name);
-      LogRocket.identify(user.name);
+      // Init LogRocket session if user is not private and is prod env
+      if (process.env.NODE_ENV === "production" && !user.isPrivate) {
+        LogRocket.init("6hrsm3/zen-tracking-dev");
+        LogRocket.identify(user.name);
+      }
     } else localStorage.removeItem("currentUser");
     store.setState({ ...store.state, currentUser: user || notAuthorizedUser });
   },
