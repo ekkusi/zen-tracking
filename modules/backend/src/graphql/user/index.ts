@@ -63,8 +63,7 @@ export const resolvers: UserResolvers = {
       }
       const hashedPassword = await hash(password);
       // If user is not created, create user after validating
-      const validationError = UserValidator.validateCreateUser(name);
-      if (validationError) throw validationError;
+      UserValidator.validateCreateUser(name);
       const createdUser = await prisma.user.create({
         data: { name, password: hashedPassword },
       });

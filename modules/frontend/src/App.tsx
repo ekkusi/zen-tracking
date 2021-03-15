@@ -6,13 +6,12 @@ import Routes from "routes/Routes";
 import { ThemeProvider } from "styled-components";
 import LogRocket from "logrocket";
 
+import ScrollToTop from "components/ScrollToTop";
 import theme from "./theme";
 
-LogRocket.init(
-  process.env.NODE_ENV === "production"
-    ? "6hrsm3/zen-tracking"
-    : "6hrsm3/zen-tracking-dev"
-);
+if (process.env.NODE_ENV === "production") {
+  LogRocket.init("6hrsm3/zen-tracking");
+}
 
 const App = (): JSX.Element => {
   return (
@@ -20,6 +19,7 @@ const App = (): JSX.Element => {
       <ThemeProvider theme={theme}>
         <ApolloProvider>
           <BrowserRouter>
+            <ScrollToTop />
             <Routes />
           </BrowserRouter>
         </ApolloProvider>
