@@ -120,7 +120,25 @@ const EditMarking = ({
 
     setLoading(true);
     const { comment, photo } = formValues;
-
+    let photoUrl;
+    let photoKey;
+    if (photo != null) {
+      try {
+        const formData = new FormData();
+        formData.append("photo", photo);
+        const response = await fetch("/upload-image", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+        photoUrl = data.url;
+        photoKey = data.key;
+      } catch (e) {
+        setLoading(false);
+        setError(`Jokin meni vikaan kuvan lisäyksessä: ${e.message}`);
+        return;
+      }
+    }
     try {
       // User markings after edit/create. Set to null if update fails to not trigger update in global state.
       let newMarkings: Marking[] | null = null;
@@ -186,6 +204,17 @@ const EditMarking = ({
       setLoading(false);
       disclosureProps.onClose();
     } catch (e) {
+      if (photoKey) {
+        const formData = new FormData();
+        formData.append("key", photoKey);
+        const response = await fetch("/delete-image", {
+          method: "POST",
+          body: formData,
+        });
+        if (response.status !== 200) {
+          // TODO: send image delete failed to LogRocket etc.
+        }
+      }
       setLoading(false);
       setError(`Jokin meni vikaan merkkauksen muokkauksessa: ${e.message}`);
     }
@@ -311,7 +340,6 @@ const EditMarking = ({
                       ? null
                       : event.target.files[0],
                 });
-                console.log(event.target.files);
               }}
             />
             <Text
