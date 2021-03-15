@@ -47,18 +47,17 @@ app.post("/upload-image", async (req, res) => {
 
   try {
     const data = await s3.upload(s3Params).promise();
-    return res.status(200).send({ url: data.Location, key: data.Key });
+    return res.status(200).send({ url: data.Location, fileName });
   } catch (e) {
     return res.status(500).send(e);
   }
 });
 
 app.post("/delete-image", async (req, res) => {
-  console.log(req.body.key);
-  if (req.body.key && S3_BUCKET) {
+  if (req.body.fileName && S3_BUCKET) {
     const s3Params = {
       Bucket: S3_BUCKET,
-      Key: req.body.key,
+      Key: `${process.env.AWS_S3_MARKING_IMAGE_FOLDER}/${req.body.fileName}`,
     };
     try {
       await s3.deleteObject(s3Params).promise();

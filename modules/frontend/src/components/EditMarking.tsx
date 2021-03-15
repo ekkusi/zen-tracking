@@ -120,8 +120,7 @@ const EditMarking = ({
 
     setLoading(true);
     const { comment, photo } = formValues;
-    let photoUrl;
-    let photoKey;
+    let photoFileName;
     if (photo != null) {
       try {
         const formData = new FormData();
@@ -131,8 +130,7 @@ const EditMarking = ({
           body: formData,
         });
         const data = await response.json();
-        photoUrl = data.url;
-        photoKey = data.key;
+        photoFileName = data.fileName;
       } catch (e) {
         setLoading(false);
         setError(`Jokin meni vikaan kuvan lisäyksessä: ${e.message}`);
@@ -204,9 +202,9 @@ const EditMarking = ({
       setLoading(false);
       disclosureProps.onClose();
     } catch (e) {
-      if (photoKey) {
+      if (photoFileName) {
         const formData = new FormData();
-        formData.append("key", photoKey);
+        formData.append("fileName", photoFileName);
         const response = await fetch("/delete-image", {
           method: "POST",
           body: formData,
