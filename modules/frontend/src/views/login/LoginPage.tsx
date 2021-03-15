@@ -113,7 +113,7 @@ const LoginPage = (): JSX.Element => {
   };
 
   return (
-    <Container maxWidth="1000px">
+    <Container maxWidth="1000px" pb="7">
       <Box>
         <Heading.H1
           fontSize={{ base: "5xl", md: "6xl" }}
