@@ -24,8 +24,6 @@ import {
 const LoginPage = (): JSX.Element => {
   const hasLoggedInBefore = localStorage.getItem("hasLoggedInBefore");
 
-  console.log(hasLoggedInBefore);
-
   // If user has visited logged in before already, show form straight away
   const [opacityValues, setOpacityValues] = useState(
     hasLoggedInBefore ? [1, 1, 1] : [0, 0, 0]
@@ -115,7 +113,7 @@ const LoginPage = (): JSX.Element => {
   };
 
   return (
-    <Container maxWidth="1000px">
+    <Container maxWidth="1000px" pb="7">
       <Box>
         <Heading.H1
           fontSize={{ base: "5xl", md: "6xl" }}

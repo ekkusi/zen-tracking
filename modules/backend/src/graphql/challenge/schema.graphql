@@ -1,13 +1,10 @@
-# import Date from "../scalars/schema.graphql"
-# import User from "../user/schema.graphql"
-
-# Above imports are for graphql-code-generator
-
 extend type Query {
   getChallenge(id: ID!): Challenge
-  getChallenges: [Challenge!]!
+  getChallenges(creatorName: ID, status: ChallengeStatus, startDate: DateFilter, endDate: DateFilter): [Challenge!]!
   getUserParticipations(userName: ID!): [ChallengeParticipation!]!
+  getParticipation(challengeId: ID!): ChallengeParticipation
   getMarkings(participationId: ID!): [Marking!]!
+  getUserTransferParticipation(userName: ID!): ChallengeParticipation
 }
 
 extend type Mutation {
@@ -19,6 +16,7 @@ extend type Mutation {
   addMarking(participationId: ID!, marking: MarkingInput): Marking!
   editMarking(id: ID!, marking: MarkingInput!): Marking!
   deleteMarking(id: ID!): Boolean!
+  transferUserMarkings(userName: ID!, challengeId: ID!): Boolean!
 }
 
 enum ChallengeStatus {

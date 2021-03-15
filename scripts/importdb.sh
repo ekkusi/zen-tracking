@@ -1,14 +1,14 @@
 #!/bin/bash
 
-parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-cd "$parent_path"
+callPath=$(pwd)
+scriptPath=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd "$scriptPath"
 
 set -a # automatically export all variables
 source "../modules/backend/prisma/.env" # Take vars from prisma config
 set +a
 
 databaseUrl=$DATABASE_URL # Defaults to modules/backend/prisma/.env DATABASE_URL variable
-filePath="$(cd ../db; pwd)/schema.sql"
 
 while getopts ":d:f:" opt; do
   case $opt in
@@ -17,8 +17,8 @@ while getopts ":d:f:" opt; do
       databaseUrl=$OPTARG
       ;;
     f)
-      echo "-f was triggered, changing file path to: $OPTARG" >&2
-      filePath=$OPTARG
+      echo "-f was triggered, adding relativePath to '$OPTARG'">&2
+      relativeFilePath=$OPTARG
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -31,9 +31,12 @@ while getopts ":d:f:" opt; do
   esac
 done
 
+absoluteFilePath="$(cd ../db; pwd)/schema.sql"
+if [ -n "${relativeFilePath}" ]; then absoluteFilePath="$callPath/$relativeFilePath"; else echo "relativeFilePath is not set"; fi
+
 echo -e "Importing database from $filePath"
 echo -e "Importing to: $databaseUrl: \n\n"
 
-psql $databaseUrl --file=$filePath --echo-all --echo-errors
+psql $databaseUrl --file=$absoluteFilePath --echo-all --echo-errors
 echo "done"
 exit 0

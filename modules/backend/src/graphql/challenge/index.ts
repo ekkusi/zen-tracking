@@ -1,12 +1,13 @@
 import { readFileSync } from "fs";
 import path from "path";
-import ValidationError from "../../utils/ValidationError";
 import { formatIsoString } from "../../utils/dateUtils";
 
 import { Resolvers } from "../../types/resolvers";
 import { ChallengeMapper } from "./ChallengeMapper";
 import ChallengeValidator from "./ChallengeValidator";
 import { loaderResetors } from "../loaders";
+
+import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "../../config.json";
 
 // Construct a schema, using GraphQL schema language
 export const typeDef = readFileSync(
@@ -25,19 +26,24 @@ export const resolvers: Resolvers = {
       _,
       { loaders: { challengeLoader } }
     ) => {
-      const challenge = await challengeLoader.load(challenge_id);
-      return challenge;
+      const result = await challengeLoader.load(challenge_id);
+      if (result instanceof Error) throw result;
+
+      return result;
     },
     id: (participation) => participation.id,
     user: async ({ user_name }, _, { loaders: { userLoader } }) => {
-      const user = await userLoader.load(user_name);
-      return user;
+      const result = await userLoader.load(user_name);
+      if (result instanceof Error) throw result;
+      return result;
     },
   },
   Challenge: {
     creator: async ({ creator_name }, _, { loaders: { userLoader } }) => {
-      const user = await userLoader.load(creator_name);
-      return user;
+      const result = await userLoader.load(creator_name);
+      if (result instanceof Error) throw result;
+
+      return result;
     },
     endDate: ({ end_date }) => (end_date ? formatIsoString(end_date) : null),
     startDate: ({ start_date }) =>
@@ -58,29 +64,49 @@ export const resolvers: Resolvers = {
   },
   Query: {
     getChallenge: async (_, { id }, { prisma }) => {
-      const challenge = await prisma.challenge.findUnique({
+      const challenge = await prisma.challenge.findFirst({
         where: { id },
       });
       return challenge;
     },
-    getChallenges: async (_, __, { prisma, loaders }) => {
-      loaders.userLoader.clearAll();
-      loaders.challengeParticipationsLoader.clearAll();
-      loaders.challengeLoader.clearAll();
-      const challenges = await prisma.challenge.findMany();
+    getChallenges: async (_, args, { prisma }) => {
+      const filters = ChallengeMapper.mapChallengeFilters(args);
+      const challenges = await prisma.challenge.findMany({ where: filters });
       return challenges || [];
     },
     getUserParticipations: async (_, { userName }, { prisma }) => {
       const participations = await prisma.challengeParticipation.findMany({
-        where: { user_name: userName },
+        where: {
+          AND: {
+            user_name: userName,
+            Challenge: { NOT: { name: NO_PARTICIPATION_MARKINGS_HOLDER_NAME } },
+          },
+        },
       });
       return participations;
+    },
+    getParticipation: async (_, { challengeId }, { prisma }) => {
+      const participation = await prisma.challengeParticipation.findFirst({
+        where: { challenge_id: challengeId },
+      });
+      return participation;
     },
     getMarkings: async (_, { participationId }, { prisma }) => {
       const markings = await prisma.marking.findMany({
         where: { participation_id: participationId },
       });
       return markings;
+    },
+    getUserTransferParticipation: async (_, { userName }, { prisma }) => {
+      const transferParticipation = await prisma.challengeParticipation.findFirst(
+        {
+          where: {
+            user_name: userName,
+            Challenge: { name: NO_PARTICIPATION_MARKINGS_HOLDER_NAME },
+          },
+        }
+      );
+      return transferParticipation;
     },
   },
   Mutation: {
@@ -89,7 +115,6 @@ export const resolvers: Resolvers = {
       { participationId, marking },
       { prisma, loaders }
     ) => {
-      console.log("addMarking args:", JSON.stringify(marking));
       // Validate marking
       await ChallengeValidator.validateAddMarking({
         participationId,
@@ -108,7 +133,6 @@ export const resolvers: Resolvers = {
       return createdMarking;
     },
     editMarking: async (_, { id, marking }, { prisma, loaders }) => {
-      console.log("editMarking args:", JSON.stringify(marking));
       // Check validity
       await ChallengeValidator.validateMarkingInput(marking);
 
@@ -130,33 +154,64 @@ export const resolvers: Resolvers = {
       if (deletedMarkings > 0) return true; // If more than 0 rows are affected by above query
       return false;
     },
-    createChallenge: async (_, { challenge }, { prisma }) => {
+    transferUserMarkings: async (
+      _,
+      { challengeId, userName },
+      { prisma, loaders }
+    ) => {
+      await ChallengeValidator.validateTransferUserMarking(
+        userName,
+        challengeId
+      );
+
+      const participationToUpdate = await prisma.challengeParticipation.findFirst(
+        {
+          where: {
+            Challenge: { name: "NO_PARTICIPATION_MARKINGS_HOLDER" },
+            user_name: userName,
+          },
+        }
+      );
+      if (!participationToUpdate)
+        throw new Error(
+          `transferUserMarkings NO_PARTICIPATION_MARKINGS_HOLDER-participation with user: ${userName}wasn't found`
+        );
+      // Update participation to point to new challenge
+      await prisma.challengeParticipation.update({
+        where: { id: participationToUpdate.id },
+        data: { challenge_id: challengeId, user_name: userName },
+      });
+
+      await loaderResetors.clearParticipationsCache(
+        participationToUpdate.id,
+        loaders
+      );
+      return true; // Backup
+    },
+    createChallenge: async (_, { challenge }, { prisma, loaders }) => {
       const { creatorName, ...args } = challenge;
-      console.log(`Create challenge args:${JSON.stringify(args)}`);
-      ChallengeValidator.validateChallengeArgs(args);
+      await ChallengeValidator.validateCreateChallengeArgs(args);
       const createChallenge = await prisma.challenge.create({
         data: ChallengeMapper.mapCreateChallengeInput(challenge),
       });
-      // Create participation to challenge creator automatically
-      await prisma.challengeParticipation.create({
-        data: {
-          challenge_id: createChallenge.id,
-          user_name: creatorName,
-        },
-      });
+      await loaderResetors.clearParticipationsCacheByChallenge(
+        createChallenge.id,
+        loaders
+      );
       return createChallenge;
     },
-    updateChallenge: async (_, { id, args }, { prisma }) => {
-      console.log(`updateChallenge args: ${JSON.stringify(args)}`);
-      ChallengeValidator.validateChallengeArgs(args);
+    updateChallenge: async (_, { id, args }, { prisma, loaders }) => {
+      await ChallengeValidator.validateChallengeArgs(args);
       const updatedChallenge = await prisma.challenge.update({
         where: { id },
         data: ChallengeMapper.mapEditChallengeInput(args),
       });
+      // Clear challengeLoader cache by challenge id
+      loaders.challengeLoader.clear(id);
       return updatedChallenge;
     },
     deleteChallenge: async (_, { id }, { prisma, loaders }) => {
-      throw new ValidationError("Et saa tehdä poistoa!!");
+      await ChallengeValidator.validateDeleteChallengeArgs(id);
       // Clear partipationsLoader cache
       await loaderResetors.clearParticipationsCacheByChallenge(id, loaders);
       // This is temp solution, because prisma doesn't support NOT NULL constraint and ON DELETE CASCADE. Prisma delete results in relation delete violation.
@@ -166,12 +221,15 @@ export const resolvers: Resolvers = {
       if (deletedChallenges > 0) return true; // If more than 0 rows are affected by above query
       return false;
     },
-    createParticipation: async (_, args, { prisma }) => {
+    createParticipation: async (_, args, { prisma, loaders }) => {
       await ChallengeValidator.validateCreateParticipation(args);
+
       const { challengeId, userName } = args;
       const participation = await prisma.challengeParticipation.create({
         data: { challenge_id: challengeId, user_name: userName },
       });
+      // Clear participationsLoader cache by created participation id
+      await loaderResetors.clearParticipationsCache(participation.id, loaders);
       return participation;
     },
     deleteParticipation: async (_, args, { prisma, loaders }) => {
@@ -185,7 +243,6 @@ export const resolvers: Resolvers = {
       const deletedParticipations = await prisma.$executeRaw(
         `DELETE FROM "ChallengeParticipation" WHERE user_name='${args.userName}' AND challenge_id='${args.challengeId}';`
       );
-      console.log(`Deleted participations count: ${deletedParticipations}`);
       if (deletedParticipations > 0) return true; // If more than 0 rows are affected by above query
       return false;
     },

@@ -17,7 +17,7 @@ const ChallengesSection = ({
   ...rest
 }: ChallengesSectionProps): JSX.Element => {
   return (
-    <Box mb="3" {...rest}>
+    <Box mb="6" {...rest}>
       {title && <Heading.H3>{title}</Heading.H3>}
       {challenges.length > 0 ? (
         <Flex wrap="wrap">

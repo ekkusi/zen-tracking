@@ -33,9 +33,10 @@ const ChallengeCard = ({
   ...rest
 }: ChallengeCardProps): JSX.Element => {
   const user = useGlobal((state) => state.currentUser)[0];
-  const activeParticipation = useGlobal(
-    (state) => state.activeParticipation
-  )[0];
+  const [activeParticipation, updateActiveParticipation] = useGlobal(
+    (state) => state.activeParticipation,
+    (actions) => actions.updateActiveParticipation
+  );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [addParticipation, { loading: addLoading }] = useMutation<
     CreateParticipationMutation,
@@ -61,21 +62,34 @@ const ChallengeCard = ({
     setIsDeleteModalOpen(value);
   };
 
-  const deleteParticipationCall = () => {
-    deleteParticipation()
-      .catch((e) => console.log(e))
-      .finally(async () => {
-        await updateChallenges();
-        updateModalOpen(false);
-      });
+  const removeParticipation = async () => {
+    try {
+      await deleteParticipation();
+      await updateChallenges();
+      // If deletedParticipation was the activeParticipation, update activeParticipation
+      if (
+        activeParticipation &&
+        activeParticipation.challenge.id === challenge.id
+      ) {
+        await updateActiveParticipation(null);
+      }
+      updateModalOpen(false);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  const createParticipation = () => {
-    addParticipation()
-      .catch((e) => console.log(e))
-      .finally(async () => {
-        await updateChallenges();
-      });
+  const createParticipation = async () => {
+    try {
+      const result = await addParticipation();
+      await updateChallenges();
+      // If activeparticipation isn't updated by updateChallenges -> update manually with created challenge
+      if (!activeParticipation && result.data) {
+        updateActiveParticipation(challenge.id);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const getUserParticipation = () => {
@@ -122,6 +136,7 @@ const ChallengeCard = ({
       {isUserChallengeCreator() && (
         <EditChallenge
           challenge={challenge}
+          onEdit={updateChallenges}
           openButtonLabel="Muokkaa"
           openButtonProps={{ size: "xs", mt: "auto" }}
         />
@@ -145,7 +160,7 @@ const ChallengeCard = ({
               <>
                 <AlertButton
                   isLoading={deleteLoading}
-                  onClick={deleteParticipationCall}
+                  onClick={removeParticipation}
                 >
                   Poista
                 </AlertButton>

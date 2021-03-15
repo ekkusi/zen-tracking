@@ -28,6 +28,13 @@ export interface CreateChallengeInput {
   endDate?: any | null;
 }
 
+export interface DateFilter {
+  gte?: string | null;
+  gt?: string | null;
+  lte?: string | null;
+  lt?: string | null;
+}
+
 export interface MarkingInput {
   comment?: string | null;
   date?: any | null;

@@ -1,3 +1,4 @@
+import { Marking } from "@prisma/client";
 import { format } from "date-fns";
 import locale from "date-fns/locale/fi";
 
@@ -8,4 +9,20 @@ export const formatIsoString = (date: Date | string): string => {
     locale,
   });
   return formatted;
+};
+
+// Return latest marking of markings array
+export const getLatestMarking = (markings: Marking[]): Marking | null => {
+  const sortedMarkings = markings.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+  return sortedMarkings[0] || null;
+};
+
+// Return latest marking of markings array
+export const getEarliestMarking = (markings: Marking[]): Marking | null => {
+  const sortedMarkings = markings.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+  return sortedMarkings[sortedMarkings.length - 1] || null;
 };

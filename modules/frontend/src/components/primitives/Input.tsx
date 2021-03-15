@@ -1,11 +1,7 @@
 import { Input, InputProps, Textarea } from "@chakra-ui/react";
 import styled, { css } from "styled-components/macro";
 
-export type PrimaryInputProps = InputProps & {
-  isHighlighted?: boolean;
-  isOverlined?: boolean;
-  hasError?: boolean;
-};
+export type PrimaryInputProps = InputProps & {};
 
 const customInputCss = css<PrimaryInputProps>`
   ${({ isReadOnly, theme }) =>
@@ -17,53 +13,6 @@ const customInputCss = css<PrimaryInputProps>`
       &&:read-only,
       &&:disabled {
         background-color: ${theme.colors.gray[50]};
-      }
-    `}
-  ${({ isHighlighted, theme }) =>
-    isHighlighted &&
-    css`
-      &&,
-      &&:focus,
-      &&:hover,
-      &&:read-only,
-      &&:disabled {
-        background: ${theme.colors.teal[50]};
-        border-color: ${theme.colors.primary.regular};
-        border-width: 1px;
-        &:focus {
-          border-width: 2px;
-        }
-      }
-    `}
-${({ isOverlined, theme }) =>
-    isOverlined &&
-    css`
-      &&,
-      &&:focus,
-      &&:hover,
-      &&:read-only,
-      &&:disabled {
-        color: ${theme.colors.warning};
-        text-decoration: line-through;
-      }
-    `}
-
-${({ hasError, theme }) =>
-    hasError &&
-    css`
-      &&,
-      &&:focus,
-      &&:hover,
-      &&:read-only,
-      &&:disabled {
-        color: ${theme.colors.black};
-        border-color: ${theme.colors.warning};
-        background-color: ${theme.colors.red[50]};
-        text-decoration: none;
-        border-width: 1px;
-        &:focus {
-          border-width: 2px;
-        }
       }
     `}
 `;
@@ -78,32 +27,34 @@ const PrimaryTextArea = styled(Textarea)<PrimaryInputProps>`
 
 const baseInputProps: InputProps = {
   fontSize: "sm",
-  borderRadius: "sm",
+  borderRadius: "5px",
+  _invalid: {
+    borderColor: "warning",
+    _focus: {
+      borderColor: "warning",
+    },
+  },
+  _disabled: {
+    bg: "secondary.light",
+    pointerEvents: "none",
+  },
+  _readOnly: {
+    opacity: 1,
+    pointerEvents: "none",
+  },
 };
 
 PrimaryInput.defaultProps = {
   ...baseInputProps,
   _focus: {
-    bg: "teal.50",
     borderColor: "primary.regular",
-    borderWidth: "2px",
-  },
-  _readOnly: {
-    opacity: 1,
-    pointerEvents: "none",
   },
 };
 
 PrimaryTextArea.defaultProps = {
   ...baseInputProps,
   _focus: {
-    bg: "teal.50",
     borderColor: "primary.regular",
-    borderWidth: "2px",
-  },
-  _readOnly: {
-    opacity: 1,
-    pointerEvents: "none",
   },
 };
 

@@ -1,6 +1,6 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { ArrowForwardIcon, CheckIcon } from "@chakra-ui/icons";
-import React from "react";
+import React, { useState, useRef } from "react";
 import { ButtonWithRef } from "components/primitives/Button";
 import useGlobal from "store";
 import Heading from "components/primitives/Heading";
@@ -8,8 +8,13 @@ import DateUtil from "util/DateUtil";
 import { Link } from "react-router-dom";
 import chakraMotionWrapper from "util/chakraMotionWrapper";
 import { motion } from "framer-motion";
-import MarkingCalendar from "../../components/MarkingCalendar";
+import ChallengeSelect, {
+  OptionType,
+  SelectHandle,
+} from "components/ChallengeSelect";
+import CustomLoadingOverlay from "components/general/LoadingOverlay";
 import AddMarking from "../../components/EditMarking";
+import MarkingCalendar from "../../components/MarkingCalendar";
 
 const MotionArrowForwardIcon = chakraMotionWrapper(ArrowForwardIcon);
 const MotionButton = motion(ButtonWithRef);
@@ -25,7 +30,14 @@ const iconHoverVariants = {
 
 const MainPage = (): JSX.Element => {
   const user = useGlobal((store) => store.currentUser)[0];
-  const [activeParticipation] = useGlobal((store) => store.activeParticipation);
+  const [activeParticipation, updateActiveParticipation] = useGlobal(
+    (store) => store.activeParticipation,
+    (actions) => actions.updateActiveParticipation
+  );
+
+  const [loading, setLoading] = useState(false);
+
+  const selectRef = useRef<SelectHandle>(null);
 
   const hasUserMarkedToday = () => {
     return DateUtil.dateIsIn(
@@ -36,11 +48,15 @@ const MainPage = (): JSX.Element => {
     );
   };
 
+  const onActiveChallengeSelect = async (value: OptionType | null) => {
+    setLoading(true);
+    await updateActiveParticipation(value?.value ?? null);
+    setLoading(false);
+  };
+
   return (
     <Box>
-      <Heading.H1 mt="5">
-        Tervehdys {user.name} ja tervetuloa seuraamaan zenisi kasvamista :){" "}
-      </Heading.H1>
+      <Heading.H1 mt="5">Tervehdys {user.name}! :) </Heading.H1>
 
       {!activeParticipation ? (
         <>
@@ -70,12 +86,23 @@ const MainPage = (): JSX.Element => {
         </>
       ) : (
         <>
-          <Heading.H2 fontWeight="normal" mb="0">
-            <Text as="span" fontStyle="italic">
-              Haasteesi:
-            </Text>{" "}
-            {activeParticipation.challenge.name}
-          </Heading.H2>
+          <Heading.H3 fontWeight="normal" mb="2">
+            Aktiivinen haaste
+          </Heading.H3>
+          <ChallengeSelect
+            initialValue={
+              activeParticipation
+                ? {
+                    value: activeParticipation.challenge.id,
+                    label: activeParticipation.challenge.name,
+                  }
+                : undefined
+            }
+            onSelect={onActiveChallengeSelect}
+            isLoading={loading}
+            containerProps={{ mb: "2" }}
+            ref={selectRef}
+          />
           <Text
             as={Link}
             to="/challenges"
@@ -93,7 +120,7 @@ const MainPage = (): JSX.Element => {
                   : "Merkkaa päivän suoritus"
               }
               openButtonProps={{
-                isDisabled: hasUserMarkedToday(),
+                isDisabled: hasUserMarkedToday() || loading,
                 size: "lg",
                 leftIcon: (
                   <CheckIcon
@@ -108,6 +135,7 @@ const MainPage = (): JSX.Element => {
         </>
       )}
       <Box>
+        {loading && <CustomLoadingOverlay />}
         {activeParticipation &&
           (activeParticipation.markings.length > 0 ? (
             <>
