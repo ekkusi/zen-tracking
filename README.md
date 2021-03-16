@@ -2,7 +2,7 @@
 
 ## Prerequirements
 
-- Nodejs (version 12 or earlier)
+- Nodejs (version 12 or later)
 - Yarn
 - Docker
 
