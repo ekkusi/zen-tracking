@@ -2,7 +2,7 @@ import {
   Challenge,
   ChallengeParticipation,
   User,
-} from "@ekeukko/zen-tracking-backend/lib/types/schema";
+} from "@ekkusi/zen-tracking-backend/lib/types/schema";
 
 export type ParsedChallenge = Omit<Partial<Challenge>, "name" | "id"> & {
   id: string;

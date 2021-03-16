@@ -20,7 +20,7 @@ import DesignPage from "views/design/DesignPage";
 import ViewContainer from "views/ViewContainer";
 import TransferMarkingsPage from "views/transfer-markings/TransferMarkingsPage";
 
-import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "@ekeukko/zen-tracking-backend/lib/config.json";
+import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "@ekkusi/zen-tracking-backend/lib/config.json";
 import SomeDesignPage from "views/design/SomeDesignPage";
 
 const Routes = (): JSX.Element => {

@@ -1,4 +1,4 @@
-import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/schema";
+import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
 import { addHours, isSameDay } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
 import ReactCalendar, {

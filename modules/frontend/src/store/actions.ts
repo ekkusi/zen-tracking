@@ -1,7 +1,7 @@
 import { ParsedUser } from "types/parsedBackendTypes";
 import { Store } from "use-global-hook";
 import UserInfoUtil from "util/UserInfoUtil";
-import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/schema";
+import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
 import { GetUserTransferParticipationQuery } from "__generated__/GetUserTransferParticipationQuery";
 import LogRocket from "logrocket";
 import {

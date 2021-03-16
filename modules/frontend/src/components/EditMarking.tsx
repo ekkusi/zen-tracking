@@ -8,8 +8,8 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Marking } from "@ekeukko/zen-tracking-backend/lib/types/schema";
-import { UploadImageSuccessResult } from "@ekeukko/zen-tracking-backend/lib/types/restApiResponses";
+import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
+import { UploadImageSuccessResult } from "@ekkusi/zen-tracking-backend/lib/types/restApiResponses";
 import ModalTemplate, {
   ModalTemplateProps,
 } from "components/general/ModalTemplate";
