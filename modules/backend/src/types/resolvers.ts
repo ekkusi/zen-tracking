@@ -10,7 +10,7 @@ import {
   User,
 } from "@prisma/client";
 import * as Types from "./schema";
-import { CustomContext } from "./CustomContext";
+import { CustomContext } from "./customContext";
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = {

@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
 import path from "path";
+import { Marking } from "@prisma/client";
 import { formatIsoString } from "../../utils/dateUtils";
 
 import { Resolvers } from "../../types/resolvers";
@@ -265,7 +266,7 @@ export const resolvers: Resolvers = {
 
         try {
           await Promise.all(
-            challengeMarkings.map((it) => {
+            challengeMarkings.map((it: Marking) => {
               if (it.photo_url) {
                 return s3Client.deleteImage(it.photo_url);
               }
@@ -315,7 +316,7 @@ export const resolvers: Resolvers = {
         // If more than 0 rows are affected by above query == participation deleted -> delete all related marking-images from s3
         try {
           await Promise.all(
-            participationMarkings.map((it) => {
+            participationMarkings.map((it: Marking) => {
               if (it.photo_url) {
                 return s3Client.deleteImage(it.photo_url);
               }

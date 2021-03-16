@@ -1,6 +1,6 @@
 import DataLoader from "dataloader";
 import { Challenge, User } from "@prisma/client";
-import { DataLoaders } from "../types/CustomContext";
+import { DataLoaders } from "../types/customContext";
 
 import prisma from "./client";
 
