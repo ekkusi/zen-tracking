@@ -8,7 +8,7 @@
     "@apollo/link-error": "^2.0.0-beta.3",
     "@chakra-ui/icons": "^1.0.5",
     "@chakra-ui/react": "^1.1.2",
-    "@ekeukko/zen-tracking-backend": "^1.0.0",
+    "@ekkusi/zen-tracking-backend": "^1.0.0",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
     "@testing-library/react": "^11.1.0",
