@@ -1,7 +1,7 @@
-import { UploadImageSuccessResult } from "@/types/RestApiResponses";
 import aws from "aws-sdk";
 import fileUpload from "express-fileupload";
 import { v4 as generateId } from "uuid";
+import { UploadImageSuccessResult } from "../types/RestApiResponses";
 
 const S3_BUCKET = process.env.AWS_S3_BUCKET_NAME;
 
