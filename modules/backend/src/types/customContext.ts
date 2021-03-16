@@ -1,4 +1,3 @@
-import AwsS3Client from "@/utils/awsS3Client";
 import {
   Challenge,
   ChallengeParticipation,
@@ -7,6 +6,7 @@ import {
   User,
 } from "@prisma/client";
 import DataLoader from "dataloader";
+import AwsS3Client from "../utils/awsS3Client";
 
 export type DataLoaders = {
   markingsLoader: DataLoader<string, Marking[], string>;
