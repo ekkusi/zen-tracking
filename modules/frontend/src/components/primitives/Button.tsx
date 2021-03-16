@@ -15,7 +15,7 @@ const BaseButtonProps: ChakraButtonProps = {
   borderRadius: "md",
   width: "auto",
   height: "auto",
-  whiteSpace: "normal",
+  whiteSpace: "nowrap",
   _hover: {
     opacity: 1,
   },
@@ -32,7 +32,10 @@ const ButtonDefaultProps = {
   variant: "solid",
 };
 
-type ButtonProps = Omit<ChakraButtonProps, "bg" | "color" | "variant"> & {
+export type ButtonProps = Omit<
+  ChakraButtonProps,
+  "bg" | "color" | "variant"
+> & {
   bg?: string;
   color?: string;
   variant?: string;

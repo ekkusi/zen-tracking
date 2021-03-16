@@ -27,7 +27,10 @@ const TransferMarkingsPage = (): JSX.Element => {
     (state) => state.activeParticipation,
     (actions) => actions.updateActiveParticipation
   );
-  const user = useGlobal((state) => state.currentUser)[0];
+  const [user, updateUser] = useGlobal(
+    (store) => store.currentUser,
+    (actions) => actions.updateUser
+  );
   const [selectedChallengeId, setSelectedChallengeId] = useState<
     string | null
   >();
@@ -129,6 +132,12 @@ const TransferMarkingsPage = (): JSX.Element => {
         <CustomLoadingOverlay loadingText="Ladataan" />
       ) : (
         <Box>
+          <Flex justifyContent="flex-end" mb="3">
+            <PrimaryButton onClick={() => updateUser(null)}>
+              Kirjaudu ulos
+            </PrimaryButton>
+          </Flex>
+
           <Heading.H1>Merkkausten siirto</Heading.H1>
           <Text>
             Tervehdys! Zen Tracking on muuttunut hieman sitten viime näkemäsi.

@@ -160,7 +160,7 @@ export default class ChallengeValidator {
       const challengeParticipations = await prisma.challengeParticipation.findMany(
         {
           where: {
-            challenge_id: challenge?.id,
+            challenge_id: challenge.id,
           },
         }
       );

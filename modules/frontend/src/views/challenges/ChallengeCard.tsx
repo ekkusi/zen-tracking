@@ -24,11 +24,15 @@ import { GetChallengesQuery_getChallenges } from "./__generated__/GetChallengesQ
 
 type ChallengeCardProps = FlexProps & {
   challenge: GetChallengesQuery_getChallenges;
+  onEdit: () => Promise<void>;
+  onDelete: () => Promise<void>;
   updateChallenges: () => Promise<void>;
 };
 
 const ChallengeCard = ({
   challenge,
+  onEdit,
+  onDelete,
   updateChallenges,
   ...rest
 }: ChallengeCardProps): JSX.Element => {
@@ -82,7 +86,7 @@ const ChallengeCard = ({
   const createParticipation = async () => {
     try {
       const result = await addParticipation();
-      await updateChallenges();
+      await onEdit();
       // If activeparticipation isn't updated by updateChallenges -> update manually with created challenge
       if (!activeParticipation && result.data) {
         updateActiveParticipation(challenge.id);
@@ -136,7 +140,8 @@ const ChallengeCard = ({
       {isUserChallengeCreator() && (
         <EditChallenge
           challenge={challenge}
-          onEdit={updateChallenges}
+          onEdit={onEdit}
+          onDelete={onDelete}
           openButtonLabel="Muokkaa"
           openButtonProps={{ size: "xs", mt: "auto" }}
         />

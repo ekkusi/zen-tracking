@@ -1,3 +1,4 @@
+import AwsS3Client from "@/utils/awsS3Client";
 import {
   Challenge,
   ChallengeParticipation,
@@ -25,5 +26,6 @@ export type DataLoaders = {
 
 export type CustomContext = {
   prisma: PrismaClient;
+  s3Client: typeof AwsS3Client;
   loaders: DataLoaders;
 };

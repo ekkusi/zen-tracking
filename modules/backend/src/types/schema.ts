@@ -208,9 +208,11 @@ export type Marking = {
   id: Scalars["ID"];
   date: Scalars["Date"];
   comment?: Maybe<Scalars["String"]>;
+  photoUrl?: Maybe<Scalars["String"]>;
 };
 
 export type MarkingInput = {
   comment?: Maybe<Scalars["String"]>;
   date?: Maybe<Scalars["Date"]>;
+  photoUrl?: Maybe<Scalars["String"]>;
 };

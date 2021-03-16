@@ -5,6 +5,7 @@ import ApolloProvider from "apollo/ApolloProvider";
 import Routes from "routes/Routes";
 import { ThemeProvider } from "styled-components";
 
+import ScrollToTop from "components/ScrollToTop";
 import theme from "./theme";
 
 const App = (): JSX.Element => {
@@ -13,6 +14,7 @@ const App = (): JSX.Element => {
       <ThemeProvider theme={theme}>
         <ApolloProvider>
           <BrowserRouter>
+            <ScrollToTop />
             <Routes />
           </BrowserRouter>
         </ApolloProvider>

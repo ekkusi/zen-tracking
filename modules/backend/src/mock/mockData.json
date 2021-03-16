@@ -54,7 +54,8 @@
           "markings": [
             {
               "comment": "Ihanpa mukava lenkki",
-              "date": "2021-03-05T12:00:00+02:00"
+              "date": "2021-03-05T12:00:00+02:00",
+              "photo_url": "https://zen-tracking.s3.eu-west-2.amazonaws.com/marking-images/7982bcfc-1faf-474e-8a21-ad592e559f7a-oldcar.jpg"
             },
             {
               "comment": "Ihanpa mukava lenkki",
@@ -62,7 +63,8 @@
             },
             {
               "comment": "Ihanpa mukava lenkki",
-              "date": "2021-03-03T12:00:00+02:00"
+              "date": "2021-03-03T12:00:00+02:00",
+              "photo_url": "https://zen-tracking.s3.eu-west-2.amazonaws.com/marking-images/b26e224b-86a0-4061-a941-e8860eac6469-landscape.jpg"
             }
           ]
         },

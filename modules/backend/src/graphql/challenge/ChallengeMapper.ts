@@ -21,8 +21,10 @@ export class ChallengeMapper {
     participationId: string,
     marking: MarkingInput
   ): Prisma.MarkingCreateInput {
+    const { photoUrl, ...args } = marking;
     return {
-      ...marking,
+      ...args,
+      photo_url: photoUrl,
       ChallengeParticipation: { connect: { id: participationId } },
       date: marking.date
         ? formatIsoString(marking.date)
@@ -33,9 +35,11 @@ export class ChallengeMapper {
   public static mapEditMarkingInput(
     marking: MarkingInput
   ): Prisma.MarkingUpdateInput {
+    const { photoUrl, ...args } = marking;
     return {
-      ...marking,
+      ...args,
       date: marking.date ? formatIsoString(marking.date) : undefined,
+      photo_url: photoUrl,
     };
   }
 

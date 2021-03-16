@@ -41,6 +41,7 @@ CREATE TABLE "Marking" (
   date timestamp with time zone NOT NULL,
   participation_id uuid NOT NULL,
   comment varchar(2000),
+  photo_url varchar(254),
   FOREIGN KEY (participation_id) REFERENCES "ChallengeParticipation"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 

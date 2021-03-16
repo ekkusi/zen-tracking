@@ -1,5 +1,6 @@
-import { DataLoaders } from "@/types/customContext";
 import DataLoader from "dataloader";
+import { Challenge, Marking, User } from "@prisma/client";
+import { DataLoaders } from "../types/CustomContext";
 
 import prisma from "./client";
 
@@ -46,9 +47,6 @@ export const loaderResetors = {
       where: { challenge_id: challengeId },
     });
     participations.forEach((it) => {
-      console.log(
-        `Clearing caches for participation: ${it.id} user: ${it.user_name}`
-      );
       loaders.challengeParticipationsLoader.clear(it.challenge_id);
       loaders.userParticipationsLoader.clear(it.user_name);
     });
@@ -71,99 +69,65 @@ export const loaderResetors = {
 const dataLoaders: DataLoaders = {
   markingsLoader: new DataLoader(async (keys) => {
     // Switch key types, resulting keyStrings should always be same as parameter keys
-    const convertedKeys = removeReadonlyFromKeys(keys);
+    const mutableKeys = removeReadonlyFromKeys(keys);
 
     const markings = await prisma.marking.findMany({
-      where: { participation_id: { in: convertedKeys } },
+      where: { participation_id: { in: mutableKeys } },
     });
-
-    console.log(
-      `markingsLoaders loaded markings: ${JSON.stringify(
-        markings
-      )} with keys: ${JSON.stringify(keys)}`
-    );
 
     // Return array size must match keys amount so we map array of arrays by keys
-    return Promise.all(
-      convertedKeys.map((key) => {
-        return markings.filter((it) => it.participation_id === key);
-      })
-    );
+    return mutableKeys.map((key) => {
+      return markings.filter((it) => it.participation_id === key);
+    });
   }),
   challengeLoader: new DataLoader(async (keys) => {
-    const convertedKeys = removeReadonlyFromKeys(keys);
+    const mutableKeys = removeReadonlyFromKeys(keys);
     const challenges = await prisma.challenge.findMany({
-      where: { id: { in: convertedKeys } },
+      where: { id: { in: mutableKeys } },
     });
-    console.log(
-      `challengeLoader loaded challenges: ${JSON.stringify(
-        challenges
-      )} with keys: ${JSON.stringify(keys)}`
-    );
-    return convertedKeys.map(
-      (key) =>
-        challenges.find((it) => it.id === key) ||
-        new Error(`No challenge for key: ${key}`)
-    );
+
+    const challengeMap: { [key: string]: Challenge } = {};
+    challenges.forEach((it) => {
+      challengeMap[it.id] = it;
+    });
+
+    return keys.map((key) => challengeMap[key]);
   }),
   userLoader: new DataLoader(async (keys) => {
-    const convertedKeys = removeReadonlyFromKeys(keys);
+    const mutableKeys = removeReadonlyFromKeys(keys);
     const users = await prisma.user.findMany({
-      where: { name: { in: convertedKeys } },
+      where: { name: { in: mutableKeys } },
     });
-    console.log(
-      `userLoader loaded users: ${JSON.stringify(
-        users
-      )} with keys: ${JSON.stringify(keys)}`
-    );
-    // return users;
-    return convertedKeys.map(
-      (key) =>
-        users.find((it) => it.name === key) ||
-        new Error(`No user for key: ${key}`)
-    );
+
+    const usersMap: { [key: string]: User } = {};
+    users.forEach((it) => {
+      usersMap[it.name] = it;
+    });
+
+    return keys.map((key) => usersMap[key]);
   }),
   challengeParticipationsLoader: new DataLoader(async (keys) => {
     // Switch key types, resulting keyStrings should always be same as parameter keys
-    const convertedKeys = removeReadonlyFromKeys(keys);
+    const mutableKeys = removeReadonlyFromKeys(keys);
 
     const participations = await prisma.challengeParticipation.findMany({
-      where: { challenge_id: { in: convertedKeys } },
+      where: { challenge_id: { in: mutableKeys } },
     });
 
-    console.log(
-      `challengeParticipationsLoader loaded participations: ${JSON.stringify(
-        participations
-      )} with keys: ${JSON.stringify(keys)}`
-    );
-
-    // Return array size must match keys amount so we map array of arrays by keys
-    return Promise.all(
-      convertedKeys.map((key) => {
-        return participations.filter((it) => it.challenge_id === key);
-      })
-    );
+    return mutableKeys.map((key) => {
+      return participations.filter((it) => it.challenge_id === key);
+    });
   }),
   userParticipationsLoader: new DataLoader(async (keys) => {
-    // Switch key types, resulting keyStrings should always be same as parameter keys
-    const convertedKeys = removeReadonlyFromKeys(keys);
+    const mutableKeys = removeReadonlyFromKeys(keys);
 
     const participations = await prisma.challengeParticipation.findMany({
-      where: { user_name: { in: convertedKeys } },
+      where: { user_name: { in: mutableKeys } },
     });
 
-    console.log(
-      `userParticipationsLoader loaded participations: ${JSON.stringify(
-        participations
-      )} with keys: ${JSON.stringify(keys)}`
-    );
-
-    // Return array size must match keys amount so we map array of arrays by keys
-    return Promise.all(
-      convertedKeys.map((key) => {
-        return participations.filter((it) => it.user_name === key);
-      })
-    );
+    return mutableKeys.map((key) => {
+      return participations.filter((it) => it.user_name === key);
+    });
   }),
 };
 

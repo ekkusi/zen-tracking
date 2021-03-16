@@ -26,9 +26,10 @@ import {
 import prisma from "./client";
 import ValidationError from "../utils/ValidationError";
 import dataLoaders from "./loaders";
+import s3Client from "../utils/awsS3Client";
 
 export default (app: Application): ApolloServer => {
-  const context = { prisma, loaders: dataLoaders };
+  const context = { prisma, s3Client, loaders: dataLoaders };
 
   const queryTypeDef = gql`
     type Query {

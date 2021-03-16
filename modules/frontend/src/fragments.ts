@@ -5,6 +5,7 @@ export const markingDataFragment = gql`
     id
     date
     comment
+    photoUrl
   }
 `;
 

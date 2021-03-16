@@ -1,9 +1,15 @@
 import express from "express";
+import fileUpload from "express-fileupload";
 import path from "path";
+import dotEnv from "dotenv";
 import graphqlApi from "./graphql/server";
 import quoteOfTheDay from "./utils/getQuoteOfTheDay";
 
+import s3Client from "./utils/awsS3Client";
+
+dotEnv.config();
 const app = express();
+app.use(fileUpload());
 const port = process.env.PORT || 4000; // default port to listen, set to 443 to test without port in url
 
 graphqlApi(app);
@@ -18,6 +24,35 @@ app.get("/quote", async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
+});
+
+app.post("/upload-image", async (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send();
+  }
+  const { photo } = req.files;
+  const firstPhoto = Array.isArray(photo) ? photo[0] : photo;
+
+  console.log(`Uploading photo, ${firstPhoto.name}`);
+
+  try {
+    const result = await s3Client.uploadImage(firstPhoto);
+    return res.status(200).send(result);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
+app.post("/delete-image", async (req, res) => {
+  if (req.body.fileName) {
+    try {
+      await s3Client.deleteImage(req.body.fileName);
+      return res.status(200).send();
+    } catch (e) {
+      return res.status(500).send(e);
+    }
+  }
+  return res.status(500).send();
 });
 
 if (process.env.NODE_ENV === "production") {

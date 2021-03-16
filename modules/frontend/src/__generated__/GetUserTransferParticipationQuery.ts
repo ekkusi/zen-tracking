@@ -20,6 +20,7 @@ export interface GetUserTransferParticipationQuery_getUserTransferParticipation_
   id: string;
   date: any;
   comment: string | null;
+  photoUrl: string | null;
 }
 
 export interface GetUserTransferParticipationQuery_getUserTransferParticipation {
