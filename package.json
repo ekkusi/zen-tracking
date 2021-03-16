@@ -1,5 +1,5 @@
 {
-  "name": "@ekeukko/zen-tracking",
+  "name": "@ekkusi/zen-tracking",
   "workspaces": [
     "modules/*"
   ],
