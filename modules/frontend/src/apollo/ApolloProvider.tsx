@@ -15,15 +15,18 @@ const isProduction = process.env.NODE_ENV === "production";
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 let errorLinkIsSet: boolean | undefined;
 
+// If you want to definre custom graphql api url, like for running only frontend in netlify -> put it to REACT_APP_GRAPHQL_API env variable
 const graphqlApiUrl =
-  process.env.GRAPHQL_API_ENDPOINT || isProduction
-    ? "/graphql"
-    : "http://localhost:4000/graphql";
+  process.env.REACT_APP_GRAPHQL_API_URL ??
+  (isProduction ? "/graphql" : "http://localhost:4000");
+
+console.log(process.env.REACT_APP_GRAPHQL_API_URL);
 
 const createApolloClient = (errorLink?: ApolloLink) => {
   const httpLink = new HttpLink({
     uri: graphqlApiUrl,
   });
+  console.log(`Apollo client created with httplink ${graphqlApiUrl}`);
 
   const link = errorLink ? ApolloLink.from([errorLink, httpLink]) : httpLink;
 
