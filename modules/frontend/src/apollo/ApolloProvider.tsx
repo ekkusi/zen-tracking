@@ -15,9 +15,14 @@ const isProduction = process.env.NODE_ENV === "production";
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 let errorLinkIsSet: boolean | undefined;
 
+const graphqlApiUrl =
+  process.env.GRAPHQL_API_ENDPOINT || isProduction
+    ? "/graphql"
+    : "http://localhost:4000/graphql";
+
 const createApolloClient = (errorLink?: ApolloLink) => {
   const httpLink = new HttpLink({
-    uri: isProduction ? "/graphql" : "http://localhost:4000/graphql",
+    uri: graphqlApiUrl,
   });
 
   const link = errorLink ? ApolloLink.from([errorLink, httpLink]) : httpLink;
