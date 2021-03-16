@@ -18,6 +18,7 @@ type FormFieldProps<Val = string> = GenericFieldHTMLAttributes &
     labelProps?: FormLabelProps;
     containerProps?: FormControlProps;
     errorMessageProps?: FormErrorMessageProps;
+    children?: JSX.Element;
   };
 
 const FormField = ({
@@ -27,6 +28,7 @@ const FormField = ({
   containerProps,
   errorMessageProps,
   validate,
+  children,
   ...rest
 }: FormFieldProps): JSX.Element => {
   const [{ onChange, onBlur, ...field }, meta, helpers] = useField({
@@ -70,6 +72,7 @@ const FormField = ({
         onChange={handleChange}
         onBlur={handleBlur}
       />
+      {children}
       <FormErrorMessage {...errorMessageProps}>
         {meta.error || "terve"}
       </FormErrorMessage>

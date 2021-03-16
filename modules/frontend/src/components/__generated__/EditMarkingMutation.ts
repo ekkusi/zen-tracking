@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarkingInput } from "./../../../__generated__/globalTypes";
+import { MarkingInput } from "./../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: EditMarkingMutation
@@ -14,6 +14,7 @@ export interface EditMarkingMutation_editMarking {
   id: string;
   date: any;
   comment: string | null;
+  photoUrl: string | null;
 }
 
 export interface EditMarkingMutation {

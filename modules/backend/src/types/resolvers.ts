@@ -10,7 +10,7 @@ import {
   User,
 } from "@prisma/client";
 import * as Types from "./schema";
-import { CustomContext } from "./customContext";
+import { CustomContext } from "./CustomContext";
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = {
@@ -405,6 +405,11 @@ export type MarkingResolvers<
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   date?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
   comment?: Resolver<
+    Types.Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
+  photoUrl?: Resolver<
     Types.Maybe<ResolversTypes["String"]>,
     ParentType,
     ContextType

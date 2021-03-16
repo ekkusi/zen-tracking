@@ -21,6 +21,7 @@ import ViewContainer from "views/ViewContainer";
 import TransferMarkingsPage from "views/transfer-markings/TransferMarkingsPage";
 
 import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "@ekeukko/zen-tracking-backend/lib/config.json";
+import SomeDesignPage from "views/design/SomeDesignPage";
 
 const Routes = (): JSX.Element => {
   const [globalState, globalActions] = useGlobal();
@@ -175,6 +176,7 @@ const Routes = (): JSX.Element => {
                     </ViewContainer>
                   )}
                 />
+                <Route path="/design-some" render={() => <SomeDesignPage />} />
                 <Route path="/welcome" render={() => <WelcomePage />} />
                 <Route path="*" render={() => <NotFoundPage />} />
               </Switch>

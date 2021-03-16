@@ -1,23 +1,17 @@
 import express from "express";
 import fileUpload from "express-fileupload";
 import path from "path";
-import aws from "aws-sdk";
 import dotEnv from "dotenv";
-import { v4 as generateId } from "uuid";
 import graphqlApi from "./graphql/server";
 import quoteOfTheDay from "./utils/getQuoteOfTheDay";
+
+import s3Client from "./utils/awsS3Client";
 
 dotEnv.config();
 const app = express();
 app.use(fileUpload());
 const port = process.env.PORT || 4000; // default port to listen, set to 443 to test without port in url
-const S3_BUCKET = process.env.AWS_S3_BUCKET_NAME;
-aws.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_S3_REGION,
-});
-const s3 = new aws.S3();
+
 graphqlApi(app);
 
 app.get("/quote", async (req, res, next) => {
@@ -33,34 +27,26 @@ app.get("/quote", async (req, res, next) => {
 });
 
 app.post("/upload-image", async (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0 || !S3_BUCKET) {
+  if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send();
   }
   const { photo } = req.files;
   const firstPhoto = Array.isArray(photo) ? photo[0] : photo;
-  const fileName = `${generateId()}-${firstPhoto.name}`;
-  const s3Params = {
-    Bucket: S3_BUCKET,
-    Key: `${process.env.AWS_S3_MARKING_IMAGE_FOLDER}/${fileName}`,
-    Body: firstPhoto.data,
-  };
+
+  console.log(`Uploading photo, ${firstPhoto.name}`);
 
   try {
-    const data = await s3.upload(s3Params).promise();
-    return res.status(200).send({ url: data.Location, fileName });
+    const result = await s3Client.uploadImage(firstPhoto);
+    return res.status(200).send(result);
   } catch (e) {
     return res.status(500).send(e);
   }
 });
 
 app.post("/delete-image", async (req, res) => {
-  if (req.body.fileName && S3_BUCKET) {
-    const s3Params = {
-      Bucket: S3_BUCKET,
-      Key: `${process.env.AWS_S3_MARKING_IMAGE_FOLDER}/${req.body.fileName}`,
-    };
+  if (req.body.fileName) {
     try {
-      await s3.deleteObject(s3Params).promise();
+      await s3Client.deleteImage(req.body.fileName);
       return res.status(200).send();
     } catch (e) {
       return res.status(500).send(e);

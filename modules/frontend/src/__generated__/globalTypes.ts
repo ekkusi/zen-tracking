@@ -38,6 +38,7 @@ export interface DateFilter {
 export interface MarkingInput {
   comment?: string | null;
   date?: any | null;
+  photoUrl?: string | null;
 }
 
 export interface UpdateChallengeInput {

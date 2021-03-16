@@ -63,9 +63,11 @@ type Marking {
   id: ID!
   date: Date!
   comment: String
+  photoUrl: String
 }
 
 input MarkingInput {
   comment: String
   date: Date
+  photoUrl: String
 }

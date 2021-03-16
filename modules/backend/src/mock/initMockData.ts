@@ -1,6 +1,6 @@
-import prisma from "../../graphql/client";
+import prisma from "../graphql/client";
 import mockData from "./mockData.json";
-import { hash } from "../auth";
+import { hash } from "../utils/auth";
 
 console.log("Starting to init mock_data.json to database");
 
@@ -31,7 +31,7 @@ const initMockData = async () => {
       if (participations) {
         // Create participations of challenge
         await Promise.all(
-          participations.map(async (participation) => {
+          participations.map(async (participation: any) => {
             const { markings, ...participationData } = participation;
             const createParticipation = await prisma.challengeParticipation.create(
               {
@@ -47,7 +47,7 @@ const initMockData = async () => {
 
             // Create markings of participation
             await Promise.all(
-              markings.map(async (marking) => {
+              markings.map(async (marking: any) => {
                 return prisma.marking.create({
                   data: {
                     participation_id: createParticipation.id,

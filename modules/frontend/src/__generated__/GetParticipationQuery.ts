@@ -20,6 +20,7 @@ export interface GetParticipationQuery_getParticipation_markings {
   id: string;
   date: any;
   comment: string | null;
+  photoUrl: string | null;
 }
 
 export interface GetParticipationQuery_getParticipation {

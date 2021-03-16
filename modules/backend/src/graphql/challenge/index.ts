@@ -61,6 +61,7 @@ export const resolvers: Resolvers = {
   },
   Marking: {
     date: ({ date }) => formatIsoString(date),
+    photoUrl: ({ photo_url }) => photo_url,
   },
   Query: {
     getChallenge: async (_, { id }, { prisma }) => {
@@ -132,26 +133,59 @@ export const resolvers: Resolvers = {
 
       return createdMarking;
     },
-    editMarking: async (_, { id, marking }, { prisma, loaders }) => {
+    editMarking: async (_, { id, marking }, { prisma, s3Client, loaders }) => {
       // Check validity
       await ChallengeValidator.validateMarkingInput(marking);
+      const oldMarking = await prisma.marking.findUnique({
+        where: { id },
+      });
 
       const editMarking = await prisma.marking.update({
         where: { id },
         data: ChallengeMapper.mapEditMarkingInput(marking),
       });
+      // If oldMarking data has photoUrl, new photo url is not undefined (== no modifications) and is not the same as old -> delete old from s3
+      if (
+        oldMarking?.photo_url &&
+        marking.photoUrl !== undefined &&
+        oldMarking.photo_url !== marking.photoUrl
+      ) {
+        try {
+          await s3Client.deleteImage(oldMarking.photo_url);
+        } catch (error) {
+          console.log(
+            `Couldn't delete marking image: ${oldMarking.photo_url} error: ${error.message}`
+          );
+        }
+      }
       // Clear markingsLoader cache
       loaders.markingsLoader.clear(editMarking.participation_id);
       return editMarking;
     },
-    deleteMarking: async (_, { id }, { prisma, loaders }) => {
+    deleteMarking: async (_, { id }, { prisma, s3Client, loaders }) => {
+      const marking = await prisma.marking.findUnique({
+        where: { id },
+      });
       // Clear markingsLoader cache
       await loaderResetors.clearMarkingsCache(id, loaders);
       // This is temp solution, because prisma doesn't support NOT NULL constraint and ON DELETE CASCADE. Prisma delete results in relation delete violation.
       const deletedMarkings = await prisma.$executeRaw(
         `DELETE FROM "Marking" WHERE id='${id}';`
       );
-      if (deletedMarkings > 0) return true; // If more than 0 rows are affected by above query
+      if (deletedMarkings > 0) {
+        // If more than 0 rows are affected by above query -> marking deleted -> delete related photo from s3
+        if (marking?.photo_url) {
+          // If marking has photoUrl, try to delete it from aws
+          try {
+            await s3Client.deleteImage(marking.photo_url);
+          } catch (error) {
+            console.log(
+              `Couldn't delete marking ${marking.id} image: ${marking.photo_url} error: ${error.message}`
+            );
+          }
+        }
+        return true;
+      }
       return false;
     },
     transferUserMarkings: async (
@@ -210,15 +244,41 @@ export const resolvers: Resolvers = {
       loaders.challengeLoader.clear(id);
       return updatedChallenge;
     },
-    deleteChallenge: async (_, { id }, { prisma, loaders }) => {
+    deleteChallenge: async (_, { id }, { prisma, s3Client, loaders }) => {
       await ChallengeValidator.validateDeleteChallengeArgs(id);
+      // Get markings to delete from s3 here, later this data won't be available
+      const challengeMarkings = await prisma.marking.findMany({
+        where: {
+          ChallengeParticipation: {
+            challenge_id: id,
+          },
+        },
+      });
       // Clear partipationsLoader cache
       await loaderResetors.clearParticipationsCacheByChallenge(id, loaders);
       // This is temp solution, because prisma doesn't support NOT NULL constraint and ON DELETE CASCADE. Prisma delete results in relation delete violation.
       const deletedChallenges = await prisma.$executeRaw(
         `DELETE FROM "Challenge" WHERE id='${id}';`
       );
-      if (deletedChallenges > 0) return true; // If more than 0 rows are affected by above query
+      if (deletedChallenges > 0) {
+        // If more than 0 rows are affected by above query == challenge deleted -> delete all related marking-images from s3
+
+        try {
+          await Promise.all(
+            challengeMarkings.map((it) => {
+              if (it.photo_url) {
+                return s3Client.deleteImage(it.photo_url);
+              }
+              return false;
+            })
+          );
+        } catch (error) {
+          console.log(
+            `Something went wrong when deleting challenge: ${id} marking images from s3: ${error.message}`
+          );
+        }
+        return true; // If more than 0 rows are affected by above query
+      }
       return false;
     },
     createParticipation: async (_, args, { prisma, loaders }) => {
@@ -232,18 +292,44 @@ export const resolvers: Resolvers = {
       await loaderResetors.clearParticipationsCache(participation.id, loaders);
       return participation;
     },
-    deleteParticipation: async (_, args, { prisma, loaders }) => {
+    deleteParticipation: async (_, args, { prisma, s3Client, loaders }) => {
+      const { userName, challengeId } = args;
       await ChallengeValidator.validateDeleteParticipation(args);
+      // Get markings to delete from s3 here, later this data won't be available
+      const participationMarkings = await prisma.marking.findMany({
+        where: {
+          ChallengeParticipation: {
+            challenge_id: challengeId,
+            user_name: userName,
+          },
+        },
+      });
+
       // Clear partipationsLoader cache
-      await loaderResetors.clearParticipationsCacheByUser(
-        args.userName,
-        loaders
-      );
+      await loaderResetors.clearParticipationsCacheByUser(userName, loaders);
       // This is temp solution, because prisma doesn't support NOT NULL constraint and ON DELETE CASCADE. Prisma delete results in relation delete violation.
       const deletedParticipations = await prisma.$executeRaw(
         `DELETE FROM "ChallengeParticipation" WHERE user_name='${args.userName}' AND challenge_id='${args.challengeId}';`
       );
-      if (deletedParticipations > 0) return true; // If more than 0 rows are affected by above query
+      if (deletedParticipations > 0) {
+        // If more than 0 rows are affected by above query == participation deleted -> delete all related marking-images from s3
+        try {
+          await Promise.all(
+            participationMarkings.map((it) => {
+              if (it.photo_url) {
+                return s3Client.deleteImage(it.photo_url);
+              }
+              return false;
+            })
+          );
+        } catch (error) {
+          console.log(
+            `Something went wrong when deleting participation: ${challengeId}:${userName} marking images from s3: ${error.message}`
+          );
+        }
+        return true;
+      }
+
       return false;
     },
   },

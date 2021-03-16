@@ -39,7 +39,6 @@ export const resolvers: UserResolvers = {
       throw new Error("No user found with given name");
     },
     getUsers: async (_, __, { prisma }) => {
-      console.log("######## getUsers started #########");
       const users: User[] = await prisma.user.findMany();
       return users;
       // eturn users.map((it) => UserMapper.mapUser(it));

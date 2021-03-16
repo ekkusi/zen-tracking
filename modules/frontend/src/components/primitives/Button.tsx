@@ -32,7 +32,10 @@ const ButtonDefaultProps = {
   variant: "solid",
 };
 
-type ButtonProps = Omit<ChakraButtonProps, "bg" | "color" | "variant"> & {
+export type ButtonProps = Omit<
+  ChakraButtonProps,
+  "bg" | "color" | "variant"
+> & {
   bg?: string;
   color?: string;
   variant?: string;

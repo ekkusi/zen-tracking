@@ -49,6 +49,7 @@ PrimaryInput.defaultProps = {
   _focus: {
     borderColor: "primary.regular",
   },
+  "data-private": +true,
 };
 
 PrimaryTextArea.defaultProps = {
@@ -56,6 +57,7 @@ PrimaryTextArea.defaultProps = {
   _focus: {
     borderColor: "primary.regular",
   },
+  "data-private": +true,
 };
 
 export { PrimaryInput, PrimaryTextArea };

@@ -5,7 +5,7 @@ scriptPath=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$scriptPath"
 
 set -a # automatically export all variables
-source "../modules/backend/prisma/.env" # Take vars from prisma config
+source "../modules/backend/.env" # Take vars from prisma config
 set +a
 
 databaseUrl=$DATABASE_URL # Defaults to modules/backend/prisma/.env DATABASE_URL variable

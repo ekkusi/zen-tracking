@@ -134,6 +134,7 @@ const MainPage = (): JSX.Element => {
           </Flex>
         </>
       )}
+
       <Box>
         {loading && <CustomLoadingOverlay />}
         {activeParticipation &&

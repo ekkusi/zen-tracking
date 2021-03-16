@@ -34,6 +34,7 @@ model Marking {
   date                   DateTime               @db.Timestamptz(6)
   participation_id       String                 @db.Uuid
   comment                String?                @db.VarChar(2000)
+  photo_url              String?                @db.VarChar(254)
   ChallengeParticipation ChallengeParticipation @relation(fields: [participation_id], references: [id])
 }
 
