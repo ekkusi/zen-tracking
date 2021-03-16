@@ -139,17 +139,7 @@ const MainPage = (): JSX.Element => {
         {loading && <CustomLoadingOverlay />}
         {activeParticipation &&
           (activeParticipation.markings.length > 0 ? (
-            <>
-              <Heading.H2 mb="4" textAlign={{ base: "left", sm: "center" }}>
-                Putkesi pituus:{" "}
-                <Text as="span">
-                  {DateUtil.getDateStreak(
-                    activeParticipation.markings.map((it) => new Date(it.date))
-                  )}{" "}
-                </Text>
-              </Heading.H2>
-              <MarkingCalendar markings={activeParticipation.markings} />
-            </>
+            <MarkingCalendar markings={activeParticipation.markings} />
           ) : (
             <>
               <Heading.H2 fontWeight="bold">
