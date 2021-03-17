@@ -7,7 +7,10 @@ import {
   DrawerOverlay,
   DrawerProps,
   Flex,
+  flexbox,
+  Switch,
   Text,
+  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
@@ -68,6 +71,7 @@ const NavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
     (store) => store.currentUser,
     (actions) => actions.updateUser
   )[1];
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <Flex height="80px" alignItems="center" width="100%">
       <IconButtonWithRef
@@ -84,6 +88,17 @@ const NavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
         }}
         transition={{ ease: "ease" }}
       />
+      <Flex alignItems="center" mr="4" ml={{ base: "auto", sm: "4" }}>
+        <Text as="span" fontSize="lg" mr="2">
+          {colorMode === "light" ? "Tulkoon yö!" : "Tulkoon valo!"}
+        </Text>
+        <Switch
+          onChange={toggleColorMode}
+          isChecked={colorMode === "dark"}
+          size="lg"
+          color="primary.regular"
+        />
+      </Flex>
 
       <QuoteOfTheDay
         openButtonProps={{

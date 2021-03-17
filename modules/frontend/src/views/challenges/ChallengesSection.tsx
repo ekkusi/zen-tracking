@@ -1,4 +1,4 @@
-import { Box, BoxProps, Flex, Text } from "@chakra-ui/react";
+import { Box, BoxProps, Flex, LightMode, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import React from "react";
 import ChallengeCard from "./ChallengeCard";

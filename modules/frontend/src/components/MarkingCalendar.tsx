@@ -11,7 +11,7 @@ import DateUtil from "util/DateUtil";
 import EditMarking from "./EditMarking";
 
 const StyledCalendar = styled(ReactCalendar)`
-  --color: ${({ theme }) => theme.colors.text.primary};
+  --color: ${({ theme }) => theme.colors.text.light};
   --bg-color: ${({ theme }) => theme.colors.white};
   --active-bg-color: ${({ theme }) => theme.colors.primary.regular};
   --hover-bg-color: ${({ theme }) => theme.colors.primary.light};
@@ -21,6 +21,7 @@ const StyledCalendar = styled(ReactCalendar)`
   width: 100%;
   border-radius: 10px;
   border-color: ${({ theme }) => theme.colors.gray[300]};
+  color: vaR(--color);
   box-shadow: 3px 3px 5px -5px black;
   .react-calendar {
     &__tile {

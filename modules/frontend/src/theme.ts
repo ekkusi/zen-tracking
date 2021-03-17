@@ -1,4 +1,14 @@
-import { extendTheme, Theme, theme as chakraTheme } from "@chakra-ui/react";
+import {
+  extendTheme,
+  Theme,
+  theme as chakraTheme,
+  ColorModeOptions,
+} from "@chakra-ui/react";
+
+const config: ColorModeOptions = {
+  initialColorMode: "light",
+  useSystemColorMode: false,
+};
 
 const customColors = {
   primary: {
@@ -10,20 +20,25 @@ const customColors = {
     light: "#ecf2f788",
   },
   text: {
-    primary: "#162838",
-    light: "#8A939B",
+    dark: "white",
+    light: "#162838",
+  },
+  bg: {
+    dark: "#1A202C",
+    light: "white",
   },
   warning: chakraTheme.colors.red[700],
 };
 
 const theme: Theme = extendTheme({
   styles: {
-    global: {
+    global: (props) => ({
       "html, body, #root": {
         margin: 0,
         width: "100%",
         height: "100%",
-        color: customColors.text.primary,
+        color: customColors.text[props.colorMode],
+        bg: customColors.bg[props.colorMode],
       },
       p: {
         marginBottom: "2",
@@ -35,7 +50,7 @@ const theme: Theme = extendTheme({
           opacity: 0.7,
         },
       },
-    },
+    }),
   },
   components: {
     Button: {
@@ -48,6 +63,7 @@ const theme: Theme = extendTheme({
   colors: {
     ...customColors,
   },
+  config,
 });
 
 export default theme;

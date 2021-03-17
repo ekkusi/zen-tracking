@@ -1,5 +1,11 @@
 import { useMutation } from "@apollo/client";
-import { Flex, FlexProps, Text } from "@chakra-ui/react";
+import {
+  Flex,
+  FlexProps,
+  LightMode,
+  Text,
+  useColorMode,
+} from "@chakra-ui/react";
 import ModalTemplate from "components/general/ModalTemplate";
 import {
   AlertButton,
@@ -37,6 +43,8 @@ const ChallengeCard = ({
   ...rest
 }: ChallengeCardProps): JSX.Element => {
   const user = useGlobal((state) => state.currentUser)[0];
+  const { colorMode } = useColorMode();
+
   const [activeParticipation, updateActiveParticipation] = useGlobal(
     (state) => state.activeParticipation,
     (actions) => actions.updateActiveParticipation
@@ -111,32 +119,37 @@ const ChallengeCard = ({
     <Flex
       direction="column"
       borderRadius="10px"
-      boxShadow="base"
+      boxShadow={colorMode === "light" ? "base" : "dark-lg"}
       width={{ base: "100%", sm: "300px" }}
       height="300px"
       py="5"
       px="7"
+      bg={colorMode === "light" ? "white" : "gray.50"}
+      color="text.light"
       {...rest}
     >
-      <Heading.H3 mb="0">{challenge.name}</Heading.H3>
-      {activeParticipation?.challenge.id === challenge.id && (
-        <Text as="span" color="primary.regular">
-          Aktiivinen haaste
-        </Text>
-      )}
-      <Text as="span" fontStyle="italic" mb="0">
-        {challenge.startDate && challenge.endDate
-          ? `${DateUtil.format(challenge.startDate)} -
+      <LightMode>
+        {activeParticipation?.challenge.id === challenge.id && (
+          <Text as="span" color="primary.regular">
+            Aktiivinen haaste
+          </Text>
+        )}
+        <Text as="span" fontStyle="italic" mb="0">
+          {challenge.startDate && challenge.endDate
+            ? `${DateUtil.format(challenge.startDate)} -
             ${DateUtil.format(challenge.endDate)}`
-          : "Ei päätettyä ajankohtaa"}
-      </Text>
-      <Text as="span" mb="3">
-        Ilmoittautuneita: {challenge.participations.length}
-      </Text>
+            : "Ei päätettyä ajankohtaa"}
+        </Text>
+        <Text as="span" mb="3">
+          Ilmoittautuneita: {challenge.participations.length}
+        </Text>
 
-      <Text fontSize="md" overflow="hidden">
-        {challenge.description}
-      </Text>
+        <Text fontSize="md" overflow="hidden">
+          {challenge.description}
+        </Text>
+        <Heading.H3 mb="0">{challenge.name}</Heading.H3>
+      </LightMode>
+
       {isUserChallengeCreator() && (
         <EditChallenge
           challenge={challenge}
