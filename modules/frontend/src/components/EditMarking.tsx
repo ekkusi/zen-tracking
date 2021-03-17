@@ -73,7 +73,7 @@ type FormValues = {
 };
 const MAX_COMMENT_LENGTH = 2000;
 
-const backendApiBaseUrl = process.env.REACT_APP_BASKEND_API_BASE_URL || "";
+const backendApiBaseUrl = process.env.REACT_APP_BACKEND_API_BASE_URL || "";
 
 const EditMarking = ({
   marking,
