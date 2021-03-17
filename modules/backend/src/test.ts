@@ -1,4 +1,3 @@
-import prisma from "./graphql/client";
 import { hash, compare } from "./utils/auth";
 
 const hashPassword = async () => {

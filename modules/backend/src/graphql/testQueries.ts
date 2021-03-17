@@ -108,3 +108,5 @@ fragment MarkingData on Marking {
   comment
 }
 `;
+
+console.log(queries);
