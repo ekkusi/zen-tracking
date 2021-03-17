@@ -18,7 +18,7 @@ let errorLinkIsSet: boolean | undefined;
 // If you want to definre custom graphql api url, like for running only frontend in netlify -> put it to REACT_APP_GRAPHQL_API env variable
 const graphqlApiUrl =
   process.env.REACT_APP_GRAPHQL_API_URL ??
-  (isProduction ? "/graphql" : "http://localhost:4000");
+  (isProduction ? "/graphql" : "http://localhost:4000/graphql");
 
 console.log(process.env.REACT_APP_GRAPHQL_API_URL);
 

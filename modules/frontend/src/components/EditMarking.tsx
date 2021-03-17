@@ -69,7 +69,7 @@ type EditMarkingProps = Omit<ModalTemplateProps, "children"> & {
 
 type FormValues = {
   comment: string;
-  photo?: File | string | null;
+  photo: File | string | null;
 };
 const MAX_COMMENT_LENGTH = 2000;
 
@@ -120,7 +120,7 @@ const EditMarking = ({
     if (marking?.photoUrl && !photoSrc) setPhotoSrc(marking?.photoUrl);
     return {
       comment: marking?.comment || "",
-      photo: marking?.photoUrl,
+      photo: marking?.photoUrl || null,
     };
   }, [marking, photoSrc]);
 
@@ -143,7 +143,8 @@ const EditMarking = ({
 
     setLoading(true);
     const { comment, photo } = values;
-    let photoUrl;
+    // If photo is defined -> initialize as undefined to avoid unnecessary delete in backend, if null then null to delete. If value is File -> next upload will handle updating this variable
+    let photoUrl: string | undefined | null = photo ? undefined : null;
     // If this photo is File and not string or undefined, it is new file -> upload
     if (photo instanceof File) {
       try {
@@ -171,7 +172,7 @@ const EditMarking = ({
             id: marking.id,
             marking: {
               comment,
-              photoUrl: photoUrl || null,
+              photoUrl,
             },
           },
         });
