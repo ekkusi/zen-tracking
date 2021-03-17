@@ -73,6 +73,8 @@ type FormValues = {
 };
 const MAX_COMMENT_LENGTH = 2000;
 
+const backendApiBaseUrl = process.env.REACT_APP_BASKEND_API_BASE_URL || "";
+
 const EditMarking = ({
   marking,
   date,
@@ -150,7 +152,7 @@ const EditMarking = ({
       try {
         const formData = new FormData();
         formData.append("photo", photo);
-        const response = await fetch("/upload-image", {
+        const response = await fetch(`${backendApiBaseUrl}/upload-image`, {
           method: "POST",
           body: formData,
         });
@@ -221,7 +223,7 @@ const EditMarking = ({
       if (photoUrl) {
         const formData = new FormData();
         formData.append("fileName", photoUrl);
-        const response = await fetch("/delete-image", {
+        const response = await fetch(`${backendApiBaseUrl}/delete-image`, {
           method: "POST",
           body: formData,
         });
