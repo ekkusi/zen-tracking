@@ -22,8 +22,6 @@ const graphqlApiUrl =
   graphqlApiUrlIfExists ??
   (isProduction ? "/graphql" : "http://localhost:4000/graphql");
 
-console.log(process.env.REACT_APP_GRAPHQL_API_URL);
-
 const createApolloClient = (errorLink?: ApolloLink) => {
   const httpLink = new HttpLink({
     uri: graphqlApiUrl,

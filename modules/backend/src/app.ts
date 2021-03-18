@@ -1,4 +1,4 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 import fileUpload from "express-fileupload";
 import path from "path";
 import dotEnv from "dotenv";
@@ -7,12 +7,28 @@ import quoteOfTheDay from "./utils/getQuoteOfTheDay";
 
 import s3Client from "./utils/awsS3Client";
 
+import config from "./config.json";
+
 dotEnv.config();
 const app = express();
 app.use(fileUpload());
 const port = process.env.PORT || 4000; // default port to listen, set to 443 to test without port in url
 
 graphqlApi(app);
+
+// Allow cors if origin is in allowed origins
+const allowOrigin: RequestHandler = (req, res, next) => {
+  const { origin } = req.headers;
+  console.log(`Request coming from: ${origin}`);
+  const allowedOrigins = config.ALLOWED_ORIGINS;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+
+  next();
+};
+
+app.use(allowOrigin);
 
 app.get("/quote", async (req, res, next) => {
   try {
