@@ -124,10 +124,7 @@ export const resolvers: Resolvers = {
       });
 
       const createdMarking = await prisma.marking.create({
-        data: ChallengeMapper.mapCreateMarkingInput(
-          participationId,
-          marking || {}
-        ),
+        data: ChallengeMapper.mapCreateMarkingInput(participationId, marking),
       });
       // Clear markingsLoader cache
       loaders.markingsLoader.clear(participationId);

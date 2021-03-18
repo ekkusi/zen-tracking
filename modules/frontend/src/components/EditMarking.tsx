@@ -21,7 +21,8 @@ import useGlobal from "store";
 import DateUtil from "util/DateUtil";
 import LogRocket from "logrocket";
 import { IoMdCamera } from "react-icons/io";
-import { Form, Formik } from "formik";
+import { IoLeaf } from "react-icons/io5";
+import { Form, Formik, FormikErrors } from "formik";
 import { markingDataFragment } from "fragments";
 import {
   AddMarkingMutation,
@@ -37,9 +38,13 @@ import {
 } from "./__generated__/EditMarkingMutation";
 import FormField from "./general/form/FormField";
 import PreviewImage from "./general/form/PreviewImage";
+import { PlainIconButton } from "./primitives/IconButton";
 
 export const ADD_MARKING = gql`
-  mutation AddMarkingMutation($participationId: ID!, $marking: MarkingInput!) {
+  mutation AddMarkingMutation(
+    $participationId: ID!
+    $marking: MarkingCreateInput!
+  ) {
     addMarking(participationId: $participationId, marking: $marking) {
       ...MarkingData
     }
@@ -48,7 +53,7 @@ export const ADD_MARKING = gql`
 `;
 
 export const EDIT_MARKING = gql`
-  mutation EditMarkingMutation($id: ID!, $marking: MarkingInput!) {
+  mutation EditMarkingMutation($id: ID!, $marking: MarkingUpdateInput!) {
     editMarking(id: $id, marking: $marking) {
       ...MarkingData
     }
@@ -68,6 +73,7 @@ type EditMarkingProps = Omit<ModalTemplateProps, "children"> & {
 };
 
 type FormValues = {
+  rating: number;
   comment: string;
   photo: File | string | null;
 };
@@ -88,6 +94,7 @@ const EditMarking = ({
     (state) => state.error,
     (actions) => actions.updateError
   )[1];
+  const [hoverRating, setHoverRating] = useState(0);
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [photoSrc, setPhotoSrc] = useState<File | string | null>(null);
@@ -121,6 +128,7 @@ const EditMarking = ({
   const initialValues = useMemo((): FormValues => {
     if (marking?.photoUrl && !photoSrc) setPhotoSrc(marking?.photoUrl);
     return {
+      rating: marking?.rating || 3,
       comment: marking?.comment || "",
       photo: marking?.photoUrl || null,
     };
@@ -144,7 +152,7 @@ const EditMarking = ({
     }
 
     setLoading(true);
-    const { comment, photo } = values;
+    const { comment, photo, rating } = values;
     // If photo is defined -> initialize as undefined to avoid unnecessary delete in backend, if null then null to delete. If value is File -> next upload will handle updating this variable
     let photoUrl: string | undefined | null = photo ? undefined : null;
     // If this photo is File and not string or undefined, it is new file -> upload
@@ -175,6 +183,7 @@ const EditMarking = ({
             marking: {
               comment,
               photoUrl,
+              rating,
             },
           },
         });
@@ -201,6 +210,7 @@ const EditMarking = ({
               comment,
               date,
               photoUrl,
+              rating,
             },
             participationId: activeParticipation.id,
           },
@@ -274,6 +284,14 @@ const EditMarking = ({
     }
   };
 
+  const validateRating = (values: FormValues): FormikErrors<FormValues> => {
+    const errors: FormikErrors<FormValues> = {};
+    if (values.rating <= 0) {
+      errors.rating = "Anna arvostelu päivän suorituksesta";
+    }
+    return errors;
+  };
+
   return (
     <ModalTemplate
       openButtonLabel="Lisää merkkaus"
@@ -302,11 +320,47 @@ const EditMarking = ({
         <Formik
           initialValues={initialValues}
           onSubmit={saveAndClose}
+          validate={validateRating}
           validateOnChange={false}
           validateOnBlur={false}
         >
-          {({ values, setFieldValue }) => (
+          {({ values, setFieldValue, errors, setFieldError }) => (
             <Form>
+              <Box mb="2">
+                <FormLabel>Kuinka hyvin meni päivän setti</FormLabel>
+                {[1, 2, 3, 4, 5].map((it) => (
+                  <PlainIconButton
+                    key={it}
+                    size="lg"
+                    aria-label="Set rating value"
+                    onClick={() => {
+                      setFieldValue("rating", it);
+                      setFieldError("rating", undefined);
+                    }}
+                    onMouseEnter={() => setHoverRating(it)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    icon={
+                      <Icon
+                        as={IoLeaf}
+                        color={
+                          (hoverRating > 0 && hoverRating < it) ||
+                          (values.rating < it && hoverRating <= values.rating)
+                            ? "white"
+                            : "primary.regular"
+                        }
+                        w={10}
+                        h={10}
+                      />
+                    }
+                  />
+                ))}
+                {errors.rating && (
+                  <Text as="span" display="block" color="warning">
+                    {errors.rating}
+                  </Text>
+                )}
+              </Box>
+
               <FormField
                 as={PrimaryTextArea}
                 name="comment"

@@ -40,8 +40,10 @@ CREATE TABLE "Marking" (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   date timestamp with time zone NOT NULL,
   participation_id uuid NOT NULL,
+  rating INT NOT NULL,
   comment varchar(2000),
   photo_url varchar(254),
+  CHECK (rating BETWEEN 1 AND 5),
   FOREIGN KEY (participation_id) REFERENCES "ChallengeParticipation"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 

@@ -21,6 +21,7 @@ export interface GetUserParticipationsQuery_getUserParticipations_markings {
   date: any;
   comment: string | null;
   photoUrl: string | null;
+  rating: number;
 }
 
 export interface GetUserParticipationsQuery_getUserParticipations {

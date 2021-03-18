@@ -58,16 +58,10 @@ const generateIconProps = (props: IconButtonProps): ChakraIconButtonProps => {
       sizeProps = {
         py: { base: 2, sm: 2 },
         px: { base: 2, sm: 3 },
-        css: {
-          svg: {
-            width: "1.5rem",
-            height: "1.5rem",
-          },
-        },
       };
     }
   }
-  return { ...props, ...formattedProps, ...sizeProps };
+  return { ...formattedProps, ...sizeProps, ...props };
 };
 
 const IconButton = (props: IconButtonProps): JSX.Element => {
@@ -89,3 +83,33 @@ const IconButtonWithRef = forwardRef(
 export { IconButtonWithRef };
 
 IconButtonWithRef.defaultProps = IconButtonDefaultProps;
+
+const PlainIconButton = ({
+  bg,
+  color,
+  ...rest
+}: IconButtonProps): JSX.Element => {
+  const formattedProps = generateBaseButtonProps(rest);
+  const colorProps: ButtonProps = {
+    bg: "transparent",
+    borderColor: "transparent",
+    _active: {
+      bg: "transparent",
+    },
+    _focus: {
+      opacity: 1,
+    },
+  };
+  return <ChakraIconButton {...formattedProps} {...colorProps} {...rest} />;
+};
+
+// const PlainIconButton = styled(IconButton)<IconButtonProps>``;
+
+PlainIconButton.defaultProps = {
+  ...IconButtonDefaultProps,
+  bg: "transparent",
+  py: { base: 0, sm: 0 },
+  px: { base: 0, sm: 0 },
+};
+
+export { PlainIconButton };

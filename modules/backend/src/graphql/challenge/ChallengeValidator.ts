@@ -10,7 +10,8 @@ import {
 import { getEarliestMarking, getLatestMarking } from "../../utils/dateUtils";
 import {
   CreateChallengeInput,
-  MarkingInput,
+  MarkingCreateInput,
+  MarkingUpdateInput,
   MutationAddMarkingArgs,
   MutationCreateParticipationArgs,
   MutationDeleteParticipationArgs,
@@ -51,10 +52,16 @@ export default class ChallengeValidator {
     }
   }
 
-  public static async validateMarkingInput(input: MarkingInput): Promise<void> {
+  public static async validateMarkingInput(
+    input: MarkingCreateInput | MarkingUpdateInput
+  ): Promise<void> {
+    if (input.rating && (input.rating > 5 || input.rating < 1))
+      throw new ValidationError(
+        "Merkkauksen arvosana pitää olla numero välillä 1-5"
+      );
     if (input.comment && input.comment.length > 2000) {
       throw new ValidationError(
-        `Merkkauksen kommentti saa olla enintään 2000 merkkiä pitkä.`
+        "Merkkauksen kommentti saa olla enintään 2000 merkkiä pitkä."
       );
     }
   }

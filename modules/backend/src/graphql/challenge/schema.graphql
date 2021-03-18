@@ -13,8 +13,8 @@ extend type Mutation {
   deleteChallenge(id: ID!): Boolean!
   createParticipation(challengeId: ID!, userName: ID!): ChallengeParticipation!
   deleteParticipation(challengeId: ID!, userName: ID!): Boolean!
-  addMarking(participationId: ID!, marking: MarkingInput): Marking!
-  editMarking(id: ID!, marking: MarkingInput!): Marking!
+  addMarking(participationId: ID!, marking: MarkingCreateInput!): Marking!
+  editMarking(id: ID!, marking: MarkingUpdateInput!): Marking!
   deleteMarking(id: ID!): Boolean!
   transferUserMarkings(userName: ID!, challengeId: ID!): Boolean!
 }
@@ -62,11 +62,20 @@ input UpdateChallengeInput {
 type Marking {
   id: ID!
   date: Date!
+  rating: Int!
   comment: String
   photoUrl: String
 }
 
-input MarkingInput {
+input MarkingCreateInput {
+  rating: Int!
+  comment: String
+  date: Date
+  photoUrl: String
+}
+
+input MarkingUpdateInput {
+  rating: Int
   comment: String
   date: Date
   photoUrl: String

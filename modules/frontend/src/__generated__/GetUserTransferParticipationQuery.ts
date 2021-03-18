@@ -21,6 +21,7 @@ export interface GetUserTransferParticipationQuery_getUserTransferParticipation_
   date: any;
   comment: string | null;
   photoUrl: string | null;
+  rating: number;
 }
 
 export interface GetUserTransferParticipationQuery_getUserTransferParticipation {

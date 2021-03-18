@@ -5,7 +5,7 @@
 -- Dumped from database version 13.2 (Ubuntu 13.2-1.pgdg20.04+1)
 -- Dumped by pg_dump version 13.2
 
--- Started on 2021-03-19 00:11:38 EET
+-- Started on 2021-03-18 10:15:22 EET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -188,7 +188,6 @@ d0104ae0-e1e0-473f-a6fb-3625ff993316	2021-03-15 10:00:00+00	\N	Munat	868b86e2-43
 27ac973e-4c6f-4b94-ba47-d2c2f1e01ef2	2021-03-17 10:00:00+00	\N	Rentouttava sessio	88cb3c5b-d656-41ff-9858-1edb8dfa8fd3	\N
 bdc31aef-63a3-4e8d-b587-bb16b2875d04	2021-03-17 10:00:00+00	\N		6c0124b4-c227-4f74-9180-f2f2461408df	https://zen-tracking.s3.eu-west-2.amazonaws.com/marking-images-dev/6bff38d7-5faf-4a39-a185-3f8216eecde4-quote-11.jpg
 eb886cf6-bdb2-4569-b828-c2a4c447ade3	2021-03-16 10:00:00+00	\N		6c0124b4-c227-4f74-9180-f2f2461408df	https://zen-tracking.s3.eu-west-2.amazonaws.com/marking-images-dev/264eb371-8dcf-4b2d-9129-068d681c23f8-quote-9.jpg
-20265867-e090-4e77-847e-7b31b2b9fed4	2021-03-18 20:59:48+00	\N		24c48705-13e7-436f-8f33-cecfcdf7982f	https://zen-tracking.s3.eu-west-2.amazonaws.com/marking-images/3d4a3012-805c-41a9-a656-8a1a69b07d0b-7A9E13EE-4B12-474A-B982-AD87BD391346.jpeg
 42f473d8-0d5e-4de8-ba1c-0ae9bebe969a	2021-02-15 12:42:31.674461+00	eke	\N	1a8efd7f-e1b5-4bdb-94ab-a296ae8fe5e1	\N
 d0c29bf1-2907-4538-912b-506b563abad2	2021-02-15 13:23:27.83314+00	joku	\N	3ebe0a89-3fe9-4196-8697-3f253d3da53a	\N
 3c0b19dd-31fa-49ea-815b-9278478f6aab	2021-02-15 13:50:35.529969+00	asdasdawdawd	\N	c50d3745-3b2e-4173-a8f8-e0de1c7ba672	\N
@@ -474,7 +473,7 @@ ALTER TABLE ONLY public."Marking"
     ADD CONSTRAINT "Marking_participation_id_fkey" FOREIGN KEY (participation_id) REFERENCES public."ChallengeParticipation"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
--- Completed on 2021-03-19 00:11:48 EET
+-- Completed on 2021-03-18 10:15:30 EET
 
 --
 -- PostgreSQL database dump complete

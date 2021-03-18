@@ -32,11 +32,13 @@
           "markings": [
             {
               "comment": "First comment",
-              "date": "2021-03-05T12:00:00+02:00"
+              "date": "2021-03-05T12:00:00+02:00",
+              "rating": 3
             },
             {
               "comment": "Last comment",
-              "date": "2021-03-14T12:00:00+02:00"
+              "date": "2021-03-14T12:00:00+02:00",
+              "rating": 3
             }
           ]
         }
@@ -55,16 +57,17 @@
             {
               "comment": "Ihanpa mukava lenkki",
               "date": "2021-03-05T12:00:00+02:00",
-              "photo_url": "https://zen-tracking.s3.eu-west-2.amazonaws.com/marking-images/7982bcfc-1faf-474e-8a21-ad592e559f7a-oldcar.jpg"
+              "rating": 3
             },
             {
               "comment": "Ihanpa mukava lenkki",
-              "date": "2021-03-04T12:00:00+02:00"
+              "date": "2021-03-04T12:00:00+02:00",
+              "rating": 3
             },
             {
               "comment": "Ihanpa mukava lenkki",
               "date": "2021-03-03T12:00:00+02:00",
-              "photo_url": "https://zen-tracking.s3.eu-west-2.amazonaws.com/marking-images/b26e224b-86a0-4061-a941-e8860eac6469-landscape.jpg"
+              "rating": 3
             }
           ]
         },
@@ -73,15 +76,18 @@
           "markings": [
             {
               "comment": "Kakka lenkki",
-              "date": "2021-03-04T12:00:00+02:00"
+              "date": "2021-03-04T12:00:00+02:00",
+              "rating": 3
             },
             {
               "comment": "Ihanpa mukava lenkki",
-              "date": "2021-03-02T12:00:00+02:00"
+              "date": "2021-03-02T12:00:00+02:00",
+              "rating": 3
             },
             {
               "comment": "Kakka lenkki",
-              "date": "2021-03-01T12:00:00+02:00"
+              "date": "2021-03-01T12:00:00+02:00",
+              "rating": 3
             }
           ]
         }
@@ -99,11 +105,13 @@
           "markings": [
             {
               "comment": "Tulipaha ajateltua 10min",
-              "date": "2021-02-26T12:00:00+02:00"
+              "date": "2021-02-26T12:00:00+02:00",
+              "rating": 3
             },
             {
               "comment": "Ajattelua 10min",
-              "date": "2021-02-27T12:00:00+02:00"
+              "date": "2021-02-27T12:00:00+02:00",
+              "rating": 3
             }
           ]
         }

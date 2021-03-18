@@ -33,6 +33,7 @@ model Marking {
   id                     String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   date                   DateTime               @db.Timestamptz(6)
   participation_id       String                 @db.Uuid
+  rating                 Int
   comment                String?                @db.VarChar(2000)
   photo_url              String?                @db.VarChar(254)
   ChallengeParticipation ChallengeParticipation @relation(fields: [participation_id], references: [id])

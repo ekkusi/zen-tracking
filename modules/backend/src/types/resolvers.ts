@@ -154,7 +154,9 @@ export type ResolversTypes = {
   CreateChallengeInput: Types.CreateChallengeInput;
   UpdateChallengeInput: Types.UpdateChallengeInput;
   Marking: ResolverTypeWrapper<Marking>;
-  MarkingInput: Types.MarkingInput;
+  Int: ResolverTypeWrapper<Types.Scalars["Int"]>;
+  MarkingCreateInput: Types.MarkingCreateInput;
+  MarkingUpdateInput: Types.MarkingUpdateInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -175,7 +177,9 @@ export type ResolversParentTypes = {
   CreateChallengeInput: Types.CreateChallengeInput;
   UpdateChallengeInput: Types.UpdateChallengeInput;
   Marking: Marking;
-  MarkingInput: Types.MarkingInput;
+  Int: Types.Scalars["Int"];
+  MarkingCreateInput: Types.MarkingCreateInput;
+  MarkingUpdateInput: Types.MarkingUpdateInput;
 };
 
 export type QueryResolvers<
@@ -303,7 +307,7 @@ export type MutationResolvers<
     ResolversTypes["Marking"],
     ParentType,
     ContextType,
-    RequireFields<Types.MutationAddMarkingArgs, "participationId">
+    RequireFields<Types.MutationAddMarkingArgs, "participationId" | "marking">
   >;
   editMarking?: Resolver<
     ResolversTypes["Marking"],
@@ -404,6 +408,7 @@ export type MarkingResolvers<
 > = {
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   date?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
+  rating?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   comment?: Resolver<
     Types.Maybe<ResolversTypes["String"]>,
     ParentType,

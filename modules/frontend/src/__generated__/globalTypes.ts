@@ -35,7 +35,15 @@ export interface DateFilter {
   lt?: string | null;
 }
 
-export interface MarkingInput {
+export interface MarkingCreateInput {
+  rating: number;
+  comment?: string | null;
+  date?: any | null;
+  photoUrl?: string | null;
+}
+
+export interface MarkingUpdateInput {
+  rating?: number | null;
   comment?: string | null;
   date?: any | null;
   photoUrl?: string | null;

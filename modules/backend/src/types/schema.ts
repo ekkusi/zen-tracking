@@ -118,12 +118,12 @@ export type MutationDeleteParticipationArgs = {
 
 export type MutationAddMarkingArgs = {
   participationId: Scalars["ID"];
-  marking?: Maybe<MarkingInput>;
+  marking: MarkingCreateInput;
 };
 
 export type MutationEditMarkingArgs = {
   id: Scalars["ID"];
-  marking: MarkingInput;
+  marking: MarkingUpdateInput;
 };
 
 export type MutationDeleteMarkingArgs = {
@@ -207,11 +207,20 @@ export type Marking = {
   __typename?: "Marking";
   id: Scalars["ID"];
   date: Scalars["Date"];
+  rating: Scalars["Int"];
   comment?: Maybe<Scalars["String"]>;
   photoUrl?: Maybe<Scalars["String"]>;
 };
 
-export type MarkingInput = {
+export type MarkingCreateInput = {
+  rating: Scalars["Int"];
+  comment?: Maybe<Scalars["String"]>;
+  date?: Maybe<Scalars["Date"]>;
+  photoUrl?: Maybe<Scalars["String"]>;
+};
+
+export type MarkingUpdateInput = {
+  rating?: Maybe<Scalars["Int"]>;
   comment?: Maybe<Scalars["String"]>;
   date?: Maybe<Scalars["Date"]>;
   photoUrl?: Maybe<Scalars["String"]>;

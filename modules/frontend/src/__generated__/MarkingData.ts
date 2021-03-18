@@ -13,4 +13,5 @@ export interface MarkingData {
   date: any;
   comment: string | null;
   photoUrl: string | null;
+  rating: number;
 }

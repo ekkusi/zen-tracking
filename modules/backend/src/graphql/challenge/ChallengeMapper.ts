@@ -2,12 +2,13 @@ import { Prisma } from "@prisma/client";
 import { isAfter, isBefore } from "date-fns";
 import { formatIsoString } from "../../utils/dateUtils";
 import {
-  MarkingInput,
   CreateChallengeInput,
   UpdateChallengeInput,
   ChallengeStatus,
   QueryGetChallengesArgs,
   DateFilter,
+  MarkingUpdateInput,
+  MarkingCreateInput,
 } from "../../types/schema";
 
 import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "../../config.json";
@@ -19,7 +20,7 @@ type GetChallengesFilters = {
 export class ChallengeMapper {
   public static mapCreateMarkingInput(
     participationId: string,
-    marking: MarkingInput
+    marking: MarkingCreateInput
   ): Prisma.MarkingCreateInput {
     const { photoUrl, ...args } = marking;
     return {
@@ -33,11 +34,12 @@ export class ChallengeMapper {
   }
 
   public static mapEditMarkingInput(
-    marking: MarkingInput
+    marking: MarkingUpdateInput
   ): Prisma.MarkingUpdateInput {
     const { photoUrl, ...args } = marking;
     return {
       ...args,
+      rating: args.rating ?? undefined,
       date: marking.date ? formatIsoString(marking.date) : undefined,
       photo_url: photoUrl,
     };

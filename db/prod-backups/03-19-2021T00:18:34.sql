@@ -5,7 +5,7 @@
 -- Dumped from database version 13.2 (Ubuntu 13.2-1.pgdg20.04+1)
 -- Dumped by pg_dump version 13.2
 
--- Started on 2021-03-19 00:11:38 EET
+-- Started on 2021-03-19 00:18:34 EET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -474,7 +474,7 @@ ALTER TABLE ONLY public."Marking"
     ADD CONSTRAINT "Marking_participation_id_fkey" FOREIGN KEY (participation_id) REFERENCES public."ChallengeParticipation"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
--- Completed on 2021-03-19 00:11:48 EET
+-- Completed on 2021-03-19 00:18:43 EET
 
 --
 -- PostgreSQL database dump complete
