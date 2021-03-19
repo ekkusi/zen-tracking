@@ -11,6 +11,9 @@ import { v4 as generateId } from "uuid";
 
 import { GraphQLError } from "graphql";
 
+import { parseAndVerifyToken } from "../utils/auth";
+import AuthenticationError from "../utils/errors/AuthenticationError";
+import { CustomContext } from "../types/customContext";
 import {
   typeDef as customScalarTypeDef,
   resolvers as customScalarResolvers,
@@ -24,13 +27,11 @@ import {
 } from "./challenge";
 
 import prisma from "./client";
-import ValidationError from "../utils/ValidationError";
+import ValidationError from "../utils/errors/ValidationError";
 import dataLoaders from "./loaders";
 import s3Client from "../utils/awsS3Client";
 
 export default (app: Application): ApolloServer => {
-  const context = { prisma, s3Client, loaders: dataLoaders };
-
   const queryTypeDef = gql`
     type Query {
       _empty: String
@@ -61,7 +62,19 @@ export default (app: Application): ApolloServer => {
 
   const server = new ApolloServer({
     schema,
-    context,
+    context: ({ res, req }): CustomContext => {
+      const bearerToken = req.headers.authorization || "";
+
+      const user = parseAndVerifyToken(bearerToken);
+
+      return {
+        loaders: dataLoaders,
+        prisma,
+        s3Client,
+        res,
+        user,
+      };
+    },
     formatError: (error) => {
       // If error is ApolloError, return original error. You could create other custom errors here like InputError etc.
       if (error.originalError instanceof ApolloError) {
@@ -69,6 +82,10 @@ export default (app: Application): ApolloServer => {
       }
 
       if (error.originalError instanceof ValidationError) {
+        return error;
+      }
+
+      if (error.originalError instanceof AuthenticationError) {
         return error;
       }
 

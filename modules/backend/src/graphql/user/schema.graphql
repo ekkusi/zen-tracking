@@ -8,18 +8,12 @@ query GetUsers {
 extend type Query {
   getUser(name: ID!): User!
   getUsers: [User!]
-  checkUser(name: ID!, password: String!): UserCheckResult!
 }
 
 extend type Mutation {
-  addUser(name: ID!, password: String!, isPrivate: Boolean): User!
   deleteUser(name: ID!): Boolean!
-}
-
-enum UserCheckStatus {
-  USER_AND_PASSWORD_FOUND
-  USER_NOT_FOUND_BUT_CREATED
-  INVALID_PASSWORD
+  login(name: ID!, password: String!): LoginResult!
+  register(name: ID!, password: String!): LoginResult!
 }
 
 type User {
@@ -28,7 +22,6 @@ type User {
   participations: [ChallengeParticipation!]!
 }
 
-type UserCheckResult {
-  user: User
-  status: UserCheckStatus!
+type LoginResult {
+  accessToken: String!
 }

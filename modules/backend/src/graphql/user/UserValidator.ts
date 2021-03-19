@@ -1,11 +1,14 @@
-import ValidationError from "../../utils/ValidationError";
+import prisma from "../client";
+import ValidationError from "../../utils/errors/ValidationError";
 
 export default class UserValidator {
-  public static validateCreateUser(name: string): void {
+  public static async validateCreateUser(name: string): Promise<void> {
+    const user = await prisma.user.findUnique({
+      where: { name },
+    });
     // Validate name to not be not-authorized, this is reserved for frontend default user to route back to login page
-    if (name === "not-authorized")
-      throw new ValidationError(
-        "not-authorized name is reserved keyword, choose different name"
-      );
+    if (user || name === "not-authorized") {
+      throw new ValidationError("Antamasi nimi on varattu, valitse eri nimi");
+    }
   }
 }

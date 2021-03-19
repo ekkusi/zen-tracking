@@ -13,19 +13,31 @@ import {
   MarkingCreateInput,
   MarkingUpdateInput,
   MutationAddMarkingArgs,
-  MutationCreateParticipationArgs,
-  MutationDeleteParticipationArgs,
   UpdateChallengeInput,
 } from "../../types/schema";
-import ValidationError from "../../utils/ValidationError";
+import ValidationError from "../../utils/errors/ValidationError";
 import prisma from "../client";
 
 import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "../../config.json";
 
 export default class ChallengeValidator {
   public static async validateAddMarking(
-    args: MutationAddMarkingArgs
+    args: MutationAddMarkingArgs,
+    userName: string
   ): Promise<void> {
+    const participation = await prisma.challengeParticipation.findFirst({
+      where: {
+        id: args.participationId,
+      },
+    });
+    if (!participation)
+      throw new ValidationError(
+        "Ilmoittautumista ei löytynyt, johon yritit lisätä merkkausta"
+      );
+    if (participation.user_name !== userName)
+      throw new ValidationError(
+        "Et voi lisätä merkkausta ilmoittautumiseen, joka ei ole sinun ilmoittautuminen"
+      );
     let dateToCheck;
     // If date is given, use that, otherwise fallback to current day
     if (args.marking?.date) dateToCheck = new Date(args.marking.date);
@@ -52,6 +64,39 @@ export default class ChallengeValidator {
     }
   }
 
+  public static async validateMarkingUpdateInput(
+    id: string,
+    input: MarkingCreateInput | MarkingUpdateInput,
+    userName: string
+  ): Promise<void> {
+    const participation = await prisma.challengeParticipation.findFirst({
+      where: {
+        Marking: {
+          some: {
+            id,
+          },
+        },
+      },
+    });
+    if (!participation)
+      throw new ValidationError(
+        "Ilmoittautumista ei löytynyt, jonka merkkausta yritit muokata"
+      );
+    if (participation.user_name !== userName)
+      throw new ValidationError(
+        "Et voi lisätä muokata merkkausta, joka ei ole sinun oma"
+      );
+    if (input.rating && (input.rating > 5 || input.rating < 1))
+      throw new ValidationError(
+        "Merkkauksen arvosana pitää olla numero välillä 1-5"
+      );
+    if (input.comment && input.comment.length > 2000) {
+      throw new ValidationError(
+        "Merkkauksen kommentti saa olla enintään 2000 merkkiä pitkä."
+      );
+    }
+  }
+
   public static async validateMarkingInput(
     input: MarkingCreateInput | MarkingUpdateInput
   ): Promise<void> {
@@ -66,15 +111,36 @@ export default class ChallengeValidator {
     }
   }
 
+  public static async validateDeleteMarking(id: string, userName: string) {
+    const participation = await prisma.challengeParticipation.findFirst({
+      where: {
+        Marking: {
+          some: {
+            id,
+          },
+        },
+      },
+    });
+    if (!participation)
+      throw new ValidationError(
+        "Ilmoittautumista ei löytynyt, jonka merkkausta yritit poistaa"
+      );
+    if (participation.user_name !== userName)
+      throw new ValidationError(
+        "Et voi poistaa merkkausta, joka ei ole sinun oma"
+      );
+  }
+
   public static async validateCreateParticipation(
-    args: MutationCreateParticipationArgs
+    challengeId: string,
+    userName: string
   ) {
     const existingParticipation = await prisma.challengeParticipation.findFirst(
       {
         where: {
           AND: {
-            challenge_id: args.challengeId,
-            user_name: args.userName,
+            challenge_id: challengeId,
+            user_name: userName,
           },
         },
       }
@@ -86,28 +152,27 @@ export default class ChallengeValidator {
   }
 
   public static async validateDeleteParticipation(
-    args: MutationDeleteParticipationArgs
+    challengeId: string,
+    userName: string
   ) {
     const participation = await prisma.challengeParticipation.findFirst({
       where: {
         AND: {
-          challenge_id: args.challengeId,
-          user_name: args.userName,
+          challenge_id: challengeId,
+          user_name: userName,
         },
       },
     });
     if (!participation)
       throw new ValidationError("Poistettavaa ilmoittautumista ei löytynyt.");
     // TODO: args.userName should come from passport user, when passport is available
-    if (participation.user_name !== args.userName)
+    if (participation.user_name !== userName)
       throw new ValidationError(
         "Et voi poistaa ilmoittautumista, joka ei ole omasi."
       );
   }
 
-  public static async validateCreateChallengeArgs(
-    args: Omit<CreateChallengeInput, "creatorName">
-  ) {
+  public static async validateCreateChallengeArgs(args: CreateChallengeInput) {
     const { endDate, name } = args;
     this.validateChallengeArgs(args);
     const matchingChallenge = await prisma.challenge.findFirst({
@@ -123,6 +188,21 @@ export default class ChallengeValidator {
       throw new ValidationError(
         "Et voi luoda haastetta jo menneelle päivämäärälle"
       );
+  }
+
+  public static async validateUpdateChallenge(
+    args: UpdateChallengeInput,
+    challengeId: string,
+    userName: string
+  ) {
+    const challenge = await prisma.challenge.findUnique({
+      where: { id: challengeId },
+    });
+    if (!challenge)
+      throw new ValidationError("Muokattavaa haastetta ei löytynyt");
+    if (challenge.creator_name !== userName)
+      throw new ValidationError("Et voi muokata haastetta, joka ei ole omasi");
+    this.validateChallengeArgs(args);
   }
 
   public static validateChallengeArgs({
@@ -157,29 +237,33 @@ export default class ChallengeValidator {
     }
   }
 
-  public static async validateDeleteChallengeArgs(id: string) {
+  public static async validateDeleteChallengeArgs(
+    id: string,
+    userName: string
+  ) {
     const challenge = await prisma.challenge.findFirst({
       where: {
         id,
       },
     });
-    if (challenge) {
-      const challengeParticipations = await prisma.challengeParticipation.findMany(
-        {
-          where: {
-            challenge_id: challenge.id,
-          },
-        }
+    if (!challenge) throw new ValidationError("Haastetta ei ole olemasas");
+    if (challenge.creator_name !== userName)
+      throw new ValidationError("Et voi poistaa haastetta, joka ei ole omasi");
+    const challengeParticipations = await prisma.challengeParticipation.findMany(
+      {
+        where: {
+          challenge_id: challenge.id,
+        },
+      }
+    );
+    const otherThanUserParticipations = challengeParticipations.filter(
+      (it) => it.user_name !== challenge.creator_name
+    );
+    // If challenge has other participations than creator participation, don't allow delete
+    if (otherThanUserParticipations.length > 0)
+      throw new ValidationError(
+        "Et voi poistaa haastetta, jossa on myös muiden ilmoittautumisia"
       );
-      const otherThanUserParticipations = challengeParticipations.filter(
-        (it) => it.user_name !== challenge.creator_name
-      );
-      // If challenge has other participations than creator participation, don't allow delete
-      if (otherThanUserParticipations.length > 0)
-        throw new ValidationError(
-          "Et voi poistaa haastetta, jossa on myös muiden ilmoittautumisia"
-        );
-    }
   }
 
   public static async validateTransferUserMarking(

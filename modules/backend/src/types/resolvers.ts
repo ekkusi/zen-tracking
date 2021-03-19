@@ -12,7 +12,6 @@ import {
 import * as Types from "./schema";
 import { CustomContext } from "./customContext";
 
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = {
   [X in Exclude<keyof T, K>]?: T[X];
 } &
@@ -141,13 +140,8 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Types.Scalars["Boolean"]>;
   Date: ResolverTypeWrapper<Types.Scalars["Date"]>;
   DateFilter: Types.DateFilter;
-  UserCheckStatus: Types.UserCheckStatus;
   User: ResolverTypeWrapper<User>;
-  UserCheckResult: ResolverTypeWrapper<
-    Omit<Types.UserCheckResult, "user"> & {
-      user?: Types.Maybe<ResolversTypes["User"]>;
-    }
-  >;
+  LoginResult: ResolverTypeWrapper<Types.LoginResult>;
   ChallengeStatus: Types.ChallengeStatus;
   Challenge: ResolverTypeWrapper<Challenge>;
   ChallengeParticipation: ResolverTypeWrapper<ChallengeParticipation>;
@@ -169,9 +163,7 @@ export type ResolversParentTypes = {
   Date: Types.Scalars["Date"];
   DateFilter: Types.DateFilter;
   User: User;
-  UserCheckResult: Omit<Types.UserCheckResult, "user"> & {
-    user?: Types.Maybe<ResolversParentTypes["User"]>;
-  };
+  LoginResult: Types.LoginResult;
   Challenge: Challenge;
   ChallengeParticipation: ChallengeParticipation;
   CreateChallengeInput: Types.CreateChallengeInput;
@@ -202,12 +194,6 @@ export type QueryResolvers<
     ParentType,
     ContextType
   >;
-  checkUser?: Resolver<
-    ResolversTypes["UserCheckResult"],
-    ParentType,
-    ContextType,
-    RequireFields<Types.QueryCheckUserArgs, "name" | "password">
-  >;
   getChallenge?: Resolver<
     Types.Maybe<ResolversTypes["Challenge"]>,
     ParentType,
@@ -223,8 +209,7 @@ export type QueryResolvers<
   getUserParticipations?: Resolver<
     Array<ResolversTypes["ChallengeParticipation"]>,
     ParentType,
-    ContextType,
-    RequireFields<Types.QueryGetUserParticipationsArgs, "userName">
+    ContextType
   >;
   getParticipation?: Resolver<
     Types.Maybe<ResolversTypes["ChallengeParticipation"]>,
@@ -241,8 +226,7 @@ export type QueryResolvers<
   getUserTransferParticipation?: Resolver<
     Types.Maybe<ResolversTypes["ChallengeParticipation"]>,
     ParentType,
-    ContextType,
-    RequireFields<Types.QueryGetUserTransferParticipationArgs, "userName">
+    ContextType
   >;
 };
 
@@ -255,17 +239,23 @@ export type MutationResolvers<
     ParentType,
     ContextType
   >;
-  addUser?: Resolver<
-    ResolversTypes["User"],
-    ParentType,
-    ContextType,
-    RequireFields<Types.MutationAddUserArgs, "name" | "password">
-  >;
   deleteUser?: Resolver<
     ResolversTypes["Boolean"],
     ParentType,
     ContextType,
     RequireFields<Types.MutationDeleteUserArgs, "name">
+  >;
+  login?: Resolver<
+    ResolversTypes["LoginResult"],
+    ParentType,
+    ContextType,
+    RequireFields<Types.MutationLoginArgs, "name" | "password">
+  >;
+  register?: Resolver<
+    ResolversTypes["LoginResult"],
+    ParentType,
+    ContextType,
+    RequireFields<Types.MutationRegisterArgs, "name" | "password">
   >;
   createChallenge?: Resolver<
     ResolversTypes["Challenge"],
@@ -289,19 +279,13 @@ export type MutationResolvers<
     ResolversTypes["ChallengeParticipation"],
     ParentType,
     ContextType,
-    RequireFields<
-      Types.MutationCreateParticipationArgs,
-      "challengeId" | "userName"
-    >
+    RequireFields<Types.MutationCreateParticipationArgs, "challengeId">
   >;
   deleteParticipation?: Resolver<
     ResolversTypes["Boolean"],
     ParentType,
     ContextType,
-    RequireFields<
-      Types.MutationDeleteParticipationArgs,
-      "challengeId" | "userName"
-    >
+    RequireFields<Types.MutationDeleteParticipationArgs, "challengeId">
   >;
   addMarking?: Resolver<
     ResolversTypes["Marking"],
@@ -325,10 +309,7 @@ export type MutationResolvers<
     ResolversTypes["Boolean"],
     ParentType,
     ContextType,
-    RequireFields<
-      Types.MutationTransferUserMarkingsArgs,
-      "userName" | "challengeId"
-    >
+    RequireFields<Types.MutationTransferUserMarkingsArgs, "challengeId">
   >;
 };
 
@@ -351,12 +332,11 @@ export type UserResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type UserCheckResultResolvers<
+export type LoginResultResolvers<
   ContextType = CustomContext,
-  ParentType extends ResolversParentTypes["UserCheckResult"] = ResolversParentTypes["UserCheckResult"]
+  ParentType extends ResolversParentTypes["LoginResult"] = ResolversParentTypes["LoginResult"]
 > = {
-  user?: Resolver<Types.Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
-  status?: Resolver<ResolversTypes["UserCheckStatus"], ParentType, ContextType>;
+  accessToken?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -427,7 +407,7 @@ export type Resolvers<ContextType = CustomContext> = {
   Mutation?: MutationResolvers<ContextType>;
   Date?: GraphQLScalarType;
   User?: UserResolvers<ContextType>;
-  UserCheckResult?: UserCheckResultResolvers<ContextType>;
+  LoginResult?: LoginResultResolvers<ContextType>;
   Challenge?: ChallengeResolvers<ContextType>;
   ChallengeParticipation?: ChallengeParticipationResolvers<ContextType>;
   Marking?: MarkingResolvers<ContextType>;
