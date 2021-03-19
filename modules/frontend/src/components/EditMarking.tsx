@@ -345,7 +345,7 @@ const EditMarking = ({
                         color={
                           (hoverRating > 0 && hoverRating < it) ||
                           (values.rating < it && hoverRating <= values.rating)
-                            ? "white"
+                            ? undefined // Undefined will render default color, which switches between dark/light theme
                             : "primary.regular"
                         }
                         w={10}
