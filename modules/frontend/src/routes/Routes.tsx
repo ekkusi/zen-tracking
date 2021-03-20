@@ -95,14 +95,6 @@ const Routes = (): JSX.Element => {
       updateUser(null);
       updateActiveParticipation(null);
     }
-    // If activeParticipation is not same as localstorage, null activeParticipation
-    // if (
-    //   activeParticipation &&
-    //   activeParticipation.challenge.id !==
-    //     localStorage.getItem("activeParticipationChallengeId")
-    // ) {
-    //   updateActiveParticipation(null);
-    // }
     return () => {
       unmounted = true;
     };

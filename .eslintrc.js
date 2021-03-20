@@ -43,6 +43,8 @@ module.exports = {
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/naming-convention": "off",
     "import/prefer-default-export": "off",
     "no-console": "off",
     "no-underscore-dangle": "off",

@@ -26,7 +26,6 @@ const createApolloClient = (errorLink?: ApolloLink) => {
   const httpLink = new HttpLink({
     uri: graphqlApiUrl,
   });
-  console.log(`Apollo client created with httplink ${graphqlApiUrl}`);
 
   const link = errorLink ? ApolloLink.from([errorLink, httpLink]) : httpLink;
 
