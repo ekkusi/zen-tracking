@@ -99,7 +99,11 @@ const ChallengeSelect = forwardRef(
     }, [activeParticipation, value]);
 
     return (
-      <Box width={{ base: "100%", sm: "400px" }} {...containerProps}>
+      <Box
+        width={{ base: "100%", sm: "400px" }}
+        color="text.light"
+        {...containerProps}
+      >
         <Select
           isLoading={loading || isLoading}
           isDisabled={loading || isLoading}
