@@ -255,7 +255,7 @@ export type MutationResolvers<
     ResolversTypes["LoginResult"],
     ParentType,
     ContextType,
-    RequireFields<Types.MutationRegisterArgs, "name" | "password">
+    RequireFields<Types.MutationRegisterArgs, "name" | "password" | "isPrivate">
   >;
   createChallenge?: Resolver<
     ResolversTypes["Challenge"],

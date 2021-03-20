@@ -13,6 +13,7 @@ import { Resolvers as UserResolvers } from "../../types/resolvers";
 import { loaderResetors } from "../loaders";
 import UserValidator from "./UserValidator";
 import AuthenticationError from "../../utils/errors/AuthenticationError";
+import { UserMapper } from "./UserMapper";
 
 // Construct a schema, using GraphQL schema language
 export const typeDef = readFileSync(
@@ -73,27 +74,32 @@ export const resolvers: UserResolvers = {
       if (!isValid) {
         throw new AuthenticationError("Antamasi salasana oli väärä");
       }
-      const { password: __, ...userWithoutPassword } = user;
 
-      createRefreshTokenCookie(createRefreshToken(userWithoutPassword), res);
+      createRefreshTokenCookie(
+        createRefreshToken(UserMapper.mapAuthenticatedUser(user)),
+        res
+      );
 
       return {
-        accessToken: createAccessToken(userWithoutPassword),
+        accessToken: createAccessToken(UserMapper.mapAuthenticatedUser(user)),
       };
     },
-    register: async (_, { name, password }, { prisma, res }) => {
+    register: async (_, { name, password, isPrivate }, { prisma, res }) => {
       await UserValidator.validateCreateUser(name);
 
       const createdUser = await prisma.user.create({
-        data: { name, password: await hash(password) },
+        data: { name, password: await hash(password), is_private: isPrivate },
       });
 
-      const { password: __, ...userWithoutPassword } = createdUser;
-
-      createRefreshTokenCookie(createRefreshToken(userWithoutPassword), res);
+      createRefreshTokenCookie(
+        createRefreshToken(UserMapper.mapAuthenticatedUser(createdUser)),
+        res
+      );
 
       return {
-        accessToken: createAccessToken(userWithoutPassword),
+        accessToken: createAccessToken(
+          UserMapper.mapAuthenticatedUser(createdUser)
+        ),
       };
     },
   },

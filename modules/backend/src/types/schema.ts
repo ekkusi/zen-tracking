@@ -82,6 +82,7 @@ export type MutationLoginArgs = {
 export type MutationRegisterArgs = {
   name: Scalars["ID"];
   password: Scalars["String"];
+  isPrivate: Scalars["Boolean"];
 };
 
 export type MutationCreateChallengeArgs = {

@@ -13,7 +13,7 @@ extend type Query {
 extend type Mutation {
   deleteUser(name: ID!): Boolean!
   login(name: ID!, password: String!): LoginResult!
-  register(name: ID!, password: String!): LoginResult!
+  register(name: ID!, password: String!, isPrivate: Boolean!): LoginResult!
 }
 
 type User {
