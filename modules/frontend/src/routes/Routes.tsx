@@ -20,7 +20,10 @@ import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "@ekkusi/zen-tracking-back
 import SomeDesignPage from "views/design/SomeDesignPage";
 import WelcomeUserPage from "../views/welcome-user/WelcomeUserPage";
 import { refreshToken } from "../util/accessToken";
-import { GetCurrentUserQuery } from "../__generated__/GetCurrentUserQuery";
+import {
+  GetCurrentUserQuery,
+  GetCurrentUserQueryVariables,
+} from "../__generated__/GetCurrentUserQuery";
 
 const NON_AUTHENTICATED_PATHS = ["/welcome", "/login"];
 
@@ -32,9 +35,6 @@ const Routes = (): JSX.Element => {
   const { activeParticipation, currentUser } = globalState;
 
   const client = useApolloClient();
-  const localStorageActiveParticipationId = localStorage.getItem(
-    "activeParticipationChallengeId"
-  );
 
   const isGlobalUserAuthorized = useMemo((): boolean => {
     return currentUser.name !== notAuthorizedUser.name;
@@ -58,23 +58,33 @@ const Routes = (): JSX.Element => {
     // If token has expired, ApolloProvider will throw an error and redirect to /login
     if (!NON_AUTHENTICATED_PATHS.includes(history.location.pathname)) {
       try {
-        const result = await client.query<GetCurrentUserQuery>({
+        const result = await client.query<
+          GetCurrentUserQuery,
+          GetCurrentUserQueryVariables
+        >({
           query: GET_CURRENT_USER,
           fetchPolicy: "no-cache",
+          variables: {
+            activeParticipationChallengeId:
+              localStorage.getItem("activeParticipationChallengeId") ??
+              undefined,
+          },
         });
         const { data } = result;
-        globalActions.updateUser(data.getCurrentUser);
+        const {
+          activeParticipation: newActiveParticipation,
+          ...user
+        } = data.getCurrentUser;
+        globalActions.updateUser(user);
         // Update activeParticipation as well when user is updated, wait for user to be updated first
-        await globalActions.updateActiveParticipation(
-          localStorageActiveParticipationId ?? undefined
-        );
+        globalActions.updateActiveParticipation(newActiveParticipation);
       } catch (err) {
         globalActions.updateUser(null);
       }
     }
 
     setLoading(false);
-  }, [client, globalActions, history, localStorageActiveParticipationId]);
+  }, [client, globalActions, history]);
 
   // Handle logging in with localStorage cache
   useEffect(() => {

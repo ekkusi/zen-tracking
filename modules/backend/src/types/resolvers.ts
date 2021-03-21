@@ -12,6 +12,7 @@ import {
 import * as Types from "./schema";
 import { CustomContext } from "./customContext";
 
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = {
   [X in Exclude<keyof T, K>]?: T[X];
 } &
@@ -141,7 +142,9 @@ export type ResolversTypes = {
   Date: ResolverTypeWrapper<Types.Scalars["Date"]>;
   DateFilter: Types.DateFilter;
   User: ResolverTypeWrapper<User>;
-  LoginResult: ResolverTypeWrapper<Types.LoginResult>;
+  LoginResult: ResolverTypeWrapper<
+    Omit<Types.LoginResult, "user"> & { user: ResolversTypes["User"] }
+  >;
   ChallengeStatus: Types.ChallengeStatus;
   Challenge: ResolverTypeWrapper<Challenge>;
   ChallengeParticipation: ResolverTypeWrapper<ChallengeParticipation>;
@@ -163,7 +166,9 @@ export type ResolversParentTypes = {
   Date: Types.Scalars["Date"];
   DateFilter: Types.DateFilter;
   User: User;
-  LoginResult: Types.LoginResult;
+  LoginResult: Omit<Types.LoginResult, "user"> & {
+    user: ResolversParentTypes["User"];
+  };
   Challenge: Challenge;
   ChallengeParticipation: ChallengeParticipation;
   CreateChallengeInput: Types.CreateChallengeInput;
@@ -331,6 +336,12 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
+  activeParticipation?: Resolver<
+    Types.Maybe<ResolversTypes["ChallengeParticipation"]>,
+    ParentType,
+    ContextType,
+    RequireFields<Types.UserActiveParticipationArgs, never>
+  >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -339,6 +350,7 @@ export type LoginResultResolvers<
   ParentType extends ResolversParentTypes["LoginResult"] = ResolversParentTypes["LoginResult"]
 > = {
   accessToken?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

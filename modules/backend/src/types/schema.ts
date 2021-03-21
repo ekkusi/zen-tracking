@@ -138,11 +138,17 @@ export type User = {
   name: Scalars["ID"];
   isPrivate: Scalars["Boolean"];
   participations: Array<ChallengeParticipation>;
+  activeParticipation?: Maybe<ChallengeParticipation>;
+};
+
+export type UserActiveParticipationArgs = {
+  challengeId?: Maybe<Scalars["ID"]>;
 };
 
 export type LoginResult = {
   __typename?: "LoginResult";
   accessToken: Scalars["String"];
+  user: User;
 };
 
 export enum ChallengeStatus {

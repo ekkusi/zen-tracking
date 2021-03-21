@@ -12,6 +12,7 @@ import DateUtil from "util/DateUtil";
 import UserInfoUtil from "util/UserInfoUtil";
 
 import { GetChallengesQuery_getChallenges } from "views/challenges/__generated__/GetChallengesQuery";
+import { getParticipation } from "../../util/apolloQueries";
 import { GET_TRANSFERABLE_CHALLENGES, TRANSFER_MARKINGS } from "./queries";
 import {
   GetTransferableChallengesQuery,
@@ -89,7 +90,9 @@ const TransferMarkingsPage = (): JSX.Element => {
             challengeId,
           },
         });
-        await updateActiveParticipation(challengeId);
+        const newParticipation = await getParticipation({ challengeId });
+
+        updateActiveParticipation(newParticipation.data.getParticipation);
       } catch (e) {
         setError(e.message);
       }

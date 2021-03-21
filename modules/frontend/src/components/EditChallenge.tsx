@@ -19,9 +19,10 @@ import {
   CreateChallengeMutationVariables,
 } from "./__generated__/CreateChallengeMutation";
 import ModalTemplate, { ModalTemplateProps } from "./general/ModalTemplate";
-import { AlertButton, PrimaryButton } from "./primitives/Button";
+import { PrimaryButton } from "./primitives/Button";
 import FormField from "./general/form/FormField";
 import { PrimaryTextArea } from "./primitives/Input";
+import DeleteConfimationModal from "./DeleteConfirmationModal";
 
 const CREATE_CHALLENGE = gql`
   mutation CreateChallengeMutation($challenge: CreateChallengeInput!) {
@@ -332,14 +333,27 @@ const EditChallenge = ({
               {saveButtonLabel || (challenge ? "Tallenna" : "Luo haaste")}
             </PrimaryButton>
             {challenge && (
-              <AlertButton
-                isLoading={deleteLoading}
-                isDisabled={createLoading || updateLoading}
-                loadingText="Poista"
-                onClick={deleteAndClose}
+              // <AlertButton
+
+              //   onClick={deleteAndClose}
+              // >
+              //   Poista
+              // </AlertButton>
+              <DeleteConfimationModal
+                onDelete={deleteAndClose}
+                headerLabel="Poista haaste"
+                openButtonProps={{
+                  isLoading: deleteLoading,
+                  isDisabled: createLoading || updateLoading,
+                  loadingText: "Poistetaan...",
+                }}
               >
-                Poista
-              </AlertButton>
+                <Text>
+                  Oletko varma, että haluat poistaa haasteen {challenge.name}?
+                  Jos sinulla on ilmoittautuminen haasteen, poistuu myös tämä
+                  sekä kaikki sen merkkaukset.
+                </Text>
+              </DeleteConfimationModal>
             )}
           </Box>
 

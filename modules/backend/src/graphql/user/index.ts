@@ -13,6 +13,7 @@ import { loaderResetors } from "../loaders";
 import UserValidator from "./UserValidator";
 import AuthenticationError from "../../utils/errors/AuthenticationError";
 import { UserMapper } from "./UserMapper";
+import UserInfoUtil from "../../utils/UserInfoUtil";
 
 // Construct a schema, using GraphQL schema language
 export const typeDef = readFileSync(
@@ -31,6 +32,18 @@ export const resolvers: UserResolvers = {
       const participations = await userParticipationsLoader.load(name);
       // console.log(`User.participations : ${JSON.stringify(participations)}`);
       return participations;
+    },
+    activeParticipation: async ({ name }, { challengeId }, { prisma }) => {
+      // If challengeId arg is passed, return this as activeParticipation if it is found. Otherwise fetch latest modified participation
+      if (challengeId) {
+        const participation = await prisma.challengeParticipation.findFirst({
+          where: { challenge_id: challengeId, user_name: name },
+        });
+
+        return participation;
+      }
+      // Latest modified participation
+      return UserInfoUtil.getLatestModifiedParticipation(name);
     },
   },
   Query: {
@@ -84,6 +97,7 @@ export const resolvers: UserResolvers = {
 
       return {
         accessToken: createAccessToken(UserMapper.mapAuthenticatedUser(user)),
+        user,
       };
     },
     logout: async (_, __, { res }) => {
@@ -107,6 +121,7 @@ export const resolvers: UserResolvers = {
         accessToken: createAccessToken(
           UserMapper.mapAuthenticatedUser(createdUser)
         ),
+        user: createdUser,
       };
     },
   },

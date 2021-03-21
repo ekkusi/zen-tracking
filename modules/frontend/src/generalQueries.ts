@@ -1,13 +1,17 @@
 import { gql } from "@apollo/client";
-import { markingDataFragment, userDataFragment } from "fragments";
+import { activeParticipationInfoFragment, userDataFragment } from "fragments";
 
 export const GET_CURRENT_USER = gql`
-  query GetCurrentUserQuery {
+  query GetCurrentUserQuery($activeParticipationChallengeId: ID) {
     getCurrentUser {
       ...UserData
+      activeParticipation(challengeId: $activeParticipationChallengeId) {
+        ...ActiveParticipationInfo
+      }
     }
   }
   ${userDataFragment}
+  ${activeParticipationInfoFragment}
 `;
 
 export const LOGOUT = gql`
@@ -16,47 +20,31 @@ export const LOGOUT = gql`
   }
 `;
 
-const getUserParticipationInfoFragment = gql`
-  fragment GetUserParticipationInfo on ChallengeParticipation {
-    id
-    challenge {
-      id
-      name
-      startDate
-      endDate
-    }
-    markings {
-      ...MarkingData
-    }
-  }
-  ${markingDataFragment}
-`;
-
 export const GET_USER_PARTICIPATIONS = gql`
   query GetUserParticipationsQuery {
     getUserParticipations {
-      ...GetUserParticipationInfo
+      ...ActiveParticipationInfo
     }
   }
-  ${getUserParticipationInfoFragment}
+  ${activeParticipationInfoFragment}
 `;
 
 export const GET_PARTICIPATION = gql`
   query GetParticipationQuery($challengeId: ID!) {
     getParticipation(challengeId: $challengeId) {
-      ...GetUserParticipationInfo
+      ...ActiveParticipationInfo
     }
   }
-  ${getUserParticipationInfoFragment}
+  ${activeParticipationInfoFragment}
 `;
 
 export const GET_USER_TRANSFER_PARTICIPATION = gql`
   query GetUserTransferParticipationQuery {
     getUserTransferParticipation {
-      ...GetUserParticipationInfo
+      ...ActiveParticipationInfo
     }
   }
-  ${getUserParticipationInfoFragment}
+  ${activeParticipationInfoFragment}
 `;
 
 export const GET_USER_PARTICIPATIONS_PLAIN = gql`

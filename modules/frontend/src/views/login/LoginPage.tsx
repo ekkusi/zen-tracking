@@ -12,7 +12,6 @@ import {
 } from "./__generated__/LoginMutation";
 import { LOGIN } from "./loginQueries";
 import FormField from "../../components/general/form/FormField";
-import decodeUserFromJwt from "../../util/decodeUserFromJwt";
 import RegisterModal from "../../components/RegisterModal";
 import { setAccessToken } from "../../util/accessToken";
 
@@ -53,14 +52,15 @@ const LoginPage = (): JSX.Element => {
         variables: {
           name: values.username,
           password: values.password,
+          activeParticipationChallengeId:
+            localStorage.getItem("activeParticipationChallengeId") ?? undefined,
         },
       });
       // If user is returned from query, password is correct or user is created
       if (data) {
-        const { accessToken } = data.login;
-        const user = decodeUserFromJwt(accessToken);
+        const { accessToken, user } = data.login;
         globalActions.updateUser(user);
-        globalActions.updateActiveParticipation();
+        globalActions.updateActiveParticipation(user.activeParticipation);
         setAccessToken(accessToken);
         history.push("/");
       }

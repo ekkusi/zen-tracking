@@ -5,7 +5,6 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { setAccessToken } from "../util/accessToken";
 import useGlobal from "../store";
-import decodeUserFromJwt from "../util/decodeUserFromJwt";
 import FormField from "./general/form/FormField";
 import ModalTemplate, { ModalTemplateProps } from "./general/ModalTemplate";
 import { PrimaryButton } from "./primitives/Button";
@@ -13,6 +12,7 @@ import {
   RegisterMutation,
   RegisterMutationVariables,
 } from "./__generated__/RegisterMutation";
+import { userDataFragment } from "../fragments";
 
 export const REGISTER_USER = gql`
   mutation RegisterMutation(
@@ -22,8 +22,12 @@ export const REGISTER_USER = gql`
   ) {
     register(name: $name, password: $password, isPrivate: $isPrivate) {
       accessToken
+      user {
+        ...UserData
+      }
     }
   }
+  ${userDataFragment}
 `;
 
 type RegisterModalProps = Omit<ModalTemplateProps, "children"> & {};
@@ -78,8 +82,7 @@ const RegisterModal = ({
       variables: values,
     });
     if (data) {
-      const { accessToken } = data.register;
-      const user = decodeUserFromJwt(accessToken);
+      const { accessToken, user } = data.register;
       if (!hasLoggedInBefore) localStorage.setItem("hasLoggedInBefore", "true");
       globalActions.updateUser(user);
       setAccessToken(accessToken);

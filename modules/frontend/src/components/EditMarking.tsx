@@ -13,7 +13,7 @@ import { UploadImageSuccessResult } from "@ekkusi/zen-tracking-backend/lib/types
 import ModalTemplate, {
   ModalTemplateProps,
 } from "components/general/ModalTemplate";
-import { PrimaryButton, AlertButton } from "components/primitives/Button";
+import { PrimaryButton } from "components/primitives/Button";
 import { PrimaryTextArea } from "components/primitives/Input";
 import FileInput from "components/general/form/FileInput";
 import React, { useMemo, useState } from "react";
@@ -39,6 +39,7 @@ import {
 import FormField from "./general/form/FormField";
 import PreviewImage from "./general/form/PreviewImage";
 import { PlainIconButton } from "./primitives/IconButton";
+import DeleteConfimationModal from "./DeleteConfirmationModal";
 
 export const ADD_MARKING = gql`
   mutation AddMarkingMutation(
@@ -432,14 +433,23 @@ const EditMarking = ({
                   {marking ? "Tallenna" : "Lisää merkkaus"}
                 </PrimaryButton>
                 {marking && (
-                  <AlertButton
-                    isLoading={loading || deleteLoading}
-                    isDisabled={createLoading || updateLoading}
-                    loadingText="Poista"
-                    onClick={deleteAndClose}
+                  <DeleteConfimationModal
+                    onDelete={deleteAndClose}
+                    openButtonLabel="Poista"
+                    headerLabel="Poista merkkaus"
+                    openButtonProps={{
+                      isLoading: loading || deleteLoading,
+                      isDisabled: createLoading || updateLoading,
+                      loadingText: "Poista",
+                    }}
                   >
-                    Poista
-                  </AlertButton>
+                    <Text>
+                      Oletko varma, että haluat poistaa merkkauksen päivältä{" "}
+                      {DateUtil.format(marking.date)}?. Tämä poistaa kaikki
+                      merkkauksen tiedot, kuten sen kuvan, mikäli semmoinen on
+                      ladattu.
+                    </Text>
+                  </DeleteConfimationModal>
                 )}
               </Box>
             </Form>

@@ -1,5 +1,8 @@
 import { gql } from "@apollo/client";
-import { challengeDataFragment } from "fragments";
+import {
+  activeParticipationInfoFragment,
+  challengeDataFragment,
+} from "fragments";
 
 export const challengeWithParticipationsFragment = gql`
   fragment ChallengeWithParticipationsFragment on Challenge {
@@ -26,12 +29,10 @@ export const GET_CHALLENGES = gql`
 export const CREATE_PARTICIPATION = gql`
   mutation CreateParticipationMutation($challengeId: ID!) {
     createParticipation(challengeId: $challengeId) {
-      id
-      challenge {
-        id
-      }
+      ...ActiveParticipationInfo
     }
   }
+  ${activeParticipationInfoFragment}
 `;
 
 export const DELETE_PARTICIPATION = gql`

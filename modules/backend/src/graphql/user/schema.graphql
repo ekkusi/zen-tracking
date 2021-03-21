@@ -22,8 +22,10 @@ type User {
   name: ID!
   isPrivate: Boolean!
   participations: [ChallengeParticipation!]!
+  activeParticipation(challengeId: ID): ChallengeParticipation
 }
 
 type LoginResult {
   accessToken: String!
+  user: User!
 }

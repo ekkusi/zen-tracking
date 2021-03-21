@@ -5,7 +5,10 @@ import { ParsedChallengeParticipation } from "types/parsedBackendTypes";
 export type ActionTypes = {
   updateUser: (user: AuthenticatedUser | null) => void;
   updateError: (error: string | null) => void;
-  updateActiveParticipation: (challengeId?: string | null) => Promise<void>;
+  updateActiveParticipationOld: (challengeId?: string | null) => Promise<void>;
+  updateActiveParticipation: (
+    participation: ParsedChallengeParticipation | null
+  ) => void;
   updateActiveParticipationMarkings: (markings: Marking[]) => void;
   logout: () => Promise<void>;
 };
