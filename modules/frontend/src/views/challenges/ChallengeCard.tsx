@@ -117,6 +117,7 @@ const ChallengeCard = ({
       {...rest}
     >
       <LightMode>
+        <Heading.H3 mb="0">{challenge.name}</Heading.H3>
         {activeParticipation?.challenge.id === challenge.id && (
           <Text as="span" color="primary.regular">
             Aktiivinen haaste
@@ -131,7 +132,6 @@ const ChallengeCard = ({
         <Text as="span" mb="3">
           Ilmoittautuneita: {challenge.participations.length}
         </Text>
-        <Heading.H3 mb="0">{challenge.name}</Heading.H3>
 
         <Text fontSize="md" overflow="hidden">
           {challenge.description}
