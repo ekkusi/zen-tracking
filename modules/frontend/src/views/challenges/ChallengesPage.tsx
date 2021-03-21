@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import { useQuery } from "@apollo/client";
@@ -18,12 +18,12 @@ import {
 } from "./__generated__/GetChallengesQuery";
 import ChallengesSeparator from "./ChallengesSeparator";
 import ChallengesSection from "./ChallengesSection";
+import { getParticipation } from "../../util/apolloQueries";
 
 const ChallengesPage = (): JSX.Element => {
-  const [error, setError] = useState<string>();
-  const [loading, setLoading] = useState(false);
-
+  const [skip, setSkip] = useState(false);
   const selectRef = useRef<SelectHandle>(null);
+  const [getParticipationLoading, setGetParticipationLoading] = useState(false);
 
   const user = useGlobal((state) => state.currentUser)[0];
   const [activeParticipation, updateActiveParticipation] = useGlobal(
@@ -34,6 +34,7 @@ const ChallengesPage = (): JSX.Element => {
   const [challengesByUser, setChallengesByUser] = useState<
     GetChallengesQuery_getChallenges[]
   >([]);
+
   const [
     userParticipationChallenges,
     setUserParticipationChallenges,
@@ -42,15 +43,29 @@ const ChallengesPage = (): JSX.Element => {
     GetChallengesQuery_getChallenges[]
   >([]);
 
-  const { data, error: apolloError, refetch } = useQuery<GetChallengesQuery>(
+  const {
+    data: getChallengesData,
+    loading: getChallengesLoading,
+    error: getChallengesError,
+    refetch,
+  } = useQuery<GetChallengesQuery>(
     GET_CHALLENGES,
-    { skip: !!error, fetchPolicy: "no-cache" } // This stops looping useQuery when error is returned
+    { skip, fetchPolicy: "no-cache" } // This stops looping useQuery when error is returned
   );
 
-  if (apolloError) {
-    setError(
-      `Jotakin meni vikaan haasteiden hakemisessa: ${apolloError.message}`
-    );
+  const error = useMemo((): string | undefined => {
+    if (getChallengesError) {
+      return getChallengesError.message;
+    }
+    return undefined;
+  }, [getChallengesError]);
+
+  const loading = useMemo(() => {
+    return getChallengesLoading || getParticipationLoading;
+  }, [getChallengesLoading, getParticipationLoading]);
+
+  if (error) {
+    setSkip(true);
   }
 
   // Return challenges that match status filter and are not already in user challenges
@@ -63,14 +78,14 @@ const ChallengesPage = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (data) {
+    if (getChallengesData) {
       // TODO: This filtering should probably go to backend and put here as separate lazyQueries
       // Challenges that are created by current user
-      const newChallengesByUser = data.getChallenges.filter(
+      const newChallengesByUser = getChallengesData.getChallenges.filter(
         (it) => it.creator.name === user.name
       );
       // Challenges that current user is participating in, but not the creator
-      const newUserParticipationChallenges = data.getChallenges.filter(
+      const newUserParticipationChallenges = getChallengesData.getChallenges.filter(
         (it) =>
           !!it.participations.find(
             (participation) =>
@@ -79,7 +94,7 @@ const ChallengesPage = (): JSX.Element => {
           )
       );
       // Other challenges
-      const newOtherChallenges = data.getChallenges.filter(
+      const newOtherChallenges = getChallengesData.getChallenges.filter(
         (it) =>
           it.creator.name !== user.name &&
           !it.participations.find(
@@ -90,7 +105,7 @@ const ChallengesPage = (): JSX.Element => {
       setUserParticipationChallenges(newUserParticipationChallenges);
       setOtherChallenges(newOtherChallenges);
     }
-  }, [data, user]);
+  }, [getChallengesData, user]);
 
   const refetchChallenges = async () => {
     await refetch();
@@ -100,9 +115,17 @@ const ChallengesPage = (): JSX.Element => {
   };
 
   const onActiveChallengeSelect = async (value: OptionType | null) => {
-    setLoading(true);
-    await updateActiveParticipation(value?.value ?? null);
-    setLoading(false);
+    const selectedChallengeId = value?.value ?? null;
+    if (selectedChallengeId) {
+      setGetParticipationLoading(true);
+      const result = await getParticipation({
+        challengeId: selectedChallengeId,
+      });
+      updateActiveParticipation(result.data.getParticipation);
+      setGetParticipationLoading(false);
+    } else {
+      updateActiveParticipation(null);
+    }
   };
 
   return (
@@ -124,7 +147,7 @@ const ChallengesPage = (): JSX.Element => {
           openButtonProps={{ size: "lg" }}
         />
       </Flex>
-      {data && (
+      {getChallengesData && (
         <Box>
           <ChallengesSeparator title="Omat haasteet" />
           <Flex

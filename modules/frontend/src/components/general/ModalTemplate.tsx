@@ -1,5 +1,4 @@
 import {
-  ButtonProps,
   Modal,
   ModalBody,
   ModalBodyProps,
@@ -15,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import React from "react";
-import { PrimaryButton } from "../primitives/Button";
+import { ButtonProps, PrimaryButton } from "../primitives/Button";
 
 export type ModalTemplateProps = Omit<
   ModalProps,
@@ -29,6 +28,7 @@ export type ModalTemplateProps = Omit<
   headerLabel?: string;
   modalFooter?: JSX.Element;
   openButtonProps?: ButtonProps;
+  openButton?: JSX.Element;
   closeButtonLabel?: string;
   isOpen?: boolean;
   onClose?: () => void;
@@ -45,6 +45,7 @@ const ModalTemplate = ({
   hasFooter = true,
   openButtonProps = {},
   openButtonLabel = "Avaa modal",
+  openButton,
   headerLabel = "Modal",
   closeButtonLabel = "Sulje",
   isOpen: customIsOpen,
@@ -64,11 +65,12 @@ const ModalTemplate = ({
 
   return (
     <>
-      {hasOpenButton && (
-        <PrimaryButton onClick={onOpen} {...openButtonProps}>
-          {openButtonLabel}
-        </PrimaryButton>
-      )}
+      {hasOpenButton &&
+        (openButton || (
+          <PrimaryButton onClick={onOpen} {...openButtonProps}>
+            {openButtonLabel}
+          </PrimaryButton>
+        ))}
 
       <Modal
         isOpen={isOpen}
@@ -87,7 +89,9 @@ const ModalTemplate = ({
             </ModalHeader>
           )}
           <ModalCloseButton />
-          <ModalBody {...modalBodyProps}>{children}</ModalBody>
+          <ModalBody pb={hasFooter ? "0" : "5"} {...modalBodyProps}>
+            {children}
+          </ModalBody>
 
           {hasFooter && (
             <ModalFooter {...modalFooterProps}>

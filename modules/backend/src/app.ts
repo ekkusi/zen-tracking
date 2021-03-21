@@ -2,26 +2,33 @@ import express, { RequestHandler } from "express";
 import fileUpload from "express-fileupload";
 import path from "path";
 import dotEnv from "dotenv";
+import cookieParser from "cookie-parser";
+import jwt from "jsonwebtoken";
 import graphqlApi from "./graphql/server";
 import quoteOfTheDay from "./utils/getQuoteOfTheDay";
 
 import s3Client from "./utils/awsS3Client";
 
 import config from "./config.json";
+import AuthenticationError from "./utils/errors/AuthenticationError";
+import { AuthenticatedUser } from "./types/customContext";
+import {
+  createAccessToken,
+  createRefreshToken,
+  createRefreshTokenCookie,
+} from "./utils/auth";
 
 dotEnv.config();
 const app = express();
-app.use(fileUpload());
 const port = process.env.PORT || 4000; // default port to listen, set to 443 to test without port in url
-
-graphqlApi(app);
 
 // Allow cors if origin is in allowed origins
 const allowOrigin: RequestHandler = (req, res, next) => {
   const { origin } = req.headers;
-  console.log(`Request coming from: ${origin}`);
   const allowedOrigins = config.ALLOWED_ORIGINS;
-  if (origin && allowedOrigins.includes(origin)) {
+  if (process.env.NODE_ENV === "development") {
+    res.header("Access-Control-Allow-Origin", "*");
+  } else if (origin && allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
   }
 
@@ -29,6 +36,9 @@ const allowOrigin: RequestHandler = (req, res, next) => {
 };
 
 app.use(allowOrigin);
+app.use(cookieParser());
+app.use(fileUpload());
+graphqlApi(app);
 
 app.get("/quote", async (req, res, next) => {
   try {
@@ -49,8 +59,6 @@ app.post("/upload-image", async (req, res) => {
   const { photo } = req.files;
   const firstPhoto = Array.isArray(photo) ? photo[0] : photo;
 
-  console.log(`Uploading photo, ${firstPhoto.name}`);
-
   try {
     const result = await s3Client.uploadImage(firstPhoto);
     return res.status(200).send(result);
@@ -69,6 +77,33 @@ app.post("/delete-image", async (req, res) => {
     }
   }
   return res.status(500).send();
+});
+
+app.post("/refresh-token", (req, res) => {
+  try {
+    const { jubbiduu } = req.cookies;
+    if (!jubbiduu) {
+      throw new AuthenticationError("Refresh token keksiä ei löytynyt");
+    }
+    const decoded = jwt.verify(
+      jubbiduu,
+      process.env.JWT_REFRESH_TOKEN_SECRET_KEY!
+    ) as any;
+    if (typeof decoded !== "object" || !decoded.user)
+      throw new AuthenticationError(
+        "Refresh token keksi ei palauttanut oikeita tietoja"
+      );
+    const { user }: { user: AuthenticatedUser } = decoded;
+    createRefreshTokenCookie(createRefreshToken(user), res);
+
+    return res.status(200).send({
+      accessToken: createAccessToken(user),
+    });
+  } catch (error) {
+    return res.status(500).send({
+      error: error.message,
+    });
+  }
 });
 
 if (process.env.NODE_ENV === "production") {

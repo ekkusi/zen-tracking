@@ -21,8 +21,8 @@ export type Query = {
   __typename?: "Query";
   _empty?: Maybe<Scalars["String"]>;
   getUser: User;
+  getCurrentUser: User;
   getUsers?: Maybe<Array<User>>;
-  checkUser: UserCheckResult;
   getChallenge?: Maybe<Challenge>;
   getChallenges: Array<Challenge>;
   getUserParticipations: Array<ChallengeParticipation>;
@@ -33,11 +33,6 @@ export type Query = {
 
 export type QueryGetUserArgs = {
   name: Scalars["ID"];
-};
-
-export type QueryCheckUserArgs = {
-  name: Scalars["ID"];
-  password: Scalars["String"];
 };
 
 export type QueryGetChallengeArgs = {
@@ -51,10 +46,6 @@ export type QueryGetChallengesArgs = {
   endDate?: Maybe<DateFilter>;
 };
 
-export type QueryGetUserParticipationsArgs = {
-  userName: Scalars["ID"];
-};
-
 export type QueryGetParticipationArgs = {
   challengeId: Scalars["ID"];
 };
@@ -63,15 +54,13 @@ export type QueryGetMarkingsArgs = {
   participationId: Scalars["ID"];
 };
 
-export type QueryGetUserTransferParticipationArgs = {
-  userName: Scalars["ID"];
-};
-
 export type Mutation = {
   __typename?: "Mutation";
   _empty?: Maybe<Scalars["String"]>;
-  addUser: User;
   deleteUser: Scalars["Boolean"];
+  login: LoginResult;
+  register: LoginResult;
+  logout: Scalars["Boolean"];
   createChallenge: Challenge;
   updateChallenge: Challenge;
   deleteChallenge: Scalars["Boolean"];
@@ -83,14 +72,19 @@ export type Mutation = {
   transferUserMarkings: Scalars["Boolean"];
 };
 
-export type MutationAddUserArgs = {
-  name: Scalars["ID"];
-  password: Scalars["String"];
-  isPrivate?: Maybe<Scalars["Boolean"]>;
-};
-
 export type MutationDeleteUserArgs = {
   name: Scalars["ID"];
+};
+
+export type MutationLoginArgs = {
+  name: Scalars["ID"];
+  password: Scalars["String"];
+};
+
+export type MutationRegisterArgs = {
+  name: Scalars["ID"];
+  password: Scalars["String"];
+  isPrivate: Scalars["Boolean"];
 };
 
 export type MutationCreateChallengeArgs = {
@@ -108,12 +102,10 @@ export type MutationDeleteChallengeArgs = {
 
 export type MutationCreateParticipationArgs = {
   challengeId: Scalars["ID"];
-  userName: Scalars["ID"];
 };
 
 export type MutationDeleteParticipationArgs = {
   challengeId: Scalars["ID"];
-  userName: Scalars["ID"];
 };
 
 export type MutationAddMarkingArgs = {
@@ -131,7 +123,6 @@ export type MutationDeleteMarkingArgs = {
 };
 
 export type MutationTransferUserMarkingsArgs = {
-  userName: Scalars["ID"];
   challengeId: Scalars["ID"];
 };
 
@@ -142,23 +133,22 @@ export type DateFilter = {
   lt?: Maybe<Scalars["String"]>;
 };
 
-export enum UserCheckStatus {
-  UserAndPasswordFound = "USER_AND_PASSWORD_FOUND",
-  UserNotFoundButCreated = "USER_NOT_FOUND_BUT_CREATED",
-  InvalidPassword = "INVALID_PASSWORD",
-}
-
 export type User = {
   __typename?: "User";
   name: Scalars["ID"];
   isPrivate: Scalars["Boolean"];
   participations: Array<ChallengeParticipation>;
+  activeParticipation?: Maybe<ChallengeParticipation>;
 };
 
-export type UserCheckResult = {
-  __typename?: "UserCheckResult";
-  user?: Maybe<User>;
-  status: UserCheckStatus;
+export type UserActiveParticipationArgs = {
+  challengeId?: Maybe<Scalars["ID"]>;
+};
+
+export type LoginResult = {
+  __typename?: "LoginResult";
+  accessToken: Scalars["String"];
+  user: User;
 };
 
 export enum ChallengeStatus {
@@ -191,7 +181,6 @@ export type ChallengeParticipation = {
 export type CreateChallengeInput = {
   name: Scalars["String"];
   description: Scalars["String"];
-  creatorName: Scalars["ID"];
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
 };

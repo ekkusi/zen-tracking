@@ -6,14 +6,9 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-import ModalTemplate from "components/general/ModalTemplate";
-import {
-  AlertButton,
-  CancelButton,
-  PrimaryButton,
-} from "components/primitives/Button";
+import { PrimaryButton } from "components/primitives/Button";
 import Heading from "components/primitives/Heading";
-import React, { useState } from "react";
+import React from "react";
 import useGlobal from "store";
 import DateUtil from "util/DateUtil";
 import EditChallenge from "components/EditChallenge";
@@ -27,6 +22,7 @@ import {
   CreateParticipationMutationVariables,
 } from "./__generated__/CreateParticipationMutation";
 import { GetChallengesQuery_getChallenges } from "./__generated__/GetChallengesQuery";
+import DeleteConfimationModal from "../../components/DeleteConfirmationModal";
 
 type ChallengeCardProps = FlexProps & {
   challenge: GetChallengesQuery_getChallenges;
@@ -49,30 +45,23 @@ const ChallengeCard = ({
     (state) => state.activeParticipation,
     (actions) => actions.updateActiveParticipation
   );
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [addParticipation, { loading: addLoading }] = useMutation<
     CreateParticipationMutation,
     CreateParticipationMutationVariables
   >(CREATE_PARTICIPATION, {
     variables: {
       challengeId: challenge.id,
-      userName: user.name,
     },
   });
 
-  const [deleteParticipation, { loading: deleteLoading }] = useMutation<
+  const [deleteParticipation] = useMutation<
     DeteleParticipationMutation,
     DeteleParticipationMutationVariables
   >(DELETE_PARTICIPATION, {
     variables: {
       challengeId: challenge.id,
-      userName: user.name,
     },
   });
-
-  const updateModalOpen = (value: boolean) => {
-    setIsDeleteModalOpen(value);
-  };
 
   const removeParticipation = async () => {
     try {
@@ -83,9 +72,8 @@ const ChallengeCard = ({
         activeParticipation &&
         activeParticipation.challenge.id === challenge.id
       ) {
-        await updateActiveParticipation(null);
+        updateActiveParticipation(null);
       }
-      updateModalOpen(false);
     } catch (e) {
       console.log(e);
     }
@@ -97,7 +85,7 @@ const ChallengeCard = ({
       await onEdit();
       // If activeparticipation isn't updated by updateChallenges -> update manually with created challenge
       if (!activeParticipation && result.data) {
-        updateActiveParticipation(challenge.id);
+        updateActiveParticipation(result.data.createParticipation);
       }
     } catch (e) {
       console.log(e);
@@ -161,42 +149,20 @@ const ChallengeCard = ({
       )}
       {getUserParticipation() ? (
         <>
-          <AlertButton
-            color="white"
-            bg="warning"
-            mt={isUserChallengeCreator() ? "2" : "auto"}
-            onClick={() => updateModalOpen(true)}
-          >
-            Poista ilmoittautuminen
-          </AlertButton>
-          <ModalTemplate
-            hasOpenButton={false}
-            isOpen={isDeleteModalOpen}
-            onClose={() => updateModalOpen(false)}
+          <DeleteConfimationModal
+            onDelete={removeParticipation}
+            openButtonLabel="Poista ilmoittautuminen"
             headerLabel="Poista ilmoittautuminen"
-            modalFooter={
-              <>
-                <AlertButton
-                  isLoading={deleteLoading}
-                  onClick={removeParticipation}
-                >
-                  Poista
-                </AlertButton>
-                <CancelButton
-                  isDisabled={deleteLoading}
-                  onClick={() => updateModalOpen(false)}
-                >
-                  Peruuta
-                </CancelButton>
-              </>
-            }
+            openButtonProps={{
+              mt: isUserChallengeCreator() ? "2" : "auto",
+            }}
           >
             <Text>
               Oletko varma, että haluat poistaa ilmoittautumisesi haasteesta{" "}
               {challenge.name}? Jos sinulla on merkkauksia kyseiseen
               haasteeseen, poistuvat nekin.
             </Text>
-          </ModalTemplate>
+          </DeleteConfimationModal>
         </>
       ) : (
         <PrimaryButton

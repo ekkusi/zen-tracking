@@ -1,22 +1,22 @@
 extend type Query {
   getChallenge(id: ID!): Challenge
   getChallenges(creatorName: ID, status: ChallengeStatus, startDate: DateFilter, endDate: DateFilter): [Challenge!]!
-  getUserParticipations(userName: ID!): [ChallengeParticipation!]!
+  getUserParticipations: [ChallengeParticipation!]!
   getParticipation(challengeId: ID!): ChallengeParticipation
   getMarkings(participationId: ID!): [Marking!]!
-  getUserTransferParticipation(userName: ID!): ChallengeParticipation
+  getUserTransferParticipation: ChallengeParticipation
 }
 
 extend type Mutation {
   createChallenge(challenge: CreateChallengeInput!): Challenge!
   updateChallenge(id: ID!, args: UpdateChallengeInput!): Challenge!
   deleteChallenge(id: ID!): Boolean!
-  createParticipation(challengeId: ID!, userName: ID!): ChallengeParticipation!
-  deleteParticipation(challengeId: ID!, userName: ID!): Boolean!
+  createParticipation(challengeId: ID!): ChallengeParticipation!
+  deleteParticipation(challengeId: ID!): Boolean!
   addMarking(participationId: ID!, marking: MarkingCreateInput!): Marking!
   editMarking(id: ID!, marking: MarkingUpdateInput!): Marking!
   deleteMarking(id: ID!): Boolean!
-  transferUserMarkings(userName: ID!, challengeId: ID!): Boolean!
+  transferUserMarkings(challengeId: ID!): Boolean!
 }
 
 enum ChallengeStatus {
@@ -47,7 +47,6 @@ type ChallengeParticipation {
 input CreateChallengeInput {
   name: String!
   description: String!
-  creatorName: ID!
   startDate: Date
   endDate: Date
 }

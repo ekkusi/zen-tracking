@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const TRANSFER_MARKINGS = gql`
-  mutation TransferMarkingsMutation($userName: ID!, $challengeId: ID!) {
-    transferUserMarkings(userName: $userName, challengeId: $challengeId)
+  mutation TransferMarkingsMutation($challengeId: ID!) {
+    transferUserMarkings(challengeId: $challengeId)
   }
 `;
 

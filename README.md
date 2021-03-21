@@ -137,6 +137,29 @@ NOTE: This requires following things
 - [Tesseract](https://github.com/tesseract-ocr/tesseract) is installed to the machine your running this script from
 - [fin.traineddata](https://github.com/tesseract-ocr/tessdata/blob/master/fin.traineddata) tesseract language pack is downloaded to your tesseract-ocr/tessdata/ folder (where you install tesseract in last step). In linux this will be in `/usr/share/tesseract-ocr/4.00/tessdata` by default, if you install tesseract by `sudo apt install tesseract-ocr`.
 
+## /Graphql API development in backend
+
+To open backend graphql api environment, navigate to http://localhost:4000/graphql when dev environment is up.
+
+When running queries from here, you must first fetch accesstoken to run some mutations.
+Easiest way to do this is to login with `main-user` or whatever user you want to make modifications with (users can be found in mockData.json in backend). Login by running this query, or with the user you want (passwords and name in mockData.json):
+
+```
+ mutation login {
+  login(name: "main-user", password: "asd123") {
+    accessToken
+  }
+}
+```
+
+And put the resulting accessToken to Graphiql HTTP Headers (can be found in bottom left of the page):
+```
+{
+    "Authorization": "Bearer <YOUR_ACCESS_TOKEN_HERE>"
+}
+
+
+
 # Docker
 
 NOTE: Docker needs to be up to run the following commands

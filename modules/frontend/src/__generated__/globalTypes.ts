@@ -14,16 +14,9 @@ export enum ChallengeStatus {
   UPCOMING = "UPCOMING",
 }
 
-export enum UserCheckStatus {
-  INVALID_PASSWORD = "INVALID_PASSWORD",
-  USER_AND_PASSWORD_FOUND = "USER_AND_PASSWORD_FOUND",
-  USER_NOT_FOUND_BUT_CREATED = "USER_NOT_FOUND_BUT_CREATED",
-}
-
 export interface CreateChallengeInput {
   name: string;
   description: string;
-  creatorName: string;
   startDate?: any | null;
   endDate?: any | null;
 }

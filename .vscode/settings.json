@@ -1,6 +1,7 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-    "editor.codeActionsOnSave": {
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true,
       "source.fixAll": true
   },
@@ -11,5 +12,5 @@
       "typescript",
       "typescriptreact",
       "mdx"
-  ]
+  ],
 }

@@ -1,6 +1,7 @@
 import { readFileSync } from "fs";
 import path from "path";
 import { Marking } from "@prisma/client";
+import AuthenticationError from "../../utils/errors/AuthenticationError";
 import { formatIsoString } from "../../utils/dateUtils";
 
 import { Resolvers } from "../../types/resolvers";
@@ -76,11 +77,12 @@ export const resolvers: Resolvers = {
       const challenges = await prisma.challenge.findMany({ where: filters });
       return challenges || [];
     },
-    getUserParticipations: async (_, { userName }, { prisma }) => {
+    getUserParticipations: async (_, __, { prisma, user }) => {
+      if (!user) throw new AuthenticationError();
       const participations = await prisma.challengeParticipation.findMany({
         where: {
           AND: {
-            user_name: userName,
+            user_name: user.name,
             Challenge: { NOT: { name: NO_PARTICIPATION_MARKINGS_HOLDER_NAME } },
           },
         },
@@ -99,11 +101,12 @@ export const resolvers: Resolvers = {
       });
       return markings;
     },
-    getUserTransferParticipation: async (_, { userName }, { prisma }) => {
+    getUserTransferParticipation: async (_, __, { prisma, user }) => {
+      if (!user) throw new AuthenticationError();
       const transferParticipation = await prisma.challengeParticipation.findFirst(
         {
           where: {
-            user_name: userName,
+            user_name: user.name,
             Challenge: { name: NO_PARTICIPATION_MARKINGS_HOLDER_NAME },
           },
         }
@@ -115,13 +118,17 @@ export const resolvers: Resolvers = {
     addMarking: async (
       _,
       { participationId, marking },
-      { prisma, loaders }
+      { prisma, loaders, user }
     ) => {
+      if (!user) throw new AuthenticationError();
       // Validate marking
-      await ChallengeValidator.validateAddMarking({
-        participationId,
-        marking,
-      });
+      await ChallengeValidator.validateAddMarking(
+        {
+          participationId,
+          marking,
+        },
+        user.name
+      );
 
       const createdMarking = await prisma.marking.create({
         data: ChallengeMapper.mapCreateMarkingInput(participationId, marking),
@@ -131,9 +138,18 @@ export const resolvers: Resolvers = {
 
       return createdMarking;
     },
-    editMarking: async (_, { id, marking }, { prisma, s3Client, loaders }) => {
+    editMarking: async (
+      _,
+      { id, marking },
+      { prisma, s3Client, loaders, user }
+    ) => {
+      if (!user) throw new AuthenticationError();
       // Check validity
-      await ChallengeValidator.validateMarkingInput(marking);
+      await ChallengeValidator.validateMarkingUpdateInput(
+        id,
+        marking,
+        user.name
+      );
       const oldMarking = await prisma.marking.findUnique({
         where: { id },
       });
@@ -160,7 +176,10 @@ export const resolvers: Resolvers = {
       loaders.markingsLoader.clear(editMarking.participation_id);
       return editMarking;
     },
-    deleteMarking: async (_, { id }, { prisma, s3Client, loaders }) => {
+    deleteMarking: async (_, { id }, { prisma, s3Client, loaders, user }) => {
+      if (!user) throw new AuthenticationError();
+      await ChallengeValidator.validateDeleteMarking(id, user.name);
+
       const marking = await prisma.marking.findUnique({
         where: { id },
       });
@@ -188,11 +207,12 @@ export const resolvers: Resolvers = {
     },
     transferUserMarkings: async (
       _,
-      { challengeId, userName },
-      { prisma, loaders }
+      { challengeId },
+      { prisma, loaders, user }
     ) => {
+      if (!user) throw new AuthenticationError();
       await ChallengeValidator.validateTransferUserMarking(
-        userName,
+        user.name,
         challengeId
       );
 
@@ -200,18 +220,18 @@ export const resolvers: Resolvers = {
         {
           where: {
             Challenge: { name: "NO_PARTICIPATION_MARKINGS_HOLDER" },
-            user_name: userName,
+            user_name: user.name,
           },
         }
       );
       if (!participationToUpdate)
         throw new Error(
-          `transferUserMarkings NO_PARTICIPATION_MARKINGS_HOLDER-participation with user: ${userName}wasn't found`
+          `transferUserMarkings NO_PARTICIPATION_MARKINGS_HOLDER-participation with user: ${user.name}wasn't found`
         );
       // Update participation to point to new challenge
       await prisma.challengeParticipation.update({
         where: { id: participationToUpdate.id },
-        data: { challenge_id: challengeId, user_name: userName },
+        data: { challenge_id: challengeId, user_name: user.name },
       });
 
       await loaderResetors.clearParticipationsCache(
@@ -220,11 +240,11 @@ export const resolvers: Resolvers = {
       );
       return true; // Backup
     },
-    createChallenge: async (_, { challenge }, { prisma, loaders }) => {
-      const { creatorName, ...args } = challenge;
-      await ChallengeValidator.validateCreateChallengeArgs(args);
+    createChallenge: async (_, { challenge }, { prisma, loaders, user }) => {
+      if (!user) throw new AuthenticationError();
+      await ChallengeValidator.validateCreateChallengeArgs(challenge);
       const createChallenge = await prisma.challenge.create({
-        data: ChallengeMapper.mapCreateChallengeInput(challenge),
+        data: ChallengeMapper.mapCreateChallengeInput(challenge, user.name),
       });
       await loaderResetors.clearParticipationsCacheByChallenge(
         createChallenge.id,
@@ -232,8 +252,9 @@ export const resolvers: Resolvers = {
       );
       return createChallenge;
     },
-    updateChallenge: async (_, { id, args }, { prisma, loaders }) => {
-      await ChallengeValidator.validateChallengeArgs(args);
+    updateChallenge: async (_, { id, args }, { prisma, loaders, user }) => {
+      if (!user) throw new AuthenticationError();
+      await ChallengeValidator.validateUpdateChallenge(args, id, user.name);
       const updatedChallenge = await prisma.challenge.update({
         where: { id },
         data: ChallengeMapper.mapEditChallengeInput(args),
@@ -242,8 +263,9 @@ export const resolvers: Resolvers = {
       loaders.challengeLoader.clear(id);
       return updatedChallenge;
     },
-    deleteChallenge: async (_, { id }, { prisma, s3Client, loaders }) => {
-      await ChallengeValidator.validateDeleteChallengeArgs(id);
+    deleteChallenge: async (_, { id }, { prisma, s3Client, loaders, user }) => {
+      if (!user) throw new AuthenticationError();
+      await ChallengeValidator.validateDeleteChallengeArgs(id, user.name);
       // Get markings to delete from s3 here, later this data won't be available
       const challengeMarkings = await prisma.marking.findMany({
         where: {
@@ -279,35 +301,49 @@ export const resolvers: Resolvers = {
       }
       return false;
     },
-    createParticipation: async (_, args, { prisma, loaders }) => {
-      await ChallengeValidator.validateCreateParticipation(args);
+    createParticipation: async (
+      _,
+      { challengeId },
+      { prisma, loaders, user }
+    ) => {
+      if (!user) throw new AuthenticationError();
+      await ChallengeValidator.validateCreateParticipation(
+        challengeId,
+        user.name
+      );
 
-      const { challengeId, userName } = args;
       const participation = await prisma.challengeParticipation.create({
-        data: { challenge_id: challengeId, user_name: userName },
+        data: { challenge_id: challengeId, user_name: user.name },
       });
       // Clear participationsLoader cache by created participation id
       await loaderResetors.clearParticipationsCache(participation.id, loaders);
       return participation;
     },
-    deleteParticipation: async (_, args, { prisma, s3Client, loaders }) => {
-      const { userName, challengeId } = args;
-      await ChallengeValidator.validateDeleteParticipation(args);
+    deleteParticipation: async (
+      _,
+      { challengeId },
+      { prisma, s3Client, loaders, user }
+    ) => {
+      if (!user) throw new AuthenticationError();
+      await ChallengeValidator.validateDeleteParticipation(
+        challengeId,
+        user.name
+      );
       // Get markings to delete from s3 here, later this data won't be available
       const participationMarkings = await prisma.marking.findMany({
         where: {
           ChallengeParticipation: {
             challenge_id: challengeId,
-            user_name: userName,
+            user_name: user.name,
           },
         },
       });
 
       // Clear partipationsLoader cache
-      await loaderResetors.clearParticipationsCacheByUser(userName, loaders);
+      await loaderResetors.clearParticipationsCacheByUser(user.name, loaders);
       // This is temp solution, because prisma doesn't support NOT NULL constraint and ON DELETE CASCADE. Prisma delete results in relation delete violation.
       const deletedParticipations = await prisma.$executeRaw(
-        `DELETE FROM "ChallengeParticipation" WHERE user_name='${args.userName}' AND challenge_id='${args.challengeId}';`
+        `DELETE FROM "ChallengeParticipation" WHERE user_name='${user.name}' AND challenge_id='${challengeId}';`
       );
       if (deletedParticipations > 0) {
         // If more than 0 rows are affected by above query == participation deleted -> delete all related marking-images from s3
@@ -322,7 +358,7 @@ export const resolvers: Resolvers = {
           );
         } catch (error) {
           console.log(
-            `Something went wrong when deleting participation: ${challengeId}:${userName} marking images from s3: ${error.message}`
+            `Something went wrong when deleting participation: ${challengeId}:${user.name} marking images from s3: ${error.message}`
           );
         }
         return true;

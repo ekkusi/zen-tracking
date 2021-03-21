@@ -1,12 +1,11 @@
 import { User as PrismaUser } from "@prisma/client";
-import { User } from "../../types/schema";
+import { AuthenticatedUser } from "../../types/customContext";
 
 export class UserMapper {
-  public static mapUser(user: PrismaUser): User {
+  public static mapAuthenticatedUser(user: PrismaUser): AuthenticatedUser {
     return {
-      ...user,
+      name: user.name,
       isPrivate: user.is_private,
-      participations: [],
-    } as User;
+    };
   }
 }

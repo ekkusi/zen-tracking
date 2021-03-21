@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: GetUserParticipationInfo
+// GraphQL fragment: ActiveParticipationInfo
 // ====================================================
 
-export interface GetUserParticipationInfo_challenge {
+export interface ActiveParticipationInfo_challenge {
   __typename: "Challenge";
   id: string;
   name: string;
@@ -15,7 +15,7 @@ export interface GetUserParticipationInfo_challenge {
   endDate: any | null;
 }
 
-export interface GetUserParticipationInfo_markings {
+export interface ActiveParticipationInfo_markings {
   __typename: "Marking";
   id: string;
   date: any;
@@ -24,9 +24,9 @@ export interface GetUserParticipationInfo_markings {
   rating: number;
 }
 
-export interface GetUserParticipationInfo {
+export interface ActiveParticipationInfo {
   __typename: "ChallengeParticipation";
   id: string;
-  challenge: GetUserParticipationInfo_challenge;
-  markings: GetUserParticipationInfo_markings[];
+  challenge: ActiveParticipationInfo_challenge;
+  markings: ActiveParticipationInfo_markings[];
 }

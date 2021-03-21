@@ -46,9 +46,10 @@ export class ChallengeMapper {
   }
 
   public static mapCreateChallengeInput(
-    challenge: CreateChallengeInput
+    challenge: CreateChallengeInput,
+    creatorName: string
   ): Prisma.ChallengeCreateInput {
-    const { startDate, endDate, creatorName, ...rest } = challenge;
+    const { startDate, endDate, ...rest } = challenge;
     return {
       ...rest,
       User: { connect: { name: creatorName } },

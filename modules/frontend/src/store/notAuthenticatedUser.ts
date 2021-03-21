@@ -1,6 +1,6 @@
-import { ParsedUser } from "types/parsedBackendTypes";
+import { AuthenticatedUser } from "@ekkusi/zen-tracking-backend/lib/types/customContext";
 
-export const notAuthorizedUser: ParsedUser = {
+export const notAuthorizedUser: AuthenticatedUser = {
   name: "not-authorized",
   isPrivate: false,
 };

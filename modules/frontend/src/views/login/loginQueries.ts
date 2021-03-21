@@ -1,14 +1,25 @@
 import { gql } from "@apollo/client";
-import { userDataFragment } from "fragments";
+import {
+  activeParticipationInfoFragment,
+  userDataFragment,
+} from "../../fragments";
 
-export const CHECK_USER = gql`
-  query CheckUserQuery($name: ID!, $password: String!) {
-    checkUser(name: $name, password: $password) {
-      status
+export const LOGIN = gql`
+  mutation LoginMutation(
+    $name: ID!
+    $password: String!
+    $activeParticipationChallengeId: ID
+  ) {
+    login(name: $name, password: $password) {
+      accessToken
       user {
         ...UserData
+        activeParticipation(challengeId: $activeParticipationChallengeId) {
+          ...ActiveParticipationInfo
+        }
       }
     }
   }
   ${userDataFragment}
+  ${activeParticipationInfoFragment}
 `;

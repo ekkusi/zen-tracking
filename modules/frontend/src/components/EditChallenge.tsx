@@ -2,7 +2,6 @@ import { gql, useMutation } from "@apollo/client";
 import { useDisclosure, Text, Flex, Box } from "@chakra-ui/react";
 import { isValid } from "date-fns/esm";
 import React, { useState, useMemo } from "react";
-import useGlobal from "store";
 import { GetChallengesQuery_getChallenges } from "views/challenges/__generated__/GetChallengesQuery";
 import DateUtil from "util/DateUtil";
 import { Form, Formik } from "formik";
@@ -20,9 +19,10 @@ import {
   CreateChallengeMutationVariables,
 } from "./__generated__/CreateChallengeMutation";
 import ModalTemplate, { ModalTemplateProps } from "./general/ModalTemplate";
-import { AlertButton, PrimaryButton } from "./primitives/Button";
+import { PrimaryButton } from "./primitives/Button";
 import FormField from "./general/form/FormField";
 import { PrimaryTextArea } from "./primitives/Input";
+import DeleteConfimationModal from "./DeleteConfirmationModal";
 
 const CREATE_CHALLENGE = gql`
   mutation CreateChallengeMutation($challenge: CreateChallengeInput!) {
@@ -85,8 +85,6 @@ const EditChallenge = ({
   maxEndDate,
   ...modalTemplateProps
 }: EditChallengeProps): JSX.Element => {
-  const user = useGlobal((state) => state.currentUser)[0];
-
   const [generalError, setGeneralError] = useState<string>();
 
   const [deleteChallenge, { loading: deleteLoading }] = useMutation<
@@ -233,7 +231,6 @@ const EditChallenge = ({
           variables: {
             challenge: {
               ...input,
-              creatorName: user.name,
             },
           },
         });
@@ -336,14 +333,27 @@ const EditChallenge = ({
               {saveButtonLabel || (challenge ? "Tallenna" : "Luo haaste")}
             </PrimaryButton>
             {challenge && (
-              <AlertButton
-                isLoading={deleteLoading}
-                isDisabled={createLoading || updateLoading}
-                loadingText="Poista"
-                onClick={deleteAndClose}
+              // <AlertButton
+
+              //   onClick={deleteAndClose}
+              // >
+              //   Poista
+              // </AlertButton>
+              <DeleteConfimationModal
+                onDelete={deleteAndClose}
+                headerLabel="Poista haaste"
+                openButtonProps={{
+                  isLoading: deleteLoading,
+                  isDisabled: createLoading || updateLoading,
+                  loadingText: "Poistetaan...",
+                }}
               >
-                Poista
-              </AlertButton>
+                <Text>
+                  Oletko varma, että haluat poistaa haasteen {challenge.name}?
+                  Jos sinulla on ilmoittautuminen haasteen, poistuu myös tämä
+                  sekä kaikki sen merkkaukset.
+                </Text>
+              </DeleteConfimationModal>
             )}
           </Box>
 

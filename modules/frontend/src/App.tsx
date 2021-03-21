@@ -12,12 +12,13 @@ const App = (): JSX.Element => {
   return (
     <ChakraProvider theme={theme}>
       <ThemeProvider theme={theme}>
-        <ApolloProvider>
-          <BrowserRouter>
+        {/* @ts-ignore */}
+        <BrowserRouter>
+          <ApolloProvider>
             <ScrollToTop />
             <Routes />
-          </BrowserRouter>
-        </ApolloProvider>
+          </ApolloProvider>
+        </BrowserRouter>
       </ThemeProvider>
     </ChakraProvider>
   );

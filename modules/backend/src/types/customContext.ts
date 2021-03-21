@@ -6,7 +6,12 @@ import {
   User,
 } from "@prisma/client";
 import DataLoader from "dataloader";
+import { Response } from "express";
 import AwsS3Client from "../utils/awsS3Client";
+
+export type AuthenticatedUser = Omit<User, "password" | "is_private"> & {
+  isPrivate: boolean;
+};
 
 export type DataLoaders = {
   markingsLoader: DataLoader<string, Marking[], string>;
@@ -27,5 +32,7 @@ export type DataLoaders = {
 export type CustomContext = {
   prisma: PrismaClient;
   s3Client: typeof AwsS3Client;
+  res: Response;
   loaders: DataLoaders;
+  user: AuthenticatedUser | null;
 };

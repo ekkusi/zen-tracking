@@ -1,6 +1,6 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { ArrowForwardIcon, CheckIcon } from "@chakra-ui/icons";
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
 import { ButtonWithRef } from "components/primitives/Button";
 import useGlobal from "store";
 import Heading from "components/primitives/Heading";
@@ -15,6 +15,7 @@ import ChallengeSelect, {
 import CustomLoadingOverlay from "components/general/LoadingOverlay";
 import AddMarking from "../../components/EditMarking";
 import MarkingCalendar from "../../components/MarkingCalendar";
+import { getParticipation } from "../../util/apolloQueries";
 
 const MotionArrowForwardIcon = chakraMotionWrapper(ArrowForwardIcon);
 const MotionButton = motion(ButtonWithRef);
@@ -30,12 +31,11 @@ const iconHoverVariants = {
 
 const MainPage = (): JSX.Element => {
   const user = useGlobal((store) => store.currentUser)[0];
+  const [loading, setLoading] = useState(false);
   const [activeParticipation, updateActiveParticipation] = useGlobal(
     (store) => store.activeParticipation,
     (actions) => actions.updateActiveParticipation
   );
-
-  const [loading, setLoading] = useState(false);
 
   const selectRef = useRef<SelectHandle>(null);
 
@@ -49,9 +49,17 @@ const MainPage = (): JSX.Element => {
   };
 
   const onActiveChallengeSelect = async (value: OptionType | null) => {
-    setLoading(true);
-    await updateActiveParticipation(value?.value ?? null);
-    setLoading(false);
+    const selectedChallengeId = value?.value ?? null;
+    if (selectedChallengeId) {
+      setLoading(true);
+      const result = await getParticipation({
+        challengeId: selectedChallengeId,
+      });
+      updateActiveParticipation(result.data.getParticipation ?? null);
+      setLoading(false);
+    } else {
+      updateActiveParticipation(null);
+    }
   };
 
   return (

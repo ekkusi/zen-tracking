@@ -10,6 +10,22 @@ export const markingDataFragment = gql`
   }
 `;
 
+export const activeParticipationInfoFragment = gql`
+  fragment ActiveParticipationInfo on ChallengeParticipation {
+    id
+    challenge {
+      id
+      name
+      startDate
+      endDate
+    }
+    markings {
+      ...MarkingData
+    }
+  }
+  ${markingDataFragment}
+`;
+
 export const userDataFragment = gql`
   fragment UserData on User {
     name

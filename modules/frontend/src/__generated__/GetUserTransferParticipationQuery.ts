@@ -34,7 +34,3 @@ export interface GetUserTransferParticipationQuery_getUserTransferParticipation 
 export interface GetUserTransferParticipationQuery {
   getUserTransferParticipation: GetUserTransferParticipationQuery_getUserTransferParticipation | null;
 }
-
-export interface GetUserTransferParticipationQueryVariables {
-  userName: string;
-}
