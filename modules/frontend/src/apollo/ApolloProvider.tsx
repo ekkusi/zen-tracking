@@ -104,7 +104,7 @@ const CustomApolloProvider = ({
       return true;
     },
     fetchAccessToken: () => {
-      return fetch(`${backendApiBase ?? ""}/delete-image`, {
+      return fetch(`${backendApiBase ?? ""}/refresh-token`, {
         method: "POST",
         credentials: "include",
       });

@@ -1,9 +1,10 @@
-import express, { RequestHandler } from "express";
+import express from "express";
 import fileUpload from "express-fileupload";
 import path from "path";
 import dotEnv from "dotenv";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
+import cors, { CorsOptions } from "cors";
 import graphqlApi from "./graphql/server";
 import quoteOfTheDay from "./utils/getQuoteOfTheDay";
 
@@ -22,20 +23,20 @@ dotEnv.config();
 const app = express();
 const port = process.env.PORT || 4000; // default port to listen, set to 443 to test without port in url
 
-// Allow cors if origin is in allowed origins
-const allowOrigin: RequestHandler = (req, res, next) => {
-  const { origin } = req.headers;
-  const allowedOrigins = config.ALLOWED_ORIGINS;
-  if (process.env.NODE_ENV === "development") {
-    res.header("Access-Control-Allow-Origin", "*");
-  } else if (origin && allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-
-  next();
+const corsOptions: CorsOptions = {
+  origin(origin, callback) {
+    console.log(`Checking cors for origin: ${origin}`);
+    if (config.ALLOWED_ORIGINS.includes(origin || "")) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
 };
 
-app.use(allowOrigin);
+app.use(cors(corsOptions));
+
 app.use(cookieParser());
 app.use(fileUpload());
 graphqlApi(app);
@@ -68,7 +69,7 @@ app.post("/upload-image", async (req, res) => {
 });
 
 app.post("/delete-image", async (req, res) => {
-  if (req.body.fileName) {
+  if (req.body && req.body.fileName) {
     try {
       await s3Client.deleteImage(req.body.fileName);
       return res.status(200).send();

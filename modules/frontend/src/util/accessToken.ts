@@ -19,7 +19,7 @@ export const setAccessToken = (newToken: string | null) => {
 };
 
 export const refreshToken = async (): Promise<void> => {
-  const response = await fetch(`${backendApiBaseUrl}/delete-image`, {
+  const response = await fetch(`${backendApiBaseUrl}/refresh-token`, {
     method: "POST",
     credentials: "include",
   });
