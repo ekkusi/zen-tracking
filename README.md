@@ -15,7 +15,7 @@
 - Clone this repository
 
   ```bash
-  git clone https://bitbucket.wihuri.fi/scm/prav/pravda-gdsn-admin.git
+  git clone https://github.com/ekkusi/zen-tracking.git
   ```
 
 - Install packages, generate prisma client and build backend
