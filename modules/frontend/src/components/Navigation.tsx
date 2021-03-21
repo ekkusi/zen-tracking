@@ -7,15 +7,13 @@ import {
   DrawerOverlay,
   DrawerProps,
   Flex,
-  Switch,
   Text,
-  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { RiMenuLine } from "react-icons/ri";
-import { Link, LinkProps } from "react-router-dom";
+import { Link, LinkProps, useHistory } from "react-router-dom";
 import useGlobal from "store";
 import theme from "theme";
 import chakraMotionWrapper from "util/chakraMotionWrapper";
@@ -23,6 +21,7 @@ import InstructionsModal from "./InstructionsModal";
 import { PrimaryButton } from "./primitives/Button";
 import { IconButtonWithRef } from "./primitives/IconButton";
 import QuoteOfTheDay from "./QuoteOfTheDay";
+import ThemeSwitch from "./ThemeSwitch";
 
 type NavigationProps = Omit<DrawerProps, "children" | "isOpen" | "onClose"> & {
   isOpen?: boolean;
@@ -66,11 +65,21 @@ const NavigationLink = ({
 };
 
 const NavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
-  const updateUser = useGlobal(
-    (store) => store.currentUser,
-    (actions) => actions.updateUser
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const logout = useGlobal(
+    () => {},
+    (actions) => actions.logout
   )[1];
-  const { colorMode, toggleColorMode } = useColorMode();
+
+  const history = useHistory();
+
+  const handleLogout = async () => {
+    setLogoutLoading(true);
+    await logout();
+    setLogoutLoading(false);
+    history.push("/login");
+  };
+
   return (
     <Flex height="80px" alignItems="center" width="100%">
       <IconButtonWithRef
@@ -87,17 +96,7 @@ const NavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
         }}
         transition={{ ease: "ease" }}
       />
-      <Flex alignItems="center" mr="4" ml={{ base: "auto", sm: "4" }}>
-        <Text as="span" fontSize="lg" mr="2">
-          {colorMode === "light" ? "Tulkoon yö!" : "Tulkoon valo!"}
-        </Text>
-        <Switch
-          onChange={toggleColorMode}
-          isChecked={colorMode === "dark"}
-          size="lg"
-          color="primary.regular"
-        />
-      </Flex>
+      <ThemeSwitch mr="4" ml={{ base: "auto", sm: "4" }} />
 
       <QuoteOfTheDay
         openButtonProps={{
@@ -107,7 +106,8 @@ const NavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
         }}
       />
       <PrimaryButton
-        onClick={() => updateUser(null)}
+        onClick={() => handleLogout()}
+        isLoading={logoutLoading}
         mr="4"
         display={{ base: "none", sm: "block" }}
       >
@@ -122,15 +122,27 @@ const Navigation = ({
   onClose: customOnClose,
   ...rest
 }: NavigationProps): JSX.Element => {
-  const updateUser = useGlobal(
-    (store) => store.currentUser,
-    (actions) => actions.updateUser
+  const [logoutLoading, setLogoutLoading] = useState(false);
+
+  const logout = useGlobal(
+    () => {},
+    (actions) => actions.logout
   )[1];
+
   const { isOpen, onOpen, onClose } = useDisclosure({
     onClose: customOnClose,
     isOpen: customIsOpen,
   });
   const [areInstructionsOpen, setAreInstructionsOpen] = useState(false);
+
+  const history = useHistory();
+
+  const handleLogout = async () => {
+    setLogoutLoading(true);
+    await logout();
+    setLogoutLoading(false);
+    history.push("/login");
+  };
 
   const listAnimations = {
     xPosEnd: (i: number) => ({
@@ -175,7 +187,12 @@ const Navigation = ({
                 display={{ base: "flex", sm: "none" }}
                 mb="5"
               >
-                <PrimaryButton onClick={() => updateUser(null)} mb="2" mx="2">
+                <PrimaryButton
+                  onClick={() => handleLogout()}
+                  isLoading={logoutLoading}
+                  mb="2"
+                  mx="2"
+                >
                   Kirjaudu ulos
                 </PrimaryButton>
                 <QuoteOfTheDay openButtonProps={{ mx: "2" }} />

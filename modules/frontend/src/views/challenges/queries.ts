@@ -24,8 +24,8 @@ export const GET_CHALLENGES = gql`
 `;
 
 export const CREATE_PARTICIPATION = gql`
-  mutation CreateParticipationMutation($challengeId: ID!, $userName: ID!) {
-    createParticipation(challengeId: $challengeId, userName: $userName) {
+  mutation CreateParticipationMutation($challengeId: ID!) {
+    createParticipation(challengeId: $challengeId) {
       id
       challenge {
         id
@@ -35,7 +35,7 @@ export const CREATE_PARTICIPATION = gql`
 `;
 
 export const DELETE_PARTICIPATION = gql`
-  mutation DeteleParticipationMutation($challengeId: ID!, $userName: ID!) {
-    deleteParticipation(challengeId: $challengeId, userName: $userName)
+  mutation DeteleParticipationMutation($challengeId: ID!) {
+    deleteParticipation(challengeId: $challengeId)
   }
 `;

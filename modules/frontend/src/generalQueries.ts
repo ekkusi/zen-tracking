@@ -1,13 +1,19 @@
 import { gql } from "@apollo/client";
 import { markingDataFragment, userDataFragment } from "fragments";
 
-export const GET_USER = gql`
-  query GetUserQuery($name: ID!) {
-    getUser(name: $name) {
+export const GET_CURRENT_USER = gql`
+  query GetCurrentUserQuery {
+    getCurrentUser {
       ...UserData
     }
   }
   ${userDataFragment}
+`;
+
+export const LOGOUT = gql`
+  mutation LogoutMutation {
+    logout
+  }
 `;
 
 const getUserParticipationInfoFragment = gql`
@@ -27,8 +33,8 @@ const getUserParticipationInfoFragment = gql`
 `;
 
 export const GET_USER_PARTICIPATIONS = gql`
-  query GetUserParticipationsQuery($userName: ID!) {
-    getUserParticipations(userName: $userName) {
+  query GetUserParticipationsQuery {
+    getUserParticipations {
       ...GetUserParticipationInfo
     }
   }
@@ -45,8 +51,8 @@ export const GET_PARTICIPATION = gql`
 `;
 
 export const GET_USER_TRANSFER_PARTICIPATION = gql`
-  query GetUserTransferParticipationQuery($userName: ID!) {
-    getUserTransferParticipation(userName: $userName) {
+  query GetUserTransferParticipationQuery {
+    getUserTransferParticipation {
       ...GetUserParticipationInfo
     }
   }
@@ -54,8 +60,8 @@ export const GET_USER_TRANSFER_PARTICIPATION = gql`
 `;
 
 export const GET_USER_PARTICIPATIONS_PLAIN = gql`
-  query GetUserParticipationsPlainQuery($userName: ID!) {
-    getUserParticipations(userName: $userName) {
+  query GetUserParticipationsPlainQuery {
+    getUserParticipations {
       id
       challenge {
         id

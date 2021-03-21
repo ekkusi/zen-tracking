@@ -24,5 +24,4 @@ export interface CreateParticipationMutation {
 
 export interface CreateParticipationMutationVariables {
   challengeId: string;
-  userName: string;
 }

@@ -2,7 +2,6 @@ import { gql, useMutation } from "@apollo/client";
 import { useDisclosure, Text, Flex, Box } from "@chakra-ui/react";
 import { isValid } from "date-fns/esm";
 import React, { useState, useMemo } from "react";
-import useGlobal from "store";
 import { GetChallengesQuery_getChallenges } from "views/challenges/__generated__/GetChallengesQuery";
 import DateUtil from "util/DateUtil";
 import { Form, Formik } from "formik";
@@ -85,8 +84,6 @@ const EditChallenge = ({
   maxEndDate,
   ...modalTemplateProps
 }: EditChallengeProps): JSX.Element => {
-  const user = useGlobal((state) => state.currentUser)[0];
-
   const [generalError, setGeneralError] = useState<string>();
 
   const [deleteChallenge, { loading: deleteLoading }] = useMutation<
@@ -233,7 +230,6 @@ const EditChallenge = ({
           variables: {
             challenge: {
               ...input,
-              creatorName: user.name,
             },
           },
         });

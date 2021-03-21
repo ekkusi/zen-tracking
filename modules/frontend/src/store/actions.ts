@@ -1,25 +1,24 @@
-import { ParsedUser } from "types/parsedBackendTypes";
 import { Store } from "use-global-hook";
 import UserInfoUtil from "util/UserInfoUtil";
 import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
 import { GetUserTransferParticipationQuery } from "__generated__/GetUserTransferParticipationQuery";
 import LogRocket from "logrocket";
-import {
-  GetUserParticipationsQuery,
-  GetUserParticipationsQueryVariables,
-} from "../__generated__/GetUserParticipationsQuery";
+import { AuthenticatedUser } from "@ekkusi/zen-tracking-backend/lib/types/customContext";
+import { GetUserParticipationsQuery } from "../__generated__/GetUserParticipationsQuery";
 import {
   GET_USER_PARTICIPATIONS,
   GET_USER_TRANSFER_PARTICIPATION,
+  LOGOUT,
 } from "../generalQueries";
 import { initializeApollo } from "../apollo/ApolloProvider";
 import { notAuthorizedUser } from "./notAuthenticatedUser";
 import { ActionTypes, GlobalState } from "./types";
+import { setAccessToken } from "../util/accessToken";
 
 const actions = {
   updateUser: (
     store: Store<GlobalState, ActionTypes>,
-    user: ParsedUser | null
+    user: AuthenticatedUser | null
   ): void => {
     if (user) {
       localStorage.setItem("currentUser", user.name);
@@ -39,11 +38,18 @@ const actions = {
   },
   updateActiveParticipation: async (
     store: Store<GlobalState, ActionTypes>,
-    challengeId?: string | null
+    newChallengeId?: string | null
   ): Promise<void> => {
     const client = initializeApollo();
 
     let participation = null;
+
+    // If newChallengeId is passed explicitly (its defined or null) -> set to this.
+    // Otherwise try to get challengeId from localStorage, if one exists, if not put fallback to undefined
+    const challengeId =
+      newChallengeId || newChallengeId === null
+        ? newChallengeId
+        : localStorage.getItem("activeParticipationChallengeId") ?? undefined;
 
     try {
       // If no challengeId is given, check first if user has some markings not transferred (== is participation in NO_PARTICIPATION_MARKINGS_HOLDER)
@@ -51,14 +57,8 @@ const actions = {
       if (challengeId === undefined) {
         const {
           data: { getUserTransferParticipation },
-        } = await client.query<
-          GetUserTransferParticipationQuery,
-          GetUserParticipationsQueryVariables
-        >({
+        } = await client.query<GetUserTransferParticipationQuery>({
           query: GET_USER_TRANSFER_PARTICIPATION,
-          variables: {
-            userName: store.state.currentUser.name,
-          },
           fetchPolicy: "no-cache",
         });
 
@@ -74,14 +74,8 @@ const actions = {
       // Otherwise fetch user participations and get the one with given challengeId or the one with latest marking, if no challengeId is given
       const {
         data: { getUserParticipations: participations },
-      } = await client.query<
-        GetUserParticipationsQuery,
-        GetUserParticipationsQueryVariables
-      >({
+      } = await client.query<GetUserParticipationsQuery>({
         query: GET_USER_PARTICIPATIONS,
-        variables: {
-          userName: store.state.currentUser.name,
-        },
         fetchPolicy: "no-cache",
       });
       // challengeId is null, null activeParticipation
@@ -131,6 +125,18 @@ const actions = {
         },
       });
     }
+  },
+  logout: async (store: Store<GlobalState, ActionTypes>): Promise<void> => {
+    const client = initializeApollo();
+
+    await client.mutate({ mutation: LOGOUT });
+    client.clearStore();
+    store.setState({
+      ...store.state,
+      currentUser: notAuthorizedUser,
+      activeParticipation: null,
+    });
+    setAccessToken(null);
   },
 };
 

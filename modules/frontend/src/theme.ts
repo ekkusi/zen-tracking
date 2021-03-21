@@ -46,6 +46,7 @@ const theme: Theme = extendTheme({
       },
       a: {
         color: customColors.primary.regular,
+        cursor: "pointer",
         _hover: {
           opacity: 0.7,
         },

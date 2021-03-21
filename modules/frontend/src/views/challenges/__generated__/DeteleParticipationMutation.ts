@@ -13,5 +13,4 @@ export interface DeteleParticipationMutation {
 
 export interface DeteleParticipationMutationVariables {
   challengeId: string;
-  userName: string;
 }

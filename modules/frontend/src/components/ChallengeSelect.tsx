@@ -11,10 +11,7 @@ import React, {
 
 import Select, { OptionsType } from "react-select";
 import useGlobal from "store";
-import {
-  GetUserParticipationsPlainQuery,
-  GetUserParticipationsPlainQueryVariables,
-} from "__generated__/GetUserParticipationsPlainQuery";
+import { GetUserParticipationsPlainQuery } from "__generated__/GetUserParticipationsPlainQuery";
 
 type ChallengeSelectProps = {
   initialValue?: OptionType;
@@ -45,21 +42,22 @@ const ChallengeSelect = forwardRef(
     }: ChallengeSelectProps,
     ref
   ): JSX.Element => {
-    const user = useGlobal((state) => state.currentUser)[0];
     const [value, setValue] = useState<OptionType | null>();
     const activeParticipation = useGlobal(
       (state) => state.activeParticipation
     )[0];
 
-    const { data, loading, error, refetch } = useQuery<
-      GetUserParticipationsPlainQuery,
-      GetUserParticipationsPlainQueryVariables
-    >(GET_USER_PARTICIPATIONS_PLAIN, {
-      variables: {
-        userName: user.name,
-      },
-      fetchPolicy: "no-cache",
-    });
+    const {
+      data,
+      loading,
+      error,
+      refetch,
+    } = useQuery<GetUserParticipationsPlainQuery>(
+      GET_USER_PARTICIPATIONS_PLAIN,
+      {
+        fetchPolicy: "no-cache",
+      }
+    );
 
     const mapOptions = useMemo((): OptionsType<OptionType> => {
       return (
@@ -119,7 +117,7 @@ const ChallengeSelect = forwardRef(
           }
           placeholder="Valitse haaste"
         />
-        {error && <Text color="warning">{error}</Text>}
+        {error && <Text color="warning">{error.message}</Text>}
       </Box>
     );
   }

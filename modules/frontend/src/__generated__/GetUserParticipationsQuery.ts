@@ -34,7 +34,3 @@ export interface GetUserParticipationsQuery_getUserParticipations {
 export interface GetUserParticipationsQuery {
   getUserParticipations: GetUserParticipationsQuery_getUserParticipations[];
 }
-
-export interface GetUserParticipationsQueryVariables {
-  userName: string;
-}

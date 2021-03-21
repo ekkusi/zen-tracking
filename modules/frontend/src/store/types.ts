@@ -1,18 +1,18 @@
+import { AuthenticatedUser } from "@ekkusi/zen-tracking-backend/lib/types/customContext";
 import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
-import {
-  ParsedChallengeParticipation,
-  ParsedUser,
-} from "types/parsedBackendTypes";
+import { ParsedChallengeParticipation } from "types/parsedBackendTypes";
 
 export type ActionTypes = {
-  updateUser: (user: ParsedUser | null) => void;
+  updateUser: (user: AuthenticatedUser | null) => void;
   updateError: (error: string | null) => void;
   updateActiveParticipation: (challengeId?: string | null) => Promise<void>;
   updateActiveParticipationMarkings: (markings: Marking[]) => void;
+  logout: () => Promise<void>;
 };
 
 export type GlobalState = {
-  currentUser: ParsedUser;
+  currentUser: AuthenticatedUser;
   activeParticipation: ParsedChallengeParticipation | null;
   error: string | null;
+  accessToken: string | null;
 };

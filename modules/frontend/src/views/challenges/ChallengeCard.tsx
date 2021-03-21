@@ -56,7 +56,6 @@ const ChallengeCard = ({
   >(CREATE_PARTICIPATION, {
     variables: {
       challengeId: challenge.id,
-      userName: user.name,
     },
   });
 
@@ -66,7 +65,6 @@ const ChallengeCard = ({
   >(DELETE_PARTICIPATION, {
     variables: {
       challengeId: challenge.id,
-      userName: user.name,
     },
   });
 

@@ -87,7 +87,9 @@ const ModalTemplate = ({
             </ModalHeader>
           )}
           <ModalCloseButton />
-          <ModalBody {...modalBodyProps}>{children}</ModalBody>
+          <ModalBody pb={hasFooter ? "0" : "5"} {...modalBodyProps}>
+            {children}
+          </ModalBody>
 
           {hasFooter && (
             <ModalFooter {...modalFooterProps}>

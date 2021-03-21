@@ -22,7 +22,3 @@ export interface GetUserParticipationsPlainQuery_getUserParticipations {
 export interface GetUserParticipationsPlainQuery {
   getUserParticipations: GetUserParticipationsPlainQuery_getUserParticipations[];
 }
-
-export interface GetUserParticipationsPlainQueryVariables {
-  userName: string;
-}

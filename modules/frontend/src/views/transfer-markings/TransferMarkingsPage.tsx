@@ -27,10 +27,10 @@ const TransferMarkingsPage = (): JSX.Element => {
     (state) => state.activeParticipation,
     (actions) => actions.updateActiveParticipation
   );
-  const [user, updateUser] = useGlobal(
+  const updateUser = useGlobal(
     (store) => store.currentUser,
     (actions) => actions.updateUser
-  );
+  )[1];
   const [selectedChallengeId, setSelectedChallengeId] = useState<
     string | null
   >();
@@ -87,7 +87,6 @@ const TransferMarkingsPage = (): JSX.Element => {
         await transferUserMarkings({
           variables: {
             challengeId,
-            userName: user.name,
           },
         });
         await updateActiveParticipation(challengeId);

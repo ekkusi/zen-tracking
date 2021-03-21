@@ -8,6 +8,7 @@ const initialState: GlobalState = {
   currentUser: notAuthorizedUser,
   error: null,
   activeParticipation: null,
+  accessToken: null,
 };
 
 const useGlobal = globalHook<GlobalState, ActionTypes>(
