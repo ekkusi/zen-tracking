@@ -19,8 +19,6 @@ import {
   setAccessToken,
 } from "../util/accessToken";
 
-const backendApiBaseUrl = process.env.REACT_APP_BACKEND_API_BASE_URL || "";
-
 const isProduction = process.env.NODE_ENV === "production";
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
@@ -106,7 +104,7 @@ const CustomApolloProvider = ({
       return true;
     },
     fetchAccessToken: () => {
-      return fetch(`${backendApiBaseUrl}/delete-image`, {
+      return fetch(`${backendApiBase ?? ""}/delete-image`, {
         method: "POST",
         credentials: "include",
       });
