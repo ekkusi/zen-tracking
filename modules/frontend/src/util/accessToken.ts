@@ -1,5 +1,7 @@
 import { AuthenticatedUser } from "@ekkusi/zen-tracking-backend/lib/types/customContext";
 
+const backendApiBaseUrl = process.env.REACT_APP_BACKEND_API_BASE_URL || "";
+
 let accessToken: string | null = null;
 
 export type DecodedTokenType = {
@@ -17,7 +19,7 @@ export const setAccessToken = (newToken: string | null) => {
 };
 
 export const refreshToken = async (): Promise<void> => {
-  const response = await fetch("/refresh-token", {
+  const response = await fetch(`${backendApiBaseUrl}/delete-image`, {
     method: "POST",
     credentials: "include",
   });
