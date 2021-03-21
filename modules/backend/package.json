@@ -23,6 +23,7 @@
   "dependencies": {
     "@prisma/client": "^2.18.0",
     "@types/lodash.merge": "^4.6.6",
+    "apollo-server-errors": "^2.4.2",
     "apollo-server-express": "^2.19.1",
     "aws-sdk": "^2.863.0",
     "bcrypt": "^5.0.0",

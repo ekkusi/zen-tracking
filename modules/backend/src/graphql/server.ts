@@ -31,6 +31,8 @@ import ValidationError from "../utils/errors/ValidationError";
 import dataLoaders from "./loaders";
 import s3Client from "../utils/awsS3Client";
 
+import { ALLOWED_ORIGINS } from "../config.json";
+
 export default (app: Application): ApolloServer => {
   const queryTypeDef = gql`
     type Query {
@@ -101,6 +103,10 @@ export default (app: Application): ApolloServer => {
 
   server.applyMiddleware({
     app,
+    cors: {
+      origin: ALLOWED_ORIGINS,
+      credentials: true,
+    },
   });
 
   return server;

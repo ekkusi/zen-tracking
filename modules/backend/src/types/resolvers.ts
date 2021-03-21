@@ -189,6 +189,7 @@ export type QueryResolvers<
     ContextType,
     RequireFields<Types.QueryGetUserArgs, "name">
   >;
+  getCurrentUser?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
   getUsers?: Resolver<
     Types.Maybe<Array<ResolversTypes["User"]>>,
     ParentType,
@@ -257,6 +258,7 @@ export type MutationResolvers<
     ContextType,
     RequireFields<Types.MutationRegisterArgs, "name" | "password" | "isPrivate">
   >;
+  logout?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   createChallenge?: Resolver<
     ResolversTypes["Challenge"],
     ParentType,

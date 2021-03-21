@@ -21,6 +21,7 @@ export type Query = {
   __typename?: "Query";
   _empty?: Maybe<Scalars["String"]>;
   getUser: User;
+  getCurrentUser: User;
   getUsers?: Maybe<Array<User>>;
   getChallenge?: Maybe<Challenge>;
   getChallenges: Array<Challenge>;
@@ -59,6 +60,7 @@ export type Mutation = {
   deleteUser: Scalars["Boolean"];
   login: LoginResult;
   register: LoginResult;
+  logout: Scalars["Boolean"];
   createChallenge: Challenge;
   updateChallenge: Challenge;
   deleteChallenge: Scalars["Boolean"];

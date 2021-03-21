@@ -4,7 +4,6 @@ import path from "path";
 import { User } from "@prisma/client";
 import {
   hash,
-  compare,
   createRefreshToken,
   createAccessToken,
   createRefreshTokenCookie,
@@ -43,7 +42,20 @@ export const resolvers: UserResolvers = {
         return user;
       }
 
-      throw new Error("No user found with given name");
+      throw new Error(`Käyttäjää nimellä ${name} ei löytynyt`);
+    },
+    getCurrentUser: async (_, __, { prisma, user }) => {
+      if (!user) throw new AuthenticationError();
+
+      const matchingUser = await prisma.user.findUnique({
+        where: { name: user.name },
+      });
+
+      if (matchingUser) {
+        return matchingUser;
+      }
+
+      throw new Error(`Käyttäjää ei löytynyt`);
     },
     getUsers: async (_, __, { prisma }) => {
       const users: User[] = await prisma.user.findMany();
@@ -62,18 +74,8 @@ export const resolvers: UserResolvers = {
       if (deletedUsers > 0) return true; // If more than 0 rows are affected by above query
       return false;
     },
-    login: async (_, { name, password }, { prisma, res }) => {
-      const user = await prisma.user.findUnique({
-        where: { name },
-      });
-      if (!user) {
-        throw new AuthenticationError(`Käyttäjää nimellä ${name} ei löytynyt`);
-      }
-
-      const isValid = await compare(password, user.password);
-      if (!isValid) {
-        throw new AuthenticationError("Antamasi salasana oli väärä");
-      }
+    login: async (_, { name, password }, { res }) => {
+      const user = await UserValidator.validateLoginUser(name, password);
 
       createRefreshTokenCookie(
         createRefreshToken(UserMapper.mapAuthenticatedUser(user)),
@@ -83,6 +85,11 @@ export const resolvers: UserResolvers = {
       return {
         accessToken: createAccessToken(UserMapper.mapAuthenticatedUser(user)),
       };
+    },
+    logout: async (_, __, { res }) => {
+      createRefreshTokenCookie("", res);
+
+      return true;
     },
     register: async (_, { name, password, isPrivate }, { prisma, res }) => {
       await UserValidator.validateCreateUser(name);

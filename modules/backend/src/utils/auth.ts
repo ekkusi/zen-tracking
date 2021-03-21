@@ -19,14 +19,14 @@ export const compare = (
 
 export const createAccessToken = (user: AuthenticatedUser): string => {
   const token = jwt.sign({ user }, process.env.JWT_ACCESS_TOKEN_SECRET_KEY!, {
-    expiresIn: "1min",
+    expiresIn: "15min",
   });
   return token;
 };
 
 export const createRefreshToken = (user: AuthenticatedUser): string => {
   const token = jwt.sign({ user }, process.env.JWT_REFRESH_TOKEN_SECRET_KEY!, {
-    expiresIn: "7d",
+    expiresIn: "30d",
   });
   return token;
 };

@@ -7,6 +7,7 @@ query GetUsers {
 
 extend type Query {
   getUser(name: ID!): User!
+  getCurrentUser: User!
   getUsers: [User!]
 }
 
@@ -14,6 +15,7 @@ extend type Mutation {
   deleteUser(name: ID!): Boolean!
   login(name: ID!, password: String!): LoginResult!
   register(name: ID!, password: String!, isPrivate: Boolean!): LoginResult!
+  logout: Boolean!
 }
 
 type User {
