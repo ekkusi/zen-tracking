@@ -81,6 +81,7 @@ app.post("/delete-image", async (req, res) => {
 });
 
 app.post("/refresh-token", (req, res) => {
+  console.log(`Refreshing token with request: ${JSON.stringify(req)}`);
   try {
     const { jubbiduu } = req.cookies;
     if (!jubbiduu) {
@@ -101,6 +102,7 @@ app.post("/refresh-token", (req, res) => {
       accessToken: createAccessToken(user),
     });
   } catch (error) {
+    console.log(`Refresh failed: ${error.message}`);
     return res.status(500).send({
       error: error.message,
     });
