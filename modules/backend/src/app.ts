@@ -81,7 +81,9 @@ app.post("/delete-image", async (req, res) => {
 });
 
 app.post("/refresh-token", (req, res) => {
-  console.log(`Refreshing token with request: ${JSON.stringify(req)}`);
+  console.log(`Refreshing token with body: ${JSON.stringify(req.body)}`);
+  console.log(`Refreshing token with headers: ${JSON.stringify(req.headers)}`);
+  console.log(`Refreshing token with cookies: ${JSON.stringify(req.cookies)}`);
   try {
     const { jubbiduu } = req.cookies;
     if (!jubbiduu) {
