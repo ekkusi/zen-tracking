@@ -23,11 +23,13 @@ dotEnv.config();
 const app = express();
 const port = process.env.PORT || 4000; // default port to listen, set to 443 to test without port in url
 
+graphqlApi(app);
+
 const corsOptions: CorsOptions = {
   origin(origin, callback) {
     console.log(`Checking cors for origin: ${origin}`);
     if (origin === undefined || config.ALLOWED_ORIGINS.includes(origin)) {
-      callback(null, true);
+      callback(new Error("Not allowed by CORS"));
     } else {
       callback(new Error("Not allowed by CORS"));
     }
@@ -39,7 +41,6 @@ app.use(cors(corsOptions));
 
 app.use(cookieParser());
 app.use(fileUpload());
-graphqlApi(app);
 
 app.get("/quote", async (req, res, next) => {
   try {
