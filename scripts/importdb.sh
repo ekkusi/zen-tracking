@@ -34,7 +34,7 @@ done
 absoluteFilePath="$(cd ../db; pwd)/schema.sql"
 if [ -n "${relativeFilePath}" ]; then absoluteFilePath="$callPath/$relativeFilePath"; else echo "relativeFilePath is not set"; fi
 
-echo -e "Importing database from $filePath"
+echo -e "Importing database from $absoluteFilePath"
 echo -e "Importing to: $databaseUrl: \n\n"
 
 psql $databaseUrl --file=$absoluteFilePath --echo-all --echo-errors

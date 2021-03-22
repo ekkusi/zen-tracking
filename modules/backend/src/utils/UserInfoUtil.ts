@@ -1,4 +1,4 @@
-import { ChallengeParticipation } from ".prisma/client";
+import { ChallengeParticipation } from "@prisma/client";
 import prisma from "../graphql/client";
 
 export default class UserInfoUtil {

@@ -26,7 +26,7 @@ const port = process.env.PORT || 4000; // default port to listen, set to 443 to 
 const corsOptions: CorsOptions = {
   origin(origin, callback) {
     console.log(`Checking cors for origin: ${origin}`);
-    if (config.ALLOWED_ORIGINS.includes(origin || "")) {
+    if (origin === undefined || config.ALLOWED_ORIGINS.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));

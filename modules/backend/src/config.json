@@ -1,4 +1,4 @@
 {
   "NO_PARTICIPATION_MARKINGS_HOLDER_NAME": "NO_PARTICIPATION_MARKINGS_HOLDER",
-  "ALLOWED_ORIGINS": ["http://localhost:3000", "http://localhost:4000", "https://zen-tracking.netlify.app", "https://zen-tracking.herokuapp.com/"]
+  "ALLOWED_ORIGINS": ["http://localhost:3000", "http://localhost:4000", "https://zen-tracking.netlify.app", "https://zen-tracking.herokuapp.com"]
 }
