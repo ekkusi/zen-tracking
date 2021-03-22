@@ -29,7 +29,7 @@ const corsOptions: CorsOptions = {
   origin(origin, callback) {
     console.log(`Checking cors for origin: ${origin}`);
     if (origin === undefined || config.ALLOWED_ORIGINS.includes(origin)) {
-      callback(new Error("Not allowed by CORS"));
+      callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
