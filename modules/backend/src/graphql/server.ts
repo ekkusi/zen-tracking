@@ -106,6 +106,7 @@ export default (app: Application): ApolloServer => {
     cors: {
       origin: ALLOWED_ORIGINS,
       credentials: true,
+      exposedHeaders: ["Set-Cookie"],
     },
   });
 
