@@ -6,8 +6,8 @@ services:
       - postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: zen-tracking
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - postgres
     ports:
@@ -18,8 +18,8 @@ services:
     volumes:
       - pgadmin:/root/.pgadmin
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PGADMIN_DEFAULT_EMAIL: default@email.com
       PGADMIN_DEFAULT_PASSWORD: password
     ports:
@@ -31,14 +31,13 @@ services:
     build:
       context: .
     environment:
-      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_S3_REGION: eu-west-2
-      AWS_S3_BUCKET_NAME: zen-tracking
-      DATABASE_URL: postgresql://user:password@localhost:5432/zen-tracking
-      DATABASE_URL_PROD: postgresql://xkkmohypmlwygy:1da6b32373c5c6a883f9bfc1893f4cb5d7aaf7817049fc11a373e9b379aba701@ec2-54-247-158-179.eu-west-1.compute.amazonaws.com:5432/dfek7t3voagsh9
-      JWT_ACCESS_TOKEN_SECRET_KEY: awdoiuhawuidawhd
-      JWT_REFRESH_TOKEN_SECRET_KEY: 329r8uh39a823jfaawef
+      AWS_S3_REGION: ${AWS_S3_REGION}
+      AWS_S3_BUCKET_NAME: ${AWS_S3_BUCKET_NAME}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/zen-tracking
+      JWT_ACCESS_TOKEN_SECRET_KEY: ${JWT_ACCESS_TOKEN_SECRET_KEY}
+      JWT_REFRESH_TOKEN_SECRET_KEY: ${JWT_REFRESH_TOKEN_SECRET_KEY}
     depends_on:
       - postgres
     ports:

@@ -1,0 +1,24 @@
+# dependencies
+node_modules
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# Built typescript codes and libs
+**/*/lib
+**/*/dist
+**/*/build
+
+# misc
+.DS_Store
+*.log
+.idea
+
+# Docker database exports NOTE: ADD THIS WHEN DATABASE GETS BIG
+# tmp/
+
+# cache
+.eslintcache
