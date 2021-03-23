@@ -50,6 +50,7 @@ const createApolloClient = (additionalLinks?: ApolloLink) => {
         },
       },
     }),
+    credentials: "include",
   });
 
   apolloClient = client; // Update general client
