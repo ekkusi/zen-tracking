@@ -23,6 +23,8 @@ dotEnv.config();
 const app = express();
 const port = process.env.PORT || 4000; // default port to listen, set to 443 to test without port in url
 
+console.log("Test for docker server, see if this gets triggered after build");
+
 // This has to be before setting other cors, because there is own cors options in graphql api
 graphqlApi(app);
 
