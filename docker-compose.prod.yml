@@ -43,7 +43,8 @@ services:
     depends_on:
       - postgres
     ports:
-      - "4000:4000"
+      - "80:4000"
+      - "443:4000"
     networks:
       - postgres
     mem_limit: 2048m
