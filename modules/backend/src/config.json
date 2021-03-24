@@ -7,8 +7,12 @@
     "http://zen-tracking.netlify.app",
     "https://zen-tracking.herokuapp.com",
     "http://zen-tracking.herokuapp.com",
-    "136.244.97.223",
-    "136.244.97.223:4000",
-    "http://136.244.97.223:4000"
+    "http://136.244.97.223:4000",
+    "http://136.244.97.223",
+    "https://136.244.97.223",
+    "http://136.244.97.223:443",
+    "http://136.244.97.223:443",
+    "http://zen-tracking.com",
+    "https://zen-tracking.com"
   ]
 }
