@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
-      - postgres
+      - app-network
     ports:
       - 5432:5432
     mem_limit: 1024m
@@ -26,7 +26,7 @@ services:
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     networks:
-      - postgres
+      - app-network
     restart: unless-stopped
     mem_limit: 206m
   zen-tracking:
@@ -43,21 +43,18 @@ services:
       JWT_REFRESH_TOKEN_SECRET_KEY: ${JWT_REFRESH_TOKEN_SECRET_KEY}
     depends_on:
       - postgres
-    ports:
-      - "80:4000"
-      - "443:4000"
     networks:
-      - postgres
+      - app-network
     mem_limit: 2048m
   webserver:
     image: nginx:mainline-alpine
     container_name: webserver
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "80:4000"
     volumes:
       - web-root:/var/www/html
-      - ./nginx-conf:/etc/nginx/conf.d
+      - ./nginx:/etc/nginx/conf.d
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
     depends_on:
@@ -75,7 +72,7 @@ services:
       - webserver
     command: certonly --webroot --webroot-path=/var/www/html --email ekku.eki@gmail.com --agree-tos --no-eff-email --staging -d zen-tracking  -d www.zen-tracking.com
 networks:
-  postgres:
+  app-network:
     driver: bridge
 volumes:
   postgres_data:
