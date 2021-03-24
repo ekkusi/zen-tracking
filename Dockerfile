@@ -12,8 +12,6 @@ RUN yarn install
 
 COPY . /app/
 
-
-
 RUN yarn generate-prisma
 RUN yarn build:backend
 RUN yarn build:frontend
