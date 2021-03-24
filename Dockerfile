@@ -12,9 +12,11 @@ RUN yarn install
 
 COPY . /app/
 
-RUN yarn generate-prisma
-RUN yarn build:backend
-RUN yarn build:frontend
+
+
+RUN NODE_yarn generate-prisma
+RUN NODE_OPTIONS=--max_old_space_size=2048 yarn build:backend
+RUN NODE_OPTIONS=--max_old_space_size=2048 yarn build:frontend
 
 EXPOSE 4000
 

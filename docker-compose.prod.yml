@@ -12,6 +12,7 @@ services:
       - postgres
     ports:
       - 5432:5432
+    mem_limit: 1024m
   pgadmin:
     container_name: pgadmin_container
     image: dpage/pgadmin4
@@ -27,6 +28,7 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+    mem_limit: 206m
   zen-tracking:
     build:
       context: .
@@ -44,6 +46,7 @@ services:
       - "4000:4000"
     networks:
       - postgres
+    mem_limit: 2048m
 networks:
   postgres:
     driver: bridge
