@@ -123,6 +123,7 @@ const EditMarking = ({
         modalTemplateProps.onClose();
       }
       setError(undefined);
+      setPhotoSrc(null);
     },
   });
 
