@@ -1,6 +1,7 @@
-import { Box, Image, ImageProps, Text } from "@chakra-ui/react";
+import { Box, ImageProps, Text } from "@chakra-ui/react";
 import React from "react";
 import ModalTemplate from "./ModalTemplate";
+import Image from "../primitives/Image";
 
 export type ImageModalProps = ImageProps & {
   isOpen: boolean;

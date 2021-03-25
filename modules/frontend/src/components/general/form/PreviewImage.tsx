@@ -1,5 +1,6 @@
-import { Box, CloseButton, Image, ImageProps } from "@chakra-ui/react";
+import { Box, CloseButton, ImageProps } from "@chakra-ui/react";
 import React from "react";
+import Image from "../../primitives/Image";
 
 type PreviewImageProps = ImageProps & {
   onClose: () => void;
