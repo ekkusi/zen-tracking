@@ -38,7 +38,7 @@ type Challenge {
   startDate: Date
   endDate: Date
   status: ChallengeStatus!
-  creator: User
+  creator: User!
   isPrivate: Boolean!
   participations: [ChallengeParticipation!]!
 }

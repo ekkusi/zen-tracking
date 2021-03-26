@@ -166,7 +166,7 @@ export type Challenge = {
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
   status: ChallengeStatus;
-  creator?: Maybe<User>;
+  creator: User;
   isPrivate: Scalars["Boolean"];
   participations: Array<ChallengeParticipation>;
 };

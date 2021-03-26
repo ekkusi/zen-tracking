@@ -372,11 +372,7 @@ export type ChallengeResolvers<
     ContextType
   >;
   status?: Resolver<ResolversTypes["ChallengeStatus"], ParentType, ContextType>;
-  creator?: Resolver<
-    Types.Maybe<ResolversTypes["User"]>,
-    ParentType,
-    ContextType
-  >;
+  creator?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
   isPrivate?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   participations?: Resolver<
     Array<ResolversTypes["ChallengeParticipation"]>,
