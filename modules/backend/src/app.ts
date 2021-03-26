@@ -23,17 +23,16 @@ dotEnv.config();
 const app = express();
 const port = process.env.PORT || 4000; // default port to listen, set to 443 to test without port in url
 
-console.log("Test for docker server, see if this gets triggered after build");
-
 // This has to be before setting other cors, because there is own cors options in graphql api
 graphqlApi(app);
 
 const corsOptions: CorsOptions = {
   origin(origin, callback) {
-    console.log(`Checking cors for origin: ${origin}`);
     if (origin === undefined || config.ALLOWED_ORIGINS.includes(origin)) {
+      console.log(`Cors allowed for origin: ${origin}`);
       callback(null, true);
     } else {
+      console.log(`Cors not allowed for origin: ${origin}`);
       callback(new Error("Not allowed by CORS"));
     }
   },
@@ -85,9 +84,6 @@ app.post("/delete-image", async (req, res) => {
 });
 
 app.post("/refresh-token", (req, res) => {
-  console.log(`Refreshing token with body: ${JSON.stringify(req.body)}`);
-  console.log(`Refreshing token with headers: ${JSON.stringify(req.headers)}`);
-  console.log(`Refreshing token with cookies: ${JSON.stringify(req.cookies)}`);
   try {
     const { jubbiduu } = req.cookies;
     if (!jubbiduu) {
@@ -108,7 +104,6 @@ app.post("/refresh-token", (req, res) => {
       accessToken: createAccessToken(user),
     });
   } catch (error) {
-    console.log(`Refresh failed: ${error.message}`);
     return res.status(500).send({
       error: error.message,
     });
