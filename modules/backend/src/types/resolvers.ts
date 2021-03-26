@@ -189,7 +189,7 @@ export type QueryResolvers<
     ContextType
   >;
   getUser?: Resolver<
-    ResolversTypes["User"],
+    Types.Maybe<ResolversTypes["User"]>,
     ParentType,
     ContextType,
     RequireFields<Types.QueryGetUserArgs, "name">
@@ -372,7 +372,12 @@ export type ChallengeResolvers<
     ContextType
   >;
   status?: Resolver<ResolversTypes["ChallengeStatus"], ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  creator?: Resolver<
+    Types.Maybe<ResolversTypes["User"]>,
+    ParentType,
+    ContextType
+  >;
+  isPrivate?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   participations?: Resolver<
     Array<ResolversTypes["ChallengeParticipation"]>,
     ParentType,
@@ -393,6 +398,7 @@ export type ChallengeParticipationResolvers<
     ParentType,
     ContextType
   >;
+  isPrivate?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -403,6 +409,7 @@ export type MarkingResolvers<
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   date?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
   rating?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  isPrivate?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   comment?: Resolver<
     Types.Maybe<ResolversTypes["String"]>,
     ParentType,

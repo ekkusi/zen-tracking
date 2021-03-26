@@ -20,7 +20,7 @@ export type Scalars = {
 export type Query = {
   __typename?: "Query";
   _empty?: Maybe<Scalars["String"]>;
-  getUser: User;
+  getUser?: Maybe<User>;
   getCurrentUser: User;
   getUsers?: Maybe<Array<User>>;
   getChallenge?: Maybe<Challenge>;
@@ -166,7 +166,8 @@ export type Challenge = {
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
   status: ChallengeStatus;
-  creator: User;
+  creator?: Maybe<User>;
+  isPrivate: Scalars["Boolean"];
   participations: Array<ChallengeParticipation>;
 };
 
@@ -176,6 +177,7 @@ export type ChallengeParticipation = {
   challenge: Challenge;
   user: User;
   markings: Array<Marking>;
+  isPrivate: Scalars["Boolean"];
 };
 
 export type CreateChallengeInput = {
@@ -197,6 +199,7 @@ export type Marking = {
   id: Scalars["ID"];
   date: Scalars["Date"];
   rating: Scalars["Int"];
+  isPrivate: Scalars["Boolean"];
   comment?: Maybe<Scalars["String"]>;
   photoUrl?: Maybe<Scalars["String"]>;
 };

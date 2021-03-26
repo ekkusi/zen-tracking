@@ -12,6 +12,7 @@ model Challenge {
   name                   String                   @unique @db.VarChar(254)
   description            String
   creator_name           String                   @db.VarChar(254)
+  is_private             Boolean                  @default(true)
   start_date             DateTime?                @db.Timestamptz(6)
   end_date               DateTime?                @db.Timestamptz(6)
   User                   User                     @relation(fields: [creator_name], references: [name])
@@ -20,6 +21,7 @@ model Challenge {
 
 model ChallengeParticipation {
   id           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  is_private   Boolean   @default(true)
   challenge_id String    @db.Uuid
   user_name    String    @db.VarChar(254)
   Challenge    Challenge @relation(fields: [challenge_id], references: [id])
@@ -36,6 +38,7 @@ model Marking {
   rating                 Int
   comment                String?                @db.VarChar(2000)
   photo_url              String?                @db.VarChar(254)
+  is_private             Boolean                @default(true)
   ChallengeParticipation ChallengeParticipation @relation(fields: [participation_id], references: [id])
 }
 
@@ -48,7 +51,7 @@ model Quote {
 model User {
   name                   String                   @id @db.VarChar(254)
   password               String                   @db.VarChar(254)
-  is_private             Boolean                  @default(false)
+  is_private             Boolean                  @default(true)
   Challenge              Challenge[]
   ChallengeParticipation ChallengeParticipation[]
 }

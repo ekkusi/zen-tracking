@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { ChallengeParticipation, Prisma, User } from "@prisma/client";
 import { isAfter, isBefore } from "date-fns";
 import { formatIsoString } from "../../utils/dateUtils";
 import {
@@ -12,6 +12,7 @@ import {
 } from "../../types/schema";
 
 import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "../../config.json";
+import dataLoaders from "../loaders";
 
 type GetChallengesFilters = {
   AND: Prisma.ChallengeWhereInput;
@@ -156,5 +157,24 @@ export class ChallengeMapper {
         filter.end_date = null;
     }
     return filter;
+  }
+
+  public static async mapNotPrivateParticipations(
+    participations: ChallengeParticipation[],
+    currentUserName?: string
+  ): Promise<ChallengeParticipation[]> {
+    console.log("Loading user in isUserPrivate check:");
+    const users = await dataLoaders.userLoader.loadMany(
+      participations.map((it) => it.user_name)
+    );
+    const notPrivateUserNames: string[] = (users.filter(
+      (it) => !(it instanceof Error) && !it.is_private
+    ) as User[]).map((it) => it.name);
+
+    return participations.filter(
+      (it) =>
+        notPrivateUserNames.includes(it.user_name) ||
+        it.user_name === currentUserName
+    );
   }
 }

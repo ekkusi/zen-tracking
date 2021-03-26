@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import path from "path";
-import { Marking } from "@prisma/client";
+import { Marking, Prisma } from "@prisma/client";
 import AuthenticationError from "../../utils/errors/AuthenticationError";
 import { formatIsoString } from "../../utils/dateUtils";
 
@@ -10,6 +10,7 @@ import ChallengeValidator from "./ChallengeValidator";
 import { loaderResetors } from "../loaders";
 
 import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "../../config.json";
+import { SharedMapper } from "../shared/SharedMapper";
 
 // Construct a schema, using GraphQL schema language
 export const typeDef = readFileSync(
@@ -19,9 +20,16 @@ export const typeDef = readFileSync(
 
 export const resolvers: Resolvers = {
   ChallengeParticipation: {
-    markings: async ({ id }, _, { loaders: { markingsLoader } }) => {
+    markings: async (
+      { id, user_name },
+      _,
+      { loaders: { markingsLoader }, user }
+    ) => {
       const markings = await markingsLoader.load(id);
-      return markings;
+      const notPrivateOrCurrentUserMarkings = markings.filter(
+        (it) => !it.is_private || user_name === user?.name
+      );
+      return notPrivateOrCurrentUserMarkings;
     },
     challenge: async (
       { challenge_id },
@@ -39,6 +47,7 @@ export const resolvers: Resolvers = {
       if (result instanceof Error) throw result;
       return result;
     },
+    isPrivate: ({ is_private }) => is_private,
   },
   Challenge: {
     creator: async ({ creator_name }, _, { loaders: { userLoader } }) => {
@@ -55,49 +64,78 @@ export const resolvers: Resolvers = {
     participations: async (
       { id },
       _,
-      { loaders: { challengeParticipationsLoader } }
+      { loaders: { challengeParticipationsLoader }, user }
     ) => {
       const participations = await challengeParticipationsLoader.load(id);
-      return participations;
+      const notPrivateOrCurrentUserParticipations = participations.filter(
+        (it) => !it.is_private || it.user_name === user?.name
+      );
+      return notPrivateOrCurrentUserParticipations;
     },
+    isPrivate: ({ is_private }) => is_private,
   },
   Marking: {
     date: ({ date }) => formatIsoString(date),
     photoUrl: ({ photo_url }) => photo_url,
+    isPrivate: ({ is_private }) => is_private,
   },
   Query: {
-    getChallenge: async (_, { id }, { prisma }) => {
+    getChallenge: async (_, { id }, { prisma, user }) => {
+      const filters = SharedMapper.notPrivateFilterMapper<Prisma.ChallengeWhereInput>(
+        { id },
+        { creator_name: user?.name }
+      );
       const challenge = await prisma.challenge.findFirst({
-        where: { id },
+        where: filters,
       });
       return challenge;
     },
-    getChallenges: async (_, args, { prisma }) => {
+    getChallenges: async (_, args, { prisma, user }) => {
       const filters = ChallengeMapper.mapChallengeFilters(args);
-      const challenges = await prisma.challenge.findMany({ where: filters });
+      const allFilters = SharedMapper.notPrivateFilterMapper<Prisma.ChallengeWhereInput>(
+        filters,
+        { creator_name: user?.name }
+      );
+      const challenges = await prisma.challenge.findMany({
+        where: allFilters,
+      });
       return challenges || [];
     },
     getUserParticipations: async (_, __, { prisma, user }) => {
       if (!user) throw new AuthenticationError();
-      const participations = await prisma.challengeParticipation.findMany({
-        where: {
-          AND: {
-            user_name: user.name,
-            Challenge: { NOT: { name: NO_PARTICIPATION_MARKINGS_HOLDER_NAME } },
-          },
+      // Filter by user name and so that participation is not transfer participation
+      const usersAndNotTransferParticipationFilter: Prisma.ChallengeParticipationWhereInput = {
+        AND: {
+          user_name: user.name,
+          Challenge: { NOT: { name: NO_PARTICIPATION_MARKINGS_HOLDER_NAME } },
         },
+      };
+      const filters = SharedMapper.notPrivateFilterMapper<Prisma.ChallengeParticipationWhereInput>(
+        usersAndNotTransferParticipationFilter,
+        { user_name: user?.name }
+      );
+      const participations = await prisma.challengeParticipation.findMany({
+        where: filters,
       });
       return participations;
     },
-    getParticipation: async (_, { challengeId }, { prisma }) => {
+    getParticipation: async (_, { challengeId }, { prisma, user }) => {
+      const filters = SharedMapper.notPrivateFilterMapper<Prisma.ChallengeParticipationWhereInput>(
+        { challenge_id: challengeId },
+        { user_name: user?.name }
+      );
       const participation = await prisma.challengeParticipation.findFirst({
-        where: { challenge_id: challengeId },
+        where: filters,
       });
       return participation;
     },
-    getMarkings: async (_, { participationId }, { prisma }) => {
+    getMarkings: async (_, { participationId }, { prisma, user }) => {
+      const filters = SharedMapper.notPrivateFilterMapper<Prisma.MarkingWhereInput>(
+        { participation_id: participationId },
+        { ChallengeParticipation: { user_name: user?.name } }
+      );
       const markings = await prisma.marking.findMany({
-        where: { participation_id: participationId },
+        where: filters,
       });
       return markings;
     },

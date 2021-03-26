@@ -6,7 +6,7 @@ query GetUsers {
 }
 
 extend type Query {
-  getUser(name: ID!): User!
+  getUser(name: ID!): User
   getCurrentUser: User!
   getUsers: [User!]
 }

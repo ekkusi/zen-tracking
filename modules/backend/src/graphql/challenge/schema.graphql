@@ -1,6 +1,11 @@
 extend type Query {
   getChallenge(id: ID!): Challenge
-  getChallenges(creatorName: ID, status: ChallengeStatus, startDate: DateFilter, endDate: DateFilter): [Challenge!]!
+  getChallenges(
+    creatorName: ID
+    status: ChallengeStatus
+    startDate: DateFilter
+    endDate: DateFilter
+  ): [Challenge!]!
   getUserParticipations: [ChallengeParticipation!]!
   getParticipation(challengeId: ID!): ChallengeParticipation
   getMarkings(participationId: ID!): [Marking!]!
@@ -33,7 +38,8 @@ type Challenge {
   startDate: Date
   endDate: Date
   status: ChallengeStatus!
-  creator: User!
+  creator: User
+  isPrivate: Boolean!
   participations: [ChallengeParticipation!]!
 }
 
@@ -42,6 +48,7 @@ type ChallengeParticipation {
   challenge: Challenge!
   user: User!
   markings: [Marking!]!
+  isPrivate: Boolean!
 }
 
 input CreateChallengeInput {
@@ -62,6 +69,7 @@ type Marking {
   id: ID!
   date: Date!
   rating: Int!
+  isPrivate: Boolean!
   comment: String
   photoUrl: String
 }

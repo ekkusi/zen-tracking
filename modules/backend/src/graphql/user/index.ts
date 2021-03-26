@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import path from "path";
 
-import { User } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import {
   hash,
   createRefreshToken,
@@ -14,6 +14,7 @@ import UserValidator from "./UserValidator";
 import AuthenticationError from "../../utils/errors/AuthenticationError";
 import { UserMapper } from "./UserMapper";
 import UserInfoUtil from "../../utils/UserInfoUtil";
+import { SharedMapper } from "../shared/SharedMapper";
 
 // Construct a schema, using GraphQL schema language
 export const typeDef = readFileSync(
@@ -27,35 +28,56 @@ export const resolvers: UserResolvers = {
     participations: async (
       { name },
       _,
-      { loaders: { userParticipationsLoader } }
+      { loaders: { userParticipationsLoader }, user }
     ) => {
       const participations = await userParticipationsLoader.load(name);
+      const notPrivateOrCurrentUserParticipations = participations.filter(
+        (it) => !it.is_private || it.user_name === user?.name
+      );
       // console.log(`User.participations : ${JSON.stringify(participations)}`);
-      return participations;
+      return notPrivateOrCurrentUserParticipations;
     },
-    activeParticipation: async ({ name }, { challengeId }, { prisma }) => {
+    activeParticipation: async (
+      { name },
+      { challengeId },
+      { prisma, user }
+    ) => {
       // If challengeId arg is passed, return this as activeParticipation if it is found. Otherwise fetch latest modified participation
       if (challengeId) {
         const participation = await prisma.challengeParticipation.findFirst({
           where: { challenge_id: challengeId, user_name: name },
         });
 
+        if (
+          participation?.is_private ||
+          participation?.user_name !== user?.name
+        )
+          return null;
+
         return participation;
       }
       // Latest modified participation
-      return UserInfoUtil.getLatestModifiedParticipation(name);
+      const latestParticipation = await UserInfoUtil.getLatestModifiedParticipation(
+        name
+      );
+      if (
+        latestParticipation?.is_private ||
+        latestParticipation?.user_name !== user?.name
+      )
+        return null;
+      return latestParticipation;
     },
   },
   Query: {
-    getUser: async (_, { name }, { prisma }) => {
+    getUser: async (_, { name }, { prisma, user: currentUser }) => {
       const user = await prisma.user.findUnique({
         where: { name },
       });
-      if (user) {
+      if (user && (!user.is_private || user.name === currentUser?.name)) {
         return user;
       }
 
-      throw new Error(`Käyttäjää nimellä ${name} ei löytynyt`);
+      return null;
     },
     getCurrentUser: async (_, __, { prisma, user }) => {
       if (!user) throw new AuthenticationError();
@@ -70,8 +92,14 @@ export const resolvers: UserResolvers = {
 
       throw new Error(`Käyttäjää ei löytynyt`);
     },
-    getUsers: async (_, __, { prisma }) => {
-      const users: User[] = await prisma.user.findMany();
+    getUsers: async (_, __, { prisma, user }) => {
+      const notPrivateOrCurrentUserFilters = SharedMapper.notPrivateFilterMapper<Prisma.UserWhereInput>(
+        {},
+        { name: user?.name }
+      );
+      const users: User[] = await prisma.user.findMany({
+        where: notPrivateOrCurrentUserFilters,
+      });
       return users;
     },
   },

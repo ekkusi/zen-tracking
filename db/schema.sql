@@ -9,7 +9,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE "User" (
   name varchar(254) PRIMARY KEY NOT NULL,
   password varchar(254) NOT NULL,
-  is_private boolean DEFAULT false NOT NULL
+  is_private boolean DEFAULT true NOT NULL
 );
 
 CREATE TABLE "Quote" (
@@ -22,6 +22,7 @@ CREATE TABLE "Challenge" (
   name varchar(254) NOT NULL UNIQUE,
   description text NOT NULL,
   creator_name varchar(254) NOT NULL,
+  is_private boolean DEFAULT true NOT NULL,
   start_date timestamp with time zone,
   end_date timestamp with time zone CHECK (start_date <= end_date), 
   FOREIGN KEY (creator_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE
@@ -29,6 +30,7 @@ CREATE TABLE "Challenge" (
 
 CREATE TABLE "ChallengeParticipation" (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  is_private boolean DEFAULT true NOT NULL,
   challenge_id uuid NOT NULL,
   user_name varchar(254) NOT NULL,
   FOREIGN KEY (challenge_id) REFERENCES "Challenge"(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -43,6 +45,7 @@ CREATE TABLE "Marking" (
   rating INT NOT NULL,
   comment varchar(2000),
   photo_url varchar(254),
+  is_private boolean DEFAULT true NOT NULL,
   CHECK (rating BETWEEN 1 AND 5),
   FOREIGN KEY (participation_id) REFERENCES "ChallengeParticipation"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
