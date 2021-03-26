@@ -6,10 +6,10 @@
 import { DateFilter } from "./../../../__generated__/globalTypes";
 
 // ====================================================
-// GraphQL query operation: GetTransferableChallengesQuery
+// GraphQL query operation: GetTransferableChallenges
 // ====================================================
 
-export interface GetTransferableChallengesQuery_getChallenges {
+export interface GetTransferableChallenges_getChallenges {
   __typename: "Challenge";
   id: string;
   name: string;
@@ -17,11 +17,11 @@ export interface GetTransferableChallengesQuery_getChallenges {
   endDate: any | null;
 }
 
-export interface GetTransferableChallengesQuery {
-  getChallenges: GetTransferableChallengesQuery_getChallenges[];
+export interface GetTransferableChallenges {
+  getChallenges: GetTransferableChallenges_getChallenges[];
 }
 
-export interface GetTransferableChallengesQueryVariables {
+export interface GetTransferableChallengesVariables {
   startDate: DateFilter;
   endDate: DateFilter;
 }

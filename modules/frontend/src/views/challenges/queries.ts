@@ -5,7 +5,7 @@ import {
 } from "fragments";
 
 export const challengeWithParticipationsFragment = gql`
-  fragment ChallengeWithParticipationsFragment on Challenge {
+  fragment ChallengeWithParticipations on Challenge {
     ...ChallengeData
     participations {
       id
@@ -18,16 +18,16 @@ export const challengeWithParticipationsFragment = gql`
 `;
 
 export const GET_CHALLENGES = gql`
-  query GetChallengesQuery {
+  query GetChallenges {
     getChallenges {
-      ...ChallengeWithParticipationsFragment
+      ...ChallengeWithParticipations
     }
   }
   ${challengeWithParticipationsFragment}
 `;
 
 export const CREATE_PARTICIPATION = gql`
-  mutation CreateParticipationMutation($challengeId: ID!) {
+  mutation CreateParticipation($challengeId: ID!) {
     createParticipation(challengeId: $challengeId) {
       ...ActiveParticipationInfo
     }
@@ -36,7 +36,7 @@ export const CREATE_PARTICIPATION = gql`
 `;
 
 export const DELETE_PARTICIPATION = gql`
-  mutation DeteleParticipationMutation($challengeId: ID!) {
+  mutation DeteleParticipation($challengeId: ID!) {
     deleteParticipation(challengeId: $challengeId)
   }
 `;

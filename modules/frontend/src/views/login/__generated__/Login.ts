@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: LoginMutation
+// GraphQL mutation operation: Login
 // ====================================================
 
-export interface LoginMutation_login_user_activeParticipation_challenge {
+export interface Login_login_user_activeParticipation_challenge {
   __typename: "Challenge";
   id: string;
   name: string;
@@ -15,7 +15,7 @@ export interface LoginMutation_login_user_activeParticipation_challenge {
   endDate: any | null;
 }
 
-export interface LoginMutation_login_user_activeParticipation_markings {
+export interface Login_login_user_activeParticipation_markings {
   __typename: "Marking";
   id: string;
   date: any;
@@ -24,31 +24,31 @@ export interface LoginMutation_login_user_activeParticipation_markings {
   rating: number;
 }
 
-export interface LoginMutation_login_user_activeParticipation {
+export interface Login_login_user_activeParticipation {
   __typename: "ChallengeParticipation";
   id: string;
-  challenge: LoginMutation_login_user_activeParticipation_challenge;
-  markings: LoginMutation_login_user_activeParticipation_markings[];
+  challenge: Login_login_user_activeParticipation_challenge;
+  markings: Login_login_user_activeParticipation_markings[];
 }
 
-export interface LoginMutation_login_user {
+export interface Login_login_user {
   __typename: "User";
   name: string;
   isPrivate: boolean;
-  activeParticipation: LoginMutation_login_user_activeParticipation | null;
+  activeParticipation: Login_login_user_activeParticipation | null;
 }
 
-export interface LoginMutation_login {
+export interface Login_login {
   __typename: "LoginResult";
   accessToken: string;
-  user: LoginMutation_login_user;
+  user: Login_login_user;
 }
 
-export interface LoginMutation {
-  login: LoginMutation_login;
+export interface Login {
+  login: Login_login;
 }
 
-export interface LoginMutationVariables {
+export interface LoginVariables {
   name: string;
   password: string;
   activeParticipationChallengeId?: string | null;

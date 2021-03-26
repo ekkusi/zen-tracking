@@ -5,7 +5,7 @@ import {
 } from "../../fragments";
 
 export const LOGIN = gql`
-  mutation LoginMutation(
+  mutation Login(
     $name: ID!
     $password: String!
     $activeParticipationChallengeId: ID

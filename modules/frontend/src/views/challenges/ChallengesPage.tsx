@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
-import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import { useQuery } from "@apollo/client";
 import useGlobal from "store";
@@ -12,13 +12,14 @@ import ChallengeSelect, {
 import { Link } from "react-router-dom";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { GET_CHALLENGES } from "./queries";
-import {
-  GetChallengesQuery,
-  GetChallengesQuery_getChallenges,
-} from "./__generated__/GetChallengesQuery";
 import ChallengesSeparator from "./ChallengesSeparator";
 import ChallengesSection from "./ChallengesSection";
 import { getParticipation } from "../../util/apolloQueries";
+import {
+  GetChallenges,
+  GetChallenges_getChallenges,
+} from "./__generated__/GetChallenges";
+import Loading from "../../components/general/Loading";
 
 const ChallengesPage = (): JSX.Element => {
   const [skip, setSkip] = useState(false);
@@ -32,15 +33,15 @@ const ChallengesPage = (): JSX.Element => {
   );
 
   const [challengesByUser, setChallengesByUser] = useState<
-    GetChallengesQuery_getChallenges[]
+    GetChallenges_getChallenges[]
   >([]);
 
   const [
     userParticipationChallenges,
     setUserParticipationChallenges,
-  ] = useState<GetChallengesQuery_getChallenges[]>([]);
+  ] = useState<GetChallenges_getChallenges[]>([]);
   const [otherChallenges, setOtherChallenges] = useState<
-    GetChallengesQuery_getChallenges[]
+    GetChallenges_getChallenges[]
   >([]);
 
   const {
@@ -48,7 +49,7 @@ const ChallengesPage = (): JSX.Element => {
     loading: getChallengesLoading,
     error: getChallengesError,
     refetch,
-  } = useQuery<GetChallengesQuery>(
+  } = useQuery<GetChallenges>(
     GET_CHALLENGES,
     { skip, fetchPolicy: "no-cache" } // This stops looping useQuery when error is returned
   );
@@ -129,7 +130,7 @@ const ChallengesPage = (): JSX.Element => {
   };
 
   return (
-    <Box pb="5">
+    <Box pb="5" position="relative">
       <Heading.H1
         textAlign={{ base: "left", sm: "center" }}
         fontSize={{ base: "4xl", sm: "5xl" }}
@@ -211,14 +212,7 @@ const ChallengesPage = (): JSX.Element => {
           />
         </Box>
       )}
-      {loading && (
-        <Flex alignItems="center" justifyContent="center" pt="4">
-          <Text as="span" color="primary.regular" mr="3">
-            Ladataan haasteita
-          </Text>
-          <Spinner color="primary.regular" size="xl" thickness="3px" />
-        </Flex>
-      )}
+      {loading && <Loading />}
       {error && (
         <Text fontWeight="bold" color="warning">
           {error}

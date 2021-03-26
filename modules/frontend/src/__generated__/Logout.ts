@@ -4,13 +4,9 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: TransferMarkingsMutation
+// GraphQL mutation operation: Logout
 // ====================================================
 
-export interface TransferMarkingsMutation {
-  transferUserMarkings: boolean;
-}
-
-export interface TransferMarkingsMutationVariables {
-  challengeId: string;
+export interface Logout {
+  logout: boolean;
 }

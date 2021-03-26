@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetParticipationQuery
+// GraphQL mutation operation: CreateParticipation
 // ====================================================
 
-export interface GetParticipationQuery_getParticipation_challenge {
+export interface CreateParticipation_createParticipation_challenge {
   __typename: "Challenge";
   id: string;
   name: string;
@@ -15,7 +15,7 @@ export interface GetParticipationQuery_getParticipation_challenge {
   endDate: any | null;
 }
 
-export interface GetParticipationQuery_getParticipation_markings {
+export interface CreateParticipation_createParticipation_markings {
   __typename: "Marking";
   id: string;
   date: any;
@@ -24,17 +24,17 @@ export interface GetParticipationQuery_getParticipation_markings {
   rating: number;
 }
 
-export interface GetParticipationQuery_getParticipation {
+export interface CreateParticipation_createParticipation {
   __typename: "ChallengeParticipation";
   id: string;
-  challenge: GetParticipationQuery_getParticipation_challenge;
-  markings: GetParticipationQuery_getParticipation_markings[];
+  challenge: CreateParticipation_createParticipation_challenge;
+  markings: CreateParticipation_createParticipation_markings[];
 }
 
-export interface GetParticipationQuery {
-  getParticipation: GetParticipationQuery_getParticipation | null;
+export interface CreateParticipation {
+  createParticipation: CreateParticipation_createParticipation;
 }
 
-export interface GetParticipationQueryVariables {
+export interface CreateParticipationVariables {
   challengeId: string;
 }

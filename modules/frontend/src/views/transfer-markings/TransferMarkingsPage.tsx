@@ -11,17 +11,17 @@ import useGlobal from "store";
 import DateUtil from "util/DateUtil";
 import UserInfoUtil from "util/UserInfoUtil";
 
-import { GetChallengesQuery_getChallenges } from "views/challenges/__generated__/GetChallengesQuery";
 import { getParticipation } from "../../util/apolloQueries";
+import { GetChallenges_getChallenges } from "../challenges/__generated__/GetChallenges";
 import { GET_TRANSFERABLE_CHALLENGES, TRANSFER_MARKINGS } from "./queries";
 import {
-  GetTransferableChallengesQuery,
-  GetTransferableChallengesQueryVariables,
-} from "./__generated__/GetTransferableChallengesQuery";
+  GetTransferableChallenges,
+  GetTransferableChallengesVariables,
+} from "./__generated__/GetTransferableChallenges";
 import {
-  TransferMarkingsMutation,
-  TransferMarkingsMutationVariables,
-} from "./__generated__/TransferMarkingsMutation";
+  TransferMarkings,
+  TransferMarkingsVariables,
+} from "./__generated__/TransferMarkings";
 
 const TransferMarkingsPage = (): JSX.Element => {
   const [activeParticipation, updateActiveParticipation] = useGlobal(
@@ -58,8 +58,8 @@ const TransferMarkingsPage = (): JSX.Element => {
   }, [activeParticipation]);
 
   const { data, loading } = useQuery<
-    GetTransferableChallengesQuery,
-    GetTransferableChallengesQueryVariables
+    GetTransferableChallenges,
+    GetTransferableChallengesVariables
   >(GET_TRANSFERABLE_CHALLENGES, {
     variables: {
       startDate: {
@@ -74,8 +74,8 @@ const TransferMarkingsPage = (): JSX.Element => {
   });
 
   const [transferUserMarkings] = useMutation<
-    TransferMarkingsMutation,
-    TransferMarkingsMutationVariables
+    TransferMarkings,
+    TransferMarkingsVariables
   >(TRANSFER_MARKINGS);
 
   const onChallengeSelect = async (value: OptionType | null) => {
@@ -116,9 +116,7 @@ const TransferMarkingsPage = (): JSX.Element => {
     );
   };
 
-  const onChallengeCreated = async (
-    challenge: GetChallengesQuery_getChallenges
-  ) => {
+  const onChallengeCreated = async (challenge: GetChallenges_getChallenges) => {
     await transferMarkings(challenge.id);
   };
 

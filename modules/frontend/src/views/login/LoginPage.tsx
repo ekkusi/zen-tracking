@@ -6,14 +6,11 @@ import React, { useState } from "react";
 import useGlobal from "store";
 import { useHistory } from "react-router-dom";
 import { Form, Formik } from "formik";
-import {
-  LoginMutation,
-  LoginMutationVariables,
-} from "./__generated__/LoginMutation";
 import { LOGIN } from "./loginQueries";
 import FormField from "../../components/general/form/FormField";
 import RegisterModal from "../../components/RegisterModal";
 import { setAccessToken } from "../../util/accessToken";
+import { Login, LoginVariables } from "./__generated__/Login";
 
 type FormValues = {
   username: string;
@@ -27,10 +24,7 @@ const LoginPage = (): JSX.Element => {
 
   const [error, setError] = useState<string>();
 
-  const [login, { loading }] = useMutation<
-    LoginMutation,
-    LoginMutationVariables
-  >(LOGIN);
+  const [login, { loading }] = useMutation<Login, LoginVariables>(LOGIN);
 
   const validateName = (name: string) => {
     let validationError;

@@ -11,7 +11,7 @@ import React, {
 
 import Select, { OptionsType } from "react-select";
 import useGlobal from "store";
-import { GetUserParticipationsPlainQuery } from "__generated__/GetUserParticipationsPlainQuery";
+import { GetUserParticipationsPlain } from "../__generated__/GetUserParticipationsPlain";
 
 type ChallengeSelectProps = {
   initialValue?: OptionType;
@@ -52,12 +52,9 @@ const ChallengeSelect = forwardRef(
       loading,
       error,
       refetch,
-    } = useQuery<GetUserParticipationsPlainQuery>(
-      GET_USER_PARTICIPATIONS_PLAIN,
-      {
-        fetchPolicy: "no-cache",
-      }
-    );
+    } = useQuery<GetUserParticipationsPlain>(GET_USER_PARTICIPATIONS_PLAIN, {
+      fetchPolicy: "no-cache",
+    });
 
     const mapOptions = useMemo((): OptionsType<OptionType> => {
       return (

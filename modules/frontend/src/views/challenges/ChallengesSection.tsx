@@ -2,10 +2,10 @@ import { Box, BoxProps, Flex, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import React from "react";
 import ChallengeCard from "./ChallengeCard";
-import { GetChallengesQuery_getChallenges } from "./__generated__/GetChallengesQuery";
+import { GetChallenges_getChallenges } from "./__generated__/GetChallenges";
 
 type ChallengesSectionProps = BoxProps & {
-  challenges: GetChallengesQuery_getChallenges[];
+  challenges: GetChallenges_getChallenges[];
   onEditChallenge?: () => Promise<void>;
   onDeleteChallenge?: () => Promise<void>;
   updateChallenges: () => Promise<void>;

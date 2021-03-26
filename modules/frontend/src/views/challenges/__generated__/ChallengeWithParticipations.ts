@@ -6,26 +6,26 @@
 import { ChallengeStatus } from "./../../../__generated__/globalTypes";
 
 // ====================================================
-// GraphQL query operation: GetChallengesQuery
+// GraphQL fragment: ChallengeWithParticipations
 // ====================================================
 
-export interface GetChallengesQuery_getChallenges_creator {
+export interface ChallengeWithParticipations_creator {
   __typename: "User";
   name: string;
 }
 
-export interface GetChallengesQuery_getChallenges_participations_user {
+export interface ChallengeWithParticipations_participations_user {
   __typename: "User";
   name: string;
 }
 
-export interface GetChallengesQuery_getChallenges_participations {
+export interface ChallengeWithParticipations_participations {
   __typename: "ChallengeParticipation";
   id: string;
-  user: GetChallengesQuery_getChallenges_participations_user;
+  user: ChallengeWithParticipations_participations_user;
 }
 
-export interface GetChallengesQuery_getChallenges {
+export interface ChallengeWithParticipations {
   __typename: "Challenge";
   id: string;
   name: string;
@@ -33,10 +33,6 @@ export interface GetChallengesQuery_getChallenges {
   startDate: any | null;
   endDate: any | null;
   description: string;
-  creator: GetChallengesQuery_getChallenges_creator;
-  participations: GetChallengesQuery_getChallenges_participations[];
-}
-
-export interface GetChallengesQuery {
-  getChallenges: GetChallengesQuery_getChallenges[];
+  creator: ChallengeWithParticipations_creator;
+  participations: ChallengeWithParticipations_participations[];
 }

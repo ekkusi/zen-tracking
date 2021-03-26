@@ -2,60 +2,56 @@ import { gql, useMutation } from "@apollo/client";
 import { useDisclosure, Text, Flex, Box } from "@chakra-ui/react";
 import { isValid } from "date-fns/esm";
 import React, { useState, useMemo } from "react";
-import { GetChallengesQuery_getChallenges } from "views/challenges/__generated__/GetChallengesQuery";
 import DateUtil from "util/DateUtil";
 import { Form, Formik } from "formik";
 import { challengeWithParticipationsFragment } from "views/challenges/queries";
-import {
-  DeleteChallengeMutation,
-  DeleteChallengeMutationVariables,
-} from "./__generated__/DeleteChallengeMutation";
-import {
-  UpdateChallengeMutation,
-  UpdateChallengeMutationVariables,
-} from "./__generated__/UpdateChallengeMutation";
-import {
-  CreateChallengeMutation,
-  CreateChallengeMutationVariables,
-} from "./__generated__/CreateChallengeMutation";
 import ModalTemplate, { ModalTemplateProps } from "./general/ModalTemplate";
 import { PrimaryButton } from "./primitives/Button";
 import FormField from "./general/form/FormField";
 import { PrimaryTextArea } from "./primitives/Input";
 import DeleteConfimationModal from "./DeleteConfirmationModal";
+import { GetChallenges_getChallenges } from "../views/challenges/__generated__/GetChallenges";
+import {
+  DeleteChallenge,
+  DeleteChallengeVariables,
+} from "./__generated__/DeleteChallenge";
+import {
+  CreateChallenge,
+  CreateChallengeVariables,
+} from "./__generated__/CreateChallenge";
+import {
+  UpdateChallenge,
+  UpdateChallengeVariables,
+} from "./__generated__/UpdateChallenge";
 
 const CREATE_CHALLENGE = gql`
-  mutation CreateChallengeMutation($challenge: CreateChallengeInput!) {
+  mutation CreateChallenge($challenge: CreateChallengeInput!) {
     createChallenge(challenge: $challenge) {
-      ...ChallengeWithParticipationsFragment
+      ...ChallengeWithParticipations
     }
   }
   ${challengeWithParticipationsFragment}
 `;
 
 const UPDATE_CHALLENGE = gql`
-  mutation UpdateChallengeMutation($id: ID!, $args: UpdateChallengeInput!) {
+  mutation UpdateChallenge($id: ID!, $args: UpdateChallengeInput!) {
     updateChallenge(id: $id, args: $args) {
-      ...ChallengeWithParticipationsFragment
+      ...ChallengeWithParticipations
     }
   }
   ${challengeWithParticipationsFragment}
 `;
 
 const DELETE_CHALLENGE = gql`
-  mutation DeleteChallengeMutation($id: ID!) {
+  mutation DeleteChallenge($id: ID!) {
     deleteChallenge(id: $id)
   }
 `;
 
 type EditChallengeProps = Omit<ModalTemplateProps, "children"> & {
-  challenge?: GetChallengesQuery_getChallenges | null;
-  onEdit?: (
-    challenge: GetChallengesQuery_getChallenges
-  ) => Promise<void> | void;
-  onDelete?: (
-    challenge: GetChallengesQuery_getChallenges
-  ) => Promise<void> | void;
+  challenge?: GetChallenges_getChallenges | null;
+  onEdit?: (challenge: GetChallenges_getChallenges) => Promise<void> | void;
+  onDelete?: (challenge: GetChallenges_getChallenges) => Promise<void> | void;
   saveButtonLabel?: string;
   requireDates?: boolean;
   minStartDate?: Date;
@@ -88,18 +84,18 @@ const EditChallenge = ({
   const [generalError, setGeneralError] = useState<string>();
 
   const [deleteChallenge, { loading: deleteLoading }] = useMutation<
-    DeleteChallengeMutation,
-    DeleteChallengeMutationVariables
+    DeleteChallenge,
+    DeleteChallengeVariables
   >(DELETE_CHALLENGE);
 
   const [createChallenge, { loading: createLoading }] = useMutation<
-    CreateChallengeMutation,
-    CreateChallengeMutationVariables
+    CreateChallenge,
+    CreateChallengeVariables
   >(CREATE_CHALLENGE);
 
   const [updateChallenge, { loading: updateLoading }] = useMutation<
-    UpdateChallengeMutation,
-    UpdateChallengeMutationVariables
+    UpdateChallenge,
+    UpdateChallengeVariables
   >(UPDATE_CHALLENGE);
 
   const disclosureProps = useDisclosure({

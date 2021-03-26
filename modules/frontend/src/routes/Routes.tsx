@@ -20,10 +20,11 @@ import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "@ekkusi/zen-tracking-back
 import SomeDesignPage from "views/design/SomeDesignPage";
 import WelcomeUserPage from "../views/welcome-user/WelcomeUserPage";
 import { refreshToken } from "../util/accessToken";
+import ChallengePage from "../views/challenges/challenge/ChallengePage";
 import {
-  GetCurrentUserQuery,
-  GetCurrentUserQueryVariables,
-} from "../__generated__/GetCurrentUserQuery";
+  GetCurrentUser,
+  GetCurrentUserVariables,
+} from "../__generated__/GetCurrentUser";
 
 const NON_AUTHENTICATED_PATHS = ["/welcome", "/login"];
 
@@ -59,8 +60,8 @@ const Routes = (): JSX.Element => {
     if (!NON_AUTHENTICATED_PATHS.includes(history.location.pathname)) {
       try {
         const result = await client.query<
-          GetCurrentUserQuery,
-          GetCurrentUserQueryVariables
+          GetCurrentUser,
+          GetCurrentUserVariables
         >({
           query: GET_CURRENT_USER,
           fetchPolicy: "no-cache",
@@ -174,10 +175,18 @@ const Routes = (): JSX.Element => {
                   )}
                 />
                 <Route
+                  path="/challenges/:id"
+                  render={() => (
+                    <ViewContainer>
+                      <ChallengePage />
+                    </ViewContainer>
+                  )}
+                />
+                <Route
                   path="/challenges"
                   render={() => (
                     <ViewContainer>
-                      <ChallengesPage />{" "}
+                      <ChallengesPage />
                     </ViewContainer>
                   )}
                 />

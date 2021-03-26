@@ -1,4 +1,3 @@
-import { useMutation } from "@apollo/client";
 import {
   Flex,
   FlexProps,
@@ -6,26 +5,16 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-import { PrimaryButton } from "components/primitives/Button";
+import { ButtonWithRef } from "components/primitives/Button";
 import Heading from "components/primitives/Heading";
 import React from "react";
 import useGlobal from "store";
 import DateUtil from "util/DateUtil";
-import EditChallenge from "components/EditChallenge";
-import {
-  DeteleParticipationMutation,
-  DeteleParticipationMutationVariables,
-} from "./__generated__/DeteleParticipationMutation";
-import { CREATE_PARTICIPATION, DELETE_PARTICIPATION } from "./queries";
-import {
-  CreateParticipationMutation,
-  CreateParticipationMutationVariables,
-} from "./__generated__/CreateParticipationMutation";
-import { GetChallengesQuery_getChallenges } from "./__generated__/GetChallengesQuery";
-import DeleteConfimationModal from "../../components/DeleteConfirmationModal";
+import { Link } from "react-router-dom";
+import { GetChallenges_getChallenges } from "./__generated__/GetChallenges";
 
 type ChallengeCardProps = FlexProps & {
-  challenge: GetChallengesQuery_getChallenges;
+  challenge: GetChallenges_getChallenges;
   onEdit: () => Promise<void>;
   onDelete: () => Promise<void>;
   updateChallenges: () => Promise<void>;
@@ -38,70 +27,66 @@ const ChallengeCard = ({
   updateChallenges,
   ...rest
 }: ChallengeCardProps): JSX.Element => {
-  const user = useGlobal((state) => state.currentUser)[0];
   const { colorMode } = useColorMode();
 
-  const [activeParticipation, updateActiveParticipation] = useGlobal(
-    (state) => state.activeParticipation,
-    (actions) => actions.updateActiveParticipation
-  );
-  const [addParticipation, { loading: addLoading }] = useMutation<
-    CreateParticipationMutation,
-    CreateParticipationMutationVariables
-  >(CREATE_PARTICIPATION, {
-    variables: {
-      challengeId: challenge.id,
-    },
-  });
+  const [activeParticipation] = useGlobal((state) => state.activeParticipation);
+  // const [addParticipation, { loading: addLoading }] = useMutation<
+  //   CreateParticipationMutation,
+  //   CreateParticipationMutationVariables
+  // >(CREATE_PARTICIPATION, {
+  //   variables: {
+  //     challengeId: challenge.id,
+  //   },
+  // });
 
-  const [deleteParticipation] = useMutation<
-    DeteleParticipationMutation,
-    DeteleParticipationMutationVariables
-  >(DELETE_PARTICIPATION, {
-    variables: {
-      challengeId: challenge.id,
-    },
-  });
+  // const [deleteParticipation] = useMutation<
+  //   DeteleParticipationMutation,
+  //   DeteleParticipationMutationVariables
+  // >(DELETE_PARTICIPATION, {
+  //   variables: {
+  //     challengeId: challenge.id,
+  //   },
+  // });
 
-  const removeParticipation = async () => {
-    try {
-      await deleteParticipation();
-      await updateChallenges();
-      // If deletedParticipation was the activeParticipation, update activeParticipation
-      if (
-        activeParticipation &&
-        activeParticipation.challenge.id === challenge.id
-      ) {
-        updateActiveParticipation(null);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const removeParticipation = async () => {
+  //   try {
+  //     await deleteParticipation();
+  //     await updateChallenges();
+  //     // If deletedParticipation was the activeParticipation, update activeParticipation
+  //     if (
+  //       activeParticipation &&
+  //       activeParticipation.challenge.id === challenge.id
+  //     ) {
+  //       updateActiveParticipation(null);
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
-  const createParticipation = async () => {
-    try {
-      const result = await addParticipation();
-      await onEdit();
-      // If activeparticipation isn't updated by updateChallenges -> update manually with created challenge
-      if (!activeParticipation && result.data) {
-        updateActiveParticipation(result.data.createParticipation);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const createParticipation = async () => {
+  //   try {
+  //     const result = await addParticipation();
+  //     await onEdit();
+  //     // If activeparticipation isn't updated by updateChallenges -> update manually with created challenge
+  //     if (!activeParticipation && result.data) {
+  //       updateActiveParticipation(result.data.createParticipation);
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
-  const getUserParticipation = () => {
-    const participation = challenge.participations.find(
-      (it) => it.user.name === user.name
-    );
-    return participation;
-  };
+  // const getUserParticipation = () => {
+  //   const participation = challenge.participations.find(
+  //     (it) => it.user.name === user.name
+  //   );
+  //   return participation;
+  // };
 
-  const isUserChallengeCreator = () => {
-    return challenge.creator.name === user.name;
-  };
+  // const isUserChallengeCreator = () => {
+  //   return challenge.creator.name === user.name;
+  // };
 
   return (
     <Flex
@@ -138,7 +123,10 @@ const ChallengeCard = ({
         </Text>
       </LightMode>
 
-      {isUserChallengeCreator() && (
+      <ButtonWithRef as={Link} to={`/challenges/${challenge.id}`} mt="auto">
+        Lue lisää
+      </ButtonWithRef>
+      {/* {isUserChallengeCreator() && (
         <EditChallenge
           challenge={challenge}
           onEdit={onEdit}
@@ -172,7 +160,7 @@ const ChallengeCard = ({
         >
           Ilmoittaudu
         </PrimaryButton>
-      )}
+      )} */}
     </Flex>
   );
 };

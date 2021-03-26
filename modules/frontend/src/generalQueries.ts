@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { activeParticipationInfoFragment, userDataFragment } from "fragments";
 
 export const GET_CURRENT_USER = gql`
-  query GetCurrentUserQuery($activeParticipationChallengeId: ID) {
+  query GetCurrentUser($activeParticipationChallengeId: ID) {
     getCurrentUser {
       ...UserData
       activeParticipation(challengeId: $activeParticipationChallengeId) {
@@ -15,13 +15,13 @@ export const GET_CURRENT_USER = gql`
 `;
 
 export const LOGOUT = gql`
-  mutation LogoutMutation {
+  mutation Logout {
     logout
   }
 `;
 
 export const GET_USER_PARTICIPATIONS = gql`
-  query GetUserParticipationsQuery {
+  query GetUserParticipations {
     getUserParticipations {
       ...ActiveParticipationInfo
     }
@@ -30,7 +30,7 @@ export const GET_USER_PARTICIPATIONS = gql`
 `;
 
 export const GET_PARTICIPATION = gql`
-  query GetParticipationQuery($challengeId: ID!) {
+  query GetParticipation($challengeId: ID!) {
     getParticipation(challengeId: $challengeId) {
       ...ActiveParticipationInfo
     }
@@ -39,7 +39,7 @@ export const GET_PARTICIPATION = gql`
 `;
 
 export const GET_USER_TRANSFER_PARTICIPATION = gql`
-  query GetUserTransferParticipationQuery {
+  query GetUserTransferParticipation {
     getUserTransferParticipation {
       ...ActiveParticipationInfo
     }
@@ -48,7 +48,7 @@ export const GET_USER_TRANSFER_PARTICIPATION = gql`
 `;
 
 export const GET_USER_PARTICIPATIONS_PLAIN = gql`
-  query GetUserParticipationsPlainQuery {
+  query GetUserParticipationsPlain {
     getUserParticipations {
       id
       challenge {

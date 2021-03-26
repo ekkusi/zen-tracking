@@ -1,13 +1,13 @@
 import { gql } from "@apollo/client";
 
 export const TRANSFER_MARKINGS = gql`
-  mutation TransferMarkingsMutation($challengeId: ID!) {
+  mutation TransferMarkings($challengeId: ID!) {
     transferUserMarkings(challengeId: $challengeId)
   }
 `;
 
 export const GET_TRANSFERABLE_CHALLENGES = gql`
-  query GetTransferableChallengesQuery(
+  query GetTransferableChallenges(
     $startDate: DateFilter!
     $endDate: DateFilter!
   ) {

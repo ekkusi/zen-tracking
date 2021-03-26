@@ -4,13 +4,13 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: DeleteMarkingMutation
+// GraphQL mutation operation: TransferMarkings
 // ====================================================
 
-export interface DeleteMarkingMutation {
-  deleteMarking: boolean;
+export interface TransferMarkings {
+  transferUserMarkings: boolean;
 }
 
-export interface DeleteMarkingMutationVariables {
-  id: string;
+export interface TransferMarkingsVariables {
+  challengeId: string;
 }

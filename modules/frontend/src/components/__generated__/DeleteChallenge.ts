@@ -4,9 +4,13 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: LogoutMutation
+// GraphQL mutation operation: DeleteChallenge
 // ====================================================
 
-export interface LogoutMutation {
-  logout: boolean;
+export interface DeleteChallenge {
+  deleteChallenge: boolean;
+}
+
+export interface DeleteChallengeVariables {
+  id: string;
 }

@@ -24,28 +24,22 @@ import { IoMdCamera } from "react-icons/io";
 import { IoLeaf } from "react-icons/io5";
 import { Form, Formik, FormikErrors } from "formik";
 import { markingDataFragment } from "fragments";
-import {
-  AddMarkingMutation,
-  AddMarkingMutationVariables,
-} from "./__generated__/AddMarkingMutation";
-import {
-  DeleteMarkingMutation,
-  DeleteMarkingMutationVariables,
-} from "./__generated__/DeleteMarkingMutation";
-import {
-  EditMarkingMutation,
-  EditMarkingMutationVariables,
-} from "./__generated__/EditMarkingMutation";
 import FormField from "./general/form/FormField";
 import PreviewImage from "./general/form/PreviewImage";
 import { PlainIconButton } from "./primitives/IconButton";
 import DeleteConfimationModal from "./DeleteConfirmationModal";
+import {
+  DeleteMarking,
+  DeleteMarkingVariables,
+} from "./__generated__/DeleteMarking";
+import { AddMarking, AddMarkingVariables } from "./__generated__/AddMarking";
+import {
+  EditMarking as EditMarkingQuery,
+  EditMarkingVariables,
+} from "./__generated__/EditMarking";
 
 export const ADD_MARKING = gql`
-  mutation AddMarkingMutation(
-    $participationId: ID!
-    $marking: MarkingCreateInput!
-  ) {
+  mutation AddMarking($participationId: ID!, $marking: MarkingCreateInput!) {
     addMarking(participationId: $participationId, marking: $marking) {
       ...MarkingData
     }
@@ -54,7 +48,7 @@ export const ADD_MARKING = gql`
 `;
 
 export const EDIT_MARKING = gql`
-  mutation EditMarkingMutation($id: ID!, $marking: MarkingUpdateInput!) {
+  mutation EditMarking($id: ID!, $marking: MarkingUpdateInput!) {
     editMarking(id: $id, marking: $marking) {
       ...MarkingData
     }
@@ -63,7 +57,7 @@ export const EDIT_MARKING = gql`
 `;
 
 export const DELETE_MARKING = gql`
-  mutation DeleteMarkingMutation($id: ID!) {
+  mutation DeleteMarking($id: ID!) {
     deleteMarking(id: $id)
   }
 `;
@@ -101,18 +95,18 @@ const EditMarking = ({
   const [photoSrc, setPhotoSrc] = useState<File | string | null>(null);
 
   const [deleteMarking, { loading: deleteLoading }] = useMutation<
-    DeleteMarkingMutation,
-    DeleteMarkingMutationVariables
+    DeleteMarking,
+    DeleteMarkingVariables
   >(DELETE_MARKING);
 
   const [createMarking, { loading: createLoading }] = useMutation<
-    AddMarkingMutation,
-    AddMarkingMutationVariables
+    AddMarking,
+    AddMarkingVariables
   >(ADD_MARKING);
 
   const [editMarking, { loading: updateLoading }] = useMutation<
-    EditMarkingMutation,
-    EditMarkingMutationVariables
+    EditMarkingQuery,
+    EditMarkingVariables
   >(EDIT_MARKING);
 
   const disclosureProps = useDisclosure({
