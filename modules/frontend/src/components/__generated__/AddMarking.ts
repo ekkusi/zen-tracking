@@ -16,6 +16,7 @@ export interface AddMarking_addMarking {
   comment: string | null;
   photoUrl: string | null;
   rating: number;
+  isPrivate: boolean;
 }
 
 export interface AddMarking {

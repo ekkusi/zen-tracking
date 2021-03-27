@@ -22,5 +22,6 @@ export interface ChallengeData {
   startDate: any | null;
   endDate: any | null;
   description: string;
+  isPrivate: boolean;
   creator: ChallengeData_creator;
 }

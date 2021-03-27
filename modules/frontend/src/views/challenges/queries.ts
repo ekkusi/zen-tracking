@@ -36,7 +36,7 @@ export const CREATE_PARTICIPATION = gql`
 `;
 
 export const DELETE_PARTICIPATION = gql`
-  mutation DeteleParticipation($challengeId: ID!) {
+  mutation DeleteParticipation($challengeId: ID!) {
     deleteParticipation(challengeId: $challengeId)
   }
 `;

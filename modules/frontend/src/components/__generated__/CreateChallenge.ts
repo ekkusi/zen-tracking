@@ -33,6 +33,7 @@ export interface CreateChallenge_createChallenge {
   startDate: any | null;
   endDate: any | null;
   description: string;
+  isPrivate: boolean;
   creator: CreateChallenge_createChallenge_creator;
   participations: CreateChallenge_createChallenge_participations[];
 }

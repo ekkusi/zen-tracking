@@ -13,6 +13,7 @@ export interface GetUserParticipations_getUserParticipations_challenge {
   name: string;
   startDate: any | null;
   endDate: any | null;
+  isPrivate: boolean;
 }
 
 export interface GetUserParticipations_getUserParticipations_markings {
@@ -22,11 +23,13 @@ export interface GetUserParticipations_getUserParticipations_markings {
   comment: string | null;
   photoUrl: string | null;
   rating: number;
+  isPrivate: boolean;
 }
 
 export interface GetUserParticipations_getUserParticipations {
   __typename: "ChallengeParticipation";
   id: string;
+  isPrivate: boolean;
   challenge: GetUserParticipations_getUserParticipations_challenge;
   markings: GetUserParticipations_getUserParticipations_markings[];
 }

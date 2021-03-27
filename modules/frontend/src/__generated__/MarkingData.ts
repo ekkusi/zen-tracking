@@ -14,4 +14,5 @@ export interface MarkingData {
   comment: string | null;
   photoUrl: string | null;
   rating: number;
+  isPrivate: boolean;
 }

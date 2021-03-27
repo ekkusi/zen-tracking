@@ -13,6 +13,7 @@ export interface ActiveParticipationInfo_challenge {
   name: string;
   startDate: any | null;
   endDate: any | null;
+  isPrivate: boolean;
 }
 
 export interface ActiveParticipationInfo_markings {
@@ -22,11 +23,13 @@ export interface ActiveParticipationInfo_markings {
   comment: string | null;
   photoUrl: string | null;
   rating: number;
+  isPrivate: boolean;
 }
 
 export interface ActiveParticipationInfo {
   __typename: "ChallengeParticipation";
   id: string;
+  isPrivate: boolean;
   challenge: ActiveParticipationInfo_challenge;
   markings: ActiveParticipationInfo_markings[];
 }

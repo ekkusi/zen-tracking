@@ -4,13 +4,13 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: DeteleParticipation
+// GraphQL mutation operation: DeleteParticipation
 // ====================================================
 
-export interface DeteleParticipation {
+export interface DeleteParticipation {
   deleteParticipation: boolean;
 }
 
-export interface DeteleParticipationVariables {
+export interface DeleteParticipationVariables {
   challengeId: string;
 }

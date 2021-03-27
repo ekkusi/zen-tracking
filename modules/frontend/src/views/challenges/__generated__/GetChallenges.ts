@@ -33,6 +33,7 @@ export interface GetChallenges_getChallenges {
   startDate: any | null;
   endDate: any | null;
   description: string;
+  isPrivate: boolean;
   creator: GetChallenges_getChallenges_creator;
   participations: GetChallenges_getChallenges_participations[];
 }

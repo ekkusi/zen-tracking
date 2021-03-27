@@ -20,9 +20,9 @@ import {
   CreateParticipationVariables,
 } from "../__generated__/CreateParticipation";
 import {
-  DeteleParticipation,
-  DeteleParticipationVariables,
-} from "../__generated__/DeteleParticipation";
+  DeleteParticipation,
+  DeleteParticipationVariables,
+} from "../__generated__/DeleteParticipation";
 import {
   GetChallenge,
   GetChallengeVariables,
@@ -96,8 +96,8 @@ const ChallengePage = (): JSX.Element => {
   });
 
   const [deleteParticipation] = useMutation<
-    DeteleParticipation,
-    DeteleParticipationVariables
+    DeleteParticipation,
+    DeleteParticipationVariables
   >(DELETE_PARTICIPATION, {
     variables: {
       challengeId: id,

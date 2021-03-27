@@ -13,6 +13,7 @@ export interface CreateParticipation_createParticipation_challenge {
   name: string;
   startDate: any | null;
   endDate: any | null;
+  isPrivate: boolean;
 }
 
 export interface CreateParticipation_createParticipation_markings {
@@ -22,11 +23,13 @@ export interface CreateParticipation_createParticipation_markings {
   comment: string | null;
   photoUrl: string | null;
   rating: number;
+  isPrivate: boolean;
 }
 
 export interface CreateParticipation_createParticipation {
   __typename: "ChallengeParticipation";
   id: string;
+  isPrivate: boolean;
   challenge: CreateParticipation_createParticipation_challenge;
   markings: CreateParticipation_createParticipation_markings[];
 }

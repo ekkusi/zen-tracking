@@ -33,6 +33,7 @@ export interface UpdateChallenge_updateChallenge {
   startDate: any | null;
   endDate: any | null;
   description: string;
+  isPrivate: boolean;
   creator: UpdateChallenge_updateChallenge_creator;
   participations: UpdateChallenge_updateChallenge_participations[];
 }

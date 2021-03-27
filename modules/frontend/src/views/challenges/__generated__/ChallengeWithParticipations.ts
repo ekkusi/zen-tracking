@@ -33,6 +33,7 @@ export interface ChallengeWithParticipations {
   startDate: any | null;
   endDate: any | null;
   description: string;
+  isPrivate: boolean;
   creator: ChallengeWithParticipations_creator;
   participations: ChallengeWithParticipations_participations[];
 }

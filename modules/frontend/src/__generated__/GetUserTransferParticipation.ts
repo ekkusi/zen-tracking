@@ -13,6 +13,7 @@ export interface GetUserTransferParticipation_getUserTransferParticipation_chall
   name: string;
   startDate: any | null;
   endDate: any | null;
+  isPrivate: boolean;
 }
 
 export interface GetUserTransferParticipation_getUserTransferParticipation_markings {
@@ -22,11 +23,13 @@ export interface GetUserTransferParticipation_getUserTransferParticipation_marki
   comment: string | null;
   photoUrl: string | null;
   rating: number;
+  isPrivate: boolean;
 }
 
 export interface GetUserTransferParticipation_getUserTransferParticipation {
   __typename: "ChallengeParticipation";
   id: string;
+  isPrivate: boolean;
   challenge: GetUserTransferParticipation_getUserTransferParticipation_challenge;
   markings: GetUserTransferParticipation_getUserTransferParticipation_markings[];
 }

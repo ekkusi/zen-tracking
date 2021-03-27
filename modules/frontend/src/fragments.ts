@@ -7,17 +7,20 @@ export const markingDataFragment = gql`
     comment
     photoUrl
     rating
+    isPrivate
   }
 `;
 
 export const activeParticipationInfoFragment = gql`
   fragment ActiveParticipationInfo on ChallengeParticipation {
     id
+    isPrivate
     challenge {
       id
       name
       startDate
       endDate
+      isPrivate
     }
     markings {
       ...MarkingData
@@ -41,6 +44,7 @@ export const challengeDataFragment = gql`
     startDate
     endDate
     description
+    isPrivate
     creator {
       name
     }

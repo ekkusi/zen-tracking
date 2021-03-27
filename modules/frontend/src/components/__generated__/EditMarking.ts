@@ -16,6 +16,7 @@ export interface EditMarking_editMarking {
   comment: string | null;
   photoUrl: string | null;
   rating: number;
+  isPrivate: boolean;
 }
 
 export interface EditMarking {
