@@ -262,7 +262,7 @@ export default class ChallengeValidator {
     // If challenge has other participations than creator participation, don't allow delete
     if (otherThanUserParticipations.length > 0)
       throw new ValidationError(
-        "Et voi poistaa haastetta, jossa on myös muiden ilmoittautumisia"
+        "Et voi poistaa haastetta, jossa on myös muiden ilmoittautumisia. Voi olla, että haasteessa on yksityisiä ilmottautuimisia, jotka eivät ole näkyvissä."
       );
   }
 
