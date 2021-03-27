@@ -125,7 +125,8 @@
       "description": "Kuukauden ajan vihanneksia ja hetelmiä. Kylmänä vaan.",
       "creator_name": "some-user",
       "start_date": "2021-04-01T00:00:00+02:00",
-      "end_date": "2021-04-30T23:59:59+02:00"
+      "end_date": "2021-04-30T23:59:59+02:00",
+      "is_private": false
     },
     {
       "name": "Budjettikuu - ehdotus - yksityinen",
