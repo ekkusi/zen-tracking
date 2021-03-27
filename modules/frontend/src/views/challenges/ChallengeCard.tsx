@@ -30,69 +30,12 @@ const ChallengeCard = ({
   const { colorMode } = useColorMode();
 
   const [activeParticipation] = useGlobal((state) => state.activeParticipation);
-  // const [addParticipation, { loading: addLoading }] = useMutation<
-  //   CreateParticipationMutation,
-  //   CreateParticipationMutationVariables
-  // >(CREATE_PARTICIPATION, {
-  //   variables: {
-  //     challengeId: challenge.id,
-  //   },
-  // });
-
-  // const [deleteParticipation] = useMutation<
-  //   DeteleParticipationMutation,
-  //   DeteleParticipationMutationVariables
-  // >(DELETE_PARTICIPATION, {
-  //   variables: {
-  //     challengeId: challenge.id,
-  //   },
-  // });
-
-  // const removeParticipation = async () => {
-  //   try {
-  //     await deleteParticipation();
-  //     await updateChallenges();
-  //     // If deletedParticipation was the activeParticipation, update activeParticipation
-  //     if (
-  //       activeParticipation &&
-  //       activeParticipation.challenge.id === challenge.id
-  //     ) {
-  //       updateActiveParticipation(null);
-  //     }
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // const createParticipation = async () => {
-  //   try {
-  //     const result = await addParticipation();
-  //     await onEdit();
-  //     // If activeparticipation isn't updated by updateChallenges -> update manually with created challenge
-  //     if (!activeParticipation && result.data) {
-  //       updateActiveParticipation(result.data.createParticipation);
-  //     }
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // const getUserParticipation = () => {
-  //   const participation = challenge.participations.find(
-  //     (it) => it.user.name === user.name
-  //   );
-  //   return participation;
-  // };
-
-  // const isUserChallengeCreator = () => {
-  //   return challenge.creator.name === user.name;
-  // };
 
   return (
     <Flex
       direction="column"
       borderRadius="10px"
-      boxShadow={colorMode === "light" ? "base" : "dark-lg"}
+      boxShadow={colorMode === "light" ? "dark" : "dark-lg"}
       width={{ base: "100%", sm: "300px" }}
       height="300px"
       py="5"
@@ -126,41 +69,6 @@ const ChallengeCard = ({
       <ButtonWithRef as={Link} to={`/challenges/${challenge.id}`} mt="auto">
         Lue lisää
       </ButtonWithRef>
-      {/* {isUserChallengeCreator() && (
-        <EditChallenge
-          challenge={challenge}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          openButtonLabel="Muokkaa"
-          openButtonProps={{ size: "xs", mt: "auto" }}
-        />
-      )}
-      {getUserParticipation() ? (
-        <>
-          <DeleteConfimationModal
-            onDelete={removeParticipation}
-            openButtonLabel="Poista ilmoittautuminen"
-            headerLabel="Poista ilmoittautuminen"
-            openButtonProps={{
-              mt: isUserChallengeCreator() ? "2" : "auto",
-            }}
-          >
-            <Text>
-              Oletko varma, että haluat poistaa ilmoittautumisesi haasteesta{" "}
-              {challenge.name}? Jos sinulla on merkkauksia kyseiseen
-              haasteeseen, poistuvat nekin.
-            </Text>
-          </DeleteConfimationModal>
-        </>
-      ) : (
-        <PrimaryButton
-          isLoading={addLoading}
-          mt={isUserChallengeCreator() ? "2" : "auto"}
-          onClick={createParticipation}
-        >
-          Ilmoittaudu
-        </PrimaryButton>
-      )} */}
     </Flex>
   );
 };

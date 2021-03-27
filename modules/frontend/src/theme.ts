@@ -44,9 +44,11 @@ const theme: Theme = extendTheme({
         color: customColors.text[props.colorMode],
         bg: customColors.bg[props.colorMode],
       },
+      body: {
+        fontSize: { base: "md", md: "lg" },
+      },
       p: {
         marginBottom: "2",
-        fontSize: { base: "md", md: "lg" },
       },
       a: {
         color: customColors.primary.regular,
