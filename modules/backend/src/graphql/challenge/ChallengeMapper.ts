@@ -163,7 +163,6 @@ export class ChallengeMapper {
     participations: ChallengeParticipation[],
     currentUserName?: string
   ): Promise<ChallengeParticipation[]> {
-    console.log("Loading user in isUserPrivate check:");
     const users = await dataLoaders.userLoader.loadMany(
       participations.map((it) => it.user_name)
     );

@@ -43,9 +43,6 @@ export class SharedMapper {
         ],
       },
     };
-    console.log(
-      `notPrivateFilterMapper mapped filters: ${JSON.stringify(filters)}`
-    );
     return filters;
   }
 }

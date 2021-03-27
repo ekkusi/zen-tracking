@@ -14,7 +14,6 @@ export default function ScrollToTop() {
 
   window.addEventListener("wheel", (e: WheelEvent) => {
     if (e.deltaY < -300 && e.pageY < 100 && isDisplayingInMobile) {
-      console.log(e);
       window.location.href = history.location.pathname;
     }
   });

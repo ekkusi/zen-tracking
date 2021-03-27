@@ -26,6 +26,7 @@
       "name": "NO_PARTICIPATION_MARKINGS_HOLDER",
       "description": "Holder for markings with no participation",
       "creator_name": "main-user",
+      "is_private": true,
       "participations": [
         {
           "user_name": "user-with-old-participations",
@@ -50,6 +51,7 @@
       "creator_name": "main-user",
       "start_date": "2021-03-01T00:00:00+02:00",
       "end_date": "2021-03-30T00:00:00+02:00",
+      "is_private": false,
       "participations": [
         {
           "user_name": "main-user",
@@ -99,6 +101,7 @@
       "creator_name": "main-user",
       "start_date": "2021-02-01T00:00:00+02:00",
       "end_date": "2021-02-28T23:59:59+02:00",
+      "is_private": false,
       "participations": [
         {
           "user_name": "main-user",
@@ -125,9 +128,10 @@
       "end_date": "2021-04-30T23:59:59+02:00"
     },
     {
-      "name": "Budjettikuu - ehdotus",
+      "name": "Budjettikuu - ehdotus - yksityinen",
       "description": "Kuukausi 50e/viikko budjetilla.",
-      "creator_name": "private-user"
+      "creator_name": "private-user",
+      "is_private": true
     }
   ]
 }
