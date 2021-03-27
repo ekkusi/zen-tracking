@@ -11,6 +11,7 @@ import FormField from "../../components/general/form/FormField";
 import RegisterModal from "../../components/RegisterModal";
 import { setAccessToken } from "../../util/accessToken";
 import { Login, LoginVariables } from "./__generated__/Login";
+import { getUser } from "../../util/apolloQueries";
 
 type FormValues = {
   username: string;
@@ -41,6 +42,7 @@ const LoginPage = (): JSX.Element => {
   const handleSubmit = async (values: FormValues) => {
     // Set hasLoggedInBefore to prevent next visit animations, if this is not set already
     if (!hasLoggedInBefore) localStorage.setItem("hasLoggedInBefore", "true");
+
     try {
       const { data } = await login({
         variables: {
@@ -54,8 +56,20 @@ const LoginPage = (): JSX.Element => {
       if (data) {
         const { accessToken, user } = data.login;
         globalActions.updateUser(user);
-        globalActions.updateActiveParticipation(user.activeParticipation);
         setAccessToken(accessToken);
+
+        const getUserResult = await getUser({
+          name: user.name,
+          activeParticipationChallengeId:
+            localStorage.getItem("activeParticipationChallengeId") ?? undefined,
+        });
+
+        const activeParticipation =
+          getUserResult.data.getUser?.activeParticipation;
+
+        if (activeParticipation) {
+          globalActions.updateActiveParticipation(activeParticipation);
+        }
         history.push("/");
       }
     } catch (err) {

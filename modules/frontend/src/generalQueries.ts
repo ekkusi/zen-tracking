@@ -58,3 +58,16 @@ export const GET_USER_PARTICIPATIONS_PLAIN = gql`
     }
   }
 `;
+
+export const GET_USER = gql`
+  query GetUser($name: ID!, $activeParticipationChallengeId: ID) {
+    getUser(name: $name) {
+      ...UserData
+      activeParticipation(challengeId: $activeParticipationChallengeId) {
+        ...ActiveParticipationInfo
+      }
+    }
+  }
+  ${userDataFragment}
+  ${activeParticipationInfoFragment}
+`;
