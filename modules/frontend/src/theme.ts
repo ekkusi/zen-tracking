@@ -31,6 +31,10 @@ const customColors = {
 };
 
 const theme: Theme = extendTheme({
+  fonts: {
+    heading: "Oxygen",
+    body: "Raleway",
+  },
   styles: {
     global: (props) => ({
       "html, body, #root": {
@@ -63,6 +67,9 @@ const theme: Theme = extendTheme({
   },
   colors: {
     ...customColors,
+  },
+  shadows: {
+    dark: "5px 5px 15px -5px black",
   },
   config,
 });

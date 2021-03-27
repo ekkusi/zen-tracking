@@ -7,10 +7,12 @@ import { ThemeProvider } from "styled-components";
 
 import ScrollToTop from "components/ScrollToTop";
 import theme from "./theme";
+import Fonts from "./Fonts";
 
 const App = (): JSX.Element => {
   return (
     <ChakraProvider theme={theme}>
+      <Fonts />
       <ThemeProvider theme={theme}>
         {/* @ts-ignore */}
         <BrowserRouter>
