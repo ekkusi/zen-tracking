@@ -7,6 +7,7 @@ import {
   ListItem,
   OrderedList,
   Text,
+  useColorMode,
   useMediaQuery,
 } from "@chakra-ui/react";
 import React, { useMemo, useState, useEffect } from "react";
@@ -40,6 +41,8 @@ const FlexWithMotion = chakraMotionWrapper(Flex);
 
 const ChallengePage = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
+
+  const { colorMode } = useColorMode();
 
   const [bottomBarState, setBottomBarState] = useState<"hidden" | "visible">(
     "visible"
@@ -233,7 +236,7 @@ const ChallengePage = (): JSX.Element => {
             pt="3"
             px="3"
             zIndex="100"
-            bg="white"
+            bg={colorMode === "dark" ? "gray.700" : "white"}
             initial="hidden"
             animate={bottomBarState}
             variants={bottomBarVariants}
