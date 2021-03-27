@@ -49,7 +49,7 @@ export const resolvers: UserResolvers = {
         });
 
         if (
-          participation?.is_private ||
+          participation?.is_private &&
           participation?.user_name !== user?.name
         )
           return null;
@@ -60,8 +60,9 @@ export const resolvers: UserResolvers = {
       const latestParticipation = await UserInfoUtil.getLatestModifiedParticipation(
         name
       );
+
       if (
-        latestParticipation?.is_private ||
+        latestParticipation?.is_private &&
         latestParticipation?.user_name !== user?.name
       )
         return null;
