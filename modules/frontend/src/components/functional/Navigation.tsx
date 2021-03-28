@@ -7,65 +7,37 @@ import {
   DrawerOverlay,
   DrawerProps,
   Flex,
+  FlexProps,
+  Icon,
+  SimpleGrid,
   Text,
+  useColorMode,
   useDisclosure,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import React, { useState } from "react";
-import { RiMenuLine } from "react-icons/ri";
+import React, { useEffect, useState } from "react";
+import { RiMenuLine, RiSwordLine, RiHome4Line } from "react-icons/ri";
+import { FiUser } from "react-icons/fi";
 import { Link, LinkProps, useHistory } from "react-router-dom";
 import useGlobal from "store";
 import theme from "theme";
 import chakraMotionWrapper from "util/chakraMotionWrapper";
+import { IconType } from "react-icons";
 import InfoModal from "./InfoModal";
 import InstructionsModal from "./InstructionsModal";
-import { PrimaryButton } from "./primitives/Button";
-import { IconButtonWithRef } from "./primitives/IconButton";
+import { PrimaryButton } from "../primitives/Button";
+import { IconButtonWithRef } from "../primitives/IconButton";
 import QuoteOfTheDay from "./QuoteOfTheDay";
 import ThemeSwitch from "./ThemeSwitch";
 
-type NavigationProps = Omit<DrawerProps, "children" | "isOpen" | "onClose"> & {
-  isOpen?: boolean;
-  onClose?: () => void;
-};
+// ===================== TopNavBar ====================
 
 type NavigationTopBarProps = {
   onOpenDrawer: () => void;
 };
 
-type NavigationLinkProps = Omit<LinkProps, "to"> & {
-  to?: string;
-};
-
-const MotionText = chakraMotionWrapper(Text);
-
-const NavigationLink = ({
-  to = "#",
-  children,
-  ...rest
-}: NavigationLinkProps) => {
-  return (
-    <MotionText
-      as={Link}
-      to={to}
-      display="block"
-      textAlign="center"
-      fontSize="xl"
-      py="1"
-      whileHover={{
-        scale: 1.2,
-      }}
-      whileTap={{
-        scale: 1.2,
-      }}
-      {...rest}
-    >
-      {children}
-    </MotionText>
-  );
-};
-
-const NavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
+const TopNavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
   const [logoutLoading, setLogoutLoading] = useState(false);
   const logout = useGlobal(
     () => {},
@@ -118,12 +90,174 @@ const NavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
   );
 };
 
+// ===================== BottomNavBar ====================
+
+type BottomBarLinkProps = FlexProps &
+  LinkProps & {
+    linkText: string;
+    linkIcon: IconType;
+  };
+
+const BottomBarLink = ({
+  linkText,
+  linkIcon,
+  to,
+  ...rest
+}: BottomBarLinkProps) => {
+  const history = useHistory();
+  const { colorMode } = useColorMode();
+
+  const isLinkCurrentPath = () => {
+    return history.location.pathname === to;
+  };
+
+  const getLinkColor = () => {
+    if (isLinkCurrentPath()) return "primary.regular";
+    return colorMode === "dark" ? "text.dark" : "text.light";
+  };
+
+  return (
+    <Flex
+      as={Link}
+      to={to}
+      color={getLinkColor()}
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+      pointerEvents={isLinkCurrentPath() ? "none" : "auto"}
+      _hover={{ opacity: 1 }}
+      {...rest}
+    >
+      <Icon as={linkIcon} w={6} h={6} />
+      <Text as="span" fontSize="sm">
+        {linkText}
+      </Text>
+    </Flex>
+  );
+};
+
+const GridWithFlex = chakraMotionWrapper(SimpleGrid);
+
+const BottomNavigationBar = () => {
+  const [bottomBarState, setBottomBarState] = useState<"hidden" | "visible">(
+    "visible"
+  );
+
+  const user = useGlobal((state) => state.currentUser)[0];
+
+  const { colorMode } = useColorMode();
+
+  let lastScrollTop = window.pageYOffset;
+
+  const onScroll = () => {
+    const st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
+    if (st > lastScrollTop) {
+      if (bottomBarState === "visible") {
+        setBottomBarState("hidden");
+      }
+    } else if (bottomBarState === "hidden") setBottomBarState("visible");
+    lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  });
+
+  const bottomBarVariants = {
+    hidden: { bottom: -100 },
+    visible: { bottom: 0 },
+  };
+
+  return (
+    <GridWithFlex
+      width="100%"
+      boxShadow="-5px 0 10px -5px black"
+      position="fixed"
+      left="0"
+      pt="3"
+      pb="2"
+      px="3"
+      zIndex="100"
+      bg={colorMode === "dark" ? "gray.700" : "white"}
+      columns={3}
+      initial="hidden"
+      animate={bottomBarState}
+      variants={bottomBarVariants}
+    >
+      <BottomBarLink
+        as={Link}
+        to="/"
+        linkText="Pääsivu"
+        linkIcon={RiHome4Line}
+      />
+      <BottomBarLink
+        as={Link}
+        to="/challenges"
+        linkText="Haasteisiin"
+        linkIcon={RiSwordLine}
+      />
+      <BottomBarLink
+        as={Link}
+        to={`/profile/${user.name}`}
+        linkText="Omat tiedot"
+        linkIcon={FiUser}
+      />
+    </GridWithFlex>
+  );
+};
+
+// ===================== Navigation ====================
+
+type NavigationLinkProps = Omit<LinkProps, "to"> & {
+  to?: string;
+};
+
+const MotionText = chakraMotionWrapper(Text);
+
+const NavigationLink = ({
+  to = "#",
+  children,
+  ...rest
+}: NavigationLinkProps) => {
+  return (
+    <MotionText
+      as={Link}
+      to={to}
+      display="block"
+      textAlign="center"
+      fontSize="xl"
+      py="1"
+      whileHover={{
+        scale: 1.2,
+      }}
+      whileTap={{
+        scale: 1.2,
+      }}
+      {...rest}
+    >
+      {children}
+    </MotionText>
+  );
+};
+
+type NavigationProps = Omit<DrawerProps, "children" | "isOpen" | "onClose"> & {
+  isOpen?: boolean;
+  onClose?: () => void;
+};
+
 const Navigation = ({
   isOpen: customIsOpen,
   onClose: customOnClose,
   ...rest
 }: NavigationProps): JSX.Element => {
   const [logoutLoading, setLogoutLoading] = useState(false);
+  const [areInstructionsOpen, setAreInstructionsOpen] = useState(false);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+
+  const [isMobile] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   const logout = useGlobal(
     () => {},
@@ -134,8 +268,6 @@ const Navigation = ({
     onClose: customOnClose,
     isOpen: customIsOpen,
   });
-  const [areInstructionsOpen, setAreInstructionsOpen] = useState(false);
-  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
   const history = useHistory();
 
@@ -164,7 +296,8 @@ const Navigation = ({
 
   return (
     <>
-      <NavigationBar onOpenDrawer={onOpen} />
+      <TopNavigationBar onOpenDrawer={onOpen} />
+      {isMobile && <BottomNavigationBar />}
       <InstructionsModal
         hasOpenButton={false}
         isOpen={areInstructionsOpen}

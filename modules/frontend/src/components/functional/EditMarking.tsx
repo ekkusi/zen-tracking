@@ -1,6 +1,7 @@
 import { useMutation, gql } from "@apollo/client";
 import {
   Box,
+  Checkbox,
   Flex,
   FormLabel,
   Icon,
@@ -24,10 +25,10 @@ import { IoMdCamera } from "react-icons/io";
 import { IoLeaf } from "react-icons/io5";
 import { Form, Formik, FormikErrors } from "formik";
 import { markingDataFragment } from "fragments";
-import FormField from "./general/form/FormField";
-import PreviewImage from "./general/form/PreviewImage";
-import { PlainIconButton } from "./primitives/IconButton";
-import DeleteConfimationModal from "./DeleteConfirmationModal";
+import FormField from "../general/form/FormField";
+import PreviewImage from "../general/form/PreviewImage";
+import { PlainIconButton } from "../primitives/IconButton";
+import DeleteConfimationModal from "../general/DeleteConfirmationModal";
 import {
   DeleteMarking,
   DeleteMarkingVariables,
@@ -71,6 +72,7 @@ type FormValues = {
   rating: number;
   comment: string;
   photo: File | string | null;
+  isPrivate: boolean;
 };
 const MAX_COMMENT_LENGTH = 2000;
 
@@ -127,8 +129,9 @@ const EditMarking = ({
       rating: marking?.rating || 3,
       comment: marking?.comment || "",
       photo: marking?.photoUrl || null,
+      isPrivate: marking?.isPrivate || activeParticipation?.isPrivate || false,
     };
-  }, [marking, photoSrc]);
+  }, [marking, photoSrc, activeParticipation]);
 
   const getPhotoSrc = useMemo(() => {
     if (!photoSrc) return undefined;
@@ -148,7 +151,7 @@ const EditMarking = ({
     }
 
     setLoading(true);
-    const { comment, photo, rating } = values;
+    const { comment, photo, rating, isPrivate } = values;
     // If photo is defined -> initialize as undefined to avoid unnecessary delete in backend, if null then null to delete. If value is File -> next upload will handle updating this variable
     let photoUrl: string | undefined | null = photo ? undefined : null;
     // If this photo is File and not string or undefined, it is new file -> upload
@@ -180,6 +183,7 @@ const EditMarking = ({
               comment,
               photoUrl,
               rating,
+              isPrivate,
             },
           },
         });
@@ -207,6 +211,7 @@ const EditMarking = ({
               date,
               photoUrl,
               rating,
+              isPrivate,
             },
             participationId: activeParticipation.id,
           },
@@ -415,9 +420,20 @@ const EditMarking = ({
                   }}
                 />
               )}
+              <Checkbox
+                isChecked={values.isPrivate}
+                onChange={(event) =>
+                  setFieldValue("isPrivate", event.target.checked)
+                }
+                mt={values.photo ? "3" : "0"}
+              >
+                <Text as="span" fontSize="sm">
+                  Haluan piilottaa tämän merkkauksen muilta.
+                </Text>
+              </Checkbox>
 
               {error && <Text color="warning">{error}</Text>}
-              <Box mt="7" mb="5">
+              <Box mt="5" mb="5">
                 <PrimaryButton
                   type="submit"
                   isLoading={loading || createLoading || updateLoading}
@@ -453,11 +469,6 @@ const EditMarking = ({
       </Stack>
     </ModalTemplate>
   );
-};
-
-EditMarking.defaultProps = {
-  marking: undefined,
-  date: undefined,
 };
 
 export default EditMarking;

@@ -1,52 +1,43 @@
 import { useMutation, useQuery } from "@apollo/client";
 import {
   Box,
-  Flex,
   Grid,
   GridItem,
   ListItem,
   OrderedList,
   Text,
-  useColorMode,
-  useMediaQuery,
 } from "@chakra-ui/react";
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 
 import { Link, useHistory, useParams } from "react-router-dom";
 import Heading from "../../../components/primitives/Heading";
 import useGlobal from "../../../store";
-import { CREATE_PARTICIPATION, DELETE_PARTICIPATION } from "../queries";
+import {
+  CREATE_PARTICIPATION,
+  DELETE_PARTICIPATION,
+  GET_CHALLENGE,
+} from "./queries";
 import {
   CreateParticipation,
   CreateParticipationVariables,
-} from "../__generated__/CreateParticipation";
+} from "./__generated__/CreateParticipation";
 import {
   DeleteParticipation,
   DeleteParticipationVariables,
-} from "../__generated__/DeleteParticipation";
+} from "./__generated__/DeleteParticipation";
 import {
   GetChallenge,
   GetChallengeVariables,
 } from "./__generated__/GetChallenge";
-import { GET_CHALLENGE } from "./queries";
+
 import Loading from "../../../components/general/Loading";
-import EditChallenge from "../../../components/EditChallenge";
-import DeleteConfimationModal from "../../../components/DeleteConfirmationModal";
+import EditChallenge from "../../../components/functional/EditChallenge";
+import DeleteConfimationModal from "../../../components/general/DeleteConfirmationModal";
 import { PrimaryButton } from "../../../components/primitives/Button";
 import DateUtil from "../../../util/DateUtil";
-import chakraMotionWrapper from "../../../util/chakraMotionWrapper";
-import theme from "../../../theme";
-
-const FlexWithMotion = chakraMotionWrapper(Flex);
 
 const ChallengePage = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
-
-  const { colorMode } = useColorMode();
-
-  const [bottomBarState, setBottomBarState] = useState<"hidden" | "visible">(
-    "visible"
-  );
 
   const user = useGlobal((state) => state.currentUser)[0];
   const [activeParticipation, updateActiveParticipation] = useGlobal(
@@ -55,7 +46,6 @@ const ChallengePage = (): JSX.Element => {
   );
 
   const history = useHistory();
-  const [isMobile] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   const { data, loading, error, refetch } = useQuery<
     GetChallenge,
@@ -67,34 +57,13 @@ const ChallengePage = (): JSX.Element => {
     fetchPolicy: "network-only",
   });
 
-  let lastScrollTop = window.pageYOffset;
-
-  const onScroll = () => {
-    const st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
-    if (st > lastScrollTop) {
-      if (bottomBarState === "visible") {
-        setBottomBarState("hidden");
-      }
-    } else if (bottomBarState === "hidden") setBottomBarState("visible");
-    lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-  };
-
-  useEffect(() => {
-    if (isMobile) {
-      console.log("Adding event listener");
-      window.addEventListener("scroll", onScroll);
-    }
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  });
-
   const [addParticipation, { loading: addLoading }] = useMutation<
     CreateParticipation,
     CreateParticipationVariables
   >(CREATE_PARTICIPATION, {
     variables: {
       challengeId: id,
+      isPrivate: false,
     },
   });
 
@@ -159,11 +128,6 @@ const ChallengePage = (): JSX.Element => {
     return challenge?.creator.name === user.name;
   };
 
-  const bottomBarVariants = {
-    hidden: { bottom: -100 },
-    visible: { bottom: 0 },
-  };
-
   return (
     <Box>
       <Text
@@ -175,6 +139,7 @@ const ChallengePage = (): JSX.Element => {
       >
         Takaisin haasteisiin
       </Text>
+
       {loading && <Loading />}
       {challenge && (
         <>
@@ -191,22 +156,22 @@ const ChallengePage = (): JSX.Element => {
             gap="2"
           >
             <GridItem as="span">
-              Aika:{" "}
-              <Text as="span" fontWeight="bold" fontStyle="italic">
-                {dateString}{" "}
+              <Text as="span" fontWeight="bold">
+                Aika:{" "}
               </Text>
+              {dateString}
             </GridItem>
             <GridItem as="span">
-              Tekijä:{" "}
-              <Text as="span" fontWeight="bold" fontStyle="italic">
-                {challenge.creator.name}
+              <Text as="span" fontWeight="bold">
+                Tekijä:{" "}
               </Text>
+              {challenge.creator.name}
             </GridItem>
             <GridItem as="span">
-              Ilmoittautuneita:{" "}
-              <Text as="span" fontWeight="bold" fontStyle="italic">
-                {challenge.participations.length}
+              <Text as="span" fontWeight="bold">
+                Ilmoittautuneita:{" "}
               </Text>
+              {challenge.participations.length}
             </GridItem>
           </Grid>
           <Heading.H2>Kuvaus</Heading.H2>
@@ -225,43 +190,13 @@ const ChallengePage = (): JSX.Element => {
             </Text>
           )}
 
-          <FlexWithMotion
-            width="100%"
-            boxShadow="-5px 0 10px -5px black"
-            position="fixed"
-            left="0"
-            justify="flex-start"
-            alignItems="start"
-            pb="3"
-            pt="3"
-            px="3"
-            zIndex="100"
-            bg={colorMode === "dark" ? "gray.700" : "white"}
-            initial="hidden"
-            animate={bottomBarState}
-            variants={bottomBarVariants}
-          >
-            {isUserChallengeCreator() && (
-              <EditChallenge
-                challenge={challenge}
-                onEdit={() => {
-                  console.log("Refetching");
-
-                  refetch();
-                }}
-                onDelete={() => history.push("/challenges")}
-                openButtonLabel="Muokkaa"
-                openButtonProps={{
-                  size: "xs",
-                  mr: { base: "4", sm: "4" },
-                }}
-              />
-            )}
+          <Box mt="5">
             {getUserParticipation() ? (
               <>
                 <DeleteConfimationModal
                   onDelete={removeParticipation}
                   openButtonLabel="Poista ilmoittautuminen"
+                  openButtonProps={{ mr: "4" }}
                   headerLabel="Poista ilmoittautuminen"
                 >
                   <Text>
@@ -275,11 +210,22 @@ const ChallengePage = (): JSX.Element => {
               <PrimaryButton
                 isLoading={addLoading}
                 onClick={createParticipation}
+                mr="4"
               >
                 Ilmoittaudu
               </PrimaryButton>
             )}
-          </FlexWithMotion>
+            {isUserChallengeCreator() && (
+              <EditChallenge
+                challenge={challenge}
+                onEdit={() => {
+                  refetch();
+                }}
+                onDelete={() => history.push("/challenges")}
+                openButtonLabel="Muokkaa"
+              />
+            )}
+          </Box>
         </>
       )}
       {!challenge && !loading && (

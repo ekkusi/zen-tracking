@@ -1,7 +1,7 @@
 import { ListItem, OrderedList, Text } from "@chakra-ui/react";
 import React from "react";
-import ModalTemplate, { ModalTemplateProps } from "./general/ModalTemplate";
-import Heading from "./primitives/Heading";
+import ModalTemplate, { ModalTemplateProps } from "../general/ModalTemplate";
+import Heading from "../primitives/Heading";
 
 type InfoModalProps = Omit<
   ModalTemplateProps,

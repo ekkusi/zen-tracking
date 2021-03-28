@@ -1,7 +1,7 @@
 import { useMediaQuery } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import theme from "../theme";
+import theme from "../../theme";
 
 export default function ScrollToTop() {
   const { pathname } = useLocation();

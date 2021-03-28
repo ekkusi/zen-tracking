@@ -40,4 +40,5 @@ export interface CreateParticipation {
 
 export interface CreateParticipationVariables {
   challengeId: string;
+  isPrivate: boolean;
 }

@@ -16,6 +16,7 @@ export enum ChallengeStatus {
 
 export interface CreateChallengeInput {
   name: string;
+  isPrivate: boolean;
   description: string;
   startDate?: any | null;
   endDate?: any | null;
@@ -30,12 +31,14 @@ export interface DateFilter {
 
 export interface MarkingCreateInput {
   rating: number;
+  isPrivate: boolean;
   comment?: string | null;
   date?: any | null;
   photoUrl?: string | null;
 }
 
 export interface MarkingUpdateInput {
+  isPrivate?: boolean | null;
   rating?: number | null;
   comment?: string | null;
   date?: any | null;
@@ -47,6 +50,7 @@ export interface UpdateChallengeInput {
   description?: string | null;
   startDate?: any | null;
   endDate?: any | null;
+  isPrivate?: boolean | null;
 }
 
 //==============================================================

@@ -1,7 +1,7 @@
 import { useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
-import ModalTemplate, { ModalTemplateProps } from "./general/ModalTemplate";
-import { AlertButton, CancelButton } from "./primitives/Button";
+import ModalTemplate, { ModalTemplateProps } from "./ModalTemplate";
+import { AlertButton, CancelButton } from "../primitives/Button";
 
 type DeleteConfimationModalProps = Omit<
   ModalTemplateProps,

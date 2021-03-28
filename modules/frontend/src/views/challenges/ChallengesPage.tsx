@@ -4,12 +4,12 @@ import Heading from "components/primitives/Heading";
 import { useQuery } from "@apollo/client";
 import useGlobal from "store";
 import { ChallengeStatus } from "__generated__/globalTypes";
-import EditChallenge from "components/EditChallenge";
+import EditChallenge from "components/functional/EditChallenge";
 import ChallengeSelect, {
   OptionType,
   SelectHandle,
-} from "components/ChallengeSelect";
-import { Link } from "react-router-dom";
+} from "components/functional/ChallengeSelect";
+import { Link, useHistory } from "react-router-dom";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { GET_CHALLENGES } from "./queries";
 import ChallengesSeparator from "./ChallengesSeparator";
@@ -35,6 +35,8 @@ const ChallengesPage = (): JSX.Element => {
   const [challengesByUser, setChallengesByUser] = useState<
     GetChallenges_getChallenges[]
   >([]);
+
+  const history = useHistory();
 
   const [
     userParticipationChallenges,
@@ -144,7 +146,10 @@ const ChallengesPage = (): JSX.Element => {
       </Text>
       <Flex justifyContent={{ base: "left", sm: "center" }}>
         <EditChallenge
-          onEdit={refetchChallenges}
+          onEdit={async (challenge) => {
+            await refetchChallenges();
+            history.push(`/challenges/${challenge.id}`);
+          }}
           openButtonProps={{ size: "lg" }}
         />
       </Flex>

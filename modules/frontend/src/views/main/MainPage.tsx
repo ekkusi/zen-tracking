@@ -11,10 +11,10 @@ import { motion } from "framer-motion";
 import ChallengeSelect, {
   OptionType,
   SelectHandle,
-} from "components/ChallengeSelect";
+} from "components/functional/ChallengeSelect";
 import CustomLoadingOverlay from "components/general/LoadingOverlay";
-import AddMarking from "../../components/EditMarking";
-import MarkingCalendar from "../../components/MarkingCalendar";
+import AddMarking from "../../components/functional/EditMarking";
+import MarkingCalendar from "../../components/functional/MarkingCalendar";
 import { getParticipation } from "../../util/apolloQueries";
 
 const MotionArrowForwardIcon = chakraMotionWrapper(ArrowForwardIcon);

@@ -1,16 +1,16 @@
 import { gql, useMutation } from "@apollo/client";
-import { useDisclosure, Text, Flex, Box } from "@chakra-ui/react";
+import { useDisclosure, Text, Flex, Box, Checkbox } from "@chakra-ui/react";
 import { isValid } from "date-fns/esm";
 import React, { useState, useMemo } from "react";
 import DateUtil from "util/DateUtil";
 import { Form, Formik } from "formik";
 import { challengeWithParticipationsFragment } from "views/challenges/queries";
-import ModalTemplate, { ModalTemplateProps } from "./general/ModalTemplate";
-import { PrimaryButton } from "./primitives/Button";
-import FormField from "./general/form/FormField";
-import { PrimaryTextArea } from "./primitives/Input";
-import DeleteConfimationModal from "./DeleteConfirmationModal";
-import { GetChallenges_getChallenges } from "../views/challenges/__generated__/GetChallenges";
+import ModalTemplate, { ModalTemplateProps } from "../general/ModalTemplate";
+import { PrimaryButton } from "../primitives/Button";
+import FormField from "../general/form/FormField";
+import { PrimaryTextArea } from "../primitives/Input";
+import DeleteConfimationModal from "../general/DeleteConfirmationModal";
+import { GetChallenges_getChallenges } from "../../views/challenges/__generated__/GetChallenges";
 import {
   DeleteChallenge,
   DeleteChallengeVariables,
@@ -62,6 +62,7 @@ type EditChallengeProps = Omit<ModalTemplateProps, "children"> & {
 
 type FormValues = {
   name: string;
+  isPrivate: boolean;
   description: string;
   startDate?: string;
   endDate?: string;
@@ -125,6 +126,7 @@ const EditChallenge = ({
             formatString: "yyyy-MM-dd",
           })
         : "",
+      isPrivate: false,
     };
   }, [challenge]);
 
@@ -201,8 +203,7 @@ const EditChallenge = ({
 
   const saveAndClose = async (values: FormValues) => {
     const input: FormValues = {
-      name: values.name,
-      description: values.description,
+      ...values,
       startDate: values.startDate ? values.startDate : undefined, // If string length === 0, pass undefined
       endDate: values.endDate ? values.endDate : undefined, // If string length === 0, pass undefined
     };
@@ -269,6 +270,7 @@ const EditChallenge = ({
       modalBodyProps={{ pt: "0" }}
       modalFooterProps={{ justifyContent: "flex-start" }}
       hasFooter={false}
+      size="2xl"
       {...modalTemplateProps}
       {...disclosureProps}
     >
@@ -278,83 +280,94 @@ const EditChallenge = ({
         validateOnChange={false}
         validateOnBlur={false}
       >
-        <Form>
-          <FormField
-            name="name"
-            type="text"
-            placeholder="Kuukauven paasto!!"
-            label="Nimi"
-            validate={validateName}
-          />
-          <Flex direction={{ base: "column", sm: "row" }}>
+        {({ values, setFieldValue }) => (
+          <Form>
             <FormField
-              name="startDate"
-              type="date"
-              label="Alkupäivämäärä"
-              validate={validateStartDate}
-              containerProps={{
-                pt: "0",
-                mb: { base: "2", sm: "0" },
-                mr: { base: "0", sm: "3" },
-              }}
+              name="name"
+              type="text"
+              placeholder="Kuukauven paasto!!"
+              label="Nimi"
+              validate={validateName}
             />
-            <FormField
-              name="endDate"
-              type="date"
-              label="Loppupäivämäärä"
-              validate={validateEndDate}
-              containerProps={{
-                pt: "0",
-              }}
-            />
-          </Flex>
-
-          <FormField
-            as={PrimaryTextArea}
-            name="description"
-            type="text"
-            placeholder="Kuvaus haasteesta..."
-            label="Kuvaus"
-            validate={validateDescription}
-          />
-          <Box my="5">
-            <PrimaryButton
-              type="submit"
-              isLoading={createLoading || updateLoading}
-              isDisabled={deleteLoading}
-              loadingText={challenge ? "Tallenetaan..." : "Luodaan..."}
-              mr={3}
-              // onClick={saveAndClose}
-            >
-              {saveButtonLabel || (challenge ? "Tallenna" : "Luo haaste")}
-            </PrimaryButton>
-            {challenge && (
-              // <AlertButton
-
-              //   onClick={deleteAndClose}
-              // >
-              //   Poista
-              // </AlertButton>
-              <DeleteConfimationModal
-                onDelete={deleteAndClose}
-                headerLabel="Poista haaste"
-                openButtonProps={{
-                  isLoading: deleteLoading,
-                  isDisabled: createLoading || updateLoading,
-                  loadingText: "Poistetaan...",
+            <Flex direction={{ base: "column", sm: "row" }}>
+              <FormField
+                name="startDate"
+                type="date"
+                label="Alkupäivämäärä"
+                validate={validateStartDate}
+                containerProps={{
+                  pt: "0",
+                  mb: { base: "2", sm: "0" },
+                  mr: { base: "0", sm: "3" },
                 }}
+              />
+              <FormField
+                name="endDate"
+                type="date"
+                label="Loppupäivämäärä"
+                validate={validateEndDate}
+                containerProps={{
+                  pt: "0",
+                }}
+              />
+            </Flex>
+            <FormField
+              as={PrimaryTextArea}
+              name="description"
+              type="text"
+              placeholder="Kuvaus haasteesta..."
+              label="Kuvaus"
+              validate={validateDescription}
+            />
+            <Checkbox
+              isChecked={values.isPrivate}
+              onChange={(event) =>
+                setFieldValue("isPrivate", event.target.checked)
+              }
+            >
+              <Text as="span" fontSize="sm">
+                Tämä on yksityinen haaste.
+              </Text>
+            </Checkbox>
+            <Box my="5">
+              <PrimaryButton
+                type="submit"
+                isLoading={createLoading || updateLoading}
+                isDisabled={deleteLoading}
+                loadingText={challenge ? "Tallenetaan..." : "Luodaan..."}
+                mr={3}
+                // onClick={saveAndClose}
               >
-                <Text>
-                  Oletko varma, että haluat poistaa haasteen {challenge.name}?
-                  Jos sinulla on ilmoittautuminen haasteen, poistuu myös tämä
-                  sekä kaikki sen merkkaukset.
-                </Text>
-              </DeleteConfimationModal>
-            )}
-          </Box>
+                {saveButtonLabel || (challenge ? "Tallenna" : "Luo haaste")}
+              </PrimaryButton>
+              {challenge && (
+                // <AlertButton
 
-          {generalError && <Text color="warning">{generalError}</Text>}
-        </Form>
+                //   onClick={deleteAndClose}
+                // >
+                //   Poista
+                // </AlertButton>
+                <DeleteConfimationModal
+                  onDelete={deleteAndClose}
+                  headerLabel="Poista haaste"
+                  openButtonProps={{
+                    isLoading: deleteLoading,
+                    isDisabled: createLoading || updateLoading,
+                    loadingText: "Poistetaan...",
+                  }}
+                >
+                  <Text>
+                    Oletko varma, että haluat poistaa haasteen {challenge.name}?
+                    Jos sinulla on ilmoittautuminen haasteen, poistuu myös tämä
+                    sekä kaikki sen merkkaukset.
+                  </Text>
+                </DeleteConfimationModal>
+              )}
+            </Box>
+
+            {generalError && <Text color="warning">{generalError}</Text>}
+          </Form>
+        )}
       </Formik>
     </ModalTemplate>
   );

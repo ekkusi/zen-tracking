@@ -25,6 +25,8 @@ import {
   GetCurrentUser,
   GetCurrentUserVariables,
 } from "../__generated__/GetCurrentUser";
+import ProfilePage from "../views/profile/ProfilePage";
+import ParticipationPage from "../views/profile/participation/ParticipationPage";
 
 const NON_AUTHENTICATED_PATHS = ["/welcome", "/login"];
 
@@ -179,6 +181,30 @@ const Routes = (): JSX.Element => {
                   render={() => (
                     <ViewContainer>
                       <ChallengePage />
+                    </ViewContainer>
+                  )}
+                />
+                <Route
+                  path="/challenges"
+                  render={() => (
+                    <ViewContainer>
+                      <ChallengesPage />
+                    </ViewContainer>
+                  )}
+                />
+                <Route
+                  path="/profile/:userName"
+                  render={() => (
+                    <ViewContainer>
+                      <ProfilePage />
+                    </ViewContainer>
+                  )}
+                />
+                <Route
+                  path="/profile/:userName/:participationId"
+                  render={() => (
+                    <ViewContainer>
+                      <ParticipationPage />
                     </ViewContainer>
                   )}
                 />

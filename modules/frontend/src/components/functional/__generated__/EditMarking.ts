@@ -3,13 +3,13 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarkingCreateInput } from "./../../__generated__/globalTypes";
+import { MarkingUpdateInput } from "./../../../__generated__/globalTypes";
 
 // ====================================================
-// GraphQL mutation operation: AddMarking
+// GraphQL mutation operation: EditMarking
 // ====================================================
 
-export interface AddMarking_addMarking {
+export interface EditMarking_editMarking {
   __typename: "Marking";
   id: string;
   date: any;
@@ -19,11 +19,11 @@ export interface AddMarking_addMarking {
   isPrivate: boolean;
 }
 
-export interface AddMarking {
-  addMarking: AddMarking_addMarking;
+export interface EditMarking {
+  editMarking: EditMarking_editMarking;
 }
 
-export interface AddMarkingVariables {
-  participationId: string;
-  marking: MarkingCreateInput;
+export interface EditMarkingVariables {
+  id: string;
+  marking: MarkingUpdateInput;
 }

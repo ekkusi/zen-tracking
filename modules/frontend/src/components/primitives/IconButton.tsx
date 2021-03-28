@@ -84,32 +84,36 @@ export { IconButtonWithRef };
 
 IconButtonWithRef.defaultProps = IconButtonDefaultProps;
 
-const PlainIconButton = ({
-  bg,
-  color,
-  ...rest
-}: IconButtonProps): JSX.Element => {
+const PlainIconButton = ({ ...rest }: IconButtonProps): JSX.Element => {
   const formattedProps = generateBaseButtonProps(rest);
-  const colorProps: ButtonProps = {
-    bg: "transparent",
-    borderColor: "transparent",
-    _active: {
-      bg: "transparent",
-    },
-    _focus: {
-      opacity: 1,
-    },
-  };
-  return <ChakraIconButton {...formattedProps} {...colorProps} {...rest} />;
+  return <ChakraIconButton {...formattedProps} {...rest} />;
 };
 
-// const PlainIconButton = styled(IconButton)<IconButtonProps>``;
-
-PlainIconButton.defaultProps = {
+const PlainIconDefaultProps = {
   ...IconButtonDefaultProps,
-  bg: "transparent",
   py: { base: 0, sm: 0 },
   px: { base: 0, sm: 0 },
+  bg: "transparent",
+  borderColor: "transparent",
+  _active: {
+    bg: "transparent",
+  },
+  _focus: {
+    opacity: 1,
+  },
 };
 
+PlainIconButton.defaultProps = PlainIconDefaultProps;
+
 export { PlainIconButton };
+
+const PlainIconButtonWithRef = forwardRef(
+  (props: IconButtonProps, ref): JSX.Element => {
+    const formattedProps = generateIconProps(props);
+    return <ChakraIconButton ref={ref} {...formattedProps} />;
+  }
+);
+
+PlainIconButtonWithRef.defaultProps = PlainIconDefaultProps;
+
+export { PlainIconButtonWithRef };

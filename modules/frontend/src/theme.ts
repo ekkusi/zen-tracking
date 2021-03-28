@@ -56,6 +56,9 @@ const theme: Theme = extendTheme({
         _hover: {
           opacity: 0.7,
         },
+        _active: {
+          bg: "white",
+        },
       },
     }),
   },

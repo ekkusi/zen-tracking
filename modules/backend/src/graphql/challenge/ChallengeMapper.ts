@@ -23,10 +23,10 @@ export class ChallengeMapper {
     participationId: string,
     marking: MarkingCreateInput
   ): Prisma.MarkingCreateInput {
-    const { photoUrl, ...args } = marking;
+    const { photoUrl, isPrivate, ...args } = marking;
     return {
       ...args,
-      is_private: args.isPrivate,
+      is_private: isPrivate,
       photo_url: photoUrl,
       ChallengeParticipation: { connect: { id: participationId } },
       date: marking.date
@@ -38,10 +38,10 @@ export class ChallengeMapper {
   public static mapEditMarkingInput(
     marking: MarkingUpdateInput
   ): Prisma.MarkingUpdateInput {
-    const { photoUrl, ...args } = marking;
+    const { photoUrl, isPrivate, ...args } = marking;
     return {
       ...args,
-      is_private: args.isPrivate ?? undefined,
+      is_private: isPrivate ?? undefined,
       rating: args.rating ?? undefined,
       date: marking.date ? formatIsoString(marking.date) : undefined,
       photo_url: photoUrl,
@@ -52,10 +52,10 @@ export class ChallengeMapper {
     challenge: CreateChallengeInput,
     creatorName: string
   ): Prisma.ChallengeCreateInput {
-    const { startDate, endDate, ...rest } = challenge;
+    const { startDate, endDate, isPrivate, ...rest } = challenge;
     return {
       ...rest,
-      is_private: challenge.isPrivate,
+      is_private: isPrivate,
       User: { connect: { name: creatorName } },
       end_date: endDate ? formatIsoString(endDate) : undefined,
       start_date: startDate ? formatIsoString(startDate) : undefined,
@@ -81,11 +81,11 @@ export class ChallengeMapper {
   public static mapEditChallengeInput(
     args: UpdateChallengeInput
   ): Prisma.ChallengeUpdateInput {
-    const { startDate, endDate, ...rest } = args;
+    const { startDate, endDate, isPrivate, ...rest } = args;
 
     return {
       ...rest,
-      is_private: args.isPrivate ?? undefined,
+      is_private: isPrivate ?? undefined,
       name: args.name ? args.name : undefined,
       description: args.description ? args.description : undefined,
       end_date: endDate ? formatIsoString(endDate) : undefined,

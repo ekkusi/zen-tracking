@@ -11,7 +11,7 @@ import React, {
 
 import Select, { OptionsType } from "react-select";
 import useGlobal from "store";
-import { GetUserParticipationsPlain } from "../__generated__/GetUserParticipationsPlain";
+import { GetUserParticipationsPlain } from "../../__generated__/GetUserParticipationsPlain";
 
 type ChallengeSelectProps = {
   initialValue?: OptionType;

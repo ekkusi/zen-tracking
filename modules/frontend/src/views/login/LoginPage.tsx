@@ -8,7 +8,7 @@ import { useHistory } from "react-router-dom";
 import { Form, Formik } from "formik";
 import { LOGIN } from "./loginQueries";
 import FormField from "../../components/general/form/FormField";
-import RegisterModal from "../../components/RegisterModal";
+import RegisterModal from "../../components/functional/RegisterModal";
 import { setAccessToken } from "../../util/accessToken";
 import { Login, LoginVariables } from "./__generated__/Login";
 import { getUser } from "../../util/apolloQueries";

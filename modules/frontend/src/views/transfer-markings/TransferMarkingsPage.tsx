@@ -1,7 +1,9 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { Box, Container, Flex, Text } from "@chakra-ui/react";
-import ChallengeSelect, { OptionType } from "components/ChallengeSelect";
-import EditChallenge from "components/EditChallenge";
+import ChallengeSelect, {
+  OptionType,
+} from "components/functional/ChallengeSelect";
+import EditChallenge from "components/functional/EditChallenge";
 import CustomLoadingOverlay from "components/general/LoadingOverlay";
 import { PrimaryButton } from "components/primitives/Button";
 import Heading from "components/primitives/Heading";

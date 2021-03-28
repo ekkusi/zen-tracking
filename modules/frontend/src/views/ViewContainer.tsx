@@ -1,7 +1,7 @@
 import { BoxProps, Container, Flex } from "@chakra-ui/react";
-import Navigation from "components/Navigation";
+import Navigation from "components/functional/Navigation";
 import React from "react";
-import ThemeSwitch from "../components/ThemeSwitch";
+import ThemeSwitch from "../components/functional/ThemeSwitch";
 
 type ViewContainerProps = BoxProps & {
   isPlain?: boolean;

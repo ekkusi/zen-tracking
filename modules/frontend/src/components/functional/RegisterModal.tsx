@@ -3,16 +3,16 @@ import { Checkbox, Text, useDisclosure } from "@chakra-ui/react";
 import { Form, Formik, FormikErrors } from "formik";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { setAccessToken } from "../util/accessToken";
-import useGlobal from "../store";
-import FormField from "./general/form/FormField";
-import ModalTemplate, { ModalTemplateProps } from "./general/ModalTemplate";
-import { PrimaryButton } from "./primitives/Button";
+import { setAccessToken } from "../../util/accessToken";
+import useGlobal from "../../store";
+import FormField from "../general/form/FormField";
+import ModalTemplate, { ModalTemplateProps } from "../general/ModalTemplate";
+import { PrimaryButton } from "../primitives/Button";
 import {
   RegisterMutation,
   RegisterMutationVariables,
 } from "./__generated__/RegisterMutation";
-import { userDataFragment } from "../fragments";
+import { userDataFragment } from "../../fragments";
 
 export const REGISTER_USER = gql`
   mutation RegisterMutation(
