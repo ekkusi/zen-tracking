@@ -17,6 +17,7 @@ import { Link, LinkProps, useHistory } from "react-router-dom";
 import useGlobal from "store";
 import theme from "theme";
 import chakraMotionWrapper from "util/chakraMotionWrapper";
+import InfoModal from "./InfoModal";
 import InstructionsModal from "./InstructionsModal";
 import { PrimaryButton } from "./primitives/Button";
 import { IconButtonWithRef } from "./primitives/IconButton";
@@ -134,6 +135,7 @@ const Navigation = ({
     isOpen: customIsOpen,
   });
   const [areInstructionsOpen, setAreInstructionsOpen] = useState(false);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
   const history = useHistory();
 
@@ -167,6 +169,11 @@ const Navigation = ({
         hasOpenButton={false}
         isOpen={areInstructionsOpen}
         onClose={() => setAreInstructionsOpen(false)}
+      />
+      <InfoModal
+        hasOpenButton={false}
+        isOpen={isInfoModalOpen}
+        onClose={() => setIsInfoModalOpen(false)}
       />
       <Drawer
         isOpen={isOpen}
@@ -214,6 +221,13 @@ const Navigation = ({
                     onClick={() => setAreInstructionsOpen(!areInstructionsOpen)}
                   >
                     Ohjeet
+                  </NavigationLink>
+                </motion.li>
+                <motion.li variants={listAnimations} custom={2}>
+                  <NavigationLink
+                    onClick={() => setIsInfoModalOpen(!isInfoModalOpen)}
+                  >
+                    Info
                   </NavigationLink>
                 </motion.li>
 
