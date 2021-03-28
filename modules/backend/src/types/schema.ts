@@ -102,6 +102,7 @@ export type MutationDeleteChallengeArgs = {
 
 export type MutationCreateParticipationArgs = {
   challengeId: Scalars["ID"];
+  isPrivate: Scalars["Boolean"];
 };
 
 export type MutationDeleteParticipationArgs = {
@@ -182,6 +183,7 @@ export type ChallengeParticipation = {
 
 export type CreateChallengeInput = {
   name: Scalars["String"];
+  isPrivate: Scalars["Boolean"];
   description: Scalars["String"];
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
@@ -192,6 +194,7 @@ export type UpdateChallengeInput = {
   description?: Maybe<Scalars["String"]>;
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
+  isPrivate?: Maybe<Scalars["Boolean"]>;
 };
 
 export type Marking = {
@@ -206,12 +209,14 @@ export type Marking = {
 
 export type MarkingCreateInput = {
   rating: Scalars["Int"];
+  isPrivate: Scalars["Boolean"];
   comment?: Maybe<Scalars["String"]>;
   date?: Maybe<Scalars["Date"]>;
   photoUrl?: Maybe<Scalars["String"]>;
 };
 
 export type MarkingUpdateInput = {
+  isPrivate?: Maybe<Scalars["Boolean"]>;
   rating?: Maybe<Scalars["Int"]>;
   comment?: Maybe<Scalars["String"]>;
   date?: Maybe<Scalars["Date"]>;

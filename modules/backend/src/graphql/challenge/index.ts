@@ -341,7 +341,7 @@ export const resolvers: Resolvers = {
     },
     createParticipation: async (
       _,
-      { challengeId },
+      { challengeId, isPrivate },
       { prisma, loaders, user }
     ) => {
       if (!user) throw new AuthenticationError();
@@ -351,7 +351,11 @@ export const resolvers: Resolvers = {
       );
 
       const participation = await prisma.challengeParticipation.create({
-        data: { challenge_id: challengeId, user_name: user.name },
+        data: {
+          challenge_id: challengeId,
+          user_name: user.name,
+          is_private: isPrivate,
+        },
       });
       // Clear participationsLoader cache by created participation id
       await loaderResetors.clearParticipationsCache(participation.id, loaders);

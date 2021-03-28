@@ -286,7 +286,10 @@ export type MutationResolvers<
     ResolversTypes["ChallengeParticipation"],
     ParentType,
     ContextType,
-    RequireFields<Types.MutationCreateParticipationArgs, "challengeId">
+    RequireFields<
+      Types.MutationCreateParticipationArgs,
+      "challengeId" | "isPrivate"
+    >
   >;
   deleteParticipation?: Resolver<
     ResolversTypes["Boolean"],

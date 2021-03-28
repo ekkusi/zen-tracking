@@ -16,7 +16,10 @@ extend type Mutation {
   createChallenge(challenge: CreateChallengeInput!): Challenge!
   updateChallenge(id: ID!, args: UpdateChallengeInput!): Challenge!
   deleteChallenge(id: ID!): Boolean!
-  createParticipation(challengeId: ID!): ChallengeParticipation!
+  createParticipation(
+    challengeId: ID!
+    isPrivate: Boolean!
+  ): ChallengeParticipation!
   deleteParticipation(challengeId: ID!): Boolean!
   addMarking(participationId: ID!, marking: MarkingCreateInput!): Marking!
   editMarking(id: ID!, marking: MarkingUpdateInput!): Marking!
@@ -53,6 +56,7 @@ type ChallengeParticipation {
 
 input CreateChallengeInput {
   name: String!
+  isPrivate: Boolean!
   description: String!
   startDate: Date
   endDate: Date
@@ -63,6 +67,7 @@ input UpdateChallengeInput {
   description: String
   startDate: Date
   endDate: Date
+  isPrivate: Boolean
 }
 
 type Marking {
@@ -76,12 +81,14 @@ type Marking {
 
 input MarkingCreateInput {
   rating: Int!
+  isPrivate: Boolean!
   comment: String
   date: Date
   photoUrl: String
 }
 
 input MarkingUpdateInput {
+  isPrivate: Boolean
   rating: Int
   comment: String
   date: Date

@@ -26,6 +26,7 @@ export class ChallengeMapper {
     const { photoUrl, ...args } = marking;
     return {
       ...args,
+      is_private: args.isPrivate,
       photo_url: photoUrl,
       ChallengeParticipation: { connect: { id: participationId } },
       date: marking.date
@@ -40,6 +41,7 @@ export class ChallengeMapper {
     const { photoUrl, ...args } = marking;
     return {
       ...args,
+      is_private: args.isPrivate ?? undefined,
       rating: args.rating ?? undefined,
       date: marking.date ? formatIsoString(marking.date) : undefined,
       photo_url: photoUrl,
@@ -53,6 +55,7 @@ export class ChallengeMapper {
     const { startDate, endDate, ...rest } = challenge;
     return {
       ...rest,
+      is_private: challenge.isPrivate,
       User: { connect: { name: creatorName } },
       end_date: endDate ? formatIsoString(endDate) : undefined,
       start_date: startDate ? formatIsoString(startDate) : undefined,
@@ -82,6 +85,7 @@ export class ChallengeMapper {
 
     return {
       ...rest,
+      is_private: args.isPrivate ?? undefined,
       name: args.name ? args.name : undefined,
       description: args.description ? args.description : undefined,
       end_date: endDate ? formatIsoString(endDate) : undefined,

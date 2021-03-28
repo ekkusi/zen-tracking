@@ -44,7 +44,7 @@ const InfoModal = (props: InfoModalProps): JSX.Element => {
         <Text mb="4">
           Näitä ehdotuksia/bugi-ilmotuksia tai mitä tahansa muuta sovellukseen
           taikka elämään liittyvää otan vastaan alta löytyvään
-          sähköpostiosoitteeseen! Plz no spam.
+          sähköpostiosoitteeseen! Plz no spam tho:)
         </Text>
         <Text mb="0">Puss och kram,</Text>
         <Text mb="0">Ekeukko, Founder and Master of Code of Zen-tracking.</Text>
