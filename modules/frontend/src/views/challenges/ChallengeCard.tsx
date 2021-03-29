@@ -15,15 +15,11 @@ import { GetChallenges_getChallenges } from "./__generated__/GetChallenges";
 
 type ChallengeCardProps = FlexProps & {
   challenge: GetChallenges_getChallenges;
-  onEdit: () => Promise<void>;
-  onDelete: () => Promise<void>;
   updateChallenges: () => Promise<void>;
 };
 
 const ChallengeCard = ({
   challenge,
-  onEdit,
-  onDelete,
   updateChallenges,
   ...rest
 }: ChallengeCardProps): JSX.Element => {

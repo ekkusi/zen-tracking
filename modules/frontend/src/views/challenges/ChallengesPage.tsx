@@ -1,20 +1,14 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import { useQuery } from "@apollo/client";
 import useGlobal from "store";
 import { ChallengeStatus } from "__generated__/globalTypes";
 import EditChallenge from "components/functional/EditChallenge";
-import ChallengeSelect, {
-  OptionType,
-  SelectHandle,
-} from "components/functional/ChallengeSelect";
-import { Link, useHistory } from "react-router-dom";
-import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { useHistory } from "react-router-dom";
 import { GET_CHALLENGES } from "./queries";
-import ChallengesSeparator from "./ChallengesSeparator";
+import SectionSeparator from "../../components/general/SectionSeparator";
 import ChallengesSection from "./ChallengesSection";
-import { getParticipation } from "../../util/apolloQueries";
 import {
   GetChallenges,
   GetChallenges_getChallenges,
@@ -23,14 +17,8 @@ import Loading from "../../components/general/Loading";
 
 const ChallengesPage = (): JSX.Element => {
   const [skip, setSkip] = useState(false);
-  const selectRef = useRef<SelectHandle>(null);
-  const [getParticipationLoading, setGetParticipationLoading] = useState(false);
 
   const user = useGlobal((state) => state.currentUser)[0];
-  const [activeParticipation, updateActiveParticipation] = useGlobal(
-    (store) => store.activeParticipation,
-    (actions) => actions.updateActiveParticipation
-  );
 
   const [challengesByUser, setChallengesByUser] = useState<
     GetChallenges_getChallenges[]
@@ -64,8 +52,8 @@ const ChallengesPage = (): JSX.Element => {
   }, [getChallengesError]);
 
   const loading = useMemo(() => {
-    return getChallengesLoading || getParticipationLoading;
-  }, [getChallengesLoading, getParticipationLoading]);
+    return getChallengesLoading;
+  }, [getChallengesLoading]);
 
   if (error) {
     setSkip(true);
@@ -112,23 +100,6 @@ const ChallengesPage = (): JSX.Element => {
 
   const refetchChallenges = async () => {
     await refetch();
-    if (selectRef?.current) {
-      selectRef.current.refetchOptions();
-    }
-  };
-
-  const onActiveChallengeSelect = async (value: OptionType | null) => {
-    const selectedChallengeId = value?.value ?? null;
-    if (selectedChallengeId) {
-      setGetParticipationLoading(true);
-      const result = await getParticipation({
-        challengeId: selectedChallengeId,
-      });
-      updateActiveParticipation(result.data.getParticipation);
-      setGetParticipationLoading(false);
-    } else {
-      updateActiveParticipation(null);
-    }
   };
 
   return (
@@ -155,35 +126,6 @@ const ChallengesPage = (): JSX.Element => {
       </Flex>
       {getChallengesData && (
         <Box>
-          <ChallengesSeparator title="Omat haasteet" />
-          <Flex
-            direction="column"
-            alignItems={{ base: "left", sm: "center" }}
-            mb="6"
-          >
-            <Heading.H3 fontWeight="normal" mb="2">
-              Valitse aktiivinen haaste
-            </Heading.H3>
-            <ChallengeSelect
-              initialValue={
-                activeParticipation
-                  ? {
-                      value: activeParticipation.challenge.id,
-                      label: activeParticipation.challenge.name,
-                    }
-                  : undefined
-              }
-              onSelect={onActiveChallengeSelect}
-              isLoading={loading}
-              containerProps={{ mb: "2" }}
-              ref={selectRef}
-            />
-            <Text as={Link} to="/" fontWeight="bold" fontSize="lg">
-              Siirry merkkaamaan
-              <ArrowForwardIcon />
-            </Text>
-          </Flex>
-
           <ChallengesSection
             title="Luomasi haasteet"
             challenges={challengesByUser}
@@ -194,7 +136,7 @@ const ChallengesPage = (): JSX.Element => {
             challenges={userParticipationChallenges}
             updateChallenges={refetchChallenges}
           />
-          <ChallengesSeparator title="Muut haasteet" />
+          <SectionSeparator title="Muut haasteet" />
           <ChallengesSection
             title="Ehdotukset"
             challenges={getOtherChallenges(ChallengeStatus.SUGGESTION)}

@@ -6,8 +6,6 @@ import { GetChallenges_getChallenges } from "./__generated__/GetChallenges";
 
 type ChallengesSectionProps = BoxProps & {
   challenges: GetChallenges_getChallenges[];
-  onEditChallenge?: () => Promise<void>;
-  onDeleteChallenge?: () => Promise<void>;
   updateChallenges: () => Promise<void>;
   title?: string;
 };
@@ -26,8 +24,6 @@ const ChallengesSection = ({
           {challenges.map((it) => (
             <ChallengeCard
               key={it.id}
-              onEdit={updateChallenges}
-              onDelete={updateChallenges}
               updateChallenges={updateChallenges}
               challenge={it}
               mr="3"

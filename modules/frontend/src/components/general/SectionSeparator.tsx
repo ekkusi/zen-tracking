@@ -2,13 +2,11 @@ import { Box } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import React from "react";
 
-type ChallengesSeparatorProps = {
+type SectionSeparatorProps = {
   title: string;
 };
 
-const ChallengesSeparator = ({
-  title,
-}: ChallengesSeparatorProps): JSX.Element => {
+const SectionSeparator = ({ title }: SectionSeparatorProps): JSX.Element => {
   return (
     <Box pb="4" borderBottom="2px solid" borderColor="secondary.regular" my="5">
       <Heading.H2 textAlign="center" mb="0">
@@ -18,4 +16,4 @@ const ChallengesSeparator = ({
   );
 };
 
-export default ChallengesSeparator;
+export default SectionSeparator;
