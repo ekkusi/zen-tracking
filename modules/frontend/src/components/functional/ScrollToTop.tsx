@@ -1,22 +1,31 @@
-import { useMediaQuery } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import theme from "../../theme";
 
 export default function ScrollToTop() {
   const { pathname } = useLocation();
 
-  const [isDisplayingInMobile] = useMediaQuery(
-    `(max-width: ${theme.breakpoints.sm})`
-  );
-
   const history = useHistory();
 
-  window.addEventListener("wheel", (e: WheelEvent) => {
-    if (e.deltaY < -300 && e.pageY < 100 && isDisplayingInMobile) {
-      window.location.href = history.location.pathname;
-    }
-  });
+  let _startY: number;
+
+  window.addEventListener(
+    "touchstart",
+    (e) => {
+      _startY = e.touches[0]?.pageY || 0;
+    },
+    { passive: true }
+  );
+
+  window.addEventListener(
+    "touchend",
+    (e) => {
+      const y = e.changedTouches[0]?.pageY || 0;
+      if (document?.scrollingElement?.scrollTop === 0 && y > _startY) {
+        window.location.href = history.location.pathname;
+      }
+    },
+    { passive: true }
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
