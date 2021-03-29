@@ -1,14 +1,16 @@
 import { gql } from "@apollo/client";
-import { activeParticipationInfoFragment } from "../../../fragments";
-import { challengeWithParticipationsFragment } from "../queries";
+import {
+  activeParticipationInfoFragment,
+  challengeDataFragment,
+} from "../../../fragments";
 
 export const GET_CHALLENGE = gql`
   query GetChallenge($id: ID!) {
     getChallenge(id: $id) {
-      ...ChallengeWithParticipations
+      ...ChallengeData
     }
   }
-  ${challengeWithParticipationsFragment}
+  ${challengeDataFragment}
 `;
 
 export const CREATE_PARTICIPATION = gql`

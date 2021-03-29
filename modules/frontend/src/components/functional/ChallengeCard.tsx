@@ -8,24 +8,23 @@ import {
 import { ButtonWithRef } from "components/primitives/Button";
 import Heading from "components/primitives/Heading";
 import React from "react";
-import useGlobal from "store";
 import DateUtil from "util/DateUtil";
 import { Link } from "react-router-dom";
-import { GetChallenges_getChallenges } from "./__generated__/GetChallenges";
+import { GetChallenges_getChallenges } from "../../__generated__/GetChallenges";
+import useGlobal from "../../store";
 
 type ChallengeCardProps = FlexProps & {
   challenge: GetChallenges_getChallenges;
-  updateChallenges: () => Promise<void>;
+  openButtonLabel?: string;
 };
 
 const ChallengeCard = ({
   challenge,
-  updateChallenges,
+  openButtonLabel = "Lue lisää",
   ...rest
 }: ChallengeCardProps): JSX.Element => {
   const { colorMode } = useColorMode();
-
-  const [activeParticipation] = useGlobal((state) => state.activeParticipation);
+  const user = useGlobal((state) => state.currentUser)[0];
 
   return (
     <Flex
@@ -42,19 +41,20 @@ const ChallengeCard = ({
     >
       <LightMode>
         <Heading.H3 mb="0">{challenge.name}</Heading.H3>
-        {activeParticipation?.challenge.id === challenge.id && (
-          <Text as="span" color="primary.regular">
-            Aktiivinen haaste
-          </Text>
-        )}
         <Text as="span" fontStyle="italic" mb="0">
           {challenge.startDate && challenge.endDate
             ? `${DateUtil.format(challenge.startDate)} -
             ${DateUtil.format(challenge.endDate)}`
             : "Ei päätettyä ajankohtaa"}
         </Text>
+        <Text as="span">
+          Tekijä:{" "}
+          {challenge.creator.name === user.name
+            ? "Sinä"
+            : challenge.creator.name}
+        </Text>
         <Text as="span" mb="3">
-          Ilmoittautuneita: {challenge.participations.length}
+          Osallistujia: {challenge.participations.length}
         </Text>
 
         <Text fontSize="md" overflow="hidden">
@@ -63,7 +63,7 @@ const ChallengeCard = ({
       </LightMode>
 
       <ButtonWithRef as={Link} to={`/challenges/${challenge.id}`} mt="auto">
-        Lue lisää
+        {openButtonLabel}
       </ButtonWithRef>
     </Flex>
   );

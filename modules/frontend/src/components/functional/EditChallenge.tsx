@@ -4,13 +4,11 @@ import { isValid } from "date-fns/esm";
 import React, { useState, useMemo } from "react";
 import DateUtil from "util/DateUtil";
 import { Form, Formik } from "formik";
-import { challengeWithParticipationsFragment } from "views/challenges/queries";
 import ModalTemplate, { ModalTemplateProps } from "../general/ModalTemplate";
 import { PrimaryButton } from "../primitives/Button";
 import FormField from "../general/form/FormField";
 import { PrimaryTextArea } from "../primitives/Input";
 import DeleteConfimationModal from "../general/DeleteConfirmationModal";
-import { GetChallenges_getChallenges } from "../../views/challenges/__generated__/GetChallenges";
 import {
   DeleteChallenge,
   DeleteChallengeVariables,
@@ -23,23 +21,25 @@ import {
   UpdateChallenge,
   UpdateChallengeVariables,
 } from "./__generated__/UpdateChallenge";
+import { challengeDataFragment } from "../../fragments";
+import { GetChallenges_getChallenges } from "../../__generated__/GetChallenges";
 
 const CREATE_CHALLENGE = gql`
   mutation CreateChallenge($challenge: CreateChallengeInput!) {
     createChallenge(challenge: $challenge) {
-      ...ChallengeWithParticipations
+      ...ChallengeData
     }
   }
-  ${challengeWithParticipationsFragment}
+  ${challengeDataFragment}
 `;
 
 const UPDATE_CHALLENGE = gql`
   mutation UpdateChallenge($id: ID!, $args: UpdateChallengeInput!) {
     updateChallenge(id: $id, args: $args) {
-      ...ChallengeWithParticipations
+      ...ChallengeData
     }
   }
-  ${challengeWithParticipationsFragment}
+  ${challengeDataFragment}
 `;
 
 const DELETE_CHALLENGE = gql`
@@ -358,8 +358,8 @@ const EditChallenge = ({
                 >
                   <Text>
                     Oletko varma, että haluat poistaa haasteen {challenge.name}?
-                    Jos sinulla on ilmoittautuminen haasteen, poistuu myös tämä
-                    sekä kaikki sen merkkaukset.
+                    Jos olet myös osallisena kyseisessä haasteessa, poistuu
+                    kaikki sen merkkaukset.
                   </Text>
                 </DeleteConfimationModal>
               )}

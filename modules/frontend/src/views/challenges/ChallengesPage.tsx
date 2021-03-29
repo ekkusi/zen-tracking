@@ -1,109 +1,139 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import { useQuery } from "@apollo/client";
-import useGlobal from "store";
 import { ChallengeStatus } from "__generated__/globalTypes";
 import EditChallenge from "components/functional/EditChallenge";
-import { useHistory } from "react-router-dom";
-import { GET_CHALLENGES } from "./queries";
-import SectionSeparator from "../../components/general/SectionSeparator";
+import { Link, useHistory } from "react-router-dom";
 import ChallengesSection from "./ChallengesSection";
+import Loading from "../../components/general/Loading";
+import { GET_CHALLENGES } from "../../generalQueries";
 import {
   GetChallenges,
-  GetChallenges_getChallenges,
-} from "./__generated__/GetChallenges";
-import Loading from "../../components/general/Loading";
+  GetChallengesVariables,
+} from "../../__generated__/GetChallenges";
 
 const ChallengesPage = (): JSX.Element => {
   const [skip, setSkip] = useState(false);
 
-  const user = useGlobal((state) => state.currentUser)[0];
-
-  const [challengesByUser, setChallengesByUser] = useState<
-    GetChallenges_getChallenges[]
-  >([]);
-
   const history = useHistory();
 
-  const [
-    userParticipationChallenges,
-    setUserParticipationChallenges,
-  ] = useState<GetChallenges_getChallenges[]>([]);
-  const [otherChallenges, setOtherChallenges] = useState<
-    GetChallenges_getChallenges[]
-  >([]);
+  const {
+    data: suggestionChallengesData,
+    loading: suggestionChallengesLoading,
+    error: suggestionChallengesError,
+    refetch: suggestionChallengesreFetch,
+  } = useQuery<GetChallenges, GetChallengesVariables>(
+    GET_CHALLENGES,
+    {
+      variables: {
+        status: ChallengeStatus.SUGGESTION,
+      },
+      skip,
+      fetchPolicy: "network-only",
+    } // This stops looping useQuery when error is returned
+  );
 
   const {
-    data: getChallengesData,
-    loading: getChallengesLoading,
-    error: getChallengesError,
-    refetch,
-  } = useQuery<GetChallenges>(
+    data: upcomingChallengesData,
+    loading: upcomingChallengesLoading,
+    error: upcomingChallengesError,
+    refetch: upcomingChallengesreFetch,
+  } = useQuery<GetChallenges, GetChallengesVariables>(
     GET_CHALLENGES,
-    { skip, fetchPolicy: "no-cache" } // This stops looping useQuery when error is returned
+    {
+      variables: {
+        status: ChallengeStatus.UPCOMING,
+      },
+      skip,
+      fetchPolicy: "network-only",
+    } // This stops looping useQuery when error is returned
+  );
+
+  const {
+    data: activeChallengesData,
+    loading: activeChallengesLoading,
+    error: activeChallengesError,
+    refetch: activeChallengereFetch,
+  } = useQuery<GetChallenges, GetChallengesVariables>(
+    GET_CHALLENGES,
+    {
+      variables: {
+        status: ChallengeStatus.ACTIVE,
+      },
+      skip,
+      fetchPolicy: "network-only",
+    } // This stops looping useQuery when error is returned
+  );
+
+  const {
+    data: pastChallengesData,
+    loading: pastChallengesLoading,
+    error: pastChallengesError,
+    refetch: pastChallengesreFetch,
+  } = useQuery<GetChallenges, GetChallengesVariables>(
+    GET_CHALLENGES,
+    {
+      variables: {
+        status: ChallengeStatus.ENDED,
+      },
+      skip,
+      fetchPolicy: "network-only",
+    } // This stops looping useQuery when error is returned
   );
 
   const error = useMemo((): string | undefined => {
-    if (getChallengesError) {
-      return getChallengesError.message;
+    if (
+      suggestionChallengesError ||
+      upcomingChallengesError ||
+      activeChallengesError ||
+      pastChallengesError
+    ) {
+      return [
+        suggestionChallengesError?.message,
+        upcomingChallengesError?.message,
+        activeChallengesError?.message,
+        pastChallengesError?.message,
+      ].join(",");
     }
     return undefined;
-  }, [getChallengesError]);
+  }, [
+    suggestionChallengesError,
+    upcomingChallengesError,
+    activeChallengesError,
+    pastChallengesError,
+  ]);
 
   const loading = useMemo(() => {
-    return getChallengesLoading;
-  }, [getChallengesLoading]);
+    return (
+      suggestionChallengesLoading ||
+      upcomingChallengesLoading ||
+      activeChallengesLoading ||
+      pastChallengesLoading
+    );
+  }, [
+    suggestionChallengesLoading,
+    upcomingChallengesLoading,
+    activeChallengesLoading,
+    pastChallengesLoading,
+  ]);
 
   if (error) {
     setSkip(true);
   }
 
-  // Return challenges that match status filter and are not already in user challenges
-  const getOtherChallenges = (status: ChallengeStatus) => {
-    return otherChallenges.filter(
-      (it) =>
-        it.status === status &&
-        !challengesByUser.find((challenge) => challenge.id === it.id)
-    );
-  };
-
-  useEffect(() => {
-    if (getChallengesData) {
-      // TODO: This filtering should probably go to backend and put here as separate lazyQueries
-      // Challenges that are created by current user
-      const newChallengesByUser = getChallengesData.getChallenges.filter(
-        (it) => it.creator.name === user.name
-      );
-      // Challenges that current user is participating in, but not the creator
-      const newUserParticipationChallenges = getChallengesData.getChallenges.filter(
-        (it) =>
-          !!it.participations.find(
-            (participation) =>
-              participation.user.name === user.name &&
-              it.creator.name !== user.name
-          )
-      );
-      // Other challenges
-      const newOtherChallenges = getChallengesData.getChallenges.filter(
-        (it) =>
-          it.creator.name !== user.name &&
-          !it.participations.find(
-            (participation) => participation.user.name === user.name
-          )
-      );
-      setChallengesByUser(newChallengesByUser);
-      setUserParticipationChallenges(newUserParticipationChallenges);
-      setOtherChallenges(newOtherChallenges);
-    }
-  }, [getChallengesData, user]);
-
-  const refetchChallenges = async () => {
-    await refetch();
+  const refetchChallenges = () => {
+    suggestionChallengesreFetch();
+    upcomingChallengesreFetch();
+    activeChallengereFetch();
+    pastChallengesreFetch();
   };
 
   return (
     <Box pb="5" position="relative">
+      <Text as={Link} to="/" display={{ base: "none", sm: "inline-block" }}>
+        Takaisin etusivulle
+      </Text>
       <Heading.H1
         textAlign={{ base: "left", sm: "center" }}
         fontSize={{ base: "4xl", sm: "5xl" }}
@@ -124,38 +154,23 @@ const ChallengesPage = (): JSX.Element => {
           openButtonProps={{ size: "lg" }}
         />
       </Flex>
-      {getChallengesData && (
+      {!loading && !error && (
         <Box>
           <ChallengesSection
-            title="Luomasi haasteet"
-            challenges={challengesByUser}
-            updateChallenges={refetchChallenges}
-          />
-          <ChallengesSection
-            title="Ilmoittautumisesi"
-            challenges={userParticipationChallenges}
-            updateChallenges={refetchChallenges}
-          />
-          <SectionSeparator title="Muut haasteet" />
-          <ChallengesSection
-            title="Ehdotukset"
-            challenges={getOtherChallenges(ChallengeStatus.SUGGESTION)}
-            updateChallenges={refetchChallenges}
-          />
-          <ChallengesSection
             title="Aktiiviset haasteet"
-            challenges={getOtherChallenges(ChallengeStatus.ACTIVE)}
-            updateChallenges={refetchChallenges}
+            challenges={activeChallengesData?.getChallenges || []}
           />
           <ChallengesSection
             title="Tulevat haasteet"
-            challenges={getOtherChallenges(ChallengeStatus.UPCOMING)}
-            updateChallenges={refetchChallenges}
+            challenges={upcomingChallengesData?.getChallenges || []}
+          />
+          <ChallengesSection
+            title="Ehdotukset"
+            challenges={suggestionChallengesData?.getChallenges || []}
           />
           <ChallengesSection
             title="Menneet haasteet"
-            challenges={getOtherChallenges(ChallengeStatus.ENDED)}
-            updateChallenges={refetchChallenges}
+            challenges={pastChallengesData?.getChallenges || []}
           />
         </Box>
       )}

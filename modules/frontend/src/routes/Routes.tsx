@@ -193,14 +193,6 @@ const Routes = (): JSX.Element => {
                   )}
                 />
                 <Route
-                  path="/profile/:userName"
-                  render={() => (
-                    <ViewContainer>
-                      <ProfilePage />
-                    </ViewContainer>
-                  )}
-                />
-                <Route
                   path="/profile/:userName/:participationId"
                   render={() => (
                     <ViewContainer>
@@ -208,6 +200,15 @@ const Routes = (): JSX.Element => {
                     </ViewContainer>
                   )}
                 />
+                <Route
+                  path="/profile/:userName"
+                  render={() => (
+                    <ViewContainer>
+                      <ProfilePage />
+                    </ViewContainer>
+                  )}
+                />
+
                 <Route
                   path="/challenges"
                   render={() => (

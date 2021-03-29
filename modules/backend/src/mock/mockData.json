@@ -3,7 +3,7 @@
     {
       "name": "some-user",
       "password": "asd123",
-      "is_private": true
+      "is_private": false
     },
     {
       "name": "private-user",
@@ -55,6 +55,7 @@
       "participations": [
         {
           "user_name": "main-user",
+          "is_private": false,
           "markings": [
             {
               "comment": "Ihanpa mukava lenkki",
@@ -75,6 +76,7 @@
         },
         {
           "user_name": "some-user",
+          "is_private": false,
           "markings": [
             {
               "comment": "Kakka lenkki",
@@ -105,6 +107,7 @@
       "participations": [
         {
           "user_name": "main-user",
+          "is_private": false,
           "markings": [
             {
               "comment": "Tulipaha ajateltua 10min",
@@ -126,13 +129,28 @@
       "creator_name": "some-user",
       "start_date": "2021-04-01T00:00:00+02:00",
       "end_date": "2021-04-30T23:59:59+02:00",
-      "is_private": false
+      "is_private": false,
+      "participations": [
+        {
+          "user_name": "main-user"
+        }
+      ]
     },
     {
       "name": "Budjettikuu - ehdotus - yksityinen",
       "description": "Kuukausi 50e/viikko budjetilla.",
       "creator_name": "private-user",
-      "is_private": true
+      "is_private": true,
+      "participations": [
+        {
+          "user_name": "main-user",
+          "is_private": false
+        },
+        {
+          "user_name": "some-user",
+          "is_private": false
+        }
+      ]
     }
   ]
 }

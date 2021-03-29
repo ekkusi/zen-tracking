@@ -13,7 +13,6 @@ export interface GetUserTransferParticipation_getUserTransferParticipation_chall
   name: string;
   startDate: any | null;
   endDate: any | null;
-  isPrivate: boolean;
 }
 
 export interface GetUserTransferParticipation_getUserTransferParticipation_markings {

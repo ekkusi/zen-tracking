@@ -13,9 +13,16 @@ export type ActionTypes = {
   logout: () => Promise<void>;
 };
 
+export type ActiveParticipation = Omit<
+  ParsedChallengeParticipation,
+  "markings"
+> & {
+  markings: Marking[];
+};
+
 export type GlobalState = {
   currentUser: AuthenticatedUser;
-  activeParticipation: ParsedChallengeParticipation | null;
+  activeParticipation: ActiveParticipation | null;
   error: string | null;
   accessToken: string | null;
 };

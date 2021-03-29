@@ -4,8 +4,8 @@ import {
   Grid,
   GridItem,
   ListItem,
-  OrderedList,
   Text,
+  UnorderedList,
 } from "@chakra-ui/react";
 import React, { useMemo } from "react";
 
@@ -169,23 +169,25 @@ const ChallengePage = (): JSX.Element => {
             </GridItem>
             <GridItem as="span">
               <Text as="span" fontWeight="bold">
-                Ilmoittautuneita:{" "}
+                Osallistujia:{" "}
               </Text>
               {challenge.participations.length}
             </GridItem>
           </Grid>
           <Heading.H2>Kuvaus</Heading.H2>
           <Text mb="5">{challenge.description}</Text>
-          <Heading.H2>Ilmoittautuneet</Heading.H2>
+          <Heading.H2>Osallistujat</Heading.H2>
           {challenge.participations.length > 0 ? (
-            <OrderedList>
+            <UnorderedList>
               {challenge.participations.map((it) => (
-                <ListItem key={it.id}>{it.user.name}</ListItem>
+                <ListItem key={it.id}>
+                  <Link to={`/profile/${it.user.name}`}>{it.user.name}</Link>
+                </ListItem>
               ))}
-            </OrderedList>
+            </UnorderedList>
           ) : (
             <Text>
-              Haasteessa ei vielä ole ilmottautumisia. Ole ensimmäinen ja
+              Kukaan ei ole vielä ilmottautunut haasteeseen. Ole ensimmäinen ja
               ilmoittaudu alta!
             </Text>
           )}

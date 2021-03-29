@@ -13,7 +13,6 @@ export interface CreateParticipation_createParticipation_challenge {
   name: string;
   startDate: any | null;
   endDate: any | null;
-  isPrivate: boolean;
 }
 
 export interface CreateParticipation_createParticipation_markings {

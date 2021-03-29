@@ -14,6 +14,17 @@ export interface ChallengeData_creator {
   name: string;
 }
 
+export interface ChallengeData_participations_user {
+  __typename: "User";
+  name: string;
+}
+
+export interface ChallengeData_participations {
+  __typename: "ChallengeParticipation";
+  id: string;
+  user: ChallengeData_participations_user;
+}
+
 export interface ChallengeData {
   __typename: "Challenge";
   id: string;
@@ -24,4 +35,5 @@ export interface ChallengeData {
   description: string;
   isPrivate: boolean;
   creator: ChallengeData_creator;
+  participations: ChallengeData_participations[];
 }

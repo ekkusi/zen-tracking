@@ -59,6 +59,7 @@ const theme: Theme = extendTheme({
         _active: {
           bg: "white",
         },
+        transition: "opacity 0.2s",
       },
     }),
   },

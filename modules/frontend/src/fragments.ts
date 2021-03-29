@@ -11,8 +11,8 @@ export const markingDataFragment = gql`
   }
 `;
 
-export const activeParticipationInfoFragment = gql`
-  fragment ActiveParticipationInfo on ChallengeParticipation {
+export const participationInfoFragment = gql`
+  fragment ParticipationInfo on ChallengeParticipation {
     id
     isPrivate
     challenge {
@@ -20,13 +20,19 @@ export const activeParticipationInfoFragment = gql`
       name
       startDate
       endDate
-      isPrivate
     }
+  }
+`;
+
+export const activeParticipationInfoFragment = gql`
+  fragment ActiveParticipationInfo on ChallengeParticipation {
+    ...ParticipationInfo
     markings {
       ...MarkingData
     }
   }
   ${markingDataFragment}
+  ${participationInfoFragment}
 `;
 
 export const userDataFragment = gql`
@@ -47,6 +53,12 @@ export const challengeDataFragment = gql`
     isPrivate
     creator {
       name
+    }
+    participations {
+      id
+      user {
+        name
+      }
     }
   }
 `;

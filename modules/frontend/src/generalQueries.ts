@@ -1,5 +1,9 @@
 import { gql } from "@apollo/client";
-import { activeParticipationInfoFragment, userDataFragment } from "fragments";
+import {
+  activeParticipationInfoFragment,
+  challengeDataFragment,
+  userDataFragment,
+} from "fragments";
 
 export const GET_CURRENT_USER = gql`
   query GetCurrentUser($activeParticipationChallengeId: ID) {
@@ -18,6 +22,25 @@ export const LOGOUT = gql`
   mutation Logout {
     logout
   }
+`;
+
+export const GET_CHALLENGES = gql`
+  query GetChallenges(
+    $status: ChallengeStatus
+    $startDate: DateFilter
+    $endDate: DateFilter
+    $creatorName: ID
+  ) {
+    getChallenges(
+      status: $status
+      startDate: $startDate
+      endDate: $endDate
+      creatorName: $creatorName
+    ) {
+      ...ChallengeData
+    }
+  }
+  ${challengeDataFragment}
 `;
 
 export const GET_USER_PARTICIPATIONS = gql`

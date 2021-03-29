@@ -14,7 +14,7 @@ import DateUtil from "util/DateUtil";
 import UserInfoUtil from "util/UserInfoUtil";
 
 import { getParticipation } from "../../util/apolloQueries";
-import { GetChallenges_getChallenges } from "../challenges/__generated__/GetChallenges";
+import { GetChallenges_getChallenges } from "../../__generated__/GetChallenges";
 import { GET_TRANSFERABLE_CHALLENGES, TRANSFER_MARKINGS } from "./queries";
 import {
   GetTransferableChallenges,

@@ -5,9 +5,8 @@ import { AuthenticatedUser } from "@ekkusi/zen-tracking-backend/lib/types/custom
 import { LOGOUT } from "../generalQueries";
 import { initializeApollo } from "../apollo/ApolloProvider";
 import { notAuthorizedUser } from "./notAuthenticatedUser";
-import { ActionTypes, GlobalState } from "./types";
+import { ActionTypes, ActiveParticipation, GlobalState } from "./types";
 import { setAccessToken } from "../util/accessToken";
-import { ParsedChallengeParticipation } from "../types/parsedBackendTypes";
 
 const actions = {
   updateUser: (
@@ -32,7 +31,7 @@ const actions = {
   },
   updateActiveParticipation: (
     store: Store<GlobalState, ActionTypes>,
-    participation: ParsedChallengeParticipation | null
+    participation: ActiveParticipation | null
   ): void => {
     if (participation) {
       localStorage.setItem(

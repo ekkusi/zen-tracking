@@ -1,4 +1,5 @@
 import {
+  Box,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -98,6 +99,8 @@ type BottomBarLinkProps = FlexProps &
     linkIcon: IconType;
   };
 
+const BoxWithMotion = chakraMotionWrapper(Box);
+
 const BottomBarLink = ({
   linkText,
   linkIcon,
@@ -116,6 +119,17 @@ const BottomBarLink = ({
     return colorMode === "dark" ? "text.dark" : "text.light";
   };
 
+  const iconVariants = {
+    active: {
+      y: -3,
+      scale: 1.1,
+    },
+    default: {
+      y: 0,
+      scale: 1.0,
+    },
+  };
+
   return (
     <Flex
       as={Link}
@@ -128,7 +142,14 @@ const BottomBarLink = ({
       _hover={{ opacity: 1 }}
       {...rest}
     >
-      <Icon as={linkIcon} w={6} h={6} />
+      <BoxWithMotion
+        initial="default"
+        animate={isLinkCurrentPath() ? "active" : "default"}
+        variants={iconVariants}
+      >
+        <Icon as={linkIcon} w={6} h={6} />
+      </BoxWithMotion>
+
       <Text as="span" fontSize="sm">
         {linkText}
       </Text>
@@ -190,19 +211,19 @@ const BottomNavigationBar = () => {
       <BottomBarLink
         as={Link}
         to="/"
-        linkText="Pääsivu"
+        linkText="Etusivu"
         linkIcon={RiHome4Line}
       />
       <BottomBarLink
         as={Link}
         to="/challenges"
-        linkText="Haasteisiin"
+        linkText="Haasteet"
         linkIcon={RiSwordLine}
       />
       <BottomBarLink
         as={Link}
         to={`/profile/${user.name}`}
-        linkText="Omat tiedot"
+        linkText="Omat jutskat"
         linkIcon={FiUser}
       />
     </GridWithFlex>
@@ -263,6 +284,8 @@ const Navigation = ({
     () => {},
     (actions) => actions.logout
   )[1];
+
+  const user = useGlobal((state) => state.currentUser)[0];
 
   const { isOpen, onOpen, onClose } = useDisclosure({
     onClose: customOnClose,
@@ -351,12 +374,21 @@ const Navigation = ({
                 </motion.li>
                 <motion.li variants={listAnimations} custom={2}>
                   <NavigationLink
+                    to={`/profile/${user.name}`}
+                    onClick={() => onClose()}
+                  >
+                    Omat jutskat
+                  </NavigationLink>
+                </motion.li>
+                <motion.li variants={listAnimations} custom={3}>
+                  <NavigationLink
                     onClick={() => setAreInstructionsOpen(!areInstructionsOpen)}
                   >
                     Ohjeet
                   </NavigationLink>
                 </motion.li>
-                <motion.li variants={listAnimations} custom={2}>
+
+                <motion.li variants={listAnimations} custom={4}>
                   <NavigationLink
                     onClick={() => setIsInfoModalOpen(!isInfoModalOpen)}
                   >

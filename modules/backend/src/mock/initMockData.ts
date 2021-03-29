@@ -46,16 +46,18 @@ const initMockData = async () => {
             );
 
             // Create markings of participation
-            await Promise.all(
-              markings.map(async (marking: any) => {
-                return prisma.marking.create({
-                  data: {
-                    participation_id: createParticipation.id,
-                    ...marking,
-                  },
-                });
-              })
-            );
+            if (markings) {
+              await Promise.all(
+                markings.map(async (marking: any) => {
+                  return prisma.marking.create({
+                    data: {
+                      participation_id: createParticipation.id,
+                      ...marking,
+                    },
+                  });
+                })
+              );
+            }
           })
         );
       }

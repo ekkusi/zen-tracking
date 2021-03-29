@@ -32,11 +32,11 @@ export default class ChallengeValidator {
     });
     if (!participation)
       throw new ValidationError(
-        "Ilmoittautumista ei löytynyt, johon yritit lisätä merkkausta"
+        "Osallistumista ei löytynyt, johon yritit lisätä merkkausta"
       );
     if (participation.user_name !== userName)
       throw new ValidationError(
-        "Et voi lisätä merkkausta ilmoittautumiseen, joka ei ole sinun ilmoittautuminen"
+        "Et voi lisätä merkkausta osallistumiseen, joka ei ole sinun"
       );
     let dateToCheck;
     // If date is given, use that, otherwise fallback to current day
@@ -80,7 +80,7 @@ export default class ChallengeValidator {
     });
     if (!participation)
       throw new ValidationError(
-        "Ilmoittautumista ei löytynyt, jonka merkkausta yritit muokata"
+        "Osallistumista ei löytynyt, jonka merkkausta yritit muokata"
       );
     if (participation.user_name !== userName)
       throw new ValidationError(
@@ -123,7 +123,7 @@ export default class ChallengeValidator {
     });
     if (!participation)
       throw new ValidationError(
-        "Ilmoittautumista ei löytynyt, jonka merkkausta yritit poistaa"
+        "Osallistumista ei löytynyt, jonka merkkausta yritit poistaa"
       );
     if (participation.user_name !== userName)
       throw new ValidationError(
@@ -147,7 +147,7 @@ export default class ChallengeValidator {
     );
     if (existingParticipation)
       throw new ValidationError(
-        "Et voi ilmoittautua haasteeseen, johon olet jo ilmoittautunut."
+        "Et voi ilmoittautua haasteeseen, johon olet jo osallistumassa."
       );
   }
 
@@ -164,11 +164,11 @@ export default class ChallengeValidator {
       },
     });
     if (!participation)
-      throw new ValidationError("Poistettavaa ilmoittautumista ei löytynyt.");
+      throw new ValidationError("Poistettavaa osallistumista ei löytynyt.");
     // TODO: args.userName should come from passport user, when passport is available
     if (participation.user_name !== userName)
       throw new ValidationError(
-        "Et voi poistaa ilmoittautumista, joka ei ole omasi."
+        "Et voi poistaa osallistumista, joka ei ole omasi."
       );
   }
 
@@ -262,7 +262,7 @@ export default class ChallengeValidator {
     // If challenge has other participations than creator participation, don't allow delete
     if (otherThanUserParticipations.length > 0)
       throw new ValidationError(
-        "Et voi poistaa haastetta, jossa on myös muiden ilmoittautumisia. Voi olla, että haasteessa on yksityisiä ilmottautuimisia, jotka eivät ole näkyvissä."
+        "Et voi poistaa haastetta, jossa on myös muita osallistujia. Voi olla, että haasteessa on yksityisiä osallistujia, jotka eivät ole näkyvissä."
       );
   }
 
