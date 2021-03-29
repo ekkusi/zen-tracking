@@ -17,10 +17,10 @@ export default function ScrollToTop() {
   );
 
   window.addEventListener(
-    "touchend",
+    "touchmove",
     (e) => {
-      const y = e.changedTouches[0]?.pageY || 0;
-      if (document?.scrollingElement?.scrollTop === 0 && y > _startY) {
+      const y = e.touches[0]?.pageY || 0;
+      if (document?.scrollingElement?.scrollTop === 0 && y > _startY + 200) {
         window.location.href = history.location.pathname;
       }
     },
