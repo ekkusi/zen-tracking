@@ -42,7 +42,7 @@ services:
       JWT_ACCESS_TOKEN_SECRET_KEY: ${JWT_ACCESS_TOKEN_SECRET_KEY}
       JWT_REFRESH_TOKEN_SECRET_KEY: ${JWT_REFRESH_TOKEN_SECRET_KEY}
     ports:
-      - "80:4000"
+      - "4000:4000"
     depends_on:
       - postgres
     networks:
