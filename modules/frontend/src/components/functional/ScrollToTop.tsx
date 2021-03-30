@@ -6,12 +6,16 @@ export default function ScrollToTop() {
 
   const history = useHistory();
 
-  let _startY: number;
+  let _startY: number | null;
 
   window.addEventListener(
     "touchstart",
     (e) => {
-      _startY = e.touches[0]?.pageY || 0;
+      const documentScrollTop = document?.scrollingElement?.scrollTop || 0;
+      // Only start possible refresh, if touch is happening on top or above page
+      if (documentScrollTop <= 0) {
+        _startY = e.touches[0]?.pageY || 0;
+      } else _startY = null;
     },
     { passive: true }
   );
@@ -21,7 +25,8 @@ export default function ScrollToTop() {
     (e) => {
       const y = e.changedTouches[0]?.pageY || 0;
       const documentScrollTop = document?.scrollingElement?.scrollTop || 0;
-      if (documentScrollTop >= 0 && y > _startY) {
+      // Refresh is started on top of the page AND end touch is 200 pixels above the start touch
+      if (_startY && documentScrollTop <= 0 && y > _startY + 150) {
         window.location.href = history.location.pathname;
       }
     },
