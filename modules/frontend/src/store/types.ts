@@ -11,6 +11,7 @@ export type ActionTypes = {
   ) => void;
   updateActiveParticipationMarkings: (markings: Marking[]) => void;
   logout: () => Promise<void>;
+  updatePromptEvent: (event: BeforeInstallPromptEvent | null) => void;
 };
 
 export type ActiveParticipation = Omit<
@@ -25,4 +26,5 @@ export type GlobalState = {
   activeParticipation: ActiveParticipation | null;
   error: string | null;
   accessToken: string | null;
+  promptEvent: BeforeInstallPromptEvent | null;
 };

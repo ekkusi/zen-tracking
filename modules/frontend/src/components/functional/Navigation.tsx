@@ -25,6 +25,7 @@ import useGlobal from "store";
 import theme from "theme";
 import chakraMotionWrapper from "util/chakraMotionWrapper";
 import { IconType } from "react-icons";
+import { DownloadIcon } from "@chakra-ui/icons";
 import InfoModal from "./InfoModal";
 import InstructionsModal from "./InstructionsModal";
 import { PrimaryButton } from "../primitives/Button";
@@ -198,40 +199,42 @@ const BottomNavigationBar = () => {
   };
 
   return (
-    <GridWithFlex
-      width="100%"
-      boxShadow="-5px 0 10px -5px black"
-      position="fixed"
-      left="0"
-      pt="3"
-      pb="2"
-      px="3"
-      zIndex="100"
-      bg={colorMode === "dark" ? "gray.700" : "white"}
-      columns={3}
-      initial="hidden"
-      animate={bottomBarState}
-      variants={bottomBarVariants}
-    >
-      <BottomBarLink
-        as={Link}
-        to="/"
-        linkText="Etusivu"
-        linkIcon={RiHome4Line}
-      />
-      <BottomBarLink
-        as={Link}
-        to="/challenges"
-        linkText="Haasteet"
-        linkIcon={RiSwordLine}
-      />
-      <BottomBarLink
-        as={Link}
-        to={`/profile/${user.name}`}
-        linkText="Omat jutskat"
-        linkIcon={FiUser}
-      />
-    </GridWithFlex>
+    <>
+      <GridWithFlex
+        width="100%"
+        boxShadow="-5px 0 10px -5px black"
+        position="fixed"
+        left="0"
+        pt="3"
+        pb="2"
+        px="3"
+        zIndex="100"
+        bg={colorMode === "dark" ? "gray.700" : "white"}
+        columns={3}
+        initial="hidden"
+        animate={bottomBarState}
+        variants={bottomBarVariants}
+      >
+        <BottomBarLink
+          as={Link}
+          to="/"
+          linkText="Etusivu"
+          linkIcon={RiHome4Line}
+        />
+        <BottomBarLink
+          as={Link}
+          to="/challenges"
+          linkText="Haasteet"
+          linkIcon={RiSwordLine}
+        />
+        <BottomBarLink
+          as={Link}
+          to={`/profile/${user.name}`}
+          linkText="Omat jutskat"
+          linkIcon={FiUser}
+        />
+      </GridWithFlex>
+    </>
   );
 };
 
@@ -291,6 +294,7 @@ const Navigation = ({
   )[1];
 
   const user = useGlobal((state) => state.currentUser)[0];
+  const promptEvent = useGlobal((state) => state.promptEvent)[0];
 
   const { isOpen, onOpen, onClose } = useDisclosure({
     onClose: customOnClose,
@@ -409,6 +413,18 @@ const Navigation = ({
                   </motion.li>
                 )}
               </motion.ul>
+              {promptEvent && (
+                <PrimaryButton
+                  onClick={() => promptEvent.prompt()}
+                  leftIcon={<DownloadIcon />}
+                  position="absolute"
+                  left="50%"
+                  bottom="20px"
+                  transform="translateX(-50%)"
+                >
+                  Lataa sovellus
+                </PrimaryButton>
+              )}
             </DrawerBody>
           </DrawerContent>
         </DrawerOverlay>

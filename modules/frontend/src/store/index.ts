@@ -9,6 +9,7 @@ const initialState: GlobalState = {
   error: null,
   activeParticipation: null,
   accessToken: null,
+  promptEvent: null,
 };
 
 const useGlobal = globalHook<GlobalState, ActionTypes>(
