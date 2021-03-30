@@ -148,9 +148,6 @@ const CustomApolloProvider = ({
       } else {
         for (const err of graphQLErrors) {
           if (err.extensions && err.extensions.code === "UNAUTHENTICATED") {
-            setGlobalError(
-              "Kirjautumistietosi ovat vanhentuneet. Kirjaudu sisään uudestaan."
-            );
             history.push("/login");
           }
         }
