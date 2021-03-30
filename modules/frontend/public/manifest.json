@@ -3,8 +3,13 @@
   "name": "Zen Tracking",
   "icons": [
     {
-      "src": "favicon-white.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "src": "logo64-white-bg.png",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo32-white-bg.png",
+      "sizes": "32x32",
       "type": "image/x-icon"
     },
     {
@@ -13,12 +18,17 @@
       "sizes": "128x128"
     },
     {
+      "src": "logo192-white-bg.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
       "src": "logo512-white-bg.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
   "theme_color": "#53afff",
   "background_color": "#ffffff"

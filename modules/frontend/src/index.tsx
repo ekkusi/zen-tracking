@@ -3,8 +3,14 @@ import ReactDOM from "react-dom";
 import "react-calendar/dist/Calendar.css";
 import { ColorModeScript } from "@chakra-ui/react";
 import theme from "theme";
+import ReactGA from "react-ga";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+
+ReactGA.initialize("G-MBX4HJ1DJX");
+
+serviceWorkerRegistration.register();
 
 ReactDOM.render(
   <React.StrictMode>

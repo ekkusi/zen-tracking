@@ -10,6 +10,11 @@ import theme from "./theme";
 import Fonts from "./Fonts";
 
 const App = (): JSX.Element => {
+  window.addEventListener("beforeinstallprompt", (event: any) => {
+    console.log("👍", "beforeinstallprompt", event);
+    // Stash the event so it can be triggered later.
+  });
+
   return (
     <ChakraProvider theme={theme}>
       <Fonts />

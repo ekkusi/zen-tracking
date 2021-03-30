@@ -50,5 +50,6 @@ module.exports = {
     "no-underscore-dangle": "off",
     "consistent-return": "off",
     "no-restricted-syntax": "off",
+    "no-param-reassign": "off",
   },
 };

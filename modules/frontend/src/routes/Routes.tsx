@@ -5,6 +5,8 @@ import ModalTemplate from "components/general/ModalTemplate";
 import { GET_CURRENT_USER } from "generalQueries";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
+import ReactGA from "react-ga";
+
 import useGlobal from "store";
 import { notAuthorizedUser } from "store/notAuthenticatedUser";
 import LoginPage from "views/login/LoginPage";
@@ -34,6 +36,7 @@ const Routes = (): JSX.Element => {
   const [globalState, globalActions] = useGlobal();
   const [loading, setLoading] = useState(true);
   const [hasTriedLoggingIn, setHasTriedLoggingIn] = useState(false);
+  const [previousRoute, setPreviousRoute] = useState<string | null>(null);
 
   const { activeParticipation, currentUser } = globalState;
 
@@ -55,6 +58,7 @@ const Routes = (): JSX.Element => {
   };
 
   const history = useHistory();
+
   const updateCurrentUser = useCallback(async () => {
     await refreshToken();
     // If path that is rendered requires authentication, try fetch user.
@@ -89,13 +93,20 @@ const Routes = (): JSX.Element => {
     setLoading(false);
   }, [client, globalActions, history]);
 
+  const currentPath = history.location.pathname;
+
   // Handle logging in with localStorage cache
   useEffect(() => {
-    let unmounted = false;
+    let isMounted = true;
 
-    if (!hasTriedLoggingIn && !unmounted) {
+    if (!hasTriedLoggingIn && isMounted) {
       setHasTriedLoggingIn(true);
       updateCurrentUser();
+    }
+
+    if (isMounted && previousRoute !== currentPath) {
+      setPreviousRoute(currentPath);
+      ReactGA.pageview(currentPath);
     }
     // // If localStorage currentUser is null but global storage is still logged in -> null global storage
     // if (!localStorageUser && isGlobalUserAuthorized() && !unmounted) {
@@ -103,9 +114,15 @@ const Routes = (): JSX.Element => {
     //   updateActiveParticipation(null);
     // }
     return () => {
-      unmounted = true;
+      isMounted = false;
     };
-  }, [hasTriedLoggingIn, updateCurrentUser]);
+  }, [
+    hasTriedLoggingIn,
+    updateCurrentUser,
+    history,
+    previousRoute,
+    currentPath,
+  ]);
 
   return (
     <>
@@ -123,12 +140,14 @@ const Routes = (): JSX.Element => {
         <Route
           path="/login"
           render={() => {
-            if (!isGlobalUserAuthorized)
+            if (!isGlobalUserAuthorized) {
               return (
                 <ViewContainer isPlain>
                   <LoginPage />
                 </ViewContainer>
               );
+            }
+
             return <Redirect to="/" />;
           }}
         />
@@ -147,11 +166,13 @@ const Routes = (): JSX.Element => {
         />
         <Route
           path="/welcome"
-          render={() => (
-            <ViewContainer isPlain>
-              <WelcomePage />
-            </ViewContainer>
-          )}
+          render={() => {
+            return (
+              <ViewContainer isPlain>
+                <WelcomePage />
+              </ViewContainer>
+            );
+          }}
         />
         <Route
           render={() => {
