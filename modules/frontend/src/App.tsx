@@ -8,12 +8,12 @@ import { ThemeProvider } from "styled-components";
 import ScrollToTop from "components/functional/ScrollToTop";
 import theme from "./theme";
 import Fonts from "./Fonts";
+import AddToHomeScreenPrompt from "./components/functional/AddToHomeScreenPrompts";
 
 const App = (): JSX.Element => {
-  window.addEventListener("beforeinstallprompt", (event: any) => {
-    console.log("👍", "beforeinstallprompt", event);
-    // Stash the event so it can be triggered later.
-  });
+  const hasUserSeenInstallPrompt = localStorage.getItem(
+    "hasUserSeenInstallPrompt"
+  );
 
   return (
     <ChakraProvider theme={theme}>
@@ -23,6 +23,7 @@ const App = (): JSX.Element => {
         <BrowserRouter>
           <ApolloProvider>
             <ScrollToTop />
+            <AddToHomeScreenPrompt />
             <Routes />
           </ApolloProvider>
         </BrowserRouter>

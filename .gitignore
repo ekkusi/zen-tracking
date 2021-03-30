@@ -12,6 +12,9 @@ node_modules
 **/*/dist
 **/*/build
 
+# SSL Certs
+**/*/sslcert
+
 # misc
 .DS_Store
 .env

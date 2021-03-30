@@ -8,6 +8,8 @@ import { notAuthorizedUser } from "./notAuthenticatedUser";
 import { ActionTypes, ActiveParticipation, GlobalState } from "./types";
 import { setAccessToken } from "../util/accessToken";
 
+// Test to fix eslint commit
+
 const actions = {
   updateUser: (
     store: Store<GlobalState, ActionTypes>,
@@ -72,6 +74,15 @@ const actions = {
       activeParticipation: null,
     });
     setAccessToken(null);
+  },
+  updatePromptEvent: (
+    store: Store<GlobalState, ActionTypes>,
+    event: BeforeInstallPromptEvent | null
+  ): void => {
+    store.setState({
+      ...store.state,
+      promptEvent: event,
+    });
   },
 };
 

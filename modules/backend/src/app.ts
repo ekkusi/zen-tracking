@@ -5,6 +5,8 @@ import dotEnv from "dotenv";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import cors, { CorsOptions } from "cors";
+import fs from "fs";
+import https from "https";
 import graphqlApi from "./graphql/server";
 import quoteOfTheDay from "./utils/getQuoteOfTheDay";
 
@@ -121,17 +123,32 @@ if (process.env.NODE_ENV === "production") {
   app.get("*", (req, res) => res.sendFile(indexHtml));
 }
 
-app.listen(port, () => {
-  console.log(`server started at http://localhost:${port}`);
-});
+let privateKey;
+let certificate;
 
-// So that nodemon doesnt start two servers
-// process.on("uncaughtException", () => {
-//   server.close();
-// });
-// process.on("exit", () => {
-//   server.close();
-// });
-// process.on("SIGTERM", () => {
-//   server.close();
-// });
+try {
+  privateKey = fs.readFileSync(path.join(__dirname, "sslcert/server.key"));
+  certificate = fs.readFileSync(path.join(__dirname, "sslcert/server.cert"));
+} catch (error) {
+  console.log(error);
+  console.log("SSL certs not found, not configuring to https");
+}
+
+const credentials =
+  privateKey && certificate
+    ? {
+        key: privateKey,
+        cert: certificate,
+      }
+    : undefined;
+
+if (credentials) {
+  const httpsServer = https.createServer(credentials, app);
+  httpsServer.listen(port, () => {
+    console.log(`server started at https://localhost:${port}`);
+  });
+} else {
+  app.listen(port, () => {
+    console.log(`server started at http://localhost:${port}`);
+  });
+}
