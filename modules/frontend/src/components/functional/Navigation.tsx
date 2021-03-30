@@ -172,12 +172,17 @@ const BottomNavigationBar = () => {
 
   const onScroll = () => {
     const st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
-    if (st > lastScrollTop) {
+    if (st > lastScrollTop + 100) {
+      lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
       if (bottomBarState === "visible") {
         setBottomBarState("hidden");
       }
-    } else if (bottomBarState === "hidden") setBottomBarState("visible");
-    lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+    } else if (st < lastScrollTop - 100) {
+      lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+      if (bottomBarState === "hidden") {
+        setBottomBarState("visible");
+      }
+    }
   };
 
   useEffect(() => {
