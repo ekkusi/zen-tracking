@@ -171,25 +171,78 @@ const BottomNavigationBar = () => {
 
   let lastScrollTop = window.pageYOffset;
 
+  const toggleBottomBarState = (
+    newState: "hidden" | "visible",
+    newLastScrollTop: number
+  ) => {
+    lastScrollTop = newLastScrollTop;
+    if (newState === "visible" && bottomBarState !== "visible") {
+      setBottomBarState("visible");
+    }
+    if (newState === "hidden" && bottomBarState !== "hidden") {
+      setBottomBarState("hidden");
+    }
+  };
+
+  let touchStartY: number | null;
+  const STRONG_OVERFLOW_SCROLL = 100;
+
+  const onTouchStart = (event: TouchEvent) => {
+    console.log("touchstart");
+    const documentScrollTop = document?.scrollingElement?.scrollTop || 0;
+    touchStartY = event.touches[0]?.pageY;
+    if (documentScrollTop === 0) {
+      touchStartY = event.touches[0]?.pageY;
+    }
+  };
+
+  const hasReachedBottom = () => {
+    return (
+      document.documentElement.scrollTop + window.innerHeight >=
+      document.body.scrollHeight
+    );
+  };
+
   const onScroll = () => {
     const st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
-    if (st > lastScrollTop + 100) {
-      lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-      if (bottomBarState === "visible") {
-        setBottomBarState("hidden");
+
+    if (st !== 0 && !hasReachedBottom()) {
+      console.log(`scrolling... st: ${st}lastScrollTop: ${lastScrollTop}`);
+
+      if (st > lastScrollTop + 100) {
+        toggleBottomBarState("hidden", st <= 0 ? 0 : st);
+      } else if (st < lastScrollTop - 100) {
+        toggleBottomBarState("visible", st <= 0 ? 0 : st);
       }
-    } else if (st < lastScrollTop - 100) {
-      lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-      if (bottomBarState === "hidden") {
-        setBottomBarState("visible");
-      }
+    }
+  };
+
+  const onWheelOrTouch = (event: WheelEvent | TouchEvent) => {
+    const st = window.pageYOffset || document.documentElement.scrollTop;
+    let deltaY: number;
+    if (event instanceof WheelEvent) {
+      deltaY = event.deltaY;
+    } else {
+      deltaY = touchStartY ? touchStartY - event.touches[0].pageY : 0;
+    }
+    if (deltaY > STRONG_OVERFLOW_SCROLL) {
+      toggleBottomBarState("hidden", st <= 0 ? 0 : st);
+    } else if (deltaY < -STRONG_OVERFLOW_SCROLL) {
+      toggleBottomBarState("visible", st <= 0 ? 0 : st);
     }
   };
 
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
+    window.addEventListener("wheel", onWheelOrTouch);
+    window.addEventListener("touchmove", onWheelOrTouch);
+    window.addEventListener("touchstart", onTouchStart);
+
     return () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("wheel", onWheelOrTouch);
+      window.removeEventListener("touchmove", onWheelOrTouch);
+      window.removeEventListener("touchstart", onTouchStart);
     };
   });
 
