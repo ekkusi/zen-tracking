@@ -39,6 +39,8 @@ import {
   EditMarkingVariables,
 } from "./__generated__/EditMarking";
 
+import { MAX_UPLOAD_FILE_SIZE_MB } from "../../config.json";
+
 export const ADD_MARKING = gql`
   mutation AddMarking($participationId: ID!, $marking: MarkingCreateInput!) {
     addMarking(participationId: $participationId, marking: $marking) {
@@ -285,11 +287,24 @@ const EditMarking = ({
     }
   };
 
-  const validateRating = (values: FormValues): FormikErrors<FormValues> => {
+  const validateFile = (file: File | null): string => {
+    // * 1024 * 1024 is for converting mb size to bytes, which file.size is in
+    if (file && file.size > MAX_UPLOAD_FILE_SIZE_MB * 1024 * 1024) {
+      return `Tiedosto saa olla enintään ${MAX_UPLOAD_FILE_SIZE_MB}MB kokoinen.`;
+    }
+    return "";
+  };
+
+  const validateAll = (values: FormValues): FormikErrors<FormValues> => {
     const errors: FormikErrors<FormValues> = {};
     if (values.rating <= 0) {
       errors.rating = "Anna arvostelu päivän suorituksesta";
     }
+    if (typeof values.photo !== "string") {
+      const fileError = validateFile(values.photo);
+      errors.photo = fileError;
+    }
+
     return errors;
   };
 
@@ -321,7 +336,7 @@ const EditMarking = ({
         <Formik
           initialValues={initialValues}
           onSubmit={saveAndClose}
-          validate={validateRating}
+          validate={validateAll}
           validateOnChange={false}
           validateOnBlur={false}
         >
@@ -395,8 +410,13 @@ const EditMarking = ({
                       event.target.files.length <= 0
                         ? null
                         : event.target.files[0];
-                    setFieldValue("photo", newPhoto);
-                    setPhotoSrc(newPhoto);
+                    const fileError = validateFile(newPhoto);
+                    if (fileError) {
+                      setFieldError("photo", fileError);
+                    } else {
+                      setFieldValue("photo", newPhoto);
+                      setPhotoSrc(newPhoto);
+                    }
                   }}
                 />
                 <Text
@@ -408,6 +428,11 @@ const EditMarking = ({
                 >
                   {!values.photo && "Ei valittua tiedostoa"}
                 </Text>
+                {errors.photo && (
+                  <Text as="span" display="block" color="warning">
+                    {errors.photo}
+                  </Text>
+                )}
               </Flex>
               {values.photo && (
                 <PreviewImage
@@ -420,6 +445,7 @@ const EditMarking = ({
                   }}
                 />
               )}
+
               <Checkbox
                 isChecked={values.isPrivate}
                 onChange={(event) =>

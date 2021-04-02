@@ -69,6 +69,7 @@ app.post("/upload-image", async (req, res) => {
     const result = await s3Client.uploadImage(firstPhoto);
     return res.status(200).send(result);
   } catch (e) {
+    console.log(`/upload-image failed: ${e.message}`);
     return res.status(500).send(e);
   }
 });
@@ -79,6 +80,7 @@ app.post("/delete-image", async (req, res) => {
       await s3Client.deleteImage(req.body.fileName);
       return res.status(200).send();
     } catch (e) {
+      console.log(`/delete-image failed: ${e.message}`);
       return res.status(500).send(e);
     }
   }
@@ -106,6 +108,7 @@ app.post("/refresh-token", (req, res) => {
       accessToken: createAccessToken(user),
     });
   } catch (error) {
+    console.log(`Refresh token failed: ${error.message}`);
     return res.status(500).send({
       error: error.message,
     });
@@ -142,7 +145,9 @@ const credentials =
       }
     : undefined;
 
-if (credentials) {
+const runInHttps = false;
+
+if (credentials && runInHttps) {
   const httpsServer = https.createServer(credentials, app);
   httpsServer.listen(port, () => {
     console.log(`server started at https://localhost:${port}`);

@@ -1,4 +1,5 @@
 {
   "NUMBER_OF_QUOTE_PHOTOS": 74,
-  "QUOTE_PHOTOS_BASE_URL": "/photos/quotes"
+  "QUOTE_PHOTOS_BASE_URL": "/photos/quotes",
+  "MAX_UPLOAD_FILE_SIZE_MB": 100
 }
