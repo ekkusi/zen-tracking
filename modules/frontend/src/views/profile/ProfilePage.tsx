@@ -88,8 +88,6 @@ const ProfilePage = (): JSX.Element => {
     return sortedParticipations;
   }, [user, activeParticipation, userName]);
 
-  console.log(participations);
-
   const onActiveChallengeSelect = async (value: OptionType | null) => {
     const selectedChallengeId = value?.value ?? null;
     if (selectedChallengeId) {

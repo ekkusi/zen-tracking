@@ -165,17 +165,19 @@ const BottomNavigationBar = () => {
     "visible"
   );
 
+  const [isMobile] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+
   const user = useGlobal((state) => state.currentUser)[0];
+
+  const history = useHistory();
 
   const { colorMode } = useColorMode();
 
   let lastScrollTop = window.pageYOffset;
 
-  const toggleBottomBarState = (
-    newState: "hidden" | "visible",
-    newLastScrollTop: number
-  ) => {
-    lastScrollTop = newLastScrollTop;
+  const toggleBottomBarState = (newState: "hidden" | "visible") => {
+    const st = window.pageYOffset || document.documentElement.scrollTop;
+    lastScrollTop = st <= 0 ? 0 : st;
     if (newState === "visible" && bottomBarState !== "visible") {
       setBottomBarState("visible");
     }
@@ -188,12 +190,7 @@ const BottomNavigationBar = () => {
   const STRONG_OVERFLOW_SCROLL = 100;
 
   const onTouchStart = (event: TouchEvent) => {
-    console.log("touchstart");
-    const documentScrollTop = document?.scrollingElement?.scrollTop || 0;
     touchStartY = event.touches[0]?.pageY;
-    if (documentScrollTop === 0) {
-      touchStartY = event.touches[0]?.pageY;
-    }
   };
 
   const hasReachedBottom = () => {
@@ -207,42 +204,51 @@ const BottomNavigationBar = () => {
     const st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
 
     if (st !== 0 && !hasReachedBottom()) {
-      console.log(`scrolling... st: ${st}lastScrollTop: ${lastScrollTop}`);
-
       if (st > lastScrollTop + 100) {
-        toggleBottomBarState("hidden", st <= 0 ? 0 : st);
+        toggleBottomBarState("hidden");
       } else if (st < lastScrollTop - 100) {
-        toggleBottomBarState("visible", st <= 0 ? 0 : st);
+        toggleBottomBarState("visible");
       }
     }
   };
 
-  const onWheelOrTouch = (event: WheelEvent | TouchEvent) => {
-    const st = window.pageYOffset || document.documentElement.scrollTop;
-    let deltaY: number;
-    if (event instanceof WheelEvent) {
-      deltaY = event.deltaY;
-    } else {
-      deltaY = touchStartY ? touchStartY - event.touches[0].pageY : 0;
-    }
+  const onWheelOrTouch = (event: WheelEvent) => {
+    const { deltaY } = event;
     if (deltaY > STRONG_OVERFLOW_SCROLL) {
-      toggleBottomBarState("hidden", st <= 0 ? 0 : st);
+      toggleBottomBarState("hidden");
     } else if (deltaY < -STRONG_OVERFLOW_SCROLL) {
-      toggleBottomBarState("visible", st <= 0 ? 0 : st);
+      toggleBottomBarState("visible");
+    }
+  };
+
+  const onTouchEnd = (event: TouchEvent) => {
+    const endY = event.changedTouches[0]?.pageY ?? 0;
+    if (touchStartY) {
+      if (touchStartY < endY) {
+        toggleBottomBarState("visible");
+      } else if (touchStartY > endY) {
+        toggleBottomBarState("hidden");
+      }
     }
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", onScroll);
-    window.addEventListener("wheel", onWheelOrTouch);
-    window.addEventListener("touchmove", onWheelOrTouch);
-    window.addEventListener("touchstart", onTouchStart);
+    const unlistenRouterChange = history.listen(() => {
+      toggleBottomBarState("visible");
+    });
+
+    if (isMobile) {
+      window.addEventListener("touchstart", onTouchStart);
+      window.addEventListener("touchend", onTouchEnd);
+    } else {
+      window.addEventListener("scroll", onScroll);
+      window.addEventListener("wheel", onWheelOrTouch);
+    }
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("wheel", onWheelOrTouch);
-      window.removeEventListener("touchmove", onWheelOrTouch);
       window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+      unlistenRouterChange();
     };
   });
 
