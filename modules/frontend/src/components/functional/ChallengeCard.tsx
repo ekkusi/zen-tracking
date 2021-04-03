@@ -5,29 +5,38 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-import { ButtonWithRef } from "components/primitives/Button";
+import { PrimaryButton } from "components/primitives/Button";
 import Heading from "components/primitives/Heading";
 import React from "react";
 import DateUtil from "util/DateUtil";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { GetChallenges_getChallenges } from "../../__generated__/GetChallenges";
 import useGlobal from "../../store";
+import chakraMotionWrapper from "../../util/chakraMotionWrapper";
 
 type ChallengeCardProps = FlexProps & {
   challenge: GetChallenges_getChallenges;
   openButtonLabel?: string;
+  isLink?: boolean;
 };
+
+const FlexWithMotion = chakraMotionWrapper(Flex);
 
 const ChallengeCard = ({
   challenge,
   openButtonLabel = "Lue lisää",
+  isLink = true,
   ...rest
 }: ChallengeCardProps): JSX.Element => {
   const { colorMode } = useColorMode();
   const user = useGlobal((state) => state.currentUser)[0];
 
+  const history = useHistory();
+
   return (
-    <Flex
+    <FlexWithMotion
+      as={isLink ? Link : undefined}
+      to={`/challenges/${challenge.id}`}
       direction="column"
       borderRadius="10px"
       boxShadow={colorMode === "light" ? "dark" : "dark-lg"}
@@ -37,6 +46,12 @@ const ChallengeCard = ({
       px="7"
       bg={colorMode === "light" ? "white" : "gray.50"}
       color="text.light"
+      _hover={{
+        opacity: 1,
+      }}
+      whileHover={{
+        scale: isLink ? 1.05 : 1.0,
+      }}
       {...rest}
     >
       <LightMode>
@@ -62,10 +77,13 @@ const ChallengeCard = ({
         </Text>
       </LightMode>
 
-      <ButtonWithRef as={Link} to={`/challenges/${challenge.id}`} mt="auto">
+      <PrimaryButton
+        onClick={() => history.push(`/challenges/${challenge.id}`)}
+        mt="auto"
+      >
         {openButtonLabel}
-      </ButtonWithRef>
-    </Flex>
+      </PrimaryButton>
+    </FlexWithMotion>
   );
 };
 
