@@ -25,8 +25,8 @@ node_modules
 *.log
 .idea
 
-# Docker database exports NOTE: ADD THIS WHEN DATABASE GETS BIG
-# tmp/
+# Docker image build file etc.
+tmp/
 
 # cache
 .eslintcache
