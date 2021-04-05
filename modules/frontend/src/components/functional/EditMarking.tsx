@@ -307,7 +307,7 @@ const EditMarking = ({
     }
     if (typeof values.photo !== "string") {
       const fileError = validateFile(values.photo);
-      if (fileError) errors.photo = fileError;
+      if (fileError.length > 0) errors.photo = fileError;
     }
     console.log("Validation:", errors);
 
