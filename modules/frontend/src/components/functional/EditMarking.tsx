@@ -302,7 +302,7 @@ const EditMarking = ({
     }
     if (typeof values.photo !== "string") {
       const fileError = validateFile(values.photo);
-      errors.photo = fileError;
+      if (fileError.length > 0) errors.photo = fileError;
     }
 
     return errors;
