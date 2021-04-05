@@ -8,16 +8,10 @@ type LoadingProps = {
 const Loading = ({ loadingText }: LoadingProps): JSX.Element => {
   return (
     <Flex alignItems="center" justifyContent="center">
-      <Text fontSize="xl" color="primary.regular">
+      <Text fontSize="xl" colorScheme="primary">
         {loadingText}
       </Text>
-      <Spinner
-        mb="3"
-        color="primary.regular"
-        size="xl"
-        thickness="3px"
-        ml="3"
-      />
+      <Spinner mb="3" size="xl" thickness="3px" ml="3" />
     </Flex>
   );
 };

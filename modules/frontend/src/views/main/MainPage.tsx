@@ -114,7 +114,7 @@ const MainPage = (): JSX.Element => {
           <Text
             as={Link}
             to="/challenges"
-            display="block"
+            display="inline-block"
             mb={{ base: "6", md: "10" }}
             fontSize="xl"
           >

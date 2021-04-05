@@ -13,8 +13,8 @@ import EditMarking from "./EditMarking";
 const StyledCalendar = styled(ReactCalendar)`
   --color: ${({ theme }) => theme.colors.text.light};
   --bg-color: ${({ theme }) => theme.colors.white};
-  --active-bg-color: ${({ theme }) => theme.colors.primary.regular};
-  --hover-bg-color: ${({ theme }) => theme.colors.primary.light};
+  --active-bg-color: ${({ theme }) => theme.colors.primary[200]};
+  --hover-bg-color: ${({ theme }) => theme.colors.primary[50]};
   --hover-color: ${({ theme }) => theme.colors.white};
   --disabled-bg-color: ${({ theme }) => theme.colors.gray[100]};
 

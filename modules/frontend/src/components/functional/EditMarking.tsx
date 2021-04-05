@@ -1,12 +1,15 @@
 import { useMutation, gql } from "@apollo/client";
 import {
   Box,
+  Button,
   Checkbox,
   Flex,
   FormLabel,
   Icon,
+  IconButton,
   Stack,
   Text,
+  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
@@ -14,7 +17,6 @@ import { UploadImageSuccessResult } from "@ekkusi/zen-tracking-backend/lib/types
 import ModalTemplate, {
   ModalTemplateProps,
 } from "components/general/ModalTemplate";
-import { PrimaryButton } from "components/primitives/Button";
 import { PrimaryTextArea } from "components/primitives/Input";
 import FileInput from "components/general/form/FileInput";
 import React, { useMemo, useState } from "react";
@@ -25,9 +27,9 @@ import { IoMdCamera } from "react-icons/io";
 import { IoLeaf } from "react-icons/io5";
 import { Form, Formik, FormikErrors } from "formik";
 import { markingDataFragment } from "fragments";
+import { mode } from "@chakra-ui/theme-tools";
 import FormField from "../general/form/FormField";
 import PreviewImage from "../general/form/PreviewImage";
-import { PlainIconButton } from "../primitives/IconButton";
 import DeleteConfimationModal from "../general/DeleteConfirmationModal";
 import {
   DeleteMarking,
@@ -98,6 +100,8 @@ const EditMarking = ({
   const [loading, setLoading] = useState(false);
   const [photoSrc, setPhotoSrc] = useState<File | string | null>(null);
 
+  const { colorMode } = useColorMode();
+
   const [deleteMarking, { loading: deleteLoading }] = useMutation<
     DeleteMarking,
     DeleteMarkingVariables
@@ -144,6 +148,7 @@ const EditMarking = ({
   }, [photoSrc]);
 
   const saveAndClose = async (values: FormValues) => {
+    console.log("Saving and closing");
     // This shouldn't get triggered, activeParticipation should be found if EditMarking is open
     if (!activeParticipation) {
       updateError(
@@ -302,8 +307,9 @@ const EditMarking = ({
     }
     if (typeof values.photo !== "string") {
       const fileError = validateFile(values.photo);
-      errors.photo = fileError;
+      if (fileError) errors.photo = fileError;
     }
+    console.log("Validation:", errors);
 
     return errors;
   };
@@ -345,8 +351,9 @@ const EditMarking = ({
               <Box mb="2">
                 <FormLabel>Kuinka hyvin meni päivän setti</FormLabel>
                 {[1, 2, 3, 4, 5].map((it) => (
-                  <PlainIconButton
+                  <IconButton
                     key={it}
+                    variant="ghost"
                     size="lg"
                     aria-label="Set rating value"
                     onClick={() => {
@@ -361,8 +368,8 @@ const EditMarking = ({
                         color={
                           (hoverRating > 0 && hoverRating < it) ||
                           (values.rating < it && hoverRating <= values.rating)
-                            ? "gray.600"
-                            : "primary.regular"
+                            ? "gray.300"
+                            : mode("primary.500", "primary.200")({ colorMode })
                         }
                         w={10}
                         h={10}
@@ -460,7 +467,7 @@ const EditMarking = ({
 
               {error && <Text color="warning">{error}</Text>}
               <Box mt="5" mb="5">
-                <PrimaryButton
+                <Button
                   type="submit"
                   isLoading={loading || createLoading || updateLoading}
                   isDisabled={deleteLoading}
@@ -468,7 +475,7 @@ const EditMarking = ({
                   mr={3}
                 >
                   {marking ? "Tallenna" : "Lisää merkkaus"}
-                </PrimaryButton>
+                </Button>
                 {marking && (
                   <DeleteConfimationModal
                     onDelete={deleteAndClose}

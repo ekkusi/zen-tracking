@@ -1,11 +1,11 @@
 import {
+  Button,
   Flex,
   FlexProps,
   LightMode,
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-import { PrimaryButton } from "components/primitives/Button";
 import Heading from "components/primitives/Heading";
 import React from "react";
 import DateUtil from "util/DateUtil";
@@ -77,12 +77,12 @@ const ChallengeCard = ({
         </Text>
       </LightMode>
 
-      <PrimaryButton
+      <Button
         onClick={() => history.push(`/challenges/${challenge.id}`)}
         mt="auto"
       >
         {openButtonLabel}
-      </PrimaryButton>
+      </Button>
     </FlexWithMotion>
   );
 };

@@ -28,7 +28,7 @@ const BaseButtonProps: ChakraButtonProps = {
 
 const ButtonDefaultProps = {
   color: "white",
-  bg: "primary.regular",
+  bg: "primary.500",
   variant: "solid",
 };
 
@@ -52,49 +52,44 @@ export const generateBaseButtonProps = ({
   switch (variant) {
     case "outline": {
       variantProps = {
-        bg: color,
-        color: bg,
-        borderColor: bg,
-        _hover: {
-          bg,
-          color,
-        },
-        _focus: {
-          borderColor: color,
-        },
-        _disabled: {
-          ...BaseButtonProps._disabled,
-          _hover: {
-            bg: color,
-            color: bg,
-          },
-        },
+        // bg: color,
+        // color: bg,
+        // borderColor: bg,
+        // _hover: {
+        //   bg,
+        //   color,
+        // },
+        // _focus: {
+        //   borderColor: color,
+        // },
+        // _disabled: {
+        //   ...BaseButtonProps._disabled,
+        //   _hover: {
+        //     bg: color,
+        //     color: bg,
+        //   },
+        // },
       };
       break;
     }
     default: {
       variantProps = {
-        bg,
-        color,
-        borderColor: bg,
-        _hover: {
-          opacity: 0.7,
-        },
-        _focus: {
-          borderColor: bg,
-        },
+        // bg,
+        // color,
+        // borderColor: bg,
+        // _hover: {
+        //   opacity: 0.7,
+        // },
+        // _focus: {
+        //   borderColor: bg,
+        // },
       };
     }
   }
   let sizeProps: ButtonProps;
   switch (size) {
     case "sm": {
-      sizeProps = {
-        px: { base: 2, sm: 3 },
-        py: { base: 2, sm: 4 },
-        fontWeight: "bold",
-        fontSize: "xxs",
-      };
+      sizeProps = {};
       break;
     }
     case "lg": {
@@ -108,11 +103,7 @@ export const generateBaseButtonProps = ({
     }
     // If no value for prop is given -> represents md size
     default: {
-      sizeProps = {
-        fontSize: { base: "xs", md: "sm" },
-        py: { base: 3, sm: 3 },
-        px: { base: 3, sm: 5 },
-      };
+      sizeProps = {};
     }
   }
 
@@ -158,7 +149,7 @@ const CancelButton = styled(Button)<ButtonProps>``;
 
 PrimaryButton.defaultProps = {
   color: "white",
-  bg: "primary.regular",
+  bg: "primary.200",
 };
 
 AlertButton.defaultProps = {

@@ -1,8 +1,7 @@
-import { ButtonProps, Icon, Text } from "@chakra-ui/react";
+import { Button, ButtonProps, Icon, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaInstagram } from "react-icons/fa";
 import ImageModal from "../general/ImageModal";
-import { PrimaryButton } from "../primitives/Button";
 import config from "../../config.json";
 
 type QuoteOfTheDayProps = {
@@ -25,13 +24,9 @@ const QuoteOfTheDay = ({
   };
   return (
     <>
-      <PrimaryButton
-        variant="outline"
-        onClick={openQuoteOfTheDay}
-        {...openButtonProps}
-      >
+      <Button variant="ghost" onClick={openQuoteOfTheDay} {...openButtonProps}>
         Quote of the Day
-      </PrimaryButton>
+      </Button>
       <ImageModal
         isOpen={!!quoteOfTheDayUrl}
         onClose={() => setQuoteOfTheDayUrl(undefined)}

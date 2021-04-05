@@ -1,11 +1,10 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { Box, Container, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Text } from "@chakra-ui/react";
 import ChallengeSelect, {
   OptionType,
 } from "components/functional/ChallengeSelect";
 import EditChallenge from "components/functional/EditChallenge";
 import CustomLoadingOverlay from "components/general/LoadingOverlay";
-import { PrimaryButton } from "components/primitives/Button";
 import Heading from "components/primitives/Heading";
 import React, { useState, useMemo } from "react";
 
@@ -135,9 +134,7 @@ const TransferMarkingsPage = (): JSX.Element => {
       ) : (
         <Box>
           <Flex justifyContent="flex-end" mb="3">
-            <PrimaryButton onClick={() => updateUser(null)}>
-              Kirjaudu ulos
-            </PrimaryButton>
+            <Button onClick={() => updateUser(null)}>Kirjaudu ulos</Button>
           </Flex>
 
           <Heading.H1>Merkkausten siirto</Heading.H1>
@@ -162,13 +159,13 @@ const TransferMarkingsPage = (): JSX.Element => {
                 onSelect={onChallengeSelect}
                 containerProps={{ mb: "4" }}
               />
-              <PrimaryButton
+              <Button
                 isDisabled={!selectedChallengeId}
                 onClick={() => transferMarkings(selectedChallengeId || null)}
                 mb="8"
               >
                 Siirrä merkkaukset
-              </PrimaryButton>
+              </Button>
               <Text textAlign="center" fontWeight="bold" mb="8">
                 TAI
               </Text>

@@ -7,7 +7,8 @@
     "@apollo/client": "^3.3.6",
     "@apollo/link-error": "^2.0.0-beta.3",
     "@chakra-ui/icons": "^1.0.5",
-    "@chakra-ui/react": "^1.1.2",
+    "@chakra-ui/react": "^1.4.2",
+    "@chakra-ui/theme-tools": "^1.1.2",
     "@ekkusi/zen-tracking-backend": "^1.0.0",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
@@ -55,7 +56,7 @@
     "format": "prettier --write src/**/*.ts{,x}",
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "stop": "kill -9 $(lsof -t -i:3000)",
-    "gen:theme-typings": "chakra-cli tokens ./src/theme.ts --out=../../node_modules/@chakra-ui/theme/dist/types/custom-theme.d.ts",
+    "gen:theme-typings": "chakra-cli tokens ./src/theme/index.ts",
     "apollo:update-types": "apollo client:codegen --target typescript --globalTypesFile src/__generated__/globalTypes.ts",
     "apollo:update-types-watch": "yarn apollo:update-types --watch",
     "apollo:update-types-clean": "find . -type d -name __generated__ -prune -exec rm -rf {} \\; &&  yarn apollo:update-types && rm -rf __generated__"

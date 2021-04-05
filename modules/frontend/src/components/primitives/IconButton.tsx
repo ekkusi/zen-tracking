@@ -19,7 +19,7 @@ type IconButtonProps = Omit<
 
 const IconButtonDefaultProps = {
   color: "white",
-  bg: "primary.regular",
+  bg: "primary.200",
   variant: "solid",
 };
 

@@ -1,7 +1,7 @@
-import { useDisclosure } from "@chakra-ui/react";
+import { Button, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
 import ModalTemplate, { ModalTemplateProps } from "./ModalTemplate";
-import { AlertButton, CancelButton } from "../primitives/Button";
+import { CancelButton } from "../primitives/Button";
 
 type DeleteConfimationModalProps = Omit<
   ModalTemplateProps,
@@ -39,20 +39,24 @@ const DeleteConfimationModal = ({
       headerLabel="Haluatko varmasti poistaa?"
       openButtonLabel="Poista"
       openButton={
-        <AlertButton
-          color="white"
-          bg="warning"
+        <Button
+          variant="alert"
           onClick={() => setIsOpen(true)}
           {...modalTemplateProps.openButtonProps}
         >
           {openButtonLabel}
-        </AlertButton>
+        </Button>
       }
       modalFooter={
         <>
-          <AlertButton isLoading={loading} onClick={deleteAndClose} mr="3">
+          <Button
+            variant="alert"
+            isLoading={loading}
+            onClick={deleteAndClose}
+            mr="3"
+          >
             {deleteLabel}
-          </AlertButton>
+          </Button>
           <CancelButton
             isDisabled={loading}
             onClick={() => disclosureProps.onClose()}
