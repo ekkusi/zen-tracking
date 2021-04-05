@@ -1,5 +1,7 @@
 # Track-your-streak
 
+## View site live: [https:/zen-tracking.com](https://zen-tracking.com)
+
 ## Prerequirements
 
 - Nodejs (version 12 or later)
