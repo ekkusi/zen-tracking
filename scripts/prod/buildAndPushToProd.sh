@@ -6,4 +6,5 @@ cd "$parentPath"
 cd "../../"
 
 docker build -t frontend .
-docker save zen-tracking | gzip > zen-tracking.tar.gz
+docker save zen-tracking | gzip > ./tmp/zen-tracking.tar.gz
+scp ./tmp/zen-tracking.tar.gz eke@136.244.97.223:~/zen-tracking/tmp 
