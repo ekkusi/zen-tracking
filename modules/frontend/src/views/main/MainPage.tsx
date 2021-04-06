@@ -54,6 +54,7 @@ const MainPage = (): JSX.Element => {
       setLoading(true);
       const result = await getParticipation({
         challengeId: selectedChallengeId,
+        userName: user.name,
       });
       updateActiveParticipation(result.data.getParticipation ?? null);
       setLoading(false);

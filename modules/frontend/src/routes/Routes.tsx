@@ -214,7 +214,7 @@ const Routes = (): JSX.Element => {
                   )}
                 />
                 <Route
-                  path="/profile/:userName/:participationId"
+                  path="/profile/:userName/:challengeId"
                   render={() => (
                     <ViewContainer>
                       <ParticipationPage />

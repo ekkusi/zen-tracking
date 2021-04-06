@@ -48,6 +48,7 @@ export type QueryGetChallengesArgs = {
 
 export type QueryGetParticipationArgs = {
   challengeId: Scalars["ID"];
+  userName: Scalars["ID"];
 };
 
 export type QueryGetMarkingsArgs = {

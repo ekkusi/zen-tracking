@@ -221,7 +221,7 @@ export type QueryResolvers<
     Types.Maybe<ResolversTypes["ChallengeParticipation"]>,
     ParentType,
     ContextType,
-    RequireFields<Types.QueryGetParticipationArgs, "challengeId">
+    RequireFields<Types.QueryGetParticipationArgs, "challengeId" | "userName">
   >;
   getMarkings?: Resolver<
     Array<ResolversTypes["Marking"]>,

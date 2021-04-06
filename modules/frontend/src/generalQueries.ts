@@ -53,8 +53,8 @@ export const GET_USER_PARTICIPATIONS = gql`
 `;
 
 export const GET_PARTICIPATION = gql`
-  query GetParticipation($challengeId: ID!) {
-    getParticipation(challengeId: $challengeId) {
+  query GetParticipation($challengeId: ID!, $userName: ID!) {
+    getParticipation(challengeId: $challengeId, userName: $userName) {
       ...ActiveParticipationInfo
     }
   }

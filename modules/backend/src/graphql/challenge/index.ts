@@ -119,9 +119,13 @@ export const resolvers: Resolvers = {
       });
       return participations;
     },
-    getParticipation: async (_, { challengeId }, { prisma, user }) => {
+    getParticipation: async (
+      _,
+      { challengeId, userName },
+      { prisma, user }
+    ) => {
       const filters = SharedMapper.notPrivateFilterMapper<Prisma.ChallengeParticipationWhereInput>(
-        { challenge_id: challengeId },
+        { challenge_id: challengeId, user_name: userName },
         { user_name: user?.name }
       );
       const participation = await prisma.challengeParticipation.findFirst({
