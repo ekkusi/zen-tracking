@@ -33,7 +33,7 @@ export const customColors = {
     dark: "#1A202C",
     light: "white",
   },
-  warning: "#A40606",
+  warning: "#D72638",
 };
 
 export default customColors;
