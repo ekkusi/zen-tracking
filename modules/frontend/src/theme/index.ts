@@ -43,11 +43,14 @@ const theme: Theme = extendTheme({
       a: {
         color: mode(colors.primary[500], colors.primary[200])(props),
         cursor: "pointer",
+        WebkitTapHighlightColor: "transparent",
         _hover: {
           opacity: 0.7,
         },
         _active: {
           bg: "inherit",
+          background: "inherit",
+          outline: "none",
         },
         transition: "opacity 0.2s",
       },

@@ -10,6 +10,8 @@ export const Button: ComponentSingleStyleConfig = {
     width: "auto",
     whiteSpace: "nowrap",
     color: "white",
+    WebkitTapHighlightColor: "transparent",
+    cursor: "pointer",
     _focus: {
       boxShadow: "none",
     },
@@ -21,10 +23,7 @@ export const Button: ComponentSingleStyleConfig = {
       opacity: 0.3,
       border: "none",
     },
-    cursor: "pointer",
     _active: {
-      bg: "inherit",
-      background: "inherit",
       opacity: 0.6,
     },
   },
@@ -35,6 +34,7 @@ export const Button: ComponentSingleStyleConfig = {
         border: "none",
         _hover: {
           bg: "inherit",
+          background: "inherit",
           color: mode(`${colorScheme}.500`, `${colorScheme}.200`)(props),
         },
       };
@@ -57,6 +57,10 @@ export const Button: ComponentSingleStyleConfig = {
         border: "none",
         color: "white",
         bg: mode(`${colorScheme}.500`, `${colorScheme}.200`)(props),
+        _active: {
+          bg: mode(`${colorScheme}.500`, `${colorScheme}.200`)(props),
+          background: mode(`${colorScheme}.500`, `${colorScheme}.200`)(props),
+        },
       };
     },
     alert: () => ({
@@ -67,33 +71,41 @@ export const Button: ComponentSingleStyleConfig = {
   },
   sizes: {
     sm: ({ variant }) => ({
-      px: { base: 2, sm: 3 },
-      py: { base: 2, sm: 4 },
+      px: { base: 1, sm: 2 },
+      py: { base: 1, sm: 2 },
+      h: "auto",
       fontSize: "xs",
       "> svg": {
         width: "5",
         height: "5",
-        mx: variant === "ghost" ? { base: -3, sm: -5 } : { base: 3, sm: 0 },
+        mx: variant === "ghost" ? { base: -1, sm: -2 } : { base: 2, sm: -1 },
+        my: variant === "ghost" ? { base: -1, sm: -2 } : { base: 1, sm: -1 },
       },
     }),
     md: ({ variant }) => ({
       fontSize: { base: "xs", md: "sm" },
+      px: { base: 3, sm: 5 },
+      py: { base: 3, sm: 4 },
+      h: "auto",
       "> svg": {
         width: "6",
         height: "6",
-        mx: variant === "ghost" ? { base: -3, sm: -5 } : { base: 3, sm: 4 },
+        mx: variant === "ghost" ? { base: -3, sm: -5 } : { base: 3, sm: -1 },
+        my: variant === "ghost" ? { base: -3, sm: -5 } : { base: 2, sm: -2 },
       },
     }),
     lg: ({ variant }) => ({
       fontSize: { base: "lg", md: "xl" },
+      h: "auto",
       textTransform: "none",
       fontWeight: "normal",
-      px: { base: 6, sm: 7 },
-      py: { base: 5, sm: 7 },
+      px: { base: 5, sm: 7 },
+      py: { base: 4, sm: 6 },
       "> svg": {
         width: "10",
         height: "10",
         mx: variant === "ghost" ? { base: -6, sm: -7 } : { base: 4, sm: -3 },
+        my: variant === "ghost" ? { base: 0, sm: -7 } : { base: 2, sm: -5 },
       },
     }),
   },

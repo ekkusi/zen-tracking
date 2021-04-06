@@ -1,11 +1,4 @@
-import {
-  Button,
-  Flex,
-  FlexProps,
-  LightMode,
-  Text,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Button, Flex, FlexProps, Text, useColorMode } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import React from "react";
 import DateUtil from "util/DateUtil";
@@ -49,33 +42,33 @@ const ChallengeCard = ({
       _hover={{
         opacity: 1,
       }}
+      _active={{
+        opacity: 0.8,
+        bg: colorMode === "light" ? "white" : "gray.50",
+      }}
       whileHover={{
         scale: isLink ? 1.05 : 1.0,
       }}
       {...rest}
     >
-      <LightMode>
-        <Heading.H3 mb="0">{challenge.name}</Heading.H3>
-        <Text as="span" fontStyle="italic" mb="0">
-          {challenge.startDate && challenge.endDate
-            ? `${DateUtil.format(challenge.startDate)} -
+      <Heading.H3 mb="0">{challenge.name}</Heading.H3>
+      <Text as="span" fontStyle="italic" mb="0">
+        {challenge.startDate && challenge.endDate
+          ? `${DateUtil.format(challenge.startDate)} -
             ${DateUtil.format(challenge.endDate)}`
-            : "Ei päätettyä ajankohtaa"}
-        </Text>
-        <Text as="span">
-          Tekijä:{" "}
-          {challenge.creator.name === user.name
-            ? "Sinä"
-            : challenge.creator.name}
-        </Text>
-        <Text as="span" mb="3">
-          Osallistujia: {challenge.participations.length}
-        </Text>
+          : "Ei päätettyä ajankohtaa"}
+      </Text>
+      <Text as="span">
+        Tekijä:{" "}
+        {challenge.creator.name === user.name ? "Sinä" : challenge.creator.name}
+      </Text>
+      <Text as="span" mb="3">
+        Osallistujia: {challenge.participations.length}
+      </Text>
 
-        <Text fontSize="md" overflow="hidden">
-          {challenge.description}
-        </Text>
-      </LightMode>
+      <Text fontSize="md" overflow="hidden" color="text.light">
+        {challenge.description}
+      </Text>
 
       <Button
         onClick={() => history.push(`/challenges/${challenge.id}`)}

@@ -60,7 +60,6 @@ const TopNavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
       <IconButton
         as={motion.button}
         aria-label="Open navigation"
-        size="md"
         ml="4"
         icon={<RiMenuLine />}
         onClick={onOpenDrawer}
