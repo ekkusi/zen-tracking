@@ -7,7 +7,7 @@ extend type Query {
     endDate: DateFilter
   ): [Challenge!]!
   getUserParticipations: [ChallengeParticipation!]!
-  getParticipation(challengeId: ID!): ChallengeParticipation
+  getParticipation(challengeId: ID!, userName: ID!): ChallengeParticipation
   getMarkings(participationId: ID!): [Marking!]!
   getUserTransferParticipation: ChallengeParticipation
 }

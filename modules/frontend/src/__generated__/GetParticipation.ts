@@ -39,4 +39,5 @@ export interface GetParticipation {
 
 export interface GetParticipationVariables {
   challengeId: string;
+  userName: string;
 }

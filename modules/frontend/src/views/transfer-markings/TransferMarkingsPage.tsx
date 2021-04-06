@@ -29,10 +29,10 @@ const TransferMarkingsPage = (): JSX.Element => {
     (state) => state.activeParticipation,
     (actions) => actions.updateActiveParticipation
   );
-  const updateUser = useGlobal(
+  const [user, updateUser] = useGlobal(
     (store) => store.currentUser,
     (actions) => actions.updateUser
-  )[1];
+  );
   const [selectedChallengeId, setSelectedChallengeId] = useState<
     string | null
   >();
@@ -91,7 +91,10 @@ const TransferMarkingsPage = (): JSX.Element => {
             challengeId,
           },
         });
-        const newParticipation = await getParticipation({ challengeId });
+        const newParticipation = await getParticipation({
+          challengeId,
+          userName: user.name,
+        });
 
         updateActiveParticipation(newParticipation.data.getParticipation);
       } catch (e) {

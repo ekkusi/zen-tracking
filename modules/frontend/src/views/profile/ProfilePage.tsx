@@ -94,6 +94,7 @@ const ProfilePage = (): JSX.Element => {
       setGetParticipationLoading(true);
       const result = await getParticipation({
         challengeId: selectedChallengeId,
+        userName: currentUser.name,
       });
       updateActiveParticipation(result.data.getParticipation);
       setGetParticipationLoading(false);
