@@ -3,7 +3,6 @@ import { mode } from "@chakra-ui/theme-tools";
 import colors from "./colors";
 import {
   Button,
-  IconButton,
   Switch,
   Checkbox,
   Textarea,
@@ -58,7 +57,6 @@ const theme: Theme = extendTheme({
     Button,
     Switch,
     Checkbox,
-    IconButton,
     Input,
     Textarea,
     Spinner,

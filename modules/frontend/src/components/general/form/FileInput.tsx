@@ -1,7 +1,6 @@
-import { Box, InputProps } from "@chakra-ui/react";
+import { Box, InputProps, Button, ButtonProps } from "@chakra-ui/react";
 import { PrimaryInput } from "components/primitives/Input";
 import React from "react";
-import { ButtonWithRef, ButtonProps } from "../../primitives/Button";
 
 type FileInputProps = InputProps & {
   id: string;
@@ -27,9 +26,9 @@ const FileInput = ({
         display="none"
         {...rest}
       />
-      <ButtonWithRef as="label" htmlFor={id} p="2" w="auto" {...buttonProps}>
+      <Button as="label" htmlFor={id} {...buttonProps}>
         {buttonLabel || "Valitse tiedosto"}
-      </ButtonWithRef>
+      </Button>
     </Box>
   );
 };

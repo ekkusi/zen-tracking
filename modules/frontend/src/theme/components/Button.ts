@@ -21,6 +21,12 @@ export const Button: ComponentSingleStyleConfig = {
       opacity: 0.3,
       border: "none",
     },
+    cursor: "pointer",
+    _active: {
+      bg: "inherit",
+      background: "inherit",
+      opacity: 0.6,
+    },
   },
   variants: {
     ghost: (props) => {
@@ -28,9 +34,8 @@ export const Button: ComponentSingleStyleConfig = {
       return {
         border: "none",
         _hover: {
-          opacity: 1,
-          bg: mode(`${colorScheme}.500`, "inherit")(props),
-          color: mode(`white`, "inherit"),
+          bg: "inherit",
+          color: mode(`${colorScheme}.500`, `${colorScheme}.200`)(props),
         },
       };
     },
@@ -61,41 +66,39 @@ export const Button: ComponentSingleStyleConfig = {
     }),
   },
   sizes: {
-    sm: {
+    sm: ({ variant }) => ({
       px: { base: 2, sm: 3 },
       py: { base: 2, sm: 4 },
-      fontWeight: "bold",
       fontSize: "xs",
-    },
-    md: {
+      "> svg": {
+        width: "5",
+        height: "5",
+        mx: variant === "ghost" ? { base: -3, sm: -5 } : { base: 3, sm: 0 },
+      },
+    }),
+    md: ({ variant }) => ({
       fontSize: { base: "xs", md: "sm" },
-      py: { base: 3, sm: 5 },
-      px: { base: 3, sm: 5 },
-    },
-    lg: {
+      "> svg": {
+        width: "6",
+        height: "6",
+        mx: variant === "ghost" ? { base: -3, sm: -5 } : { base: 3, sm: 4 },
+      },
+    }),
+    lg: ({ variant }) => ({
       fontSize: { base: "lg", md: "xl" },
       textTransform: "none",
+      fontWeight: "normal",
       px: { base: 6, sm: 7 },
       py: { base: 5, sm: 7 },
-    },
+      "> svg": {
+        width: "10",
+        height: "10",
+        mx: variant === "ghost" ? { base: -6, sm: -7 } : { base: 4, sm: -3 },
+      },
+    }),
   },
   defaultProps: {
     colorScheme: "primary",
     size: "md",
-  },
-};
-
-export const IconButton: ComponentSingleStyleConfig = {
-  ...Button,
-  sizes: {
-    lg: {
-      px: { base: 0, sm: 0 },
-    },
-  },
-  variants: {
-    ghost: {
-      px: 0,
-      py: 0,
-    },
   },
 };

@@ -1,7 +1,9 @@
+import { CloseIcon } from "@chakra-ui/icons";
 import {
   Box,
   BoxProps,
   Button,
+  IconButton,
   SimpleGrid,
   Switch,
   Text,
@@ -74,6 +76,25 @@ const DesignPage = () => {
             Chakra button, outline secondary
           </Button>
         </SimpleGrid>
+      </RoundedBox>
+      <RoundedBox>
+        <IconButton icon={<CloseIcon />} aria-label="terve" />
+        <IconButton icon={<CloseIcon />} size="sm" aria-label="terve" />
+
+        <IconButton icon={<CloseIcon />} size="lg" aria-label="terve" />
+
+        <IconButton
+          icon={<CloseIcon />}
+          variant="ghost"
+          size="md"
+          aria-label="terve"
+        />
+        <IconButton
+          icon={<CloseIcon />}
+          variant="ghost"
+          size="lg"
+          aria-label="terve"
+        />
       </RoundedBox>
       <RoundedBox>
         <Heading.H1>Form elements</Heading.H1>

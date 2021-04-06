@@ -360,6 +360,9 @@ const EditMarking = ({
                       setFieldValue("rating", it);
                       setFieldError("rating", undefined);
                     }}
+                    _hover={{
+                      opacity: 1,
+                    }}
                     onMouseEnter={() => setHoverRating(it)}
                     onMouseLeave={() => setHoverRating(0)}
                     icon={

@@ -1,7 +1,6 @@
 import { Button, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
 import ModalTemplate, { ModalTemplateProps } from "./ModalTemplate";
-import { CancelButton } from "../primitives/Button";
 
 type DeleteConfimationModalProps = Omit<
   ModalTemplateProps,
@@ -57,12 +56,13 @@ const DeleteConfimationModal = ({
           >
             {deleteLabel}
           </Button>
-          <CancelButton
+          <Button
+            variant="ghost"
             isDisabled={loading}
             onClick={() => disclosureProps.onClose()}
           >
             {cancelLabel}
-          </CancelButton>
+          </Button>
         </>
       }
       {...modalTemplateProps}
