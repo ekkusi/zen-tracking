@@ -16,7 +16,7 @@ const LinkListItem = (props: LinkListItemProps): JSX.Element => {
       ml="0"
       mb="1"
       lineHeight="1.2"
-      bg="primary.regular"
+      bg="primary.500"
       color="text.dark"
       {...props}
     />

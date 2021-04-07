@@ -46,17 +46,13 @@ const baseInputProps: InputProps = {
 
 PrimaryInput.defaultProps = {
   ...baseInputProps,
-  _focus: {
-    borderColor: "primary.regular",
-  },
+  colorScheme: "primary",
   "data-private": +true,
 };
 
 PrimaryTextArea.defaultProps = {
   ...baseInputProps,
-  _focus: {
-    borderColor: "primary.regular",
-  },
+  colorScheme: "primary",
   "data-private": +true,
 };
 

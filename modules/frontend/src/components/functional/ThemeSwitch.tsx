@@ -15,7 +15,6 @@ const ThemeSwitch = (props: ThemeSwitchProps): JSX.Element => {
         onChange={toggleColorMode}
         isChecked={colorMode === "dark"}
         size="lg"
-        color="primary.regular"
       />
     </Flex>
   );

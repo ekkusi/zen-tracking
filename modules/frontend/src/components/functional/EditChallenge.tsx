@@ -1,11 +1,17 @@
 import { gql, useMutation } from "@apollo/client";
-import { useDisclosure, Text, Flex, Box, Checkbox } from "@chakra-ui/react";
+import {
+  useDisclosure,
+  Text,
+  Flex,
+  Box,
+  Checkbox,
+  Button,
+} from "@chakra-ui/react";
 import { isValid } from "date-fns/esm";
 import React, { useState, useMemo } from "react";
 import DateUtil from "util/DateUtil";
 import { Form, Formik } from "formik";
 import ModalTemplate, { ModalTemplateProps } from "../general/ModalTemplate";
-import { PrimaryButton } from "../primitives/Button";
 import FormField from "../general/form/FormField";
 import { PrimaryTextArea } from "../primitives/Input";
 import DeleteConfimationModal from "../general/DeleteConfirmationModal";
@@ -330,7 +336,7 @@ const EditChallenge = ({
               </Text>
             </Checkbox>
             <Box my="5">
-              <PrimaryButton
+              <Button
                 type="submit"
                 isLoading={createLoading || updateLoading}
                 isDisabled={deleteLoading}
@@ -339,7 +345,7 @@ const EditChallenge = ({
                 // onClick={saveAndClose}
               >
                 {saveButtonLabel || (challenge ? "Tallenna" : "Luo haaste")}
-              </PrimaryButton>
+              </Button>
               {challenge && (
                 // <AlertButton
 

@@ -1,6 +1,5 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { Fade, Flex, Text } from "@chakra-ui/react";
-import { PrimaryButton } from "components/primitives/Button";
+import { Button, Fade, Flex, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -28,12 +27,9 @@ const WelcomeUserPage = (): JSX.Element => {
           </Text>
 
           <Link to="/">
-            <PrimaryButton
-              size="lg"
-              rightIcon={<ArrowForwardIcon w={8} h={8} />}
-            >
+            <Button size="lg" rightIcon={<ArrowForwardIcon w={8} h={8} />}>
               Aloita zenin kasvattaminen!
-            </PrimaryButton>
+            </Button>
           </Link>
         </Flex>
       </Flex>

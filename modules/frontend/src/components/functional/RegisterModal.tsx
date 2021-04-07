@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { Checkbox, Text, useDisclosure } from "@chakra-ui/react";
+import { Button, Checkbox, Text, useDisclosure } from "@chakra-ui/react";
 import { Form, Formik, FormikErrors } from "formik";
 import React from "react";
 import { useHistory } from "react-router-dom";
@@ -7,7 +7,6 @@ import { setAccessToken } from "../../util/accessToken";
 import useGlobal from "../../store";
 import FormField from "../general/form/FormField";
 import ModalTemplate, { ModalTemplateProps } from "../general/ModalTemplate";
-import { PrimaryButton } from "../primitives/Button";
 import {
   RegisterMutation,
   RegisterMutationVariables,
@@ -145,14 +144,14 @@ const RegisterModal = ({
               </Text>
             </Checkbox>
 
-            <PrimaryButton
+            <Button
               type="submit"
               isLoading={loading}
               isDisabled={loading}
               loadingText="Rekisteröidytään"
             >
               Rekisteröidy
-            </PrimaryButton>
+            </Button>
           </Form>
         )}
       </Formik>

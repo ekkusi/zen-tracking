@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Ensure we will be in root
+parentPath=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd "$parentPath"
+cd "../../"
+
+docker load < ./tmp/zen-tracking.tar.gz
+docker-compose -f docker-compose.prod.yml up -d

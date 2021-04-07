@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@apollo/client";
 import {
   Box,
+  Button,
   Grid,
   GridItem,
   ListItem,
@@ -33,7 +34,6 @@ import {
 import Loading from "../../../components/general/Loading";
 import EditChallenge from "../../../components/functional/EditChallenge";
 import DeleteConfimationModal from "../../../components/general/DeleteConfirmationModal";
-import { PrimaryButton } from "../../../components/primitives/Button";
 import DateUtil from "../../../util/DateUtil";
 
 const ChallengePage = (): JSX.Element => {
@@ -209,13 +209,13 @@ const ChallengePage = (): JSX.Element => {
                 </DeleteConfimationModal>
               </>
             ) : (
-              <PrimaryButton
+              <Button
                 isLoading={addLoading}
                 onClick={createParticipation}
                 mr="4"
               >
                 Ilmoittaudu
-              </PrimaryButton>
+              </Button>
             )}
             {isUserChallengeCreator() && (
               <EditChallenge

@@ -1,6 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { Box, Container, Text } from "@chakra-ui/react";
-import { PrimaryButton } from "components/primitives/Button";
+import { Box, Button, Container, Text } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import React, { useState } from "react";
 import useGlobal from "store";
@@ -107,13 +106,13 @@ const LoginPage = (): JSX.Element => {
             />
             {error && <Text color="warning">{error}</Text>}
             <Box>
-              <PrimaryButton
+              <Button
                 type="submit"
                 isLoading={loading}
                 loadingText="Kirjaudutaan..."
               >
                 Kirjaudu sisään
-              </PrimaryButton>
+              </Button>
             </Box>
           </Form>
         )}

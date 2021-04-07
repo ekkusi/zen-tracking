@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Flex, Text, useMediaQuery } from "@chakra-ui/react";
+import { Button, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 
 import { DownloadIcon } from "@chakra-ui/icons";
 import ModalTemplate from "../general/ModalTemplate";
 import Heading from "../primitives/Heading";
-import { PrimaryButton } from "../primitives/Button";
 import useGlobal from "../../store";
 import theme from "../../theme";
 
@@ -67,7 +66,7 @@ export default function AddToHomeScreenPrompt() {
             kotinäytölle seuraavasta painikkeesta!
           </Text>
           <Flex justifyContent="center" mb="5">
-            <PrimaryButton
+            <Button
               onClick={() => {
                 if (promptEvent) {
                   promptEvent.prompt();
@@ -77,7 +76,7 @@ export default function AddToHomeScreenPrompt() {
               rightIcon={<DownloadIcon />}
             >
               Lisää kotinäytölle
-            </PrimaryButton>
+            </Button>
           </Flex>
         </>
       </ModalTemplate>

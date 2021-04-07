@@ -1,4 +1,6 @@
 import {
+  Button,
+  ButtonProps,
   Modal,
   ModalBody,
   ModalBodyProps,
@@ -14,7 +16,6 @@ import {
 } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import React from "react";
-import { ButtonProps, PrimaryButton } from "../primitives/Button";
 
 export type ModalTemplateProps = Omit<
   ModalProps,
@@ -67,9 +68,9 @@ const ModalTemplate = ({
     <>
       {hasOpenButton &&
         (openButton || (
-          <PrimaryButton onClick={onOpen} {...openButtonProps}>
+          <Button onClick={onOpen} {...openButtonProps}>
             {openButtonLabel}
-          </PrimaryButton>
+          </Button>
         ))}
 
       <Modal
@@ -96,9 +97,9 @@ const ModalTemplate = ({
           {hasFooter && (
             <ModalFooter {...modalFooterProps}>
               {modalFooter || (
-                <PrimaryButton mr={3} onClick={onClose}>
+                <Button mr={3} onClick={onClose}>
                   {closeButtonLabel}
-                </PrimaryButton>
+                </Button>
               )}
             </ModalFooter>
           )}

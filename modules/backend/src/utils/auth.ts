@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { addDays } from "date-fns";
 import { Response } from "express";
 import jwt from "jsonwebtoken";
 import { AuthenticatedUser } from "../types/customContext";
@@ -24,9 +25,11 @@ export const createAccessToken = (user: AuthenticatedUser): string => {
   return token;
 };
 
+const REFRESH_TOKEN_EXPIRATION_IN_DAYS = 30;
+
 export const createRefreshToken = (user: AuthenticatedUser): string => {
   const token = jwt.sign({ user }, process.env.JWT_REFRESH_TOKEN_SECRET_KEY!, {
-    expiresIn: "30d",
+    expiresIn: `${REFRESH_TOKEN_EXPIRATION_IN_DAYS}d`,
   });
   return token;
 };
@@ -34,6 +37,7 @@ export const createRefreshToken = (user: AuthenticatedUser): string => {
 export const createRefreshTokenCookie = (token: string, res: Response) => {
   res.cookie("jubbiduu", token, {
     httpOnly: true,
+    expires: addDays(new Date(), REFRESH_TOKEN_EXPIRATION_IN_DAYS),
   });
 };
 

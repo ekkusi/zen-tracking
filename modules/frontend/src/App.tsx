@@ -7,19 +7,14 @@ import { ThemeProvider } from "styled-components";
 
 import ScrollToTop from "components/functional/ScrollToTop";
 import theme from "./theme";
-import Fonts from "./Fonts";
+import Fonts from "./theme/Fonts";
 import AddToHomeScreenPrompt from "./components/functional/AddToHomeScreenPrompts";
 
 const App = (): JSX.Element => {
-  const hasUserSeenInstallPrompt = localStorage.getItem(
-    "hasUserSeenInstallPrompt"
-  );
-
   return (
     <ChakraProvider theme={theme}>
       <Fonts />
       <ThemeProvider theme={theme}>
-        {/* @ts-ignore */}
         <BrowserRouter>
           <ApolloProvider>
             <ScrollToTop />

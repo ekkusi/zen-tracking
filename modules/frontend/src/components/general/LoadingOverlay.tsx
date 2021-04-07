@@ -25,8 +25,8 @@ const CustomLoadingOverlay = ({
         direction="column"
         alignItems="center"
       >
-        <Spinner mb="4" color="primary.regular" size="xl" thickness="3px" />
-        <Text fontSize="xl" color="primary.regular">
+        <Spinner mb="4" colorScheme="primary" size="xl" thickness="3px" />
+        <Text fontSize="xl" colorScheme="primary">
           {loadingText}
         </Text>
       </Flex>

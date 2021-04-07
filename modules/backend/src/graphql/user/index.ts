@@ -48,13 +48,14 @@ export const resolvers: UserResolvers = {
           where: { challenge_id: challengeId, user_name: name },
         });
 
-        if (
-          participation?.is_private &&
-          participation?.user_name !== user?.name
-        )
-          return null;
-
-        return participation;
+        if (participation) {
+          if (
+            participation.is_private &&
+            participation.user_name !== user?.name
+          )
+            return null;
+          return participation;
+        }
       }
       // Latest modified participation
       const latestParticipation = await UserInfoUtil.getLatestModifiedParticipation(

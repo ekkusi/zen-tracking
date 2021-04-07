@@ -56,7 +56,7 @@
     "run:prod": "yarn --cwd modules/backend prod",
     "develop": "lerna run --parallel start",
     "stop:all": "lerna run --parallel stop",
-    "postinstall": "yarn patch-package",
+    "postinstall": "yarn patch-package && yarn --cwd modules/frontend gen:theme-typings",
     "patch-chakra-theme": "patch-package @chakra-ui/theme",
     "postgredump": "docker-compose exec postgres sh -c \"pg_dump --clean --no-owner --no-privileges --if-exists -U user -d zen-tracking -f /tmp/zen_tracking_local_dump.sql\"",
     "postgredump-plain": "docker-compose exec postgres sh -c \"pg_dump --schema-only --clean --no-owner --no-privileges --if-exists -U user -d zen-tracking -f /tmp/zen_tracking_local_dump_plain.sql\"",

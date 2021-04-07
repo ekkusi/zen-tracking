@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -10,6 +11,7 @@ import {
   Flex,
   FlexProps,
   Icon,
+  IconButton,
   SimpleGrid,
   Text,
   useColorMode,
@@ -28,8 +30,6 @@ import { IconType } from "react-icons";
 import { DownloadIcon } from "@chakra-ui/icons";
 import InfoModal from "./InfoModal";
 import InstructionsModal from "./InstructionsModal";
-import { PrimaryButton } from "../primitives/Button";
-import { IconButtonWithRef } from "../primitives/IconButton";
 import QuoteOfTheDay from "./QuoteOfTheDay";
 import ThemeSwitch from "./ThemeSwitch";
 
@@ -57,17 +57,16 @@ const TopNavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
 
   return (
     <Flex height="80px" alignItems="center" width="100%">
-      <IconButtonWithRef
+      <IconButton
         as={motion.button}
         aria-label="Open navigation"
-        size="md"
         ml="4"
         icon={<RiMenuLine />}
         onClick={onOpenDrawer}
         _hover={{ opacity: 1 }}
         whileHover={{
           rotate: 180,
-          boxShadow: `0 0 15px 0px ${theme.colors.primary.regular}`,
+          boxShadow: `0 0 15px 0px ${theme.colors.primary[200]}`,
         }}
         transition={{ ease: "ease" }}
       />
@@ -75,19 +74,19 @@ const TopNavigationBar = ({ onOpenDrawer }: NavigationTopBarProps) => {
 
       <QuoteOfTheDay
         openButtonProps={{
-          display: { base: "none", sm: "block" },
+          display: { base: "none", sm: "flex" },
           ml: "auto",
           mr: "4",
         }}
       />
-      <PrimaryButton
+      <Button
         onClick={() => handleLogout()}
         isLoading={logoutLoading}
         mr="4"
-        display={{ base: "none", sm: "block" }}
+        display={{ base: "none", sm: "flex" }}
       >
         Kirjaudu ulos
-      </PrimaryButton>
+      </Button>
     </Flex>
   );
 };
@@ -116,7 +115,7 @@ const BottomBarLink = ({
   };
 
   const getLinkColor = () => {
-    if (isLinkCurrentPath()) return "primary.regular";
+    if (isLinkCurrentPath()) return "primary.200";
     return colorMode === "dark" ? "text.dark" : "text.light";
   };
 
@@ -158,38 +157,97 @@ const BottomBarLink = ({
   );
 };
 
-const GridWithFlex = chakraMotionWrapper(SimpleGrid);
+const GridWithMotion = chakraMotionWrapper(SimpleGrid);
 
 const BottomNavigationBar = () => {
   const [bottomBarState, setBottomBarState] = useState<"hidden" | "visible">(
     "visible"
   );
 
+  const [isMobile] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+
   const user = useGlobal((state) => state.currentUser)[0];
+
+  const history = useHistory();
 
   const { colorMode } = useColorMode();
 
   let lastScrollTop = window.pageYOffset;
 
+  const toggleBottomBarState = (newState: "hidden" | "visible") => {
+    const st = window.pageYOffset || document.documentElement.scrollTop;
+    lastScrollTop = st <= 0 ? 0 : st;
+    if (newState === "visible" && bottomBarState !== "visible") {
+      setBottomBarState("visible");
+    }
+    if (newState === "hidden" && bottomBarState !== "hidden") {
+      setBottomBarState("hidden");
+    }
+  };
+
+  let touchStartY: number | null;
+  const STRONG_OVERFLOW_SCROLL = 100;
+
+  const onTouchStart = (event: TouchEvent) => {
+    touchStartY = event.touches[0]?.pageY;
+  };
+
+  const hasReachedBottom = () => {
+    return (
+      document.documentElement.scrollTop + window.innerHeight >=
+      document.body.scrollHeight
+    );
+  };
+
   const onScroll = () => {
     const st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
-    if (st > lastScrollTop + 100) {
-      lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-      if (bottomBarState === "visible") {
-        setBottomBarState("hidden");
+
+    if (st !== 0 && !hasReachedBottom()) {
+      if (st > lastScrollTop + 100) {
+        toggleBottomBarState("hidden");
+      } else if (st < lastScrollTop - 100) {
+        toggleBottomBarState("visible");
       }
-    } else if (st < lastScrollTop - 100) {
-      lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-      if (bottomBarState === "hidden") {
-        setBottomBarState("visible");
+    }
+  };
+
+  const onWheelOrTouch = (event: WheelEvent) => {
+    const { deltaY } = event;
+    if (deltaY > STRONG_OVERFLOW_SCROLL) {
+      toggleBottomBarState("hidden");
+    } else if (deltaY < -STRONG_OVERFLOW_SCROLL) {
+      toggleBottomBarState("visible");
+    }
+  };
+
+  const onTouchEnd = (event: TouchEvent) => {
+    const endY = event.changedTouches[0]?.pageY ?? 0;
+    if (touchStartY) {
+      if (touchStartY < endY) {
+        toggleBottomBarState("visible");
+      } else if (touchStartY > endY) {
+        toggleBottomBarState("hidden");
       }
     }
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", onScroll);
+    const unlistenRouterChange = history.listen(() => {
+      toggleBottomBarState("visible");
+    });
+
+    if (isMobile) {
+      window.addEventListener("touchstart", onTouchStart);
+      window.addEventListener("touchend", onTouchEnd);
+    } else {
+      window.addEventListener("scroll", onScroll);
+      window.addEventListener("wheel", onWheelOrTouch);
+    }
+
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+      unlistenRouterChange();
     };
   });
 
@@ -200,7 +258,7 @@ const BottomNavigationBar = () => {
 
   return (
     <>
-      <GridWithFlex
+      <GridWithMotion
         width="100%"
         boxShadow="-5px 0 10px -5px black"
         position="fixed"
@@ -233,7 +291,7 @@ const BottomNavigationBar = () => {
           linkText="Omat jutskat"
           linkIcon={FiUser}
         />
-      </GridWithFlex>
+      </GridWithMotion>
     </>
   );
 };
@@ -359,14 +417,14 @@ const Navigation = ({
                 display={{ base: "flex", sm: "none" }}
                 mb="5"
               >
-                <PrimaryButton
+                <Button
                   onClick={() => handleLogout()}
                   isLoading={logoutLoading}
                   mb="2"
                   mx="2"
                 >
                   Kirjaudu ulos
-                </PrimaryButton>
+                </Button>
                 <QuoteOfTheDay openButtonProps={{ mx: "2" }} />
               </Flex>
 
@@ -414,7 +472,7 @@ const Navigation = ({
                 )}
               </motion.ul>
               {promptEvent && (
-                <PrimaryButton
+                <Button
                   onClick={() => promptEvent.prompt()}
                   leftIcon={<DownloadIcon />}
                   position="absolute"
@@ -423,7 +481,7 @@ const Navigation = ({
                   transform="translateX(-50%)"
                 >
                   Lataa sovellus
-                </PrimaryButton>
+                </Button>
               )}
             </DrawerBody>
           </DrawerContent>
