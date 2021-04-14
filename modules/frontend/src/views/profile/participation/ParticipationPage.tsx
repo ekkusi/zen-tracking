@@ -1,9 +1,8 @@
-import { Box, Flex, Icon, Text } from "@chakra-ui/react";
+import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { differenceInCalendarDays } from "date-fns/esm";
-import { IoLeaf } from "react-icons/io5";
 import Heading from "../../../components/primitives/Heading";
 import Loading from "../../../components/general/Loading";
 import {
@@ -17,6 +16,15 @@ import {
   getChallengeDateString,
   getChallengeLength,
 } from "../../../util/challengeUtils";
+import LeafRating from "../../../components/general/LeafRating";
+import chakraMotionWrapper from "../../../util/chakraMotionWrapper";
+import theme from "../../../theme";
+import MarkingCalendar from "../../../components/functional/MarkingCalendar";
+import MarkingCard from "../../../components/functional/MarkingCard";
+
+const BoxWithMotion = chakraMotionWrapper(Box);
+const TextWithMotion = chakraMotionWrapper(Text);
+const FlexWithMotion = chakraMotionWrapper(Flex);
 
 const ParticipationPage = (): JSX.Element => {
   const { challengeId, userName } = useParams<{
@@ -24,9 +32,12 @@ const ParticipationPage = (): JSX.Element => {
     userName: string;
   }>();
   const history = useHistory<{ isRecap?: boolean }>();
-  const isRecap = history.location.state?.isRecap ?? false;
+  const isRecap = history.location.state?.isRecap ?? true;
+
+  const isSmScreen = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)[0];
 
   const user = useGlobal((state) => state.currentUser)[0];
+  const hideNavigation = useGlobal((state) => state.hideNavigation)[0];
 
   const { data, loading, error } = useQuery<
     GetWholeParticipation,
@@ -66,17 +77,27 @@ const ParticipationPage = (): JSX.Element => {
       participation.markings.forEach((it) => {
         sum += it.rating;
       });
-      return sum !== 0 ? sum / participation.markings.length : 0;
+      return sum !== 0
+        ? Math.round((sum / participation.markings.length) * 100) / 100
+        : 0;
     }
-    return "Ei merkkauksia";
+    return 0;
   }, [participation]);
 
   return (
     <Box>
-      <Link to="/">Takaisin etusivulle</Link>
+      {!loading && !isRecap && <Link to="/">Takaisin etusivulle</Link>}
       {participation && (
         <>
-          <Heading.H1>{participation.challenge.name}</Heading.H1>
+          <BoxWithMotion
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+          >
+            <Heading.H1 textAlign="center" mt={hideNavigation ? 5 : 0}>
+              {participation.challenge.name}
+            </Heading.H1>
+          </BoxWithMotion>
           {!isRecap && (
             <Flex
               border="1px solid"
@@ -99,30 +120,123 @@ const ParticipationPage = (): JSX.Element => {
               </Text>
             </Flex>
           )}
-          <Flex direction="row" wrap="nowrap">
-            <Box width="100%" textAlign="center">
-              <Progress
-                borderRadius="5px"
-                colorScheme="green"
-                max={getChallengeLength(participation.challenge)}
-                value={currentProgressDayValue}
-              />
-              <Text as="span" fontSize="xl">
-                {daysRemaining > 0
-                  ? `Päiviä jäljellä: ${daysRemaining}`
-                  : "Suoritettu!"}
-              </Text>
-            </Box>
-            <Box width="100%" textAlign="center">
-              <Box>
-                {[0, 1, 2, 3, 4].map((it) => (
-                  <Icon key={it} as={IoLeaf} color="green.600" w={10} h={10} />
-                ))}
-              </Box>
-              <Text as="span" fontSize="lg">
-                Keskiarvo: {markingsMean}
-              </Text>
-            </Box>
+          <Flex
+            direction={{ base: "column", sm: "row" }}
+            wrap="nowrap"
+            justify={{ base: "start", sm: "space-between" }}
+            mb="5"
+          >
+            <BoxWithMotion
+              width={{ base: "100%", sm: "50%" }}
+              initial={{
+                x: isSmScreen ? 0 : "50%",
+                y: isSmScreen ? "100px" : "300px",
+                scale: isSmScreen ? 1.1 : 1.5,
+              }}
+              animate={{
+                x: 0,
+                y: 0,
+                scale: 1.0,
+              }}
+              transition={{
+                delay: 5,
+                duration: 1,
+              }}
+              mb={{ base: "2", sm: "0" }}
+            >
+              <BoxWithMotion
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1, duration: 1 }}
+                textAlign="center"
+              >
+                <Progress
+                  height={{ base: "2.5em", sm: "3em" }}
+                  value={currentProgressDayValue}
+                  max={getChallengeLength(participation.challenge)}
+                  transition={{
+                    ease: "easeInOut",
+                    duration: 1.5,
+                    delay: 2,
+                  }}
+                />
+                <TextWithMotion
+                  as="span"
+                  fontSize={{ base: "xl", sm: "2xl" }}
+                  textAlign="center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 3.5, duration: 1 }}
+                >
+                  Päiviä jäljellä: {daysRemaining}
+                  {daysRemaining === 0 && " - Suoritettu!"}
+                </TextWithMotion>
+              </BoxWithMotion>
+            </BoxWithMotion>
+            <FlexWithMotion
+              justifyContent="center"
+              textAlign="center"
+              width={{ base: "100%", sm: "50%" }}
+              initial={{
+                x: isSmScreen ? 0 : "-50%",
+                y: isSmScreen ? "50px" : "300px",
+                scale: isSmScreen ? 1.1 : 1.5,
+              }}
+              animate={{
+                x: 0,
+                y: 0,
+                scale: 1.0,
+              }}
+              transition={{
+                delay: 11,
+                duration: 1,
+              }}
+            >
+              <BoxWithMotion
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 6, duration: 1 }}
+              >
+                <LeafRating
+                  baseId="mean-leaf-rating"
+                  value={markingsMean}
+                  initialDelay={7}
+                  iconSize="3em"
+                  animationDuration={3}
+                />
+
+                <TextWithMotion
+                  as="span"
+                  fontSize={{ base: "xl", sm: "2xl" }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 10, duration: 1 }}
+                >
+                  Fiilisten keskiarvo: {markingsMean}
+                </TextWithMotion>
+              </BoxWithMotion>
+            </FlexWithMotion>
+          </Flex>
+          <BoxWithMotion
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 12, duration: 1 }}
+            mb="4"
+          >
+            <Heading.H2 textAlign="center">Merkkaukset</Heading.H2>
+            <MarkingCalendar markings={participation.markings} />
+          </BoxWithMotion>
+          <Flex wrap="wrap">
+            {participation.markings.map((it, index) => (
+              <BoxWithMotion
+                key={it.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 13 + index * 0.3 }}
+              >
+                <MarkingCard marking={it} mr="2" mb="2" />
+              </BoxWithMotion>
+            ))}
           </Flex>
         </>
       )}

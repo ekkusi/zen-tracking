@@ -40,6 +40,10 @@ const ProfilePage = (): JSX.Element => {
   );
 
   const currentUser = useGlobal((state) => state.currentUser)[0];
+  const setHideNavigation = useGlobal(
+    () => {},
+    (actions) => actions.setHideNavigation
+  )[1];
 
   const history = useHistory();
 
@@ -139,12 +143,14 @@ const ProfilePage = (): JSX.Element => {
           />
           {activeParticipation && (
             <Text
-              onClick={() =>
+              onClick={() => {
+                setHideNavigation(true);
                 history.push(
                   `/profile/${userName}/${activeParticipation.challenge.id}`,
                   { isRecap: true }
-                )
-              }
+                );
+              }}
+              as="a"
               fontWeight="bold"
               fontSize="lg"
             >

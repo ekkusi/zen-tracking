@@ -13,4 +13,11 @@
       "typescriptreact",
       "mdx"
   ],
+  "vim.visualModeKeyBindings": [
+  {
+    "before": ["<leader>", "c"],
+    "commands": ["editor.action.commentLine"],
+    "when": "editorTextFocus && !editorReadonly"
+  }
+],
 }

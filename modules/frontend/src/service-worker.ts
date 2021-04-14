@@ -82,12 +82,13 @@ self.addEventListener("message", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  // console.log('[Service Worker] Fetch', event.request.url);
+  // console.log("[Service Worker] Fetch", event.request.url);
   if (event.request.mode === "navigate") {
     event.respondWith(
-      (async () => {
+      (async (): Promise<any> => {
         try {
           const preloadResponse = await event.preloadResponse;
+          // console.log(preloadResponse);
           if (preloadResponse) {
             return preloadResponse;
           }

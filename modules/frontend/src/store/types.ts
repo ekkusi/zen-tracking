@@ -12,6 +12,7 @@ export type ActionTypes = {
   updateActiveParticipationMarkings: (markings: Marking[]) => void;
   logout: () => Promise<void>;
   updatePromptEvent: (event: BeforeInstallPromptEvent | null) => void;
+  setHideNavigation: (state: boolean) => void;
 };
 
 export type ActiveParticipation = Omit<
@@ -27,4 +28,5 @@ export type GlobalState = {
   error: string | null;
   accessToken: string | null;
   promptEvent: BeforeInstallPromptEvent | null;
+  hideNavigation: boolean;
 };
