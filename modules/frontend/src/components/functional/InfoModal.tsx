@@ -17,7 +17,15 @@ const InfoModal = (props: InfoModalProps): JSX.Element => {
       <>
         <Heading.H1 mb="2">Tervehdys!</Heading.H1>
         <Text>
-          Tervetuloa seurailemmaan haasteesi kulkua, mikä ikinä se onkaan!
+          Mukavata, kun olet tänne tupsahtanut, oli se sitten kahden sekunnin
+          käväisy tai jotain muuta:)
+        </Text>
+        <Text>
+          Kuten jo mahdollisesti olet huomannut, Zen-trackingin ytimessä on
+          erilaiset, minkä tahansa kaltaiset haasteet. Sen tarkoituksena on
+          toimia tukena ja tönäisynä haasteiden suorittamiseen. Sovelluksen
+          avulla voit seurailla oman suorituksesi kulkua sekä tuoda oman
+          mahti-ideasi muiden käyttäjien nähtäväksi.
         </Text>
         <Text>
           Zen-tracking on vielä hyvin pitkälti kehitysvaiheessa. Tämän takia
@@ -44,9 +52,9 @@ const InfoModal = (props: InfoModalProps): JSX.Element => {
         <Text mb="4">
           Näitä ehdotuksia/bugi-ilmotuksia tai mitä tahansa muuta sovellukseen
           taikka elämään liittyvää otan vastaan alta löytyvään
-          sähköpostiosoitteeseen! Plz no spam tho:)
+          sähköpostiosoitteeseen! Plz no spam 😇
         </Text>
-        <Text mb="0">Puss och kram,</Text>
+        <Text mb="0">Bienveniidosta!</Text>
         <Text mb="0">Ekeukko, Founder and Master of Code of Zen-tracking.</Text>
         <Text fontStyle="italic">ekku.eki@gmail.com</Text>
       </>

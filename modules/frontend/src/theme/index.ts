@@ -8,6 +8,7 @@ import {
   Textarea,
   Input,
   Spinner,
+  Tabs,
 } from "./components";
 
 const config: ColorModeOptions = {
@@ -63,6 +64,7 @@ const theme: Theme = extendTheme({
     Input,
     Textarea,
     Spinner,
+    Tabs,
   },
   colors: {
     ...colors,

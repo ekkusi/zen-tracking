@@ -108,11 +108,7 @@ const Routes = (): JSX.Element => {
       setPreviousRoute(currentPath);
       ReactGA.pageview(currentPath);
     }
-    // // If localStorage currentUser is null but global storage is still logged in -> null global storage
-    // if (!localStorageUser && isGlobalUserAuthorized() && !unmounted) {
-    //   updateUser(null);
-    //   updateActiveParticipation(null);
-    // }
+
     return () => {
       isMounted = false;
     };

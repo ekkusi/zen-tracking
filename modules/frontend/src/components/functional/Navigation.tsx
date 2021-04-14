@@ -12,6 +12,7 @@ import {
   FlexProps,
   Icon,
   IconButton,
+  List,
   SimpleGrid,
   Text,
   useColorMode,
@@ -410,79 +411,91 @@ const Navigation = ({
             <DrawerCloseButton />
             <DrawerHeader>Navigointijatata</DrawerHeader>
 
-            <DrawerBody px="0">
+            <DrawerBody px="0" display="flex">
               <Flex
                 direction="column"
-                justifyContent="center"
-                display={{ base: "flex", sm: "none" }}
-                mb="5"
+                justify="space-between"
+                alignItems="center"
+                width="100%"
               >
-                <Button
-                  onClick={() => handleLogout()}
-                  isLoading={logoutLoading}
-                  mb="2"
-                  mx="2"
+                <List
+                  as={motion.ul}
+                  initial="xPosStart"
+                  animate="xPosEnd"
+                  listStyleType="none"
                 >
-                  Kirjaudu ulos
-                </Button>
-                <QuoteOfTheDay openButtonProps={{ mx: "2" }} />
-              </Flex>
-
-              <motion.ul initial="xPosStart" animate="xPosEnd">
-                <motion.li variants={listAnimations} custom={0}>
-                  <NavigationLink to="/" onClick={() => onClose()}>
-                    Etusivu
-                  </NavigationLink>
-                </motion.li>
-                <motion.li variants={listAnimations} custom={1}>
-                  <NavigationLink to="/challenges" onClick={() => onClose()}>
-                    Haasteet
-                  </NavigationLink>
-                </motion.li>
-                <motion.li variants={listAnimations} custom={2}>
-                  <NavigationLink
-                    to={`/profile/${user.name}`}
-                    onClick={() => onClose()}
-                  >
-                    Omat jutskat
-                  </NavigationLink>
-                </motion.li>
-                <motion.li variants={listAnimations} custom={3}>
-                  <NavigationLink
-                    onClick={() => setAreInstructionsOpen(!areInstructionsOpen)}
-                  >
-                    Ohjeet
-                  </NavigationLink>
-                </motion.li>
-
-                <motion.li variants={listAnimations} custom={4}>
-                  <NavigationLink
-                    onClick={() => setIsInfoModalOpen(!isInfoModalOpen)}
-                  >
-                    Info
-                  </NavigationLink>
-                </motion.li>
-
-                {process.env.NODE_ENV === "development" && (
-                  <motion.li variants={listAnimations} custom={3}>
-                    <NavigationLink to="/design" onClick={() => onClose()}>
-                      Design
+                  <motion.li variants={listAnimations} custom={0}>
+                    <NavigationLink to="/" onClick={() => onClose()}>
+                      Etusivu
                     </NavigationLink>
                   </motion.li>
-                )}
-              </motion.ul>
-              {promptEvent && (
-                <Button
-                  onClick={() => promptEvent.prompt()}
-                  leftIcon={<DownloadIcon />}
-                  position="absolute"
-                  left="50%"
-                  bottom="20px"
-                  transform="translateX(-50%)"
-                >
-                  Lataa sovellus
-                </Button>
-              )}
+                  <motion.li variants={listAnimations} custom={1}>
+                    <NavigationLink to="/challenges" onClick={() => onClose()}>
+                      Haasteet
+                    </NavigationLink>
+                  </motion.li>
+                  <motion.li variants={listAnimations} custom={2}>
+                    <NavigationLink
+                      to={`/profile/${user.name}`}
+                      onClick={() => onClose()}
+                    >
+                      Omat jutskat
+                    </NavigationLink>
+                  </motion.li>
+                  <motion.li variants={listAnimations} custom={3}>
+                    <NavigationLink
+                      onClick={() =>
+                        setAreInstructionsOpen(!areInstructionsOpen)
+                      }
+                    >
+                      Ohjeet
+                    </NavigationLink>
+                  </motion.li>
+
+                  <motion.li variants={listAnimations} custom={4}>
+                    <NavigationLink
+                      onClick={() => setIsInfoModalOpen(!isInfoModalOpen)}
+                    >
+                      Info
+                    </NavigationLink>
+                  </motion.li>
+
+                  {process.env.NODE_ENV === "development" && (
+                    <motion.li variants={listAnimations} custom={3}>
+                      <NavigationLink to="/design" onClick={() => onClose()}>
+                        Design
+                      </NavigationLink>
+                    </motion.li>
+                  )}
+                </List>
+                <Flex direction="column" justifyContent="center" width="100%">
+                  <QuoteOfTheDay
+                    openButtonProps={{
+                      mx: "2",
+                      display: { base: "inline-flex", sm: "none" },
+                    }}
+                  />
+                  <Button
+                    onClick={() => handleLogout()}
+                    isLoading={logoutLoading}
+                    mb="2"
+                    mx="2"
+                    display={{ base: "inline-flex", sm: "none" }}
+                  >
+                    Kirjaudu ulos
+                  </Button>
+                  {promptEvent && (
+                    <Button
+                      onClick={() => promptEvent.prompt()}
+                      leftIcon={<DownloadIcon />}
+                      mx="2"
+                      mt="4"
+                    >
+                      Lataa sovellus
+                    </Button>
+                  )}
+                </Flex>
+              </Flex>
             </DrawerBody>
           </DrawerContent>
         </DrawerOverlay>
