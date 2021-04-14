@@ -133,7 +133,6 @@ try {
   privateKey = fs.readFileSync(path.join(__dirname, "sslcert/server.key"));
   certificate = fs.readFileSync(path.join(__dirname, "sslcert/server.cert"));
 } catch (error) {
-  console.log(error);
   console.log("SSL certs not found, not configuring to https");
 }
 

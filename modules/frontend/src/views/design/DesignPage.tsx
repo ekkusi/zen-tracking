@@ -3,6 +3,7 @@ import {
   Box,
   BoxProps,
   Button,
+  Icon,
   IconButton,
   SimpleGrid,
   Switch,
@@ -10,9 +11,10 @@ import {
 } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import React from "react";
+import { IoLeaf } from "react-icons/io5";
 
 const RoundedBox = ({ children }: BoxProps): JSX.Element => (
-  <Box mb="5" p="5" boxShadow="2px 2px 10px -3px black" borderRadius="5px">
+  <Box mb="5" p="5" boxShadow="2px 10px -3px black" borderRadius="5px">
     {children}
   </Box>
 );
@@ -99,6 +101,42 @@ const DesignPage = () => {
       <RoundedBox>
         <Heading.H1>Form elements</Heading.H1>
         <Switch>Toggle default</Switch>
+      </RoundedBox>
+      <RoundedBox>
+        <Box position="relative" bg="red" zIndex="102">
+          {[0, 1, 2, 3, 4].map((it) => (
+            <Icon
+              position="relative"
+              zIndex="101"
+              key={it}
+              color="transparent"
+              as={IoLeaf}
+              w={10}
+              h={10}
+            />
+          ))}
+          <Box
+            position="absolute"
+            bg="blue"
+            top="0"
+            left="0"
+            bottom="0"
+            zIndex="100"
+            width="100%"
+          />
+          <Box
+            position="absolute"
+            bg="green"
+            top="0"
+            left="50px"
+            bottom="0"
+            zIndex="100"
+            width="100%"
+          />
+        </Box>
+        <Text as="span" fontSize="lg">
+          Keskiarvo: 3.7
+        </Text>
       </RoundedBox>
     </Box>
   );

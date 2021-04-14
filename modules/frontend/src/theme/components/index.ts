@@ -4,3 +4,5 @@ export * from "./Checkbox";
 export * from "./Spinner";
 export * from "./Inputs";
 export * from "./Tabs";
+export * from "./Icon";
+export * from "./Progress";

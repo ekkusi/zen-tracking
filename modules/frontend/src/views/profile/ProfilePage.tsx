@@ -1,7 +1,7 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import React, { useRef, useState, useMemo } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import ChallengeSelect, {
   OptionType,
@@ -40,6 +40,12 @@ const ProfilePage = (): JSX.Element => {
   );
 
   const currentUser = useGlobal((state) => state.currentUser)[0];
+  const setHideNavigation = useGlobal(
+    () => {},
+    (actions) => actions.setHideNavigation
+  )[1];
+
+  const history = useHistory();
 
   const { data: userChallengesData, loading: userChallengesLoading } = useQuery<
     GetChallenges,
@@ -137,8 +143,14 @@ const ProfilePage = (): JSX.Element => {
           />
           {activeParticipation && (
             <Text
-              as={Link}
-              to={`/profile/${userName}/${activeParticipation.id}`}
+              onClick={() => {
+                setHideNavigation(true);
+                history.push(
+                  `/profile/${userName}/${activeParticipation.challenge.id}`,
+                  { isRecap: true }
+                );
+              }}
+              as="a"
               fontWeight="bold"
               fontSize="lg"
             >
@@ -159,7 +171,7 @@ const ProfilePage = (): JSX.Element => {
           <LinkList>
             {participations.map((it) => (
               <LinkListItem
-                to={`/profile/${userName}/${it.id}`}
+                to={`/profile/${userName}/${it.challenge.id}`}
                 position="relative"
                 pr="10"
                 key={it.id}
