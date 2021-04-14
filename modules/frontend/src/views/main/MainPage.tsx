@@ -118,7 +118,7 @@ const MainPage = (): JSX.Element => {
           >
             Selaa muita haasteita
           </Text>
-          <Flex justifyContent={{ base: "flex-start", sm: "center" }} mb="7">
+          <Flex direction="column" alignItems="center" mb="7">
             <AddMarking
               openButtonLabel={
                 hasUserMarkedToday()
@@ -135,8 +135,16 @@ const MainPage = (): JSX.Element => {
                     mb="1px"
                   />
                 ),
+                mb: 1,
               }}
             />
+            <Text
+              as={Link}
+              to={`/profile/${user.name}/${activeParticipation.challenge.id}`}
+              fontSize="xl"
+            >
+              Tarkastele koko suoritusta
+            </Text>
           </Flex>
         </>
       )}

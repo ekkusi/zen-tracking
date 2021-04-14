@@ -22,6 +22,9 @@ export const Button: ComponentSingleStyleConfig = {
       cursor: "not-allowed",
       opacity: 0.3,
       border: "none",
+      _hover: {
+        opacity: 0.3,
+      },
     },
     _active: {
       opacity: 0.6,

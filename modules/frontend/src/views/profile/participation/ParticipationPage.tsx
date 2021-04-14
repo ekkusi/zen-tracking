@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { differenceInCalendarDays } from "date-fns/esm";
+import { MotionProps, Target } from "framer-motion";
 import Heading from "../../../components/primitives/Heading";
 import Loading from "../../../components/general/Loading";
 import {
@@ -38,6 +39,8 @@ const ParticipationPage = (): JSX.Element => {
 
   const user = useGlobal((state) => state.currentUser)[0];
   const hideNavigation = useGlobal((state) => state.hideNavigation)[0];
+
+  const delayCounter = 0;
 
   const { data, loading, error } = useQuery<
     GetWholeParticipation,
@@ -84,16 +87,51 @@ const ParticipationPage = (): JSX.Element => {
     return 0;
   }, [participation]);
 
+  const formatOpacityAnimationProps = (delay: number, duration = 1) => {
+    return {
+      initial: {
+        opacity: isRecap ? 0 : 1, // Don't animate, if not recap
+      },
+      animate: {
+        opacity: 1,
+      },
+      transition: {
+        delay,
+        duration,
+      },
+    };
+  };
+
+  const formatAnimationProps = (
+    animateStartProps: Target,
+    animateEndProps: Target,
+    duration: number,
+    delay: number
+  ): MotionProps => {
+    console.log(`Delay now: ${delayCounter}`);
+    let startPropsNew: Target;
+    // Don't animate if is not recap
+    if (!isRecap) {
+      startPropsNew = animateEndProps;
+    } else {
+      startPropsNew = animateStartProps;
+    }
+    return {
+      initial: startPropsNew,
+      animate: animateEndProps,
+      transition: {
+        delay,
+        duration,
+      },
+    };
+  };
+
   return (
     <Box>
       {!loading && !isRecap && <Link to="/">Takaisin etusivulle</Link>}
       {participation && (
         <>
-          <BoxWithMotion
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-          >
+          <BoxWithMotion {...formatOpacityAnimationProps(0)}>
             <Heading.H1 textAlign="center" mt={hideNavigation ? 5 : 0}>
               {participation.challenge.name}
             </Heading.H1>
@@ -128,26 +166,24 @@ const ParticipationPage = (): JSX.Element => {
           >
             <BoxWithMotion
               width={{ base: "100%", sm: "50%" }}
-              initial={{
-                x: isSmScreen ? 0 : "50%",
-                y: isSmScreen ? "100px" : "300px",
-                scale: isSmScreen ? 1.1 : 1.5,
-              }}
-              animate={{
-                x: 0,
-                y: 0,
-                scale: 1.0,
-              }}
-              transition={{
-                delay: 5,
-                duration: 1,
-              }}
+              {...formatAnimationProps(
+                {
+                  x: isSmScreen ? 0 : "50%",
+                  y: isSmScreen ? "100px" : "300px",
+                  scale: isSmScreen ? 1.1 : 1.5,
+                },
+                {
+                  x: 0,
+                  y: 0,
+                  scale: 1.0,
+                },
+                1,
+                5
+              )}
               mb={{ base: "2", sm: "0" }}
             >
               <BoxWithMotion
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1, duration: 1 }}
+                {...formatOpacityAnimationProps(1)}
                 textAlign="center"
               >
                 <Progress
@@ -164,9 +200,7 @@ const ParticipationPage = (): JSX.Element => {
                   as="span"
                   fontSize={{ base: "xl", sm: "2xl" }}
                   textAlign="center"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 3.5, duration: 1 }}
+                  {...formatOpacityAnimationProps(3.5)}
                 >
                   Päiviä jäljellä: {daysRemaining}
                   {daysRemaining === 0 && " - Suoritettu!"}
@@ -177,29 +211,26 @@ const ParticipationPage = (): JSX.Element => {
               justifyContent="center"
               textAlign="center"
               width={{ base: "100%", sm: "50%" }}
-              initial={{
-                x: isSmScreen ? 0 : "-50%",
-                y: isSmScreen ? "50px" : "300px",
-                scale: isSmScreen ? 1.1 : 1.5,
-              }}
-              animate={{
-                x: 0,
-                y: 0,
-                scale: 1.0,
-              }}
-              transition={{
-                delay: 11,
-                duration: 1,
-              }}
+              {...formatAnimationProps(
+                {
+                  x: isSmScreen ? 0 : "-50%",
+                  y: isSmScreen ? "50px" : "300px",
+                  scale: isSmScreen ? 1.1 : 1.5,
+                },
+                {
+                  x: 0,
+                  y: 0,
+                  scale: 1.0,
+                },
+                1,
+                11
+              )}
             >
-              <BoxWithMotion
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 6, duration: 1 }}
-              >
+              <BoxWithMotion {...formatOpacityAnimationProps(6)}>
                 <LeafRating
                   baseId="mean-leaf-rating"
                   value={markingsMean}
+                  isAnimated={isRecap}
                   initialDelay={7}
                   iconSize="3em"
                   animationDuration={3}
@@ -208,21 +239,14 @@ const ParticipationPage = (): JSX.Element => {
                 <TextWithMotion
                   as="span"
                   fontSize={{ base: "xl", sm: "2xl" }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 10, duration: 1 }}
+                  {...formatOpacityAnimationProps(10)}
                 >
                   Fiilisten keskiarvo: {markingsMean}
                 </TextWithMotion>
               </BoxWithMotion>
             </FlexWithMotion>
           </Flex>
-          <BoxWithMotion
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 12, duration: 1 }}
-            mb="4"
-          >
+          <BoxWithMotion {...formatOpacityAnimationProps(12)} mb="4">
             <Heading.H2 textAlign="center">Merkkaukset</Heading.H2>
             <MarkingCalendar markings={participation.markings} />
           </BoxWithMotion>
@@ -230,9 +254,7 @@ const ParticipationPage = (): JSX.Element => {
             {participation.markings.map((it, index) => (
               <BoxWithMotion
                 key={it.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 13 + index * 0.3 }}
+                {...formatOpacityAnimationProps(13 + index * 0.3)}
               >
                 <MarkingCard marking={it} mr="2" mb="2" />
               </BoxWithMotion>
