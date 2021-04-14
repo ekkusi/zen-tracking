@@ -95,9 +95,6 @@ const MainPage = (): JSX.Element => {
         </>
       ) : (
         <>
-          <Heading.H3 fontWeight="normal" mb="2">
-            Aktiivinen haaste
-          </Heading.H3>
           <ChallengeSelect
             initialValue={
               activeParticipation

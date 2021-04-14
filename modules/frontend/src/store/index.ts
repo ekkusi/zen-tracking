@@ -10,6 +10,7 @@ const initialState: GlobalState = {
   activeParticipation: null,
   accessToken: null,
   promptEvent: null,
+  hideNavigation: false,
 };
 
 const useGlobal = globalHook<GlobalState, ActionTypes>(

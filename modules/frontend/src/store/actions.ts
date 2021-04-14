@@ -84,6 +84,15 @@ const actions = {
       promptEvent: event,
     });
   },
+  setHideNavigation: (
+    store: Store<GlobalState, ActionTypes>,
+    state: boolean
+  ): void => {
+    store.setState({
+      ...store.state,
+      hideNavigation: state,
+    });
+  },
 };
 
 export default actions;
