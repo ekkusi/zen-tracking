@@ -21,6 +21,12 @@ export const GET_WHOLE_PARTICIPATION = gql`
         creator {
           name
         }
+        participations {
+          id
+          user {
+            name
+          }
+        }
       }
     }
   }

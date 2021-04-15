@@ -30,6 +30,17 @@ export interface GetWholeParticipation_getParticipation_challenge_creator {
   name: string;
 }
 
+export interface GetWholeParticipation_getParticipation_challenge_participations_user {
+  __typename: "User";
+  name: string;
+}
+
+export interface GetWholeParticipation_getParticipation_challenge_participations {
+  __typename: "ChallengeParticipation";
+  id: string;
+  user: GetWholeParticipation_getParticipation_challenge_participations_user;
+}
+
 export interface GetWholeParticipation_getParticipation_challenge {
   __typename: "Challenge";
   id: string;
@@ -39,6 +50,7 @@ export interface GetWholeParticipation_getParticipation_challenge {
   endDate: any | null;
   description: string;
   creator: GetWholeParticipation_getParticipation_challenge_creator;
+  participations: GetWholeParticipation_getParticipation_challenge_participations[];
 }
 
 export interface GetWholeParticipation_getParticipation {

@@ -108,6 +108,7 @@ const StyledCalendar = styled(ReactCalendar)`
 
 type CalendarPropTypes = CalendarProps & {
   markings: Marking[];
+  isEditable?: boolean;
 };
 
 const MIN_DATE = new Date("2021-01-01");
@@ -115,6 +116,7 @@ const MAX_DATE = new Date();
 
 const MarkingCalendar = ({
   markings,
+  isEditable = true,
   ...rest
 }: CalendarPropTypes): JSX.Element => {
   const unmounted = useRef(false);
@@ -186,6 +188,7 @@ const MarkingCalendar = ({
         onClickDay={onClickDay}
         maxDate={MAX_DATE}
         minDate={MIN_DATE}
+        tileDisabled={() => !isEditable}
         locale="fi-FI"
         {...rest}
       />

@@ -1,4 +1,11 @@
-import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  ListItem,
+  Text,
+  UnorderedList,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
@@ -95,6 +102,15 @@ const ParticipationPage = (): JSX.Element => {
     }
     return 0;
   }, [participation]);
+
+  const getOtherThanCurrentUserParticipations = () => {
+    if (participation) {
+      return participation.challenge.participations.filter(
+        (it) => it.user.name !== user.name
+      );
+    }
+    return [];
+  };
 
   const formatOpacityAnimationProps = (delay: number, duration = 1) => {
     return {
@@ -251,7 +267,10 @@ const ParticipationPage = (): JSX.Element => {
           </Flex>
           <BoxWithMotion {...formatOpacityAnimationProps(11)} mb="4">
             <Heading.H2 textAlign="center">Merkkaukset</Heading.H2>
-            <MarkingCalendar markings={participation.markings} />
+            <MarkingCalendar
+              markings={participation.markings}
+              isEditable={participation.user.name === user.name}
+            />
           </BoxWithMotion>
           <Flex wrap="wrap">
             {sortedMarkings.map((it, index) => (
@@ -266,6 +285,22 @@ const ParticipationPage = (): JSX.Element => {
               </BoxWithMotion>
             ))}
           </Flex>
+          {!isRecap && participation.challenge.participations.length > 0 && (
+            <>
+              <Heading.H2>Katso muiden suorituksia</Heading.H2>
+              <UnorderedList>
+                {getOtherThanCurrentUserParticipations().map((it) => (
+                  <ListItem key={it.id}>
+                    <Link
+                      to={`/profile/${it.user.name}/${participation.challenge.id}`}
+                    >
+                      {it.user.name}
+                    </Link>
+                  </ListItem>
+                ))}
+              </UnorderedList>
+            </>
+          )}
         </>
       )}
       {loading && <Loading />}
