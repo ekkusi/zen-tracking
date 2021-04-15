@@ -33,14 +33,12 @@ const ParticipationPage = (): JSX.Element => {
     userName: string;
   }>();
   const history = useHistory<{ isRecap?: boolean }>();
-  const isRecap = history.location.state?.isRecap ?? true;
+  const isRecap = history.location.state?.isRecap ?? false;
 
   const isSmScreen = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)[0];
 
   const user = useGlobal((state) => state.currentUser)[0];
   const hideNavigation = useGlobal((state) => state.hideNavigation)[0];
-
-  const delayCounter = 0;
 
   const { data, loading, error } = useQuery<
     GetWholeParticipation,
@@ -53,6 +51,17 @@ const ParticipationPage = (): JSX.Element => {
   });
 
   const participation = data?.getParticipation;
+
+  const sortedMarkings = useMemo(() => {
+    if (participation) {
+      const newMarkings = [...participation.markings];
+      newMarkings.sort((a, b) => {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      });
+      return newMarkings;
+    }
+    return [];
+  }, [participation]);
 
   const currentProgressDayValue = useMemo(() => {
     if (participation && participation.challenge.startDate) {
@@ -108,7 +117,6 @@ const ParticipationPage = (): JSX.Element => {
     duration: number,
     delay: number
   ): MotionProps => {
-    console.log(`Delay now: ${delayCounter}`);
     let startPropsNew: Target;
     // Don't animate if is not recap
     if (!isRecap) {
@@ -128,36 +136,30 @@ const ParticipationPage = (): JSX.Element => {
 
   return (
     <Box>
-      {!loading && !isRecap && <Link to="/">Takaisin etusivulle</Link>}
+      {!loading && !isRecap && (
+        <Flex justify="space-between">
+          <Link to="/">Takaisin etusivulle</Link>
+
+          <Text as="span">
+            Suorittaja:{" "}
+            <b>{user.name === participation?.user.name ? "Sinä" : user.name}</b>{" "}
+          </Text>
+        </Flex>
+      )}
       {participation && (
         <>
-          <BoxWithMotion {...formatOpacityAnimationProps(0)}>
-            <Heading.H1 textAlign="center" mt={hideNavigation ? 5 : 0}>
+          <BoxWithMotion
+            {...formatOpacityAnimationProps(0)}
+            mb="5"
+            textAlign="center"
+          >
+            <Heading.H1 mt={hideNavigation ? 5 : 0} mb="0">
               {participation.challenge.name}
             </Heading.H1>
+            <Text as="span" fontSize="2xl">
+              {getChallengeDateString(participation.challenge)}
+            </Text>
           </BoxWithMotion>
-          {!isRecap && (
-            <Flex
-              border="1px solid"
-              borderColor="gray.300"
-              borderRadius="5px"
-              p="3"
-              justifyContent="space-between"
-              mb="4"
-            >
-              <Text as="span">
-                Suorittaja:{" "}
-                <b>
-                  {user.name === participation.user.name
-                    ? "Sinä"
-                    : participation.user.name}
-                </b>{" "}
-              </Text>
-              <Text as="span">
-                Aika: <b>{getChallengeDateString(participation.challenge)}</b>{" "}
-              </Text>
-            </Flex>
-          )}
           <Flex
             direction={{ base: "column", sm: "row" }}
             wrap="nowrap"
@@ -195,6 +197,7 @@ const ParticipationPage = (): JSX.Element => {
                     duration: 1.5,
                     delay: 2,
                   }}
+                  isAnimated={isRecap}
                 />
                 <TextWithMotion
                   as="span"
@@ -223,7 +226,7 @@ const ParticipationPage = (): JSX.Element => {
                   scale: 1.0,
                 },
                 1,
-                11
+                10
               )}
             >
               <BoxWithMotion {...formatOpacityAnimationProps(6)}>
@@ -233,30 +236,33 @@ const ParticipationPage = (): JSX.Element => {
                   isAnimated={isRecap}
                   initialDelay={7}
                   iconSize="3em"
-                  animationDuration={3}
+                  animationDuration={2}
                 />
 
                 <TextWithMotion
                   as="span"
                   fontSize={{ base: "xl", sm: "2xl" }}
-                  {...formatOpacityAnimationProps(10)}
+                  {...formatOpacityAnimationProps(9)}
                 >
                   Fiilisten keskiarvo: {markingsMean}
                 </TextWithMotion>
               </BoxWithMotion>
             </FlexWithMotion>
           </Flex>
-          <BoxWithMotion {...formatOpacityAnimationProps(12)} mb="4">
+          <BoxWithMotion {...formatOpacityAnimationProps(11)} mb="4">
             <Heading.H2 textAlign="center">Merkkaukset</Heading.H2>
             <MarkingCalendar markings={participation.markings} />
           </BoxWithMotion>
           <Flex wrap="wrap">
-            {participation.markings.map((it, index) => (
+            {sortedMarkings.map((it, index) => (
               <BoxWithMotion
+                flex={{ base: 1, sm: 0 }}
                 key={it.id}
-                {...formatOpacityAnimationProps(13 + index * 0.3)}
+                {...formatOpacityAnimationProps(12 + index * 0.3)}
+                mr={{ base: 0, sm: 2 }}
+                mb="4"
               >
-                <MarkingCard marking={it} mr="2" mb="2" />
+                <MarkingCard marking={it} />
               </BoxWithMotion>
             ))}
           </Flex>

@@ -5,7 +5,7 @@ import chakraMotionWrapper from "../../util/chakraMotionWrapper";
 
 type CustomProgressProps = Omit<BoxProps, "transition"> & {
   bgColor?: string;
-  animate?: boolean;
+  isAnimated?: boolean;
   min?: number;
   max?: number;
   transition?: Transition;
@@ -15,7 +15,7 @@ type CustomProgressProps = Omit<BoxProps, "transition"> & {
 const BoxWithMotion = chakraMotionWrapper(Box);
 
 const Progress = ({
-  animate = true,
+  isAnimated = true,
   width = "100%",
   height = "4em",
   bgColor = "gray.200",
@@ -44,7 +44,7 @@ const Progress = ({
         height={height}
         bg={colorMode === "light" ? "primary.500" : "primary.200"}
         initial={{
-          x: animate ? "-100%" : 0,
+          x: isAnimated ? "-100%" : 0,
         }}
         animate={{ x: 0 }}
         transition={{

@@ -11,6 +11,7 @@ import {
   Tabs,
   Progress,
   Icon,
+  Tag,
 } from "./components";
 
 const config: ColorModeOptions = {
@@ -69,6 +70,7 @@ const theme: Theme = extendTheme({
     Tabs,
     Progress,
     Icon,
+    Tag,
   },
   colors: {
     ...colors,
