@@ -156,10 +156,16 @@ const ParticipationPage = (): JSX.Element => {
         <Flex justify="space-between">
           <Link to="/">Takaisin etusivulle</Link>
 
-          <Text as="span">
-            Suorittaja:{" "}
-            <b>{user.name === participation?.user.name ? "Sinä" : user.name}</b>{" "}
-          </Text>
+          {participation && (
+            <Text as="span">
+              Suorittaja:{" "}
+              <b>
+                {user.name === participation?.user.name
+                  ? "Sinä"
+                  : participation.user.name}
+              </b>{" "}
+            </Text>
+          )}
         </Flex>
       )}
       {participation && (
