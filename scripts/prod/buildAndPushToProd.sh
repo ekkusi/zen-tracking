@@ -7,4 +7,4 @@ cd "../../"
 
 docker build -t zen-tracking .
 docker save zen-tracking | gzip > ./tmp/zen-tracking.tar.gz
-scp ./tmp/zen-tracking.tar.gz eke@136.244.97.223:~/zen-tracking/tmp 
+scp ./tmp/zen-tracking.tar.gz eke@199.247.31.107:~/zen-tracking/tmp 
