@@ -50,7 +50,7 @@ If you want to use docker-compose to host database, DATABASE_URL should point to
 
 - Create a database named "zen-tracking"
 
-If you have database running through docker-compose, you can do this manually by going to postgre admin (http://localhost:5050) and setting database manually there. To do this need to first create new server with name "pravda", host name "postgres", port "5432", maintenance database "zen-tracking", username "user" and password "password". If database named "zen-tracking"" isn't created automatically when server is created, create one.
+If you have database running through docker-compose, you can do this manually by going to postgre admin (http://localhost:5050) and setting database manually there. To do this need to first create new server with name "zen-tracking", host name "postgres", port "5432", maintenance database "zen-tracking", username "user" and password "password". If database named "zen-tracking"" isn't created automatically when server is created, create one.
 
 Default email postgreadmin is "default@email.com" and password is "password"
 
@@ -155,7 +155,8 @@ Easiest way to do this is to login with `main-user` or whatever user you want to
 ```
 
 And put the resulting accessToken to Graphiql HTTP Headers (can be found in bottom left of the page):
-```
+
+````
 {
     "Authorization": "Bearer <YOUR_ACCESS_TOKEN_HERE>"
 }
@@ -170,7 +171,7 @@ NOTE: Docker needs to be up to run the following commands
 
   ```bash
   yarn postgreimport
-  ```
+````
 
 - Dump (to tmp/zen_tracking_mock_dump.sql)
 
