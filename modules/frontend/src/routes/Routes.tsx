@@ -4,7 +4,7 @@ import LoadingOverlay from "components/general/LoadingOverlay";
 import ModalTemplate from "components/general/ModalTemplate";
 import { GET_CURRENT_USER } from "generalQueries";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Switch, Route, Redirect, useHistory } from "react-router-dom";
+import { Switch, Route, Redirect, useLocation } from "react-router-dom";
 import ReactGA from "react-ga";
 
 import useGlobal from "store";
@@ -38,7 +38,7 @@ const Routes = (): JSX.Element => {
   const [hasTriedLoggingIn, setHasTriedLoggingIn] = useState(false);
   const [previousRoute, setPreviousRoute] = useState<string | null>(null);
 
-  const { activeParticipation, currentUser } = globalState;
+  const { activeParticipation, currentUser, hideNavigation } = globalState;
 
   const client = useApolloClient();
 
@@ -57,13 +57,14 @@ const Routes = (): JSX.Element => {
     globalActions.updateError(null);
   };
 
-  const history = useHistory();
+  const location = useLocation<{ isRecap?: boolean }>();
+  const isRecap = location.state?.isRecap ?? false;
 
   const updateCurrentUser = useCallback(async () => {
     await refreshToken();
     // If path that is rendered requires authentication, try fetch user.
     // If token has expired, ApolloProvider will throw an error and redirect to /login
-    if (!NON_AUTHENTICATED_PATHS.includes(history.location.pathname)) {
+    if (!NON_AUTHENTICATED_PATHS.includes(location.pathname)) {
       try {
         const result = await client.query<
           GetCurrentUser,
@@ -91,9 +92,9 @@ const Routes = (): JSX.Element => {
     }
 
     setLoading(false);
-  }, [client, globalActions, history]);
+  }, [client, globalActions, location]);
 
-  const currentPath = history.location.pathname;
+  const currentPath = location.pathname;
 
   // Handle logging in with localStorage cache
   useEffect(() => {
@@ -109,15 +110,21 @@ const Routes = (): JSX.Element => {
       ReactGA.pageview(currentPath);
     }
 
+    if (isMounted && !isRecap && hideNavigation) {
+      globalActions.setHideNavigation(false);
+    }
     return () => {
       isMounted = false;
     };
   }, [
     hasTriedLoggingIn,
     updateCurrentUser,
-    history,
     previousRoute,
     currentPath,
+    isRecap,
+    location,
+    hideNavigation,
+    globalActions,
   ]);
 
   return (

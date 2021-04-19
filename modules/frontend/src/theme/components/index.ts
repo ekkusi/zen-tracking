@@ -6,3 +6,4 @@ export * from "./Inputs";
 export * from "./Tabs";
 export * from "./Icon";
 export * from "./Progress";
+export * from "./Tag";
