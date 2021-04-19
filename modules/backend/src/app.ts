@@ -31,7 +31,6 @@ graphqlApi(app);
 const corsOptions: CorsOptions = {
   origin(origin, callback) {
     if (origin === undefined || config.ALLOWED_ORIGINS.includes(origin)) {
-      console.log(`Cors allowed for origin: ${origin}`);
       callback(null, true);
     } else {
       console.log(`Cors not allowed for origin: ${origin}`);
