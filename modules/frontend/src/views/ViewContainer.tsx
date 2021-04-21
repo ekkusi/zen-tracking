@@ -7,16 +7,18 @@ import useGlobal from "../store";
 type ViewContainerProps = BoxProps & {
   isPlain?: boolean;
   isFullWidth?: boolean;
+  hideNavigation?: boolean;
 };
 
 const ViewContainer = ({
   children,
   isPlain,
   isFullWidth,
+  hideNavigation,
 }: ViewContainerProps): JSX.Element => {
-  const hideNavigation = useGlobal((state) => state.hideNavigation)[0];
+  const globalHideNavigation = useGlobal((state) => state.hideNavigation)[0];
   const renderNavigation = () => {
-    if (hideNavigation) return null;
+    if (hideNavigation || globalHideNavigation) return null;
     return isPlain ? (
       <Flex p="4" justifyContent="flex-end">
         <ThemeSwitch />
@@ -28,7 +30,7 @@ const ViewContainer = ({
   return (
     <>
       {renderNavigation()}
-      <Container maxWidth={isFullWidth ? "auto" : "1000px"} pb="5">
+      <Container maxWidth={isFullWidth ? "auto" : "1000px"} p={isPlain ? 0 : 5}>
         {children}
       </Container>
     </>

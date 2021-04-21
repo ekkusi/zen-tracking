@@ -171,7 +171,7 @@ const Routes = (): JSX.Element => {
           path="/welcome"
           render={() => {
             return (
-              <ViewContainer isPlain>
+              <ViewContainer hideNavigation isPlain isFullWidth>
                 <WelcomePage />
               </ViewContainer>
             );
