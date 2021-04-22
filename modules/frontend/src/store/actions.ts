@@ -1,6 +1,5 @@
 import { Store } from "use-global-hook";
 import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
-import LogRocket from "logrocket";
 import { AuthenticatedUser } from "@ekkusi/zen-tracking-backend/lib/types/customContext";
 import { LOGOUT } from "../generalQueries";
 import { initializeApollo } from "../apollo/ApolloProvider";
@@ -18,10 +17,10 @@ const actions = {
     if (user) {
       localStorage.setItem("currentUser", user.name);
       // Init LogRocket session if user is not private and is prod env
-      if (process.env.NODE_ENV === "production" && !user.isPrivate) {
-        LogRocket.init("6hrsm3/zen-tracking");
-        LogRocket.identify(user.name);
-      }
+      // if (process.env.NODE_ENV === "production" && !user.isPrivate) {
+      //   LogRocket.init("6hrsm3/zen-tracking");
+      //   LogRocket.identify(user.name);
+      // }
     } else localStorage.removeItem("currentUser");
     store.setState({ ...store.state, currentUser: user || notAuthorizedUser });
   },
