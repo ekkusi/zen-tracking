@@ -38,4 +38,8 @@ const Select = (props: SelectProps): JSX.Element => {
   return <ReactSelect styles={customStyles} {...props} />;
 };
 
+Select.defaultProps = {
+  isSearchable: false,
+};
+
 export default Select;
