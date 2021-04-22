@@ -1,8 +1,16 @@
 diff --git a/node_modules/@chakra-ui/theme/dist/types/index.d.ts b/node_modules/@chakra-ui/theme/dist/types/index.d.ts
-index c4e8c3a..a3a5d47 100644
+index 6813f5c..0f0e06c 100644
 --- a/node_modules/@chakra-ui/theme/dist/types/index.d.ts
 +++ b/node_modules/@chakra-ui/theme/dist/types/index.d.ts
-@@ -2998,6 +2998,31 @@ export declare const theme: {
+@@ -2835,6 +2835,7 @@ export declare const theme: {
+         inner: string;
+         none: string;
+         "dark-lg": string;
++        dark: string;
+     };
+     space: {
+         px: string;
+@@ -2991,6 +2992,31 @@ export declare const theme: {
          full: string;
      };
      colors: {
