@@ -64,7 +64,9 @@ const MainPage = (): JSX.Element => {
 
   return (
     <Box>
-      <Heading.H1 mt="5">Tervehdys {user.name}! :) </Heading.H1>
+      <Heading.H1 mt={{ base: 0, sm: 5 }}>
+        Tervehdys {user.name}! :){" "}
+      </Heading.H1>
 
       {!activeParticipation ? (
         <>
@@ -94,6 +96,9 @@ const MainPage = (): JSX.Element => {
         </>
       ) : (
         <>
+          <Heading.H3 fontWeight="normal" mb="2">
+            Aktiivinen haaste
+          </Heading.H3>
           <ChallengeSelect
             initialValue={
               activeParticipation
@@ -155,9 +160,9 @@ const MainPage = (): JSX.Element => {
             <MarkingCalendar markings={activeParticipation.markings} />
           ) : (
             <>
-              <Heading.H2 fontWeight="bold">
-                Sinulla ei vielä ole merkkauksia.
-              </Heading.H2>
+              <Heading.H3 fontWeight="bold">
+                Sinulla ei vielä ole merkkauksia tässä haasteessa.
+              </Heading.H3>
               <Text>
                 Aloita ensimmäisen merkkaaminen ylemmästä painikkeesta
                 painamalla. Valikosta löydät tarvittaessa lisäohjeita.
