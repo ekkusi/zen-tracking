@@ -1,5 +1,4 @@
-import { Box, InputProps, Button, ButtonProps } from "@chakra-ui/react";
-import { PrimaryInput } from "components/primitives/Input";
+import { Box, InputProps, Button, ButtonProps, Input } from "@chakra-ui/react";
 import React from "react";
 
 type FileInputProps = InputProps & {
@@ -18,7 +17,7 @@ const FileInput = ({
 }: FileInputProps): JSX.Element => {
   return (
     <Box>
-      <PrimaryInput
+      <Input
         id={id}
         type="file"
         visibility="hidden"

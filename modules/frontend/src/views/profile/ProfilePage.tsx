@@ -1,5 +1,5 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import React, { useRef, useState, useMemo } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
@@ -18,7 +18,6 @@ import {
   GetUserWithParticipations,
   GetUserWithParticipationsVariables,
 } from "./__generated__/GetUserWithParticipations";
-import { ButtonWithRef } from "../../components/primitives/Button";
 import DateUtil from "../../util/DateUtil";
 import { LinkList, LinkListItem } from "../../components/general/LinkList";
 import UserInfoUtil from "../../util/UserInfoUtil";
@@ -209,9 +208,9 @@ const ProfilePage = (): JSX.Element => {
               : `Käyttäjällä ${userName} ei vielä ole julkisia osallistumisia.`}
           </Text>
           {isCurrentUser() && (
-            <ButtonWithRef as={Link} to="/challenges">
+            <Button as={Link} to="/challenges">
               Haasteisiin
-            </ButtonWithRef>
+            </Button>
           )}
         </>
       )}

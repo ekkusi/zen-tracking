@@ -1,7 +1,6 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { ArrowForwardIcon, CheckIcon } from "@chakra-ui/icons";
 import React, { useRef, useState } from "react";
-import { ButtonWithRef } from "components/primitives/Button";
 import useGlobal from "store";
 import Heading from "components/primitives/Heading";
 import DateUtil from "util/DateUtil";
@@ -18,7 +17,7 @@ import MarkingCalendar from "../../components/functional/MarkingCalendar";
 import { getParticipation } from "../../util/apolloQueries";
 
 const MotionArrowForwardIcon = chakraMotionWrapper(ArrowForwardIcon);
-const MotionButton = motion(ButtonWithRef);
+const MotionButton = motion(Button);
 
 const iconHoverVariants = {
   rest: {

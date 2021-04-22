@@ -5,10 +5,15 @@ import {
   FormErrorMessageProps,
   FormLabel,
   FormLabelProps,
+  Input,
   InputProps,
 } from "@chakra-ui/react";
-import { PrimaryInput } from "components/primitives/Input";
-import { FieldConfig, GenericFieldHTMLAttributes, useField } from "formik";
+import {
+  Field,
+  FieldConfig,
+  GenericFieldHTMLAttributes,
+  useField,
+} from "formik";
 import React from "react";
 
 type FormFieldProps<Val = string> = GenericFieldHTMLAttributes &
@@ -29,6 +34,7 @@ const FormField = ({
   errorMessageProps,
   validate,
   children,
+  as = Input,
   ...rest
 }: FormFieldProps): JSX.Element => {
   const [{ onChange, onBlur, ...field }, meta, helpers] = useField({
@@ -65,10 +71,11 @@ const FormField = ({
       <FormLabel htmlFor={rest.name} {...labelProps}>
         {label}
       </FormLabel>
-      <PrimaryInput
-        {...inputProps}
+      <Field
+        as={as}
         {...rest}
         {...field}
+        {...inputProps}
         onChange={handleChange}
         onBlur={handleBlur}
       />

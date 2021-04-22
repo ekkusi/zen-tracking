@@ -9,6 +9,7 @@ import {
   IconButton,
   Stack,
   Text,
+  Textarea,
   useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -17,7 +18,6 @@ import { UploadImageSuccessResult } from "@ekkusi/zen-tracking-backend/lib/types
 import ModalTemplate, {
   ModalTemplateProps,
 } from "components/general/ModalTemplate";
-import { PrimaryTextArea } from "components/primitives/Input";
 import FileInput from "components/general/form/FileInput";
 import React, { useMemo, useState } from "react";
 import useGlobal from "store";
@@ -388,7 +388,7 @@ const EditMarking = ({
               </Box>
 
               <FormField
-                as={PrimaryTextArea}
+                as={Textarea}
                 name="comment"
                 label="Valinnainen kommentti päivän suorituksesta"
                 placeholder="Päivä meni ihan kivasti... vähän meinas demonit iskeä, mutta onneks löysin sisäisen Excaliburini ja karkotin ne takasin syövereihinsä:)"

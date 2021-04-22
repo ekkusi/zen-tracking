@@ -6,6 +6,7 @@ import {
   Box,
   Checkbox,
   Button,
+  Textarea,
 } from "@chakra-ui/react";
 import { isValid } from "date-fns/esm";
 import React, { useState, useMemo } from "react";
@@ -13,7 +14,6 @@ import DateUtil from "util/DateUtil";
 import { Form, Formik } from "formik";
 import ModalTemplate, { ModalTemplateProps } from "../general/ModalTemplate";
 import FormField from "../general/form/FormField";
-import { PrimaryTextArea } from "../primitives/Input";
 import DeleteConfimationModal from "../general/DeleteConfirmationModal";
 import {
   DeleteChallenge,
@@ -318,7 +318,7 @@ const EditChallenge = ({
               />
             </Flex>
             <FormField
-              as={PrimaryTextArea}
+              as={Textarea}
               name="description"
               type="text"
               placeholder="Kuvaus haasteesta..."

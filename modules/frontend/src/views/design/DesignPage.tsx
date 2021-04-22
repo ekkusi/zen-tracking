@@ -5,6 +5,7 @@ import {
   Button,
   Icon,
   IconButton,
+  Input,
   SimpleGrid,
   Switch,
   Text,
@@ -101,6 +102,8 @@ const DesignPage = () => {
       <RoundedBox>
         <Heading.H1>Form elements</Heading.H1>
         <Switch>Toggle default</Switch>
+        <Input placeholder="default input" />
+        <Input placeholder="Invalid input" isInvalid />
       </RoundedBox>
       <RoundedBox>
         <Box position="relative" bg="red" zIndex="102">
