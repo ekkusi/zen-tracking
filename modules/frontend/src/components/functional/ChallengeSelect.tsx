@@ -9,9 +9,10 @@ import React, {
   useEffect,
 } from "react";
 
-import Select, { OptionsType } from "react-select";
+import { OptionsType } from "react-select";
 import useGlobal from "store";
 import { GetUserParticipationsPlain } from "../../__generated__/GetUserParticipationsPlain";
+import Select from "../general/Select";
 
 type ChallengeSelectProps = {
   initialValue?: OptionType;
