@@ -1,25 +1,17 @@
-import { useColorMode } from "@chakra-ui/react";
-import { mode } from "@chakra-ui/theme-tools";
 import React from "react";
 import ReactSelect, {
   OptionProps,
   Props as ReactSelectProps,
   Styles,
 } from "react-select";
+import usePrimaryColor from "../../hooks/usePrimaryColor";
 import theme from "../../theme";
 
 type SelectProps = Omit<ReactSelectProps, "theme"> & {};
 
 const Select = (props: SelectProps): JSX.Element => {
-  const colorModeProps = useColorMode();
-  const primaryModeColor = mode(
-    theme.colors.primary[500],
-    theme.colors.primary[200]
-  )(colorModeProps);
-  const lightPrimaryModeColor = mode(
-    theme.colors.primary[300],
-    theme.colors.primary[100]
-  )(colorModeProps);
+  const primaryModeColor = usePrimaryColor();
+  const lightPrimaryModeColor = usePrimaryColor("light");
 
   const getOptionBgColor = (state: OptionProps<any, boolean, any>) => {
     if (state.isSelected) {
