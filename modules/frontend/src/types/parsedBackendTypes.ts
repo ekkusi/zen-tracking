@@ -1,6 +1,5 @@
 import {
   ChallengeParticipation,
-  Marking,
   User,
 } from "@ekkusi/zen-tracking-backend/lib/types/schema";
 import { ChallengeData } from "../__generated__/ChallengeData";
@@ -11,12 +10,14 @@ export type ParsedChallenge = Omit<Partial<ChallengeData>, "name" | "id"> & {
 };
 
 export type ParsedChallengeParticipation = Omit<
-  ChallengeParticipation,
-  "user" | "challenge" | "markings"
+  Partial<ChallengeParticipation>,
+  "challenge" | "user" | "id"
 > & {
-  user?: User;
-  markings?: Marking[];
+  id: string;
+  user?: ParsedUser;
   challenge: ParsedChallenge;
 };
 
-export type ParsedUser = Omit<User, "participations">;
+export type ParsedUser = Omit<Partial<User>, "name"> & {
+  name: string;
+};

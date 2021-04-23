@@ -22,7 +22,7 @@ const StyledCalendar = styled(ReactCalendar)<
 
   width: 100%;
   border-radius: 10px;
-  box-shadow: ${({ theme }) => theme.shadows.lg};
+  box-shadow: ${({ theme }) => theme.shadows.dark};
   color: var(--color);
   overflow: hidden;
   border: none;
@@ -34,6 +34,8 @@ const StyledCalendar = styled(ReactCalendar)<
       position: relative;
       & > abbr {
         display: block;
+        position: relative;
+        z-index: 1;
       }
       &:hover {
         background: var(--hover-bg-color);
@@ -46,15 +48,33 @@ const StyledCalendar = styled(ReactCalendar)<
         }
       }
       &--marked {
+        & > abbr {
+          color: ${({ theme }) => theme.colors.white};
+        }
+      }
+      &:before,
+      &:after {
+        content: "";
+        position: absolute;
+        height: 40px;
+        width: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      &:before {
+        left: 0;
+      }
+      &:after {
+        right: 0;
+      }
+      &--next-day-marked {
         &:after {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          content: "\u2715"; /* use the hex value here... */
-          font-size: 50px;
-          color: var(--color);
-          text-align: center;
+          background: var(--active-bg-color);
+        }
+      }
+      &--prev-day-marked {
+        &:before {
+          background: var(--active-bg-color);
         }
       }
       &--active {

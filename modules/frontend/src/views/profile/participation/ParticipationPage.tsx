@@ -47,7 +47,7 @@ const ParticipationPage = (): JSX.Element => {
   const user = useGlobal((state) => state.currentUser)[0];
   const hideNavigation = useGlobal((state) => state.hideNavigation)[0];
 
-  const { data, loading, error } = useQuery<
+  const { data, loading, error, refetch } = useQuery<
     GetWholeParticipation,
     GetWholeParticipationVariables
   >(GET_WHOLE_PARTICIPATION, {
@@ -274,7 +274,8 @@ const ParticipationPage = (): JSX.Element => {
           <BoxWithMotion {...formatOpacityAnimationProps(11)} mb="4">
             <Heading.H2 textAlign="center">Merkkaukset</Heading.H2>
             <MarkingCalendar
-              markings={participation.markings}
+              participation={participation}
+              onEdit={() => refetch()}
               isEditable={participation.user.name === user.name}
             />
           </BoxWithMotion>

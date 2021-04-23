@@ -157,7 +157,7 @@ const MainPage = (): JSX.Element => {
         {loading && <CustomLoadingOverlay />}
         {activeParticipation &&
           (activeParticipation.markings.length > 0 ? (
-            <MarkingCalendar markings={activeParticipation.markings} />
+            <MarkingCalendar participation={activeParticipation} />
           ) : (
             <>
               <Heading.H3 fontWeight="bold">

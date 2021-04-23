@@ -1,5 +1,6 @@
 import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
 import { ParsedChallengeParticipation } from "types/parsedBackendTypes";
+import { addDays, isSameDay, subDays } from "date-fns";
 import { ActiveParticipation } from "../store/types";
 import DateUtil from "./DateUtil";
 
@@ -75,5 +76,27 @@ export default class UserInfoUtil {
       return bCompareNumber - aCompareNumber;
     });
     return sortedParticipations;
+  }
+
+  static getPrevDayMarking(
+    date: Date,
+    markings: Marking[]
+  ): Marking | undefined {
+    const prevDay = subDays(date, 1);
+    const prevDayMarking = markings.find((it) =>
+      isSameDay(new Date(it.date), prevDay)
+    );
+    return prevDayMarking;
+  }
+
+  static getNextDayMarking(
+    date: Date,
+    markings: Marking[]
+  ): Marking | undefined {
+    const nextDay = addDays(date, 1);
+    const nextDayMarking = markings.find((it) =>
+      isSameDay(new Date(it.date), nextDay)
+    );
+    return nextDayMarking;
   }
 }
