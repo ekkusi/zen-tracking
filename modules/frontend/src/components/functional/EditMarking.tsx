@@ -67,9 +67,12 @@ export const DELETE_MARKING = gql`
   }
 `;
 
+export type EditType = "edit" | "create" | "delete";
+
 type EditMarkingProps = Omit<ModalTemplateProps, "children"> & {
   marking?: Marking | null;
   date?: Date | null;
+  onEdit?: (marking: Marking, type: EditType) => void;
 };
 
 type FormValues = {
@@ -85,6 +88,7 @@ const backendApiBaseUrl = process.env.REACT_APP_BACKEND_API_BASE_URL || "";
 const EditMarking = ({
   marking,
   date,
+  onEdit,
   ...modalTemplateProps
 }: EditMarkingProps): JSX.Element => {
   const [activeParticipation, updateActiveParticipationMarkings] = useGlobal(
@@ -181,6 +185,8 @@ const EditMarking = ({
     try {
       // User markings after edit/create. Set to null if update fails to not trigger update in global state.
       let newMarkings: Marking[] | null = null;
+      let editedMarking: Marking | null = null;
+      let editType: EditType;
       // If marking exists, edit that
       if (marking) {
         const result = await editMarking({
@@ -194,11 +200,12 @@ const EditMarking = ({
             },
           },
         });
+        editType = "edit";
         if (result.data) {
           // Update edited marking if mutate returns data. User should always be defined here.
-          const editedMarking = result.data.editMarking;
+          editedMarking = result.data.editMarking;
           const editedMarkingIndex = activeParticipation.markings.findIndex(
-            (it) => it.id === editedMarking.id
+            (it) => it.id === editedMarking?.id
           );
           newMarkings = [...activeParticipation.markings];
           if (editedMarkingIndex >= 0) {
@@ -211,6 +218,7 @@ const EditMarking = ({
       }
       // Otherwise create new marking
       else {
+        editType = "create";
         const result = await createMarking({
           variables: {
             marking: {
@@ -223,18 +231,17 @@ const EditMarking = ({
             participationId: activeParticipation.id,
           },
         });
-        if (result.data)
+        if (result.data) {
+          editedMarking = result.data.addMarking;
           // Add created marking if mutate returns data. User should always be defined here.
-          newMarkings = [
-            ...activeParticipation.markings,
-            result.data.addMarking,
-          ];
+          newMarkings = [...activeParticipation.markings, editedMarking];
+        }
       }
 
       // Update user markings in frontend also, no need to refetch from backend
-      if (newMarkings) {
-        updateActiveParticipationMarkings(newMarkings);
-      }
+      if (newMarkings) updateActiveParticipationMarkings(newMarkings);
+      if (onEdit && editedMarking) onEdit(editedMarking, editType);
+
       setLoading(false);
       disclosureProps.onClose();
     } catch (e) {
@@ -273,6 +280,7 @@ const EditMarking = ({
             id: marking.id,
           },
         });
+        if (onEdit) onEdit(marking, "delete");
         if (data) {
           // Delete marking from activeParticipation in frontend also, no need to refetch from backend
           updateActiveParticipationMarkings(
