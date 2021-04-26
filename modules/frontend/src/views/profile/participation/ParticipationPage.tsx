@@ -103,14 +103,14 @@ const ParticipationPage = (): JSX.Element => {
     return 0;
   }, [participation]);
 
-  const getOtherThanCurrentUserParticipations = () => {
+  const otherThanCurrentUserParticipations = useMemo(() => {
     if (participation) {
       return participation.challenge.participations.filter(
         (it) => it.user.name !== user.name
       );
     }
     return [];
-  };
+  }, [participation, user.name]);
 
   const formatOpacityAnimationProps = (delay: number, duration = 1) => {
     return {
@@ -271,7 +271,7 @@ const ParticipationPage = (): JSX.Element => {
               </BoxWithMotion>
             </FlexWithMotion>
           </Flex>
-          <BoxWithMotion {...formatOpacityAnimationProps(11)} mb="4">
+          <BoxWithMotion {...formatOpacityAnimationProps(11)} mb="20">
             <Heading.H2 textAlign="center">Merkkaukset</Heading.H2>
             <MarkingCalendar
               participation={participation}
@@ -279,7 +279,10 @@ const ParticipationPage = (): JSX.Element => {
               isEditable={participation.user.name === user.name}
             />
           </BoxWithMotion>
-          <Flex wrap="wrap">
+          <Flex
+            wrap="wrap"
+            justify={{ base: "start", sm: "space-around", lg: "space-between" }}
+          >
             {sortedMarkings.map((it, index) => (
               <BoxWithMotion
                 flex={{ base: 1, sm: 0 }}
@@ -292,11 +295,11 @@ const ParticipationPage = (): JSX.Element => {
               </BoxWithMotion>
             ))}
           </Flex>
-          {!isRecap && participation.challenge.participations.length > 0 && (
+          {!isRecap && otherThanCurrentUserParticipations.length > 0 && (
             <>
               <Heading.H2>Katso muiden suorituksia</Heading.H2>
               <UnorderedList>
-                {getOtherThanCurrentUserParticipations().map((it) => (
+                {otherThanCurrentUserParticipations.map((it) => (
                   <ListItem key={it.id}>
                     <Link
                       to={`/profile/${it.user.name}/${participation.challenge.id}`}
