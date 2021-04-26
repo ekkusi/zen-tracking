@@ -145,6 +145,8 @@ export type ResolversTypes = {
   LoginResult: ResolverTypeWrapper<
     Omit<Types.LoginResult, "user"> & { user: ResolversTypes["User"] }
   >;
+  NameInput: Types.NameInput;
+  PasswordInput: Types.PasswordInput;
   ChallengeStatus: Types.ChallengeStatus;
   Challenge: ResolverTypeWrapper<Challenge>;
   ChallengeParticipation: ResolverTypeWrapper<ChallengeParticipation>;
@@ -169,6 +171,8 @@ export type ResolversParentTypes = {
   LoginResult: Omit<Types.LoginResult, "user"> & {
     user: ResolversParentTypes["User"];
   };
+  NameInput: Types.NameInput;
+  PasswordInput: Types.PasswordInput;
   Challenge: Challenge;
   ChallengeParticipation: ChallengeParticipation;
   CreateChallengeInput: Types.CreateChallengeInput;
@@ -250,6 +254,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<Types.MutationDeleteUserArgs, "name">
+  >;
+  editUser?: Resolver<
+    ResolversTypes["LoginResult"],
+    ParentType,
+    ContextType,
+    RequireFields<Types.MutationEditUserArgs, "nameInput">
   >;
   login?: Resolver<
     ResolversTypes["LoginResult"],
@@ -334,6 +344,11 @@ export type UserResolvers<
 > = {
   name?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   isPrivate?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  email?: Resolver<
+    Types.Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
   participations?: Resolver<
     Array<ResolversTypes["ChallengeParticipation"]>,
     ParentType,

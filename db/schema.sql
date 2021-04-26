@@ -5,11 +5,14 @@ DROP TABLE IF EXISTS "User";
 DROP TABLE IF EXISTS "Quote";
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS citext;
 
 CREATE TABLE "User" (
   name varchar(254) PRIMARY KEY NOT NULL,
   password varchar(254) NOT NULL,
-  is_private boolean DEFAULT true NOT NULL
+  is_private boolean DEFAULT true NOT NULL,
+  email citext UNIQUE,
+  is_email_verified boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE "Quote" (

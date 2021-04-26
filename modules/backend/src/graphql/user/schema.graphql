@@ -13,14 +13,16 @@ extend type Query {
 
 extend type Mutation {
   deleteUser(name: ID!): Boolean!
+  editUser(nameInput: NameInput!, passwordInput: PasswordInput, email: String): LoginResult!
   login(name: ID!, password: String!): LoginResult!
-  register(name: ID!, password: String!, isPrivate: Boolean!): LoginResult!
+  register(name: ID!, password: String!, email: String, isPrivate: Boolean!): LoginResult!
   logout: Boolean!
 }
 
 type User {
   name: ID!
   isPrivate: Boolean!
+  email: String
   participations: [ChallengeParticipation!]!
   activeParticipation(challengeId: ID): ChallengeParticipation
 }
@@ -28,4 +30,14 @@ type User {
 type LoginResult {
   accessToken: String!
   user: User!
+}
+
+input NameInput {
+  currentName: ID!
+  newName: ID
+}
+
+input PasswordInput {
+  currentPassword: String!
+  newPassword: String!
 }

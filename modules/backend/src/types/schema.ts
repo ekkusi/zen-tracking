@@ -59,6 +59,7 @@ export type Mutation = {
   __typename?: "Mutation";
   _empty?: Maybe<Scalars["String"]>;
   deleteUser: Scalars["Boolean"];
+  editUser: LoginResult;
   login: LoginResult;
   register: LoginResult;
   logout: Scalars["Boolean"];
@@ -77,6 +78,12 @@ export type MutationDeleteUserArgs = {
   name: Scalars["ID"];
 };
 
+export type MutationEditUserArgs = {
+  nameInput: NameInput;
+  passwordInput?: Maybe<PasswordInput>;
+  email?: Maybe<Scalars["String"]>;
+};
+
 export type MutationLoginArgs = {
   name: Scalars["ID"];
   password: Scalars["String"];
@@ -85,6 +92,7 @@ export type MutationLoginArgs = {
 export type MutationRegisterArgs = {
   name: Scalars["ID"];
   password: Scalars["String"];
+  email?: Maybe<Scalars["String"]>;
   isPrivate: Scalars["Boolean"];
 };
 
@@ -139,6 +147,7 @@ export type User = {
   __typename?: "User";
   name: Scalars["ID"];
   isPrivate: Scalars["Boolean"];
+  email?: Maybe<Scalars["String"]>;
   participations: Array<ChallengeParticipation>;
   activeParticipation?: Maybe<ChallengeParticipation>;
 };
@@ -151,6 +160,16 @@ export type LoginResult = {
   __typename?: "LoginResult";
   accessToken: Scalars["String"];
   user: User;
+};
+
+export type NameInput = {
+  currentName: Scalars["ID"];
+  newName?: Maybe<Scalars["ID"]>;
+};
+
+export type PasswordInput = {
+  currentPassword: Scalars["String"];
+  newPassword: Scalars["String"];
 };
 
 export enum ChallengeStatus {

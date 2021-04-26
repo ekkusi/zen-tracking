@@ -41,6 +41,14 @@ export const createRefreshTokenCookie = (token: string, res: Response) => {
   });
 };
 
+export const createRefreshAndAccessTokens = (
+  user: AuthenticatedUser,
+  res: Response
+): string => {
+  createRefreshTokenCookie(createRefreshToken(user), res);
+  return createAccessToken(user);
+};
+
 export const parseAndVerifyToken = (
   bearerToken: string
 ): AuthenticatedUser | null => {

@@ -2,6 +2,7 @@ import { User } from "@prisma/client";
 import prisma from "../client";
 import ValidationError from "../../utils/errors/ValidationError";
 import { compare } from "../../utils/auth";
+import { MutationEditUserArgs } from "../../types/schema";
 
 export default class UserValidator {
   public static async validateCreateUser(name: string): Promise<void> {
@@ -31,5 +32,28 @@ export default class UserValidator {
     }
 
     return user;
+  }
+
+  public static async validateEditUser({
+    nameInput,
+    passwordInput,
+  }: MutationEditUserArgs): Promise<void> {
+    const user = await prisma.user.findUnique({
+      where: {
+        name: nameInput.currentName,
+      },
+    });
+    if (!user)
+      throw new ValidationError(
+        `Käyttäjää nimellä ${nameInput.currentName} ei löytynyt`
+      );
+    if (passwordInput) {
+      const checkPassword = await compare(
+        passwordInput.currentPassword,
+        user.password
+      );
+      if (!checkPassword)
+        throw new ValidationError(`Antamasi alkuperäinen salasana oli väärä`);
+    }
   }
 }

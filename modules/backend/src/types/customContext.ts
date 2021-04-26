@@ -9,7 +9,10 @@ import DataLoader from "dataloader";
 import { Response } from "express";
 import AwsS3Client from "../utils/awsS3Client";
 
-export type AuthenticatedUser = Omit<User, "password" | "is_private"> & {
+export type AuthenticatedUser = Omit<
+  User,
+  "password" | "is_private" | "is_email_verified"
+> & {
   isPrivate: boolean;
 };
 

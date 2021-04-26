@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model Quote {
+  id    String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  quote String @db.VarChar(254)
+}
+
 model Challenge {
   id                     String                   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name                   String                   @unique @db.VarChar(254)
@@ -42,16 +48,12 @@ model Marking {
   ChallengeParticipation ChallengeParticipation @relation(fields: [participation_id], references: [id])
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
-model Quote {
-  id    String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  quote String @db.VarChar(254)
-}
-
 model User {
   name                   String                   @id @db.VarChar(254)
   password               String                   @db.VarChar(254)
   is_private             Boolean                  @default(true)
+  email                  String?                  @unique @db.Citext
+  is_email_verified      Boolean                  @default(false)
   Challenge              Challenge[]
   ChallengeParticipation ChallengeParticipation[]
 }

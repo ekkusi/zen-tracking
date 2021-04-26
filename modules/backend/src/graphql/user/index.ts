@@ -3,10 +3,8 @@ import path from "path";
 
 import { Prisma, User } from "@prisma/client";
 import {
-  hash,
-  createRefreshToken,
-  createAccessToken,
   createRefreshTokenCookie,
+  createRefreshAndAccessTokens,
 } from "../../utils/auth";
 import { Resolvers as UserResolvers } from "../../types/resolvers";
 import { loaderResetors } from "../loaders";
@@ -120,13 +118,11 @@ export const resolvers: UserResolvers = {
     login: async (_, { name, password }, { res }) => {
       const user = await UserValidator.validateLoginUser(name, password);
 
-      createRefreshTokenCookie(
-        createRefreshToken(UserMapper.mapAuthenticatedUser(user)),
-        res
-      );
-
       return {
-        accessToken: createAccessToken(UserMapper.mapAuthenticatedUser(user)),
+        accessToken: createRefreshAndAccessTokens(
+          UserMapper.mapAuthenticatedUser(user),
+          res
+        ),
         user,
       };
     },
@@ -135,21 +131,44 @@ export const resolvers: UserResolvers = {
 
       return true;
     },
-    register: async (_, { name, password, isPrivate }, { prisma, res }) => {
+
+    editUser: async (_, args, { prisma, user, res }) => {
+      if (!user) throw new AuthenticationError();
+      const { nameInput } = args;
+      if (user.name !== nameInput.currentName) {
+        throw new AuthenticationError(
+          "Et voi muokata toisen käyttäjän tietoja"
+        );
+      }
+      await UserValidator.validateEditUser(args);
+      const editedUser = await prisma.user.update({
+        where: {
+          name: user.name,
+        },
+        data: await UserMapper.mapEditUserInput(args),
+      });
+
+      return {
+        accessToken: createRefreshAndAccessTokens(
+          UserMapper.mapAuthenticatedUser(editedUser),
+          res
+        ),
+        user: editedUser,
+      };
+    },
+
+    register: async (_, args, { prisma, res }) => {
+      const { name } = args;
       await UserValidator.validateCreateUser(name);
 
       const createdUser = await prisma.user.create({
-        data: { name, password: await hash(password), is_private: isPrivate },
+        data: await UserMapper.mapCreateUserInput(args),
       });
 
-      createRefreshTokenCookie(
-        createRefreshToken(UserMapper.mapAuthenticatedUser(createdUser)),
-        res
-      );
-
       return {
-        accessToken: createAccessToken(
-          UserMapper.mapAuthenticatedUser(createdUser)
+        accessToken: createRefreshAndAccessTokens(
+          UserMapper.mapAuthenticatedUser(createdUser),
+          res
         ),
         user: createdUser,
       };

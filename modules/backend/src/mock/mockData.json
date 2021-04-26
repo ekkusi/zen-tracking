@@ -3,17 +3,19 @@
     {
       "name": "some-user",
       "password": "asd123",
-      "is_private": false
+      "is_private": false,
+      "email": "some-user@email.com"
     },
     {
       "name": "private-user",
       "password": "asd123",
-      "is_private": false
+      "is_private": true
     },
     {
       "name": "main-user",
       "password": "asd123",
-      "is_private": false
+      "is_private": false,
+      "email": "main-user@email.com"
     },
     {
       "name": "user-with-old-participations",
