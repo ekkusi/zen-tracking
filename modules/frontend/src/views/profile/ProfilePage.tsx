@@ -26,12 +26,14 @@ import {
   GetChallengesVariables,
 } from "../../__generated__/GetChallenges";
 import { GET_CHALLENGES } from "../../generalQueries";
+import RegisterModal from "../../components/functional/RegisterModal";
 
 const ProfilePage = (): JSX.Element => {
   const { userName } = useParams<{ userName: string }>();
 
   const selectRef = useRef<SelectHandle>(null);
   const [getParticipationLoading, setGetParticipationLoading] = useState(false);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
   const [activeParticipation, updateActiveParticipation] = useGlobal(
     (store) => store.activeParticipation,
@@ -110,6 +112,17 @@ const ProfilePage = (): JSX.Element => {
 
   return (
     <Box>
+      <Flex justify={{ base: "flex-start", md: "flex-end" }}>
+        <Text
+          as="a"
+          onClick={() => setIsRegisterModalOpen(true)}
+          fontSize="lg"
+          fontWeight="bold"
+        >
+          Tarkastele ja muokkaa käyttäjätietojasi
+        </Text>
+      </Flex>
+      <RegisterModal hasOpenButton={false} isOpen={isRegisterModalOpen} />
       <SectionSeparator
         title={
           isCurrentUser()
