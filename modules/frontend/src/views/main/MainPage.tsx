@@ -155,20 +155,9 @@ const MainPage = (): JSX.Element => {
 
       <Box>
         {loading && <CustomLoadingOverlay />}
-        {activeParticipation &&
-          (activeParticipation.markings.length > 0 ? (
-            <MarkingCalendar participation={activeParticipation} />
-          ) : (
-            <>
-              <Heading.H3 fontWeight="bold">
-                Sinulla ei vielä ole merkkauksia tässä haasteessa.
-              </Heading.H3>
-              <Text>
-                Aloita ensimmäisen merkkaaminen ylemmästä painikkeesta
-                painamalla. Valikosta löydät tarvittaessa lisäohjeita.
-              </Text>
-            </>
-          ))}
+        {activeParticipation && (
+          <MarkingCalendar participation={activeParticipation} />
+        )}
       </Box>
     </Box>
   );
