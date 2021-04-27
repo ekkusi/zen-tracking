@@ -13,9 +13,19 @@ extend type Query {
 
 extend type Mutation {
   deleteUser(name: ID!): Boolean!
-  editUser(nameInput: NameInput!, passwordInput: PasswordInput, email: String): LoginResult!
+  editUser(
+    nameInput: NameInput!
+    passwordInput: PasswordInput
+    email: String
+    isPrivate: Boolean
+  ): LoginResult!
   login(name: ID!, password: String!): LoginResult!
-  register(name: ID!, password: String!, email: String, isPrivate: Boolean!): LoginResult!
+  register(
+    name: ID!
+    password: String!
+    email: String
+    isPrivate: Boolean!
+  ): LoginResult!
   logout: Boolean!
 }
 

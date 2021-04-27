@@ -82,6 +82,7 @@ export type MutationEditUserArgs = {
   nameInput: NameInput;
   passwordInput?: Maybe<PasswordInput>;
   email?: Maybe<Scalars["String"]>;
+  isPrivate?: Maybe<Scalars["Boolean"]>;
 };
 
 export type MutationLoginArgs = {
