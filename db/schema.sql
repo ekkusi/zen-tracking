@@ -12,7 +12,8 @@ CREATE TABLE "User" (
   password varchar(254) NOT NULL,
   is_private boolean DEFAULT true NOT NULL,
   email citext UNIQUE,
-  is_email_verified boolean DEFAULT false NOT NULL
+  is_email_verified boolean DEFAULT false NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "Quote" (

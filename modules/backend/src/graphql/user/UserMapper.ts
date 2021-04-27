@@ -41,6 +41,7 @@ export class UserMapper {
       email,
       password: await hash(password),
       is_private: isPrivate,
+      created_at: new Date(),
     };
   }
 }
