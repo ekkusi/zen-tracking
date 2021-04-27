@@ -163,8 +163,7 @@ const ProfilePage = (): JSX.Element => {
               onClick={() => {
                 setHideNavigation(true);
                 history.push(
-                  `/profile/${userName}/${activeParticipation.challenge.id}`,
-                  { isRecap: true }
+                  `/profile/${userName}/${activeParticipation.challenge.id}`
                 );
               }}
               as="a"
