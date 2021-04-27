@@ -134,13 +134,7 @@ export const resolvers: UserResolvers = {
 
     editUser: async (_, args, { prisma, user, res }) => {
       if (!user) throw new AuthenticationError();
-      const { nameInput } = args;
-      if (user.name !== nameInput.currentName) {
-        throw new AuthenticationError(
-          "Et voi muokata toisen käyttäjän tietoja"
-        );
-      }
-      await UserValidator.validateEditUser(args);
+      await UserValidator.validateEditUser(args, user);
       const editedUser = await prisma.user.update({
         where: {
           name: user.name,

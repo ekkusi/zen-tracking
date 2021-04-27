@@ -79,7 +79,7 @@ export type MutationDeleteUserArgs = {
 };
 
 export type MutationEditUserArgs = {
-  nameInput: NameInput;
+  name?: Maybe<Scalars["ID"]>;
   passwordInput?: Maybe<PasswordInput>;
   email?: Maybe<Scalars["String"]>;
   isPrivate?: Maybe<Scalars["Boolean"]>;
@@ -161,11 +161,6 @@ export type LoginResult = {
   __typename?: "LoginResult";
   accessToken: Scalars["String"];
   user: User;
-};
-
-export type NameInput = {
-  currentName: Scalars["ID"];
-  newName?: Maybe<Scalars["ID"]>;
 };
 
 export type PasswordInput = {

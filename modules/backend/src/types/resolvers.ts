@@ -145,7 +145,6 @@ export type ResolversTypes = {
   LoginResult: ResolverTypeWrapper<
     Omit<Types.LoginResult, "user"> & { user: ResolversTypes["User"] }
   >;
-  NameInput: Types.NameInput;
   PasswordInput: Types.PasswordInput;
   ChallengeStatus: Types.ChallengeStatus;
   Challenge: ResolverTypeWrapper<Challenge>;
@@ -171,7 +170,6 @@ export type ResolversParentTypes = {
   LoginResult: Omit<Types.LoginResult, "user"> & {
     user: ResolversParentTypes["User"];
   };
-  NameInput: Types.NameInput;
   PasswordInput: Types.PasswordInput;
   Challenge: Challenge;
   ChallengeParticipation: ChallengeParticipation;
@@ -259,7 +257,7 @@ export type MutationResolvers<
     ResolversTypes["LoginResult"],
     ParentType,
     ContextType,
-    RequireFields<Types.MutationEditUserArgs, "nameInput">
+    RequireFields<Types.MutationEditUserArgs, never>
   >;
   login?: Resolver<
     ResolversTypes["LoginResult"],

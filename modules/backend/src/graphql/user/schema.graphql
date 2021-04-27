@@ -14,7 +14,7 @@ extend type Query {
 extend type Mutation {
   deleteUser(name: ID!): Boolean!
   editUser(
-    nameInput: NameInput!
+    name: ID
     passwordInput: PasswordInput
     email: String
     isPrivate: Boolean
@@ -40,11 +40,6 @@ type User {
 type LoginResult {
   accessToken: String!
   user: User!
-}
-
-input NameInput {
-  currentName: ID!
-  newName: ID
 }
 
 input PasswordInput {

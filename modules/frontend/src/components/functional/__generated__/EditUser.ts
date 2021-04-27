@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { NameInput, PasswordInput } from "./../../../__generated__/globalTypes";
+import { PasswordInput } from "./../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: EditUser
@@ -27,7 +27,7 @@ export interface EditUser {
 }
 
 export interface EditUserVariables {
-  nameInput: NameInput;
+  name?: string | null;
   passwordInput?: PasswordInput | null;
   email?: string | null;
   isPrivate?: boolean | null;

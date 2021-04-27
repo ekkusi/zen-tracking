@@ -40,13 +40,13 @@ export const REGISTER_USER = gql`
 
 export const EDIT_USER = gql`
   mutation EditUser(
-    $nameInput: NameInput!
+    $name: ID
     $passwordInput: PasswordInput
     $email: String
     $isPrivate: Boolean
   ) {
     editUser(
-      nameInput: $nameInput
+      name: $name
       passwordInput: $passwordInput
       email: $email
       isPrivate: $isPrivate
@@ -133,7 +133,7 @@ const UserEditModal = ({
       // Edit user
       const { email, name, password, currentPassword, isPrivate } = values;
       const input = {
-        nameInput: { currentName: user.name, newName: name },
+        name: name !== user.name ? name : undefined,
         passwordInput: password
           ? { newPassword: password, currentPassword }
           : undefined,

@@ -15,7 +15,7 @@ export class UserMapper {
   public static async mapEditUserInput({
     email,
     passwordInput,
-    nameInput,
+    name,
     isPrivate,
   }: MutationEditUserArgs): Promise<Prisma.UserUpdateInput> {
     return {
@@ -23,7 +23,7 @@ export class UserMapper {
       password: passwordInput
         ? await hash(passwordInput.newPassword)
         : undefined,
-      name: nameInput.newName ? nameInput.newName : undefined,
+      name: name || undefined,
       is_email_verified: email !== undefined ? false : undefined,
       is_private:
         isPrivate !== undefined && isPrivate !== null ? isPrivate : undefined,
