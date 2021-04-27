@@ -26,14 +26,14 @@ import {
   GetChallengesVariables,
 } from "../../__generated__/GetChallenges";
 import { GET_CHALLENGES } from "../../generalQueries";
-import RegisterModal from "../../components/functional/RegisterModal";
+import UserEditModal from "../../components/functional/UserEditModal";
 
 const ProfilePage = (): JSX.Element => {
   const { userName } = useParams<{ userName: string }>();
 
   const selectRef = useRef<SelectHandle>(null);
   const [getParticipationLoading, setGetParticipationLoading] = useState(false);
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [isUserEditModalOpen, setIsUserEditModalOpen] = useState(false);
 
   const [activeParticipation, updateActiveParticipation] = useGlobal(
     (store) => store.activeParticipation,
@@ -41,6 +41,8 @@ const ProfilePage = (): JSX.Element => {
   );
 
   const currentUser = useGlobal((state) => state.currentUser)[0];
+  console.log(currentUser);
+
   const setHideNavigation = useGlobal(
     () => {},
     (actions) => actions.setHideNavigation
@@ -112,18 +114,22 @@ const ProfilePage = (): JSX.Element => {
 
   return (
     <Box>
-      <Flex justify={{ base: "flex-start", md: "flex-end" }}>
-        <Text
-          as="a"
-          onClick={() => setIsRegisterModalOpen(true)}
-          fontSize="lg"
-          fontWeight="bold"
-        >
-          Tarkastele ja muokkaa käyttäjätietojasi
-        </Text>
-      </Flex>
-      <RegisterModal hasOpenButton={false} isOpen={isRegisterModalOpen} />
+      {isCurrentUser() && (
+        <>
+          <UserEditModal
+            hasOpenButton={false}
+            isOpen={isUserEditModalOpen}
+            onClose={() => setIsUserEditModalOpen(false)}
+            onEdit={(editedUser) => history.push(`/profile/${editedUser.name}`)}
+            user={currentUser}
+          />
+          <Button as="a" onClick={() => setIsUserEditModalOpen(true)} mb="5">
+            Muokkaa tietojasi
+          </Button>
+        </>
+      )}
       <SectionSeparator
+        mt="5"
         title={
           isCurrentUser()
             ? "Osallistumisesi"
@@ -221,9 +227,11 @@ const ProfilePage = (): JSX.Element => {
               : `Käyttäjällä ${userName} ei vielä ole julkisia osallistumisia.`}
           </Text>
           {isCurrentUser() && (
-            <Button as={Link} to="/challenges">
-              Haasteisiin
-            </Button>
+            <Flex justify="center">
+              <Button as={Link} to="/challenges" size="lg">
+                Haasteisiin
+              </Button>
+            </Flex>
           )}
         </>
       )}
@@ -236,7 +244,7 @@ const ProfilePage = (): JSX.Element => {
         }
       />
       {userChallengesLoading && <Loading />}
-      {createdChallenges ? (
+      {createdChallenges && createdChallenges.length > 0 ? (
         <Flex wrap="wrap">
           {createdChallenges.map((it) => (
             <ChallengeCard

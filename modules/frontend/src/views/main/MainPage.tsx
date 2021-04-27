@@ -70,11 +70,11 @@ const MainPage = (): JSX.Element => {
 
       {!activeParticipation ? (
         <>
-          <Text mb="4">
+          <Text mb="10">
             Et ole vielä liittynyt haasteisiin tai valinnut aktiivista
             haastetta. Pääset tutustumaan ja liittymään haasteisiin alta.
           </Text>
-          <Flex justifyContent={{ base: "flex-start", sm: "center" }}>
+          <Flex justifyContent="center">
             <MotionButton
               size="lg"
               as={Link}

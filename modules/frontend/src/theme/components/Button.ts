@@ -87,7 +87,7 @@ export const Button: ComponentSingleStyleConfig = {
     }),
     md: ({ variant }) => ({
       fontSize: "sm",
-      px: { base: 3, sm: 5 },
+      px: { base: 5, sm: 5 },
       py: { base: 3, sm: 4 },
       h: "auto",
       "> svg": {

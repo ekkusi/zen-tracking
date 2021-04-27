@@ -45,6 +45,16 @@ export interface MarkingUpdateInput {
   photoUrl?: string | null;
 }
 
+export interface NameInput {
+  currentName: string;
+  newName?: string | null;
+}
+
+export interface PasswordInput {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface UpdateChallengeInput {
   name?: string | null;
   description?: string | null;

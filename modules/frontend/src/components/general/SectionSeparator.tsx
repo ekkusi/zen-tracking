@@ -1,12 +1,15 @@
-import { Box, useColorMode } from "@chakra-ui/react";
+import { Box, BoxProps, useColorMode } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import React from "react";
 
-type SectionSeparatorProps = {
+type SectionSeparatorProps = BoxProps & {
   title: string;
 };
 
-const SectionSeparator = ({ title }: SectionSeparatorProps): JSX.Element => {
+const SectionSeparator = ({
+  title,
+  ...boxProps
+}: SectionSeparatorProps): JSX.Element => {
   const { colorMode } = useColorMode();
   return (
     <Box
@@ -15,6 +18,7 @@ const SectionSeparator = ({ title }: SectionSeparatorProps): JSX.Element => {
       borderColor={colorMode === "light" ? "gray.700" : "white"}
       mb="5"
       mt="20"
+      {...boxProps}
     >
       <Heading.H2 textAlign="center" mb="0">
         {title}

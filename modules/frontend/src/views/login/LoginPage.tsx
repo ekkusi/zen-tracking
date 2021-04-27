@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import { Form, Formik } from "formik";
 import { LOGIN } from "./loginQueries";
 import FormField from "../../components/general/form/FormField";
-import RegisterModal from "../../components/functional/RegisterModal";
+import UserEditModal from "../../components/functional/UserEditModal";
 import { setAccessToken } from "../../util/accessToken";
 import { Login, LoginVariables } from "./__generated__/Login";
 import { getUser } from "../../util/apolloQueries";
@@ -121,7 +121,7 @@ const LoginPage = (): JSX.Element => {
         <Text as="span" mr="2">
           Uusi käyttäjä?
         </Text>
-        <RegisterModal
+        <UserEditModal
           openButtonLabel="Rekisteröidy tästä"
           openButtonProps={{ as: "a" }}
         />
