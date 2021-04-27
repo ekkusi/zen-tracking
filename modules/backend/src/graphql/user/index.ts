@@ -152,8 +152,7 @@ export const resolvers: UserResolvers = {
     },
 
     register: async (_, args, { prisma, res }) => {
-      const { name } = args;
-      await UserValidator.validateCreateUser(name);
+      await UserValidator.validateCreateUser(args);
 
       const createdUser = await prisma.user.create({
         data: await UserMapper.mapCreateUserInput(args),
