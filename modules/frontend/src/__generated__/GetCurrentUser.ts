@@ -36,6 +36,7 @@ export interface GetCurrentUser_getCurrentUser_activeParticipation {
 export interface GetCurrentUser_getCurrentUser {
   __typename: "User";
   name: string;
+  email: string | null;
   isPrivate: boolean;
   activeParticipation: GetCurrentUser_getCurrentUser_activeParticipation | null;
 }

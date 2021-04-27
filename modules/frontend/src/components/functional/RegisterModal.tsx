@@ -12,14 +12,21 @@ import {
   RegisterMutationVariables,
 } from "./__generated__/RegisterMutation";
 import { userDataFragment } from "../../fragments";
+import { ParsedUser } from "../../types/parsedBackendTypes";
 
 export const REGISTER_USER = gql`
   mutation RegisterMutation(
     $name: ID!
     $password: String!
     $isPrivate: Boolean!
+    $email: String
   ) {
-    register(name: $name, password: $password, isPrivate: $isPrivate) {
+    register(
+      name: $name
+      password: $password
+      email: $email
+      isPrivate: $isPrivate
+    ) {
       accessToken
       user {
         ...UserData
@@ -29,7 +36,9 @@ export const REGISTER_USER = gql`
   ${userDataFragment}
 `;
 
-type RegisterModalProps = Omit<ModalTemplateProps, "children"> & {};
+type RegisterModalProps = Omit<ModalTemplateProps, "children"> & {
+  user?: ParsedUser;
+};
 
 type FormValues = {
   name: string;
@@ -95,7 +104,6 @@ const RegisterModal = ({
       headerLabel="Rekisteröidy"
       hasFooter={false}
       {...modalTemplateProps}
-      {...disclosureProps}
     >
       <Formik
         initialValues={{

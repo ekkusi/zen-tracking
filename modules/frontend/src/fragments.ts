@@ -38,6 +38,7 @@ export const activeParticipationInfoFragment = gql`
 export const userDataFragment = gql`
   fragment UserData on User {
     name
+    email
     isPrivate
   }
 `;

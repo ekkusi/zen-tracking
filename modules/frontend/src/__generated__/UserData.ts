@@ -10,5 +10,6 @@
 export interface UserData {
   __typename: "User";
   name: string;
+  email: string | null;
   isPrivate: boolean;
 }

@@ -12,6 +12,7 @@ import { ChallengeStatus } from "./../../../../__generated__/globalTypes";
 export interface GetWholeParticipation_getParticipation_user {
   __typename: "User";
   name: string;
+  email: string | null;
   isPrivate: boolean;
 }
 

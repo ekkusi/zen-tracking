@@ -36,6 +36,7 @@ export interface Login_login_user_activeParticipation {
 export interface Login_login_user {
   __typename: "User";
   name: string;
+  email: string | null;
   isPrivate: boolean;
   activeParticipation: Login_login_user_activeParticipation | null;
 }

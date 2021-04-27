@@ -25,6 +25,7 @@ export interface GetUserWithParticipations_getUser_participations {
 export interface GetUserWithParticipations_getUser {
   __typename: "User";
   name: string;
+  email: string | null;
   isPrivate: boolean;
   participations: GetUserWithParticipations_getUser_participations[];
 }

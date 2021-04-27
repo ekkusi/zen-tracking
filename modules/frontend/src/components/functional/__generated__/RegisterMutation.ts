@@ -10,6 +10,7 @@
 export interface RegisterMutation_register_user {
   __typename: "User";
   name: string;
+  email: string | null;
   isPrivate: boolean;
 }
 
@@ -27,4 +28,5 @@ export interface RegisterMutationVariables {
   name: string;
   password: string;
   isPrivate: boolean;
+  email?: string | null;
 }

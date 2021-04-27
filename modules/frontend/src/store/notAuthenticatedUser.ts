@@ -2,5 +2,6 @@ import { AuthenticatedUser } from "@ekkusi/zen-tracking-backend/lib/types/custom
 
 export const notAuthorizedUser: AuthenticatedUser = {
   name: "not-authorized",
+  email: "not-authorized@email.com",
   isPrivate: false,
 };
