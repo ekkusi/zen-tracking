@@ -2,17 +2,53 @@ import { User } from "@prisma/client";
 import prisma from "../client";
 import ValidationError from "../../utils/errors/ValidationError";
 import { compare } from "../../utils/auth";
-import { MutationEditUserArgs } from "../../types/schema";
+import { MutationEditUserArgs, MutationRegisterArgs } from "../../types/schema";
 import { AuthenticatedUser } from "../../types/customContext";
 
 export default class UserValidator {
-  public static async validateCreateUser(name: string): Promise<void> {
-    const user = await prisma.user.findUnique({
-      where: { name },
+  public static async validateCreateUser({
+    name,
+    email,
+  }: MutationRegisterArgs): Promise<void> {
+    // Check both email and name for uniqueness so both can be used for login
+    const userWithSameName = await prisma.user.findFirst({
+      where: {
+        OR: [
+          {
+            name,
+          },
+          {
+            email: name,
+          },
+        ],
+      },
     });
     // Validate name to not be not-authorized, this is reserved for frontend default user to route back to login page
-    if (user || name === "not-authorized") {
-      throw new ValidationError("Antamasi nimi on varattu, valitse eri nimi");
+    if (userWithSameName || name === "not-authorized") {
+      throw new ValidationError(
+        "Antamasi tunnus on varattu, valitse eri tunnus"
+      );
+    }
+
+    // Check both email and name for uniqueness so both can be used for login
+    if (email) {
+      const userWithSameEmail = await prisma.user.findFirst({
+        where: {
+          OR: [
+            {
+              name: email,
+            },
+            {
+              email,
+            },
+          ],
+        },
+      });
+      if (userWithSameEmail) {
+        throw new ValidationError(
+          "Antamasi sähköposti on varattu, anna eri sähköposti"
+        );
+      }
     }
   }
 
