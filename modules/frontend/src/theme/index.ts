@@ -36,6 +36,7 @@ const theme: Theme = extendTheme({
         height: "100%",
         color: colors.text[props.colorMode],
         bg: colors.bg[props.colorMode],
+        overflowX: "hidden",
       },
       body: {
         fontSize: { base: "md", md: "lg" },

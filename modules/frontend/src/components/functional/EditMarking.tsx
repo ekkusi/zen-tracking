@@ -152,7 +152,6 @@ const EditMarking = ({
   }, [photoSrc]);
 
   const saveAndClose = async (values: FormValues) => {
-    console.log("Saving and closing");
     // This shouldn't get triggered, activeParticipation should be found if EditMarking is open
     if (!activeParticipation) {
       updateError(
@@ -317,7 +316,6 @@ const EditMarking = ({
       const fileError = validateFile(values.photo);
       if (fileError.length > 0) errors.photo = fileError;
     }
-    console.log("Validation:", errors);
 
     return errors;
   };

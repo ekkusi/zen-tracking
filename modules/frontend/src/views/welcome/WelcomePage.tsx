@@ -9,7 +9,6 @@ const WelcomePage = (): JSX.Element => {
   const [isMdScreen] = useMediaQuery(`(min-width: ${theme.breakpoints.md})`);
 
   const reedSvgs = useMemo((): JSX.Element[] => {
-    console.log("creating svgs");
     const svgs = [];
     const reedAmount = isMdScreen ? 100 : 50;
     const reedLength = isMdScreen ? 1000 : 500;

@@ -164,6 +164,7 @@ const UserEditModal = ({
         if (!hasLoggedInBefore)
           localStorage.setItem("hasLoggedInBefore", "true");
         globalActions.updateUser(registeredUser);
+
         setAccessToken(accessToken);
         history.push("/welcome-user");
 

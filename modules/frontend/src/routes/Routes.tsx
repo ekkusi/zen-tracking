@@ -20,6 +20,7 @@ import TransferMarkingsPage from "views/transfer-markings/TransferMarkingsPage";
 
 import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "@ekkusi/zen-tracking-backend/lib/config.json";
 import SomeDesignPage from "views/design/SomeDesignPage";
+import { AnimatePresence } from "framer-motion";
 import WelcomeUserPage from "../views/welcome-user/WelcomeUserPage";
 import { refreshToken } from "../util/accessToken";
 import ChallengePage from "../views/challenges/challenge/ChallengePage";
@@ -37,6 +38,7 @@ const Routes = (): JSX.Element => {
   const [loading, setLoading] = useState(true);
   const [hasTriedLoggingIn, setHasTriedLoggingIn] = useState(false);
   const [previousRoute, setPreviousRoute] = useState<string | null>(null);
+  const [hasRenderedMainPage, setHasRenderedMainPage] = useState(false);
 
   const { activeParticipation, currentUser, hideNavigation } = globalState;
 
@@ -62,6 +64,7 @@ const Routes = (): JSX.Element => {
 
   const updateCurrentUser = useCallback(async () => {
     await refreshToken();
+
     // If path that is rendered requires authentication, try fetch user.
     // If token has expired, ApolloProvider will throw an error and redirect to /login
     if (!NON_AUTHENTICATED_PATHS.includes(location.pathname)) {
@@ -99,19 +102,28 @@ const Routes = (): JSX.Element => {
   // Handle logging in with localStorage cache
   useEffect(() => {
     let isMounted = true;
-
+    // Try to login if hasn't been triggered yet
     if (!hasTriedLoggingIn && isMounted) {
       setHasTriedLoggingIn(true);
       updateCurrentUser();
     }
 
+    // Add Google Analytics stuff
     if (isMounted && previousRoute !== currentPath) {
       setPreviousRoute(currentPath);
       ReactGA.pageview(currentPath);
     }
 
+    // Make navigations visible, if they are not and is not in Participation recap
     if (isMounted && !isRecap && hideNavigation) {
       globalActions.setHideNavigation(false);
+    }
+
+    // Set hasRenderedMainPage after 1 second, so previous animations can be through. A little bit schetchy solution.
+    if (isMounted && location.pathname === "/" && !hasRenderedMainPage) {
+      setTimeout(() => {
+        setHasRenderedMainPage(true);
+      }, 1000);
     }
     return () => {
       isMounted = false;
@@ -119,6 +131,7 @@ const Routes = (): JSX.Element => {
   }, [
     hasTriedLoggingIn,
     updateCurrentUser,
+    hasRenderedMainPage,
     previousRoute,
     currentPath,
     isRecap,
@@ -139,135 +152,167 @@ const Routes = (): JSX.Element => {
           {globalState.error}
         </Text>
       </ModalTemplate>
-      <Switch>
-        <Route
-          path="/login"
-          render={() => {
-            if (!isGlobalUserAuthorized) {
+      <AnimatePresence exitBeforeEnter>
+        <Switch location={location} key={location.pathname}>
+          <Route
+            path="/login"
+            render={() => {
               return (
-                <ViewContainer isPlain>
+                <ViewContainer
+                  isPlain
+                  animatePageTransition
+                  exitAnimation={{ x: "-100vw" }}
+                >
                   <LoginPage />
                 </ViewContainer>
               );
-            }
+            }}
+          />
+          <Route
+            path="/transfer-markings"
+            render={() => {
+              if (shouldRenderTransferMarkings()) {
+                return (
+                  <ViewContainer isPlain animatePageTransition>
+                    <TransferMarkingsPage />
+                  </ViewContainer>
+                );
+              }
+              return <Redirect to="/" />;
+            }}
+          />
 
-            return <Redirect to="/" />;
-          }}
-        />
-        <Route
-          path="/transfer-markings"
-          render={() => {
-            if (shouldRenderTransferMarkings()) {
+          <Route
+            path="/welcome"
+            render={() => {
               return (
-                <ViewContainer isPlain>
-                  <TransferMarkingsPage />
+                <ViewContainer
+                  hideNavigation
+                  isPlain
+                  isFullWidth
+                  animatePageTransition
+                >
+                  <WelcomePage />
                 </ViewContainer>
               );
-            }
-            return <Redirect to="/" />;
-          }}
-        />
-        <Route
-          path="/welcome"
-          render={() => {
-            return (
-              <ViewContainer hideNavigation isPlain isFullWidth>
-                <WelcomePage />
-              </ViewContainer>
-            );
-          }}
-        />
-        <Route
-          render={() => {
-            if (loading) {
-              return <LoadingOverlay />;
-            }
-            if (!isGlobalUserAuthorized) {
-              return <Redirect to="/login" />;
-            }
-            if (shouldRenderTransferMarkings()) {
-              return <Redirect to="/transfer-markings" />;
-            }
+            }}
+          />
+          <Route
+            render={() => {
+              if (loading) {
+                return <LoadingOverlay />;
+              }
+              if (!isGlobalUserAuthorized) {
+                return <Redirect to="/login" />;
+              }
+              // This probably shouldn't trigger anymore, but can be kept here, if we want to do something similar in the future
+              if (shouldRenderTransferMarkings()) {
+                return <Redirect to="/transfer-markings" />;
+              }
 
-            return (
-              <Switch>
-                <Route
-                  exact
-                  path="/"
-                  render={() => (
-                    <ViewContainer>
-                      <MainPage />
-                    </ViewContainer>
-                  )}
-                />
-                <Route
-                  path="/challenges/:id"
-                  render={() => (
-                    <ViewContainer>
-                      <ChallengePage />
-                    </ViewContainer>
-                  )}
-                />
-                <Route
-                  path="/challenges"
-                  render={() => (
-                    <ViewContainer>
-                      <ChallengesPage />
-                    </ViewContainer>
-                  )}
-                />
-                <Route
-                  path="/profile/:userName/:challengeId"
-                  render={() => (
-                    <ViewContainer>
-                      <ParticipationPage />
-                    </ViewContainer>
-                  )}
-                />
-                <Route
-                  path="/profile/:userName"
-                  render={() => (
-                    <ViewContainer>
-                      <ProfilePage />
-                    </ViewContainer>
-                  )}
-                />
+              return (
+                <Switch>
+                  <Route
+                    exact
+                    path="/"
+                    render={() => {
+                      return (
+                        <ViewContainer
+                          animatePageTransition={!hasRenderedMainPage}
+                          transition={{
+                            duration: 0.5,
+                          }}
+                        >
+                          <MainPage />
+                        </ViewContainer>
+                      );
+                    }}
+                  />
+                  <Route
+                    path="/challenges/:id"
+                    render={() => (
+                      <ViewContainer>
+                        <ChallengePage />
+                      </ViewContainer>
+                    )}
+                  />
+                  <Route
+                    path="/challenges"
+                    render={() => (
+                      <ViewContainer>
+                        <ChallengesPage />
+                      </ViewContainer>
+                    )}
+                  />
+                  <Route
+                    path="/profile/:userName/:challengeId"
+                    render={() => (
+                      <ViewContainer>
+                        <ParticipationPage />
+                      </ViewContainer>
+                    )}
+                  />
+                  <Route
+                    path="/profile/:userName"
+                    render={() => (
+                      <ViewContainer>
+                        <ProfilePage />
+                      </ViewContainer>
+                    )}
+                  />
 
-                <Route
-                  path="/challenges"
-                  render={() => (
-                    <ViewContainer>
-                      <ChallengesPage />
-                    </ViewContainer>
-                  )}
-                />
-                <Route
-                  path="/design"
-                  render={() => (
-                    <ViewContainer>
-                      <DesignPage />
-                    </ViewContainer>
-                  )}
-                />
-                <Route
-                  path="/design-some"
-                  render={() => (
-                    <ViewContainer isPlain>
-                      <SomeDesignPage />
-                    </ViewContainer>
-                  )}
-                />
-                <Route
-                  path="/welcome-user"
-                  render={() => <WelcomeUserPage />}
-                />
+                  <Route
+                    path="/challenges"
+                    render={() => (
+                      <ViewContainer>
+                        <ChallengesPage />
+                      </ViewContainer>
+                    )}
+                  />
+                  <Route
+                    path="/design"
+                    render={() => (
+                      <ViewContainer>
+                        <DesignPage />
+                      </ViewContainer>
+                    )}
+                  />
+                  <Route
+                    path="/design-some"
+                    render={() => (
+                      <ViewContainer>
+                        <SomeDesignPage />
+                      </ViewContainer>
+                    )}
+                  />
+                  <Route
+                    path="/welcome-user"
+                    render={() => (
+                      <ViewContainer
+                        hideNavigation
+                        isPlain
+                        isFullWidth
+                        animatePageTransition
+                        animation={{
+                          from: { x: "100vw" },
+                          to: { x: 0 },
+                        }}
+                        exitAnimation={{
+                          x: "-100vw",
+                        }}
+                      >
+                        <WelcomeUserPage />
+                      </ViewContainer>
+                    )}
+                  />
 
-                <Route path="*" render={() => <NotFoundPage />} />
-              </Switch>
-            );
-          }}
-        />
-      </Switch>
+                  <Route path="*" render={() => <NotFoundPage />} />
+                </Switch>
+              );
+            }}
+          />
+        </Switch>
+      </AnimatePresence>
     </>
   );
 };

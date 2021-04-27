@@ -41,7 +41,6 @@ const ProfilePage = (): JSX.Element => {
   );
 
   const currentUser = useGlobal((state) => state.currentUser)[0];
-  console.log(currentUser);
 
   const setHideNavigation = useGlobal(
     () => {},
