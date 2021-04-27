@@ -6,12 +6,15 @@ import ModalTemplate from "../general/ModalTemplate";
 import Heading from "../primitives/Heading";
 import useGlobal from "../../store";
 import theme from "../../theme";
+import { notAuthorizedUser } from "../../store/notAuthenticatedUser";
 
 export default function AddToHomeScreenPrompt() {
   const [promptEvent, updatePromptEvent] = useGlobal(
     (state) => state.promptEvent,
     (actions) => actions.updatePromptEvent
   );
+
+  const user = useGlobal((state) => state.currentUser)[0];
 
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
@@ -20,22 +23,29 @@ export default function AddToHomeScreenPrompt() {
     "hasUserSeenInstallPrompt"
   );
 
+  const isGlobalUserAuthorized = () => {
+    return user.name !== notAuthorizedUser.name;
+  };
+
   window.addEventListener(
     "beforeinstallprompt",
     (event) => {
-      console.log("beforeinstallprompt triggered: ", event);
       updatePromptEvent(event);
     },
     { passive: true }
   );
 
-  window.addEventListener("appinstalled", (event: any) => {
-    console.log("appinstalled triggered", event);
+  window.addEventListener("appinstalled", () => {
     localStorage.setItem("hasUserSeenInstallPrompt", "true");
     setIsOpen(false);
   });
 
-  if (!userHasSeenInstallPrompt && promptEvent && isMobile) {
+  if (
+    !userHasSeenInstallPrompt &&
+    promptEvent &&
+    isMobile &&
+    isGlobalUserAuthorized()
+  ) {
     return (
       <ModalTemplate
         hasOpenButton={false}
