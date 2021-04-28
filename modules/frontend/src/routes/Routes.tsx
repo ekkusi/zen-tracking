@@ -131,6 +131,7 @@ const Routes = (): JSX.Element => {
   }, [
     hasTriedLoggingIn,
     updateCurrentUser,
+    globalState,
     hasRenderedMainPage,
     previousRoute,
     currentPath,

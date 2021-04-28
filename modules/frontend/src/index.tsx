@@ -8,7 +8,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
-ReactGA.initialize("G-MBX4HJ1DJX");
+if (process.env.NODE_ENV === "production") {
+  ReactGA.initialize("UA-195876229-1");
+  ReactGA.ga(() => {
+    ReactGA.set({
+      test: "test",
+    });
+  });
+}
 
 serviceWorkerRegistration.register();
 
