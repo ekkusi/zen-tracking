@@ -55,6 +55,7 @@ const ParticipationPage = (): JSX.Element => {
       challengeId,
       userName,
     },
+    onError: () => {},
   });
 
   const participation = data?.getParticipation;
@@ -152,24 +153,28 @@ const ParticipationPage = (): JSX.Element => {
 
   return (
     <Box>
-      {!loading && !isRecap && (
-        <Flex justify="space-between">
-          <Link to="/">Takaisin etusivulle</Link>
-
-          {participation && (
-            <Text as="span">
-              Suorittaja:{" "}
-              <b>
-                {user.name === participation?.user.name
-                  ? "Sinä"
-                  : participation.user.name}
-              </b>{" "}
-            </Text>
-          )}
-        </Flex>
-      )}
       {participation && (
         <>
+          {!isRecap && (
+            <Flex justify="space-between">
+              <Link to="/">Takaisin etusivulle</Link>
+
+              {participation && (
+                <Text as="span">
+                  Suorittaja:{" "}
+                  <Text
+                    as={Link}
+                    to={`/profile/${participation.user.name}`}
+                    fontWeight="bold"
+                  >
+                    {user.name === participation.user.name
+                      ? "Sinä"
+                      : participation.user.name}
+                  </Text>
+                </Text>
+              )}
+            </Flex>
+          )}
           <BoxWithMotion
             {...formatOpacityAnimationProps(0)}
             mb="5"
@@ -314,7 +319,7 @@ const ParticipationPage = (): JSX.Element => {
         </>
       )}
       {loading && <Loading />}
-      {error && <Text color="warning">{error.message}</Text>}
+      {error && <Text fontSize="2xl">Suoritusta ei löytynyt</Text>}
     </Box>
   );
 };

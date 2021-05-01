@@ -176,12 +176,14 @@ const ChallengePage = (): JSX.Element => {
           </Grid>
           <Heading.H2>Kuvaus</Heading.H2>
           <Text mb="5">{challenge.description}</Text>
-          <Heading.H2>Osallistujat</Heading.H2>
+          <Heading.H2>Osallistumiset</Heading.H2>
           {challenge.participations.length > 0 ? (
             <UnorderedList>
               {challenge.participations.map((it) => (
                 <ListItem key={it.id}>
-                  <Link to={`/profile/${it.user.name}`}>{it.user.name}</Link>
+                  <Link to={`/profile/${it.user.name}/${challenge.id}`}>
+                    {it.user.name}
+                  </Link>
                 </ListItem>
               ))}
             </UnorderedList>
