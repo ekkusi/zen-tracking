@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { ChallengeStatus } from "./../../../__generated__/globalTypes";
+
 // ====================================================
 // GraphQL mutation operation: Login
 // ====================================================
@@ -13,6 +15,7 @@ export interface Login_login_user_activeParticipation_challenge {
   name: string;
   startDate: any | null;
   endDate: any | null;
+  status: ChallengeStatus;
 }
 
 export interface Login_login_user_activeParticipation_markings {

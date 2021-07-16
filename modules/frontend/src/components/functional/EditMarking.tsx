@@ -28,6 +28,7 @@ import { IoLeaf } from "react-icons/io5";
 import { Form, Formik, FormikErrors } from "formik";
 import { markingDataFragment } from "fragments";
 import { mode } from "@chakra-ui/theme-tools";
+import { isSameDay } from "date-fns";
 import FormField from "../general/form/FormField";
 import PreviewImage from "../general/form/PreviewImage";
 import ConfirmationModal from "../general/ConfirmationModal";
@@ -42,6 +43,7 @@ import {
 } from "./__generated__/EditMarking";
 
 import { MAX_UPLOAD_FILE_SIZE_MB } from "../../config.json";
+import useOpenRecapModal from "../../hooks/useOpenRecapModal";
 
 export const ADD_MARKING = gql`
   mutation AddMarking($participationId: ID!, $marking: MarkingCreateInput!) {
@@ -133,6 +135,8 @@ const EditMarking = ({
     },
   });
 
+  const openRecapModal = useOpenRecapModal();
+
   const initialValues = useMemo((): FormValues => {
     if (marking?.photoUrl && !photoSrc) setPhotoSrc(marking?.photoUrl);
     return {
@@ -181,6 +185,7 @@ const EditMarking = ({
         return;
       }
     }
+
     try {
       // User markings after edit/create. Set to null if update fails to not trigger update in global state.
       let newMarkings: Marking[] | null = null;
@@ -234,6 +239,16 @@ const EditMarking = ({
           editedMarking = result.data.addMarking;
           // Add created marking if mutate returns data. User should always be defined here.
           newMarkings = [...activeParticipation.markings, editedMarking];
+
+          // If added marking is for the last day of the challenge, ask if user wants to see recap
+          if (
+            isSameDay(
+              new Date(editedMarking.date),
+              new Date(activeParticipation.challenge.endDate)
+            )
+          ) {
+            openRecapModal(activeParticipation.challenge);
+          }
         }
       }
 

@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { ChallengeStatus } from "./globalTypes";
+
 // ====================================================
 // GraphQL query operation: GetUserTransferParticipation
 // ====================================================
@@ -13,6 +15,7 @@ export interface GetUserTransferParticipation_getUserTransferParticipation_chall
   name: string;
   startDate: any | null;
   endDate: any | null;
+  status: ChallengeStatus;
 }
 
 export interface GetUserTransferParticipation_getUserTransferParticipation_markings {

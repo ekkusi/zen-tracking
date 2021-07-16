@@ -12,9 +12,10 @@ import ChallengeSelect, {
   SelectHandle,
 } from "components/functional/ChallengeSelect";
 import CustomLoadingOverlay from "components/general/LoadingOverlay";
-import AddMarking from "../../components/functional/EditMarking";
+import EditMarking from "../../components/functional/EditMarking";
 import MarkingCalendar from "../../components/functional/MarkingCalendar";
 import { getParticipation } from "../../util/apolloQueries";
+import { ChallengeStatus } from "../../__generated__/globalTypes";
 
 const MotionArrowForwardIcon = chakraMotionWrapper(ArrowForwardIcon);
 const MotionButton = motion(Button);
@@ -122,34 +123,36 @@ const MainPage = (): JSX.Element => {
           >
             Selaa muita haasteita
           </Text>
-          <Flex direction="column" alignItems="center" mb="7">
-            <AddMarking
-              openButtonLabel={
-                hasUserMarkedToday()
-                  ? "Olet jo merkannut tänään"
-                  : "Merkkaa päivän suoritus"
-              }
-              openButtonProps={{
-                isDisabled: hasUserMarkedToday() || loading,
-                size: "lg",
-                leftIcon: (
-                  <CheckIcon
-                    w={{ base: 6, md: 8 }}
-                    h={{ base: 6, md: 8 }}
-                    mb="1px"
-                  />
-                ),
-                mb: 1,
-              }}
-            />
-            <Text
-              as={Link}
-              to={`/profile/${user.name}/${activeParticipation.challenge.id}`}
-              fontSize="xl"
-            >
-              Tarkastele koko suoritusta
-            </Text>
-          </Flex>
+          {activeParticipation.challenge.status === ChallengeStatus.ACTIVE && (
+            <Flex direction="column" alignItems="center" mb="7">
+              <EditMarking
+                openButtonLabel={
+                  hasUserMarkedToday()
+                    ? "Olet jo merkannut tänään"
+                    : "Merkkaa päivän suoritus"
+                }
+                openButtonProps={{
+                  isDisabled: hasUserMarkedToday() || loading,
+                  size: "lg",
+                  leftIcon: (
+                    <CheckIcon
+                      w={{ base: 6, md: 8 }}
+                      h={{ base: 6, md: 8 }}
+                      mb="1px"
+                    />
+                  ),
+                  mb: 1,
+                }}
+              />
+              <Text
+                as={Link}
+                to={`/profile/${user.name}/${activeParticipation.challenge.id}`}
+                fontSize="xl"
+              >
+                Tarkastele koko suoritusta
+              </Text>
+            </Flex>
+          )}
         </>
       )}
 

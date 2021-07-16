@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { ChallengeStatus } from "./globalTypes";
+
 // ====================================================
 // GraphQL fragment: ActiveParticipationInfo
 // ====================================================
@@ -13,6 +15,7 @@ export interface ActiveParticipationInfo_challenge {
   name: string;
   startDate: any | null;
   endDate: any | null;
+  status: ChallengeStatus;
 }
 
 export interface ActiveParticipationInfo_markings {

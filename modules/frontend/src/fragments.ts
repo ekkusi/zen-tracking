@@ -20,6 +20,7 @@ export const participationInfoFragment = gql`
       name
       startDate
       endDate
+      status
     }
   }
 `;

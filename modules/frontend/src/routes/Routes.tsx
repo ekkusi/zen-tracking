@@ -1,16 +1,10 @@
-import { useApolloClient, useMutation } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 import { Text } from "@chakra-ui/react";
 import LoadingOverlay from "components/general/LoadingOverlay";
 import ModalTemplate from "components/general/ModalTemplate";
-import { ADD_FINISHED_CHALLENGE, GET_CURRENT_USER } from "generalQueries";
+import { GET_CURRENT_USER } from "generalQueries";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Switch,
-  Route,
-  Redirect,
-  useLocation,
-  useHistory,
-} from "react-router-dom";
+import { Switch, Route, Redirect, useLocation } from "react-router-dom";
 import ReactGA from "react-ga";
 
 import useGlobal from "store";
@@ -37,10 +31,7 @@ import {
 } from "../__generated__/GetCurrentUser";
 import ProfilePage from "../views/profile/ProfilePage";
 import ParticipationPage from "../views/profile/participation/ParticipationPage";
-import {
-  AddFinishedChallenge,
-  AddFinishedChallengeVariables,
-} from "../__generated__/AddFinishedChallenge";
+import useOpenRecapModal from "../hooks/useOpenRecapModal";
 
 const NON_AUTHENTICATED_PATHS = ["/welcome", "/login"];
 
@@ -51,20 +42,15 @@ const Routes = (): JSX.Element => {
   const [previousRoute, setPreviousRoute] = useState<string | null>(null);
   const [hasRenderedMainPage, setHasRenderedMainPage] = useState(false);
 
-  const history = useHistory();
-
   const { activeParticipation, currentUser, hideNavigation } = globalState;
 
   const client = useApolloClient();
 
+  const openRecapModal = useOpenRecapModal();
+
   const isGlobalUserAuthorized = useMemo((): boolean => {
     return currentUser.name !== notAuthorizedUser.name;
   }, [currentUser]);
-
-  const [addFinishedChallenge] = useMutation<
-    AddFinishedChallenge,
-    AddFinishedChallengeVariables
-  >(ADD_FINISHED_CHALLENGE);
 
   const shouldRenderTransferMarkings = (): boolean => {
     return (
@@ -108,6 +94,8 @@ const Routes = (): JSX.Element => {
         // Update activeParticipation as well when user is updated, wait for user to be updated first
         globalActions.updateActiveParticipation(newActiveParticipation);
 
+        console.log(openRecapModal);
+
         if (
           newActiveParticipation &&
           isAfter(
@@ -118,30 +106,7 @@ const Routes = (): JSX.Element => {
             newActiveParticipation.challenge.id
           )
         ) {
-          const { challenge } = newActiveParticipation;
-          globalActions.setModal({
-            onAccept: () => {
-              globalActions.setModal(null);
-              history.push(`/profile/${user.name}/${challenge.id}`, {
-                isRecap: true,
-              });
-            },
-            onClose: () => {
-              addFinishedChallenge({
-                variables: { challengeId: challenge.id },
-              });
-            },
-            children: (
-              <Text>
-                Haaste <i>{challenge.name}</i> on loppunut. Haluisitko kahtoo
-                yhteenvedon suorituksestasi?
-              </Text>
-            ),
-            headerLabel: "Haaste on päättynyt",
-            acceptLabel: "Siirry yhteenvetoon",
-            hasOpenButton: false,
-            isOpen: true,
-          });
+          openRecapModal(newActiveParticipation.challenge);
         }
       } catch (err) {
         globalActions.updateUser(null);
@@ -149,7 +114,7 @@ const Routes = (): JSX.Element => {
     }
 
     setLoading(false);
-  }, [client, globalActions, location, history, addFinishedChallenge]);
+  }, [client, globalActions, location, openRecapModal]);
 
   const currentPath = location.pathname;
 
