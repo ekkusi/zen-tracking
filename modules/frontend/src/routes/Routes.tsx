@@ -107,18 +107,18 @@ const Routes = (): JSX.Element => {
             new Date(newActiveParticipation.challenge.endDate)
           )
         ) {
+          const { challenge } = newActiveParticipation;
           globalActions.setModal({
             onAccept: () => {
               globalActions.setModal(null);
-              history.push(
-                `/profile/${user.name}/${newActiveParticipation.challenge.id}`,
-                { isRecap: true }
-              );
+              history.push(`/profile/${user.name}/${challenge.id}`, {
+                isRecap: true,
+              });
             },
             children: (
               <Text>
-                Aktiivinen haasteesi on loppunut. Halluisitko kahtoo yhteenvedon
-                suorituksesta?
+                Haaste <i>{challenge.name}</i> on loppunut. Haluisitko kahtoo
+                yhteenvedon suorituksestasi?
               </Text>
             ),
             headerLabel: "Haaste on päättynyt",
