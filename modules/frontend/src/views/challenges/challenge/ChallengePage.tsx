@@ -33,7 +33,7 @@ import {
 
 import Loading from "../../../components/general/Loading";
 import EditChallenge from "../../../components/functional/EditChallenge";
-import DeleteConfimationModal from "../../../components/general/DeleteConfirmationModal";
+import ConfirmationModal from "../../../components/general/ConfirmationModal";
 import DateUtil from "../../../util/DateUtil";
 
 const ChallengePage = (): JSX.Element => {
@@ -197,8 +197,9 @@ const ChallengePage = (): JSX.Element => {
           <Box mt="5">
             {getUserParticipation() ? (
               <>
-                <DeleteConfimationModal
-                  onDelete={removeParticipation}
+                <ConfirmationModal
+                  variant="delete"
+                  onAccept={removeParticipation}
                   openButtonLabel="Poista ilmoittautuminen"
                   openButtonProps={{ mr: "4" }}
                   headerLabel="Poista ilmoittautuminen"
@@ -208,7 +209,7 @@ const ChallengePage = (): JSX.Element => {
                     haasteesta {challenge.name}? Jos sinulla on merkkauksia
                     kyseiseen haasteeseen, poistuvat nekin.
                   </Text>
-                </DeleteConfimationModal>
+                </ConfirmationModal>
               </>
             ) : (
               <Button

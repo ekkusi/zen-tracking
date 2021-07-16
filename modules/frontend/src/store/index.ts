@@ -11,6 +11,7 @@ const initialState: GlobalState = {
   accessToken: null,
   promptEvent: null,
   hideNavigation: false,
+  modalProps: null,
 };
 
 const useGlobal = globalHook<GlobalState, ActionTypes>(

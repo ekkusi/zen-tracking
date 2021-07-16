@@ -7,6 +7,7 @@ import { initializeApollo } from "../apollo/ApolloProvider";
 import { notAuthorizedUser } from "./notAuthenticatedUser";
 import { ActionTypes, ActiveParticipation, GlobalState } from "./types";
 import { setAccessToken } from "../util/accessToken";
+import { ConfirmationModalProps } from "../components/general/ConfirmationModal";
 
 const actions = {
   updateUser: (
@@ -93,6 +94,15 @@ const actions = {
     store.setState({
       ...store.state,
       hideNavigation: state,
+    });
+  },
+  setModal: (
+    store: Store<GlobalState, ActionTypes>,
+    props: ConfirmationModalProps
+  ): void => {
+    store.setState({
+      ...store.state,
+      modalProps: props,
     });
   },
 };

@@ -14,7 +14,7 @@ import DateUtil from "util/DateUtil";
 import { Form, Formik } from "formik";
 import ModalTemplate, { ModalTemplateProps } from "../general/ModalTemplate";
 import FormField from "../general/form/FormField";
-import DeleteConfimationModal from "../general/DeleteConfirmationModal";
+import ConfirmationModal from "../general/ConfirmationModal";
 import {
   DeleteChallenge,
   DeleteChallengeVariables,
@@ -353,8 +353,9 @@ const EditChallenge = ({
                 // >
                 //   Poista
                 // </AlertButton>
-                <DeleteConfimationModal
-                  onDelete={deleteAndClose}
+                <ConfirmationModal
+                  variant="delete"
+                  onAccept={deleteAndClose}
                   headerLabel="Poista haaste"
                   openButtonProps={{
                     isLoading: deleteLoading,
@@ -367,7 +368,7 @@ const EditChallenge = ({
                     Jos olet myös osallisena kyseisessä haasteessa, poistuu
                     kaikki sen merkkaukset.
                   </Text>
-                </DeleteConfimationModal>
+                </ConfirmationModal>
               )}
             </Box>
 

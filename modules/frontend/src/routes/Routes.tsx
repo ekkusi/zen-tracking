@@ -4,7 +4,13 @@ import LoadingOverlay from "components/general/LoadingOverlay";
 import ModalTemplate from "components/general/ModalTemplate";
 import { GET_CURRENT_USER } from "generalQueries";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Switch, Route, Redirect, useLocation } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  Redirect,
+  useLocation,
+  useHistory,
+} from "react-router-dom";
 import ReactGA from "react-ga";
 
 import useGlobal from "store";
@@ -21,6 +27,7 @@ import TransferMarkingsPage from "views/transfer-markings/TransferMarkingsPage";
 import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "@ekkusi/zen-tracking-backend/lib/config.json";
 import SomeDesignPage from "views/design/SomeDesignPage";
 import { AnimatePresence } from "framer-motion";
+import { isAfter } from "date-fns";
 import WelcomeUserPage from "../views/welcome-user/WelcomeUserPage";
 import { refreshToken } from "../util/accessToken";
 import ChallengePage from "../views/challenges/challenge/ChallengePage";
@@ -39,6 +46,8 @@ const Routes = (): JSX.Element => {
   const [hasTriedLoggingIn, setHasTriedLoggingIn] = useState(false);
   const [previousRoute, setPreviousRoute] = useState<string | null>(null);
   const [hasRenderedMainPage, setHasRenderedMainPage] = useState(false);
+
+  const history = useHistory();
 
   const { activeParticipation, currentUser, hideNavigation } = globalState;
 
@@ -89,13 +98,42 @@ const Routes = (): JSX.Element => {
         globalActions.updateUser(user);
         // Update activeParticipation as well when user is updated, wait for user to be updated first
         globalActions.updateActiveParticipation(newActiveParticipation);
+        console.log(newActiveParticipation);
+
+        if (
+          newActiveParticipation &&
+          isAfter(
+            new Date(),
+            new Date(newActiveParticipation.challenge.endDate)
+          )
+        ) {
+          globalActions.setModal({
+            onAccept: () => {
+              globalActions.setModal(null);
+              history.push(
+                `/profile/${user.name}/${newActiveParticipation.challenge.id}`,
+                { isRecap: true }
+              );
+            },
+            children: (
+              <Text>
+                Aktiivinen haasteesi on loppunut. Halluisitko kahtoo yhteenvedon
+                suorituksesta?
+              </Text>
+            ),
+            headerLabel: "Haaste on päättynyt",
+            acceptLabel: "Siirry yhteenvetoon",
+            hasOpenButton: false,
+            isOpen: true,
+          });
+        }
       } catch (err) {
         globalActions.updateUser(null);
       }
     }
 
     setLoading(false);
-  }, [client, globalActions, location]);
+  }, [client, globalActions, location, history]);
 
   const currentPath = location.pathname;
 
@@ -182,7 +220,6 @@ const Routes = (): JSX.Element => {
               return <Redirect to="/" />;
             }}
           />
-
           <Route
             path="/welcome"
             render={() => {
@@ -306,7 +343,6 @@ const Routes = (): JSX.Element => {
                       </ViewContainer>
                     )}
                   />
-
                   <Route path="*" render={() => <NotFoundPage />} />
                 </Switch>
               );

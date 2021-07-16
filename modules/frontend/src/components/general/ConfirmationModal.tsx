@@ -2,44 +2,47 @@ import { Button, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
 import ModalTemplate, { ModalTemplateProps } from "./ModalTemplate";
 
-type DeleteConfimationModalProps = Omit<
+export type ConfirmationModalProps = Omit<
   ModalTemplateProps,
-  "isOpen" | "onClose" | "openButton"
+  "onClose" | "openButton"
 > & {
-  onDelete: () => Promise<void> | void;
-  deleteLabel?: string;
+  onAccept: () => Promise<void> | void;
+  variant?: "regular" | "delete";
+  acceptLabel?: string;
   cancelLabel?: string;
 };
 
-const DeleteConfimationModal = ({
-  onDelete,
-  deleteLabel = "Poista",
+const ConfirmationModal = ({
+  onAccept,
+  variant = "regular",
+  acceptLabel = "Poista",
   cancelLabel = "Peruuta",
   openButtonLabel = "Poista",
+  isOpen: isModalOpen = false,
   ...modalTemplateProps
-}: DeleteConfimationModalProps): JSX.Element => {
+}: ConfirmationModalProps): JSX.Element => {
   const [loading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(isModalOpen);
 
   const disclosureProps = useDisclosure({
     isOpen,
     onClose: () => setIsOpen(false),
   });
 
-  const deleteAndClose = async () => {
+  const acceptAndClose = async () => {
     setLoading(true);
-    await onDelete();
+    await onAccept();
     setLoading(false);
     disclosureProps.onClose();
   };
 
   return (
     <ModalTemplate
-      headerLabel="Haluatko varmasti poistaa?"
+      headerLabel="Oletko varma?"
       openButtonLabel="Poista"
       openButton={
         <Button
-          variant="alert"
+          variant={variant === "delete" ? "alert" : "solid"}
           onClick={() => setIsOpen(true)}
           {...modalTemplateProps.openButtonProps}
         >
@@ -49,12 +52,12 @@ const DeleteConfimationModal = ({
       modalFooter={
         <>
           <Button
-            variant="alert"
+            variant={variant === "delete" ? "alert" : "solid"}
             isLoading={loading}
-            onClick={deleteAndClose}
+            onClick={acceptAndClose}
             mr="3"
           >
-            {deleteLabel}
+            {acceptLabel}
           </Button>
           <Button
             variant="ghost"
@@ -71,4 +74,4 @@ const DeleteConfimationModal = ({
   );
 };
 
-export default DeleteConfimationModal;
+export default ConfirmationModal;

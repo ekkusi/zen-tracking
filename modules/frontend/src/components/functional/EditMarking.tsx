@@ -30,7 +30,7 @@ import { markingDataFragment } from "fragments";
 import { mode } from "@chakra-ui/theme-tools";
 import FormField from "../general/form/FormField";
 import PreviewImage from "../general/form/PreviewImage";
-import DeleteConfimationModal from "../general/DeleteConfirmationModal";
+import ConfirmationModal from "../general/ConfirmationModal";
 import {
   DeleteMarking,
   DeleteMarkingVariables,
@@ -486,8 +486,9 @@ const EditMarking = ({
                   {marking ? "Tallenna" : "Lisää merkkaus"}
                 </Button>
                 {marking && (
-                  <DeleteConfimationModal
-                    onDelete={deleteAndClose}
+                  <ConfirmationModal
+                    variant="delete"
+                    onAccept={deleteAndClose}
                     openButtonLabel="Poista"
                     headerLabel="Poista merkkaus"
                     openButtonProps={{
@@ -502,7 +503,7 @@ const EditMarking = ({
                       merkkauksen tiedot, kuten sen kuvan, mikäli semmoinen on
                       ladattu.
                     </Text>
-                  </DeleteConfimationModal>
+                  </ConfirmationModal>
                 )}
               </Box>
             </Form>

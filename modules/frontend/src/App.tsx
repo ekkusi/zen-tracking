@@ -9,6 +9,7 @@ import ScrollToTop from "components/functional/ScrollToTop";
 import theme from "./theme";
 import Fonts from "./theme/Fonts";
 import AddToHomeScreenPrompt from "./components/functional/AddToHomeScreenPrompts";
+import GeneralPromptModal from "./components/functional/GeneralPromptModal";
 
 const App = (): JSX.Element => {
   return (
@@ -19,6 +20,7 @@ const App = (): JSX.Element => {
           <ApolloProvider>
             <ScrollToTop />
             <AddToHomeScreenPrompt />
+            <GeneralPromptModal />
             <Routes />
           </ApolloProvider>
         </BrowserRouter>

@@ -1,6 +1,7 @@
 import { AuthenticatedUser } from "@ekkusi/zen-tracking-backend/lib/types/customContext";
 import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
 import { ParsedChallengeParticipation } from "types/parsedBackendTypes";
+import { ConfirmationModalProps } from "../components/general/ConfirmationModal";
 
 export type ActionTypes = {
   updateUser: (user: AuthenticatedUser | null) => void;
@@ -13,6 +14,7 @@ export type ActionTypes = {
   logout: () => Promise<void>;
   updatePromptEvent: (event: BeforeInstallPromptEvent | null) => void;
   setHideNavigation: (state: boolean) => void;
+  setModal: (modalProps: ConfirmationModalProps | null) => void;
 };
 
 export type ActiveParticipation = Omit<
@@ -28,5 +30,6 @@ export type GlobalState = {
   error: string | null;
   accessToken: string | null;
   promptEvent: BeforeInstallPromptEvent | null;
+  modalProps: ConfirmationModalProps | null;
   hideNavigation: boolean;
 };
