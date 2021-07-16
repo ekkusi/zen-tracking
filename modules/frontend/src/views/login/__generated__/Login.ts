@@ -38,6 +38,7 @@ export interface Login_login_user {
   name: string;
   email: string | null;
   isPrivate: boolean;
+  finishedAndCheckedChallenges: string[];
   activeParticipation: Login_login_user_activeParticipation | null;
 }
 

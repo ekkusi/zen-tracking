@@ -4,13 +4,13 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: UserData
+// GraphQL mutation operation: AddFinishedChallenge
 // ====================================================
 
-export interface UserData {
-  __typename: "User";
-  name: string;
-  email: string | null;
-  isPrivate: boolean;
-  finishedAndCheckedChallenges: string[];
+export interface AddFinishedChallenge {
+  addFinishedChallenge: boolean;
+}
+
+export interface AddFinishedChallengeVariables {
+  challengeId: string;
 }

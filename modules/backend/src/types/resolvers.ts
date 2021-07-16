@@ -272,6 +272,12 @@ export type MutationResolvers<
     RequireFields<Types.MutationRegisterArgs, "name" | "password" | "isPrivate">
   >;
   logout?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  addFinishedChallenge?: Resolver<
+    ResolversTypes["Boolean"],
+    ParentType,
+    ContextType,
+    RequireFields<Types.MutationAddFinishedChallengeArgs, "challengeId">
+  >;
   createChallenge?: Resolver<
     ResolversTypes["Challenge"],
     ParentType,
@@ -357,6 +363,11 @@ export type UserResolvers<
     ParentType,
     ContextType,
     RequireFields<Types.UserActiveParticipationArgs, never>
+  >;
+  finishedAndCheckedChallenges?: Resolver<
+    Array<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
   >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

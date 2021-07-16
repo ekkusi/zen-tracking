@@ -12,6 +12,7 @@ export interface RegisterMutation_register_user {
   name: string;
   email: string | null;
   isPrivate: boolean;
+  finishedAndCheckedChallenges: string[];
 }
 
 export interface RegisterMutation_register {

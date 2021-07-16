@@ -1,8 +1,8 @@
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client";
 import { Text } from "@chakra-ui/react";
 import LoadingOverlay from "components/general/LoadingOverlay";
 import ModalTemplate from "components/general/ModalTemplate";
-import { GET_CURRENT_USER } from "generalQueries";
+import { ADD_FINISHED_CHALLENGE, GET_CURRENT_USER } from "generalQueries";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Switch,
@@ -37,6 +37,10 @@ import {
 } from "../__generated__/GetCurrentUser";
 import ProfilePage from "../views/profile/ProfilePage";
 import ParticipationPage from "../views/profile/participation/ParticipationPage";
+import {
+  AddFinishedChallenge,
+  AddFinishedChallengeVariables,
+} from "../__generated__/AddFinishedChallenge";
 
 const NON_AUTHENTICATED_PATHS = ["/welcome", "/login"];
 
@@ -56,6 +60,11 @@ const Routes = (): JSX.Element => {
   const isGlobalUserAuthorized = useMemo((): boolean => {
     return currentUser.name !== notAuthorizedUser.name;
   }, [currentUser]);
+
+  const [addFinishedChallenge] = useMutation<
+    AddFinishedChallenge,
+    AddFinishedChallengeVariables
+  >(ADD_FINISHED_CHALLENGE);
 
   const shouldRenderTransferMarkings = (): boolean => {
     return (
@@ -98,13 +107,15 @@ const Routes = (): JSX.Element => {
         globalActions.updateUser(user);
         // Update activeParticipation as well when user is updated, wait for user to be updated first
         globalActions.updateActiveParticipation(newActiveParticipation);
-        console.log(newActiveParticipation);
 
         if (
           newActiveParticipation &&
           isAfter(
             new Date(),
             new Date(newActiveParticipation.challenge.endDate)
+          ) &&
+          !user.finishedAndCheckedChallenges.includes(
+            newActiveParticipation.challenge.id
           )
         ) {
           const { challenge } = newActiveParticipation;
@@ -113,6 +124,11 @@ const Routes = (): JSX.Element => {
               globalActions.setModal(null);
               history.push(`/profile/${user.name}/${challenge.id}`, {
                 isRecap: true,
+              });
+            },
+            onClose: () => {
+              addFinishedChallenge({
+                variables: { challengeId: challenge.id },
               });
             },
             children: (
@@ -133,7 +149,7 @@ const Routes = (): JSX.Element => {
     }
 
     setLoading(false);
-  }, [client, globalActions, location, history]);
+  }, [client, globalActions, location, history, addFinishedChallenge]);
 
   const currentPath = location.pathname;
 

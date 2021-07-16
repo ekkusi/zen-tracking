@@ -27,6 +27,7 @@ extend type Mutation {
     isPrivate: Boolean!
   ): LoginResult!
   logout: Boolean!
+  addFinishedChallenge(challengeId: ID!): Boolean!
 }
 
 type User {
@@ -35,6 +36,7 @@ type User {
   email: String
   participations: [ChallengeParticipation!]!
   activeParticipation(challengeId: ID): ChallengeParticipation
+  finishedAndCheckedChallenges: [String!]!
 }
 
 type LoginResult {

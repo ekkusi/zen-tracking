@@ -38,6 +38,7 @@ export interface GetUser_getUser {
   name: string;
   email: string | null;
   isPrivate: boolean;
+  finishedAndCheckedChallenges: string[];
   activeParticipation: GetUser_getUser_activeParticipation | null;
 }
 

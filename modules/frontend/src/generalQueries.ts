@@ -94,3 +94,9 @@ export const GET_USER = gql`
   ${userDataFragment}
   ${activeParticipationInfoFragment}
 `;
+
+export const ADD_FINISHED_CHALLENGE = gql`
+  mutation AddFinishedChallenge($challengeId: ID!) {
+    addFinishedChallenge(challengeId: $challengeId)
+  }
+`;

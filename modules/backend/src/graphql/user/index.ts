@@ -67,6 +67,8 @@ export const resolvers: UserResolvers = {
         return null;
       return latestParticipation;
     },
+    finishedAndCheckedChallenges: (user) =>
+      user.finished_and_checked_challenges,
   },
   Query: {
     getUser: async (_, { name }, { prisma, user: currentUser }) => {
@@ -165,6 +167,19 @@ export const resolvers: UserResolvers = {
         ),
         user: createdUser,
       };
+    },
+
+    addFinishedChallenge: async (_, args, { prisma, user }) => {
+      if (!user) throw new AuthenticationError();
+      await prisma.user.update({
+        data: {
+          finished_and_checked_challenges: {
+            set: [args.challengeId, ...user.finishedAndCheckedChallenges],
+          },
+        },
+        where: { name: user.name },
+      });
+      return true;
     },
   },
 };

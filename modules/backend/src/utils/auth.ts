@@ -4,6 +4,7 @@ import { Response } from "express";
 import jwt from "jsonwebtoken";
 import { AuthenticatedUser } from "../types/customContext";
 import AuthenticationError from "./errors/AuthenticationError";
+import { checkIfIsUser } from "./user";
 
 const saltRounds = 10;
 
@@ -58,10 +59,11 @@ export const parseAndVerifyToken = (
       parsedToken,
       process.env.JWT_ACCESS_TOKEN_SECRET_KEY!
     ) as any;
-    if (typeof decoded !== "object" || !decoded.user)
+    if (typeof decoded !== "object" || !checkIfIsUser(decoded.user)) {
       throw new AuthenticationError(
         "Access token keksi ei palauttanut oikeita tietoja"
       );
+    }
     const { user }: { user: AuthenticatedUser } = decoded;
     return user;
   } catch (error) {

@@ -2,10 +2,7 @@ import { Button, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
 import ModalTemplate, { ModalTemplateProps } from "./ModalTemplate";
 
-export type ConfirmationModalProps = Omit<
-  ModalTemplateProps,
-  "onClose" | "openButton"
-> & {
+export type ConfirmationModalProps = Omit<ModalTemplateProps, "openButton"> & {
   onAccept: () => Promise<void> | void;
   variant?: "regular" | "delete";
   acceptLabel?: string;
@@ -14,6 +11,7 @@ export type ConfirmationModalProps = Omit<
 
 const ConfirmationModal = ({
   onAccept,
+  onClose,
   variant = "regular",
   acceptLabel = "Poista",
   cancelLabel = "Peruuta",
@@ -26,7 +24,10 @@ const ConfirmationModal = ({
 
   const disclosureProps = useDisclosure({
     isOpen,
-    onClose: () => setIsOpen(false),
+    onClose: () => {
+      if (onClose) onClose();
+      setIsOpen(false);
+    },
   });
 
   const acceptAndClose = async () => {

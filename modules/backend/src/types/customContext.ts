@@ -11,9 +11,14 @@ import AwsS3Client from "../utils/awsS3Client";
 
 export type AuthenticatedUser = Omit<
   User,
-  "password" | "is_private" | "is_email_verified" | "created_at"
+  | "password"
+  | "is_private"
+  | "is_email_verified"
+  | "created_at"
+  | "finished_and_checked_challenges"
 > & {
   isPrivate: boolean;
+  finishedAndCheckedChallenges: string[];
 };
 
 export type DataLoaders = {
