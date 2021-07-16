@@ -13,7 +13,7 @@ export default function ScrollToTop() {
     window.addEventListener(
       "touchstart",
       (e) => {
-        const documentScrollTop = document?.scrollingElement?.scrollTop || 0;
+        const documentScrollTop = document?.documentElement?.scrollTop || 0;
         // Only start possible refresh, if touch is happening on top or above page
         if (documentScrollTop <= 0) {
           _startY = e.touches[0]?.pageY || 0;
@@ -26,7 +26,7 @@ export default function ScrollToTop() {
       "touchend",
       (e) => {
         const y = e.changedTouches[0]?.pageY || 0;
-        const documentScrollTop = document?.scrollingElement?.scrollTop || 0;
+        const documentScrollTop = document?.documentElement?.scrollTop || 0;
         // Refresh is started on top of the page AND end touch is 200 pixels above the start touch
         if (_startY && documentScrollTop <= 0 && y > _startY + 150) {
           window.location.href = history.location.pathname;
