@@ -106,7 +106,7 @@ const Routes = (): JSX.Element => {
             newActiveParticipation.challenge.id
           )
         ) {
-          openRecapModal(newActiveParticipation.challenge);
+          openRecapModal(newActiveParticipation.challenge, user.name);
         }
       } catch (err) {
         globalActions.updateUser(null);

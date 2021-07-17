@@ -15,7 +15,6 @@ const useOpenRecapModal = () => {
     () => {},
     (actions) => actions.setModal
   )[1];
-  const user = useGlobal((state) => state.currentUser)[0];
   const history = useHistory();
 
   const [addFinishedChallenge] = useMutation<
@@ -23,11 +22,11 @@ const useOpenRecapModal = () => {
     AddFinishedChallengeVariables
   >(ADD_FINISHED_CHALLENGE);
 
-  const openModal = (challenge: ParsedChallenge) => {
+  const openModal = (challenge: ParsedChallenge, userName: string) => {
     setModal({
       onAccept: () => {
         setModal(null);
-        history.push(`/profile/${user.name}/${challenge.id}`, {
+        history.push(`/profile/${userName}/${challenge.id}`, {
           isRecap: true,
         });
       },

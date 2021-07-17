@@ -97,6 +97,7 @@ const EditMarking = ({
     (state) => state.activeParticipation,
     (actions) => actions.updateActiveParticipationMarkings
   );
+  const user = useGlobal((state) => state.currentUser)[0];
   const updateError = useGlobal(
     (state) => state.error,
     (actions) => actions.updateError
@@ -247,7 +248,7 @@ const EditMarking = ({
               new Date(activeParticipation.challenge.endDate)
             )
           ) {
-            openRecapModal(activeParticipation.challenge);
+            openRecapModal(activeParticipation.challenge, user.name);
           }
         }
       }
