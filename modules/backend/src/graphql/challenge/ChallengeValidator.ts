@@ -184,7 +184,11 @@ export default class ChallengeValidator {
       throw new ValidationError(
         `Haaste nimellä '${name}' on jo olemassa. Valitse eri nimi`
       );
-    if (endDate && isBefore(new Date(endDate), new Date()))
+    if (
+      endDate &&
+      isBefore(new Date(endDate), new Date()) &&
+      !isSameDay(new Date(endDate), new Date())
+    )
       throw new ValidationError(
         "Et voi luoda haastetta jo menneelle päivämäärälle"
       );
