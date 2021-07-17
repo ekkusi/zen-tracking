@@ -63,13 +63,15 @@ const TransferMarkingsPage = (): JSX.Element => {
     GetTransferableChallengesVariables
   >(GET_TRANSFERABLE_CHALLENGES, {
     variables: {
-      startDate: {
-        lte: earliestMarkingDate
-          ? earliestMarkingDate.toISOString()
-          : undefined,
-      },
-      endDate: {
-        gte: latestMarkingDate ? latestMarkingDate.toISOString() : undefined,
+      filters: {
+        startDate: {
+          lte: earliestMarkingDate
+            ? earliestMarkingDate.toISOString()
+            : undefined,
+        },
+        endDate: {
+          gte: latestMarkingDate ? latestMarkingDate.toISOString() : undefined,
+        },
       },
     },
   });

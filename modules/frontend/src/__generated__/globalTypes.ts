@@ -14,6 +14,13 @@ export enum ChallengeStatus {
   UPCOMING = "UPCOMING",
 }
 
+export interface ChallengeFilters {
+  creatorName?: string | null;
+  status?: ChallengeStatus | null;
+  startDate?: DateFilter | null;
+  endDate?: DateFilter | null;
+}
+
 export interface CreateChallengeInput {
   name: string;
   isPrivate: boolean;

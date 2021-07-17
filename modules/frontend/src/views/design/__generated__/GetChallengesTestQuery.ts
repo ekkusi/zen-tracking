@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ChallengeStatus } from "./../../../__generated__/globalTypes";
+import { ChallengeFilters } from "./../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: GetChallengesTestQuery
@@ -19,5 +19,5 @@ export interface GetChallengesTestQuery {
 }
 
 export interface GetChallengesTestQueryVariables {
-  status: ChallengeStatus;
+  filters: ChallengeFilters;
 }

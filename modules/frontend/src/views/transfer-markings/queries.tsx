@@ -7,11 +7,8 @@ export const TRANSFER_MARKINGS = gql`
 `;
 
 export const GET_TRANSFERABLE_CHALLENGES = gql`
-  query GetTransferableChallenges(
-    $startDate: DateFilter!
-    $endDate: DateFilter!
-  ) {
-    getChallenges(startDate: $startDate, endDate: $endDate) {
+  query GetTransferableChallenges($filters: ChallengeFilters!) {
+    getChallenges(filters: $filters) {
       id
       name
       startDate

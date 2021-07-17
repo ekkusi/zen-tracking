@@ -40,10 +40,11 @@ export type QueryGetChallengeArgs = {
 };
 
 export type QueryGetChallengesArgs = {
-  creatorName?: Maybe<Scalars["ID"]>;
-  status?: Maybe<ChallengeStatus>;
-  startDate?: Maybe<DateFilter>;
-  endDate?: Maybe<DateFilter>;
+  filters?: Maybe<ChallengeFilters>;
+};
+
+export type QueryGetUserParticipationsArgs = {
+  filters?: Maybe<ChallengeFilters>;
 };
 
 export type QueryGetParticipationArgs = {
@@ -243,4 +244,11 @@ export type MarkingUpdateInput = {
   comment?: Maybe<Scalars["String"]>;
   date?: Maybe<Scalars["Date"]>;
   photoUrl?: Maybe<Scalars["String"]>;
+};
+
+export type ChallengeFilters = {
+  creatorName?: Maybe<Scalars["ID"]>;
+  status?: Maybe<ChallengeStatus>;
+  startDate?: Maybe<DateFilter>;
+  endDate?: Maybe<DateFilter>;
 };

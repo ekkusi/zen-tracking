@@ -54,7 +54,9 @@ const ProfilePage = (): JSX.Element => {
     GetChallengesVariables
   >(GET_CHALLENGES, {
     variables: {
-      creatorName: userName,
+      filters: {
+        creatorName: userName,
+      },
     },
   });
 

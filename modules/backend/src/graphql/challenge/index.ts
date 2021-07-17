@@ -91,7 +91,7 @@ export const resolvers: Resolvers = {
       return challenge;
     },
     getChallenges: async (_, args, { prisma, user }) => {
-      const filters = ChallengeMapper.mapChallengeFilters(args);
+      const filters = ChallengeMapper.mapChallengeFilters(args.filters || {});
       const allFilters = SharedMapper.notPrivateFilterMapper<Prisma.ChallengeWhereInput>(
         filters,
         { creator_name: user?.name }
@@ -101,21 +101,19 @@ export const resolvers: Resolvers = {
       });
       return challenges || [];
     },
-    getUserParticipations: async (_, __, { prisma, user }) => {
+    getUserParticipations: async (_, args, { prisma, user }) => {
       if (!user) throw new AuthenticationError();
       // Filter by user name and so that participation is not transfer participation
-      const usersAndNotTransferParticipationFilter: Prisma.ChallengeParticipationWhereInput = {
-        AND: {
-          user_name: user.name,
-          Challenge: { NOT: { name: NO_PARTICIPATION_MARKINGS_HOLDER_NAME } },
-        },
-      };
-      const filters = SharedMapper.notPrivateFilterMapper<Prisma.ChallengeParticipationWhereInput>(
-        usersAndNotTransferParticipationFilter,
-        { user_name: user?.name }
+      const filters = ChallengeMapper.mapUserParticipationsFilters(
+        args,
+        user.name
+      );
+      const allFilters = SharedMapper.notPrivateFilterMapper<Prisma.ChallengeParticipationWhereInput>(
+        filters,
+        { user_name: user.name }
       );
       const participations = await prisma.challengeParticipation.findMany({
-        where: filters,
+        where: allFilters,
       });
       return participations;
     },

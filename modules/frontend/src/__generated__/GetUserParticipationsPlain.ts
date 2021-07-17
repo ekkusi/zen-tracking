@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { ChallengeFilters } from "./globalTypes";
+
 // ====================================================
 // GraphQL query operation: GetUserParticipationsPlain
 // ====================================================
@@ -21,4 +23,8 @@ export interface GetUserParticipationsPlain_getUserParticipations {
 
 export interface GetUserParticipationsPlain {
   getUserParticipations: GetUserParticipationsPlain_getUserParticipations[];
+}
+
+export interface GetUserParticipationsPlainVariables {
+  filters?: ChallengeFilters | null;
 }

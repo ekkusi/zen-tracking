@@ -5,10 +5,11 @@ import {
   CreateChallengeInput,
   UpdateChallengeInput,
   ChallengeStatus,
-  QueryGetChallengesArgs,
   DateFilter,
   MarkingUpdateInput,
   MarkingCreateInput,
+  QueryGetUserParticipationsArgs,
+  ChallengeFilters,
 } from "../../types/schema";
 
 import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "../../config.json";
@@ -16,6 +17,10 @@ import dataLoaders from "../loaders";
 
 type GetChallengesFilters = {
   AND: Prisma.ChallengeWhereInput;
+};
+
+type GetParticipationsFilters = {
+  AND: Prisma.ChallengeParticipationWhereInput;
 };
 
 export class ChallengeMapper {
@@ -94,9 +99,9 @@ export class ChallengeMapper {
   }
 
   public static mapChallengeFilters(
-    args: QueryGetChallengesArgs
+    filters: ChallengeFilters
   ): GetChallengesFilters {
-    const { creatorName, status, startDate, endDate } = args;
+    const { creatorName, status, startDate, endDate } = filters;
     let andWhereInput: Prisma.ChallengeWhereInput = {
       NOT: {
         name: NO_PARTICIPATION_MARKINGS_HOLDER_NAME, // Filter out challenge that keeps markings without participation
@@ -179,5 +184,19 @@ export class ChallengeMapper {
         notPrivateUserNames.includes(it.user_name) ||
         it.user_name === currentUserName
     );
+  }
+
+  public static mapUserParticipationsFilters(
+    args: QueryGetUserParticipationsArgs,
+    userName: string
+  ): GetParticipationsFilters {
+    const challengeFilters = this.mapChallengeFilters(args.filters || {});
+
+    return {
+      AND: {
+        user_name: userName,
+        Challenge: challengeFilters,
+      },
+    };
   }
 }

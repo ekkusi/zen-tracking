@@ -6,8 +6,8 @@ import { ChallengeStatus } from "__generated__/globalTypes";
 
 const SomeDesignPage = (): JSX.Element => {
   const getChallengesQuery = gql`
-    query GetChallengesTestQuery($status: ChallengeStatus!) {
-      getChallenges(status: $status) {
+    query GetChallengesTestQuery($filters: ChallengeFilters!) {
+      getChallenges(filters: $filters) {
         name
       }
     }
@@ -15,7 +15,9 @@ const SomeDesignPage = (): JSX.Element => {
 
   const { data, loading } = useQuery(getChallengesQuery, {
     variables: {
-      status: ChallengeStatus.ACTIVE,
+      filters: {
+        status: ChallengeStatus.ACTIVE,
+      },
     },
   });
 

@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { DateFilter } from "./../../../__generated__/globalTypes";
+import { ChallengeFilters } from "./../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: GetTransferableChallenges
@@ -22,6 +22,5 @@ export interface GetTransferableChallenges {
 }
 
 export interface GetTransferableChallengesVariables {
-  startDate: DateFilter;
-  endDate: DateFilter;
+  filters: ChallengeFilters;
 }

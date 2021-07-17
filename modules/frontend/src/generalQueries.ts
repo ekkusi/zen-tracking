@@ -25,18 +25,8 @@ export const LOGOUT = gql`
 `;
 
 export const GET_CHALLENGES = gql`
-  query GetChallenges(
-    $status: ChallengeStatus
-    $startDate: DateFilter
-    $endDate: DateFilter
-    $creatorName: ID
-  ) {
-    getChallenges(
-      status: $status
-      startDate: $startDate
-      endDate: $endDate
-      creatorName: $creatorName
-    ) {
+  query GetChallenges($filters: ChallengeFilters) {
+    getChallenges(filters: $filters) {
       ...ChallengeData
     }
   }
@@ -71,8 +61,8 @@ export const GET_USER_TRANSFER_PARTICIPATION = gql`
 `;
 
 export const GET_USER_PARTICIPATIONS_PLAIN = gql`
-  query GetUserParticipationsPlain {
-    getUserParticipations {
+  query GetUserParticipationsPlain($filters: ChallengeFilters) {
+    getUserParticipations(filters: $filters) {
       id
       challenge {
         id

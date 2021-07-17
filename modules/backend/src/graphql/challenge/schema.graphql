@@ -1,12 +1,7 @@
 extend type Query {
   getChallenge(id: ID!): Challenge
-  getChallenges(
-    creatorName: ID
-    status: ChallengeStatus
-    startDate: DateFilter
-    endDate: DateFilter
-  ): [Challenge!]!
-  getUserParticipations: [ChallengeParticipation!]!
+  getChallenges(filters: ChallengeFilters): [Challenge!]!
+  getUserParticipations(filters: ChallengeFilters): [ChallengeParticipation!]!
   getParticipation(challengeId: ID!, userName: ID!): ChallengeParticipation
   getMarkings(participationId: ID!): [Marking!]!
   getUserTransferParticipation: ChallengeParticipation
@@ -93,4 +88,11 @@ input MarkingUpdateInput {
   comment: String
   date: Date
   photoUrl: String
+}
+
+input ChallengeFilters {
+  creatorName: ID
+  status: ChallengeStatus
+  startDate: DateFilter
+  endDate: DateFilter
 }

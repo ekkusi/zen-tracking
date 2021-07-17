@@ -27,7 +27,9 @@ const ChallengesPage = (): JSX.Element => {
     GET_CHALLENGES,
     {
       variables: {
-        status: ChallengeStatus.SUGGESTION,
+        filters: {
+          status: ChallengeStatus.SUGGESTION,
+        },
       },
       skip,
       fetchPolicy: "network-only",
@@ -43,7 +45,9 @@ const ChallengesPage = (): JSX.Element => {
     GET_CHALLENGES,
     {
       variables: {
-        status: ChallengeStatus.UPCOMING,
+        filters: {
+          status: ChallengeStatus.UPCOMING,
+        },
       },
       skip,
       fetchPolicy: "network-only",
@@ -59,7 +63,9 @@ const ChallengesPage = (): JSX.Element => {
     GET_CHALLENGES,
     {
       variables: {
-        status: ChallengeStatus.ACTIVE,
+        filters: {
+          status: ChallengeStatus.ACTIVE,
+        },
       },
       skip,
       fetchPolicy: "network-only",
@@ -75,7 +81,9 @@ const ChallengesPage = (): JSX.Element => {
     GET_CHALLENGES,
     {
       variables: {
-        status: ChallengeStatus.ENDED,
+        filters: {
+          status: ChallengeStatus.ENDED,
+        },
       },
       skip,
       fetchPolicy: "network-only",

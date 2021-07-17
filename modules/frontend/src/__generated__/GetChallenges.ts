@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ChallengeStatus, DateFilter } from "./globalTypes";
+import { ChallengeFilters, ChallengeStatus } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: GetChallenges
@@ -43,8 +43,5 @@ export interface GetChallenges {
 }
 
 export interface GetChallengesVariables {
-  status?: ChallengeStatus | null;
-  startDate?: DateFilter | null;
-  endDate?: DateFilter | null;
-  creatorName?: string | null;
+  filters?: ChallengeFilters | null;
 }

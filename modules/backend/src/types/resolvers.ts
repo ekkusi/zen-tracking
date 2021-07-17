@@ -155,6 +155,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Types.Scalars["Int"]>;
   MarkingCreateInput: Types.MarkingCreateInput;
   MarkingUpdateInput: Types.MarkingUpdateInput;
+  ChallengeFilters: Types.ChallengeFilters;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -179,6 +180,7 @@ export type ResolversParentTypes = {
   Int: Types.Scalars["Int"];
   MarkingCreateInput: Types.MarkingCreateInput;
   MarkingUpdateInput: Types.MarkingUpdateInput;
+  ChallengeFilters: Types.ChallengeFilters;
 };
 
 export type QueryResolvers<
@@ -217,7 +219,8 @@ export type QueryResolvers<
   getUserParticipations?: Resolver<
     Array<ResolversTypes["ChallengeParticipation"]>,
     ParentType,
-    ContextType
+    ContextType,
+    RequireFields<Types.QueryGetUserParticipationsArgs, never>
   >;
   getParticipation?: Resolver<
     Types.Maybe<ResolversTypes["ChallengeParticipation"]>,

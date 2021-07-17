@@ -11,7 +11,11 @@ import React, {
 
 import { OptionsType } from "react-select";
 import useGlobal from "store";
-import { GetUserParticipationsPlain } from "../../__generated__/GetUserParticipationsPlain";
+import {
+  GetUserParticipationsPlain,
+  GetUserParticipationsPlainVariables,
+} from "../../__generated__/GetUserParticipationsPlain";
+import { ChallengeStatus } from "../../__generated__/globalTypes";
 import Select from "../general/Select";
 
 type ChallengeSelectProps = {
@@ -48,13 +52,16 @@ const ChallengeSelect = forwardRef(
       (state) => state.activeParticipation
     )[0];
 
-    const {
-      data,
-      loading,
-      error,
-      refetch,
-    } = useQuery<GetUserParticipationsPlain>(GET_USER_PARTICIPATIONS_PLAIN, {
+    const { data, loading, error, refetch } = useQuery<
+      GetUserParticipationsPlain,
+      GetUserParticipationsPlainVariables
+    >(GET_USER_PARTICIPATIONS_PLAIN, {
       fetchPolicy: "no-cache",
+      variables: {
+        filters: {
+          status: ChallengeStatus.ACTIVE,
+        },
+      },
     });
 
     const mapOptions = useMemo((): OptionsType<OptionType> => {
