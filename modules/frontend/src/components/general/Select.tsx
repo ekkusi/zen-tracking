@@ -40,6 +40,7 @@ const Select = (props: SelectProps): JSX.Element => {
     menu: (baseStyles) => ({
       ...baseStyles,
       overflow: "hidden",
+      zIndex: 100,
     }),
     control: (baseStyles, state) => ({
       ...baseStyles,
