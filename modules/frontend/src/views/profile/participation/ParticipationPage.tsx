@@ -107,11 +107,11 @@ const ParticipationPage = (): JSX.Element => {
   const otherThanCurrentUserParticipations = useMemo(() => {
     if (participation) {
       return participation.challenge.participations.filter(
-        (it) => it.user.name !== user.name
+        (it) => it.user.name !== userName
       );
     }
     return [];
-  }, [participation, user.name]);
+  }, [participation, userName]);
 
   const formatOpacityAnimationProps = (delay: number, duration = 1) => {
     return {
