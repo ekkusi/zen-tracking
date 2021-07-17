@@ -6,5 +6,5 @@ cd "$parentPath"
 cd "../../"
 
 docker load < ./tmp/zen-tracking.tar.gz
-docker image prune
+docker image prune -f
 docker-compose -f docker-compose.prod.yml up -d
