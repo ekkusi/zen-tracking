@@ -468,10 +468,14 @@ const Navigation = ({
                     </motion.li>
                   )}
                 </List>
-                <Flex direction="column" justifyContent="center" width="100%">
+                <Flex
+                  direction="column"
+                  justifyContent="center"
+                  width="100%"
+                  px="2"
+                >
                   <QuoteOfTheDay
                     openButtonProps={{
-                      mx: "2",
                       display: { base: "inline-flex", sm: "none" },
                     }}
                   />
@@ -479,7 +483,6 @@ const Navigation = ({
                     onClick={() => handleLogout()}
                     isLoading={logoutLoading}
                     mb="2"
-                    mx="2"
                     display={{ base: "inline-flex", sm: "none" }}
                   >
                     Kirjaudu ulos
@@ -488,12 +491,27 @@ const Navigation = ({
                     <Button
                       onClick={() => promptEvent.prompt()}
                       leftIcon={<DownloadIcon />}
-                      mx="2"
                       mt="4"
                     >
                       Lataa sovellus
                     </Button>
                   )}
+                  <Text
+                    mt="4"
+                    mb="0"
+                    textAlign="center"
+                    display={{ base: "none", sm: "block" }}
+                  >
+                    <i>By:</i>
+                    <Text
+                      display="block"
+                      as="a"
+                      href="https://ekkus.tech"
+                      mt="0"
+                    >
+                      www.ekkus.tech
+                    </Text>
+                  </Text>
                 </Flex>
               </Flex>
             </DrawerBody>

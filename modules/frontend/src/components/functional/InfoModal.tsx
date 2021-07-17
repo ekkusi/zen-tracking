@@ -56,7 +56,22 @@ const InfoModal = (props: InfoModalProps): JSX.Element => {
         </Text>
         <Text mb="0">Bienveniidosta!</Text>
         <Text mb="0">Ekeukko, Founder and Master of Code of Zen-tracking.</Text>
-        <Text fontStyle="italic">ekku.eki@gmail.com</Text>
+        <Text
+          as="a"
+          href="mailto:info@ekkus.tech"
+          display="block"
+          fontStyle="italic"
+        >
+          info@ekkus.tech
+        </Text>
+        <Text
+          as="a"
+          display="block"
+          href="https://ekkus.tech"
+          fontStyle="italic"
+        >
+          www.ekkus.tech
+        </Text>
       </>
     </ModalTemplate>
   );
