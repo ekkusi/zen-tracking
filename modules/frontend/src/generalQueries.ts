@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 import {
   activeParticipationInfoFragment,
   challengeDataFragment,
+  participationInfoFragment,
   userDataFragment,
 } from "fragments";
 
@@ -33,13 +34,13 @@ export const GET_CHALLENGES = gql`
   ${challengeDataFragment}
 `;
 
-export const GET_USER_PARTICIPATIONS = gql`
-  query GetUserParticipations {
-    getUserParticipations {
-      ...ActiveParticipationInfo
+export const GET_PARTICIPATIONS = gql`
+  query GetParticipations($filters: ParticipationFilters) {
+    getParticipations(filters: $filters) {
+      ...ParticipationInfo
     }
   }
-  ${activeParticipationInfoFragment}
+  ${participationInfoFragment}
 `;
 
 export const GET_PARTICIPATION = gql`
@@ -60,9 +61,9 @@ export const GET_USER_TRANSFER_PARTICIPATION = gql`
   ${activeParticipationInfoFragment}
 `;
 
-export const GET_USER_PARTICIPATIONS_PLAIN = gql`
-  query GetUserParticipationsPlain($filters: ChallengeFilters) {
-    getUserParticipations(filters: $filters) {
+export const GET_PARTICIPATIONS_PLAIN = gql`
+  query GetParticipationsPlain($filters: ParticipationFilters) {
+    getParticipations(filters: $filters) {
       id
       challenge {
         id

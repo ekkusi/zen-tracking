@@ -151,11 +151,14 @@ export type ResolversTypes = {
   ChallengeParticipation: ResolverTypeWrapper<ChallengeParticipation>;
   CreateChallengeInput: Types.CreateChallengeInput;
   UpdateChallengeInput: Types.UpdateChallengeInput;
+  CreateParticipationInput: Types.CreateParticipationInput;
+  UpdateParticipationInput: Types.UpdateParticipationInput;
   Marking: ResolverTypeWrapper<Marking>;
   Int: ResolverTypeWrapper<Types.Scalars["Int"]>;
   MarkingCreateInput: Types.MarkingCreateInput;
   MarkingUpdateInput: Types.MarkingUpdateInput;
   ChallengeFilters: Types.ChallengeFilters;
+  ParticipationFilters: Types.ParticipationFilters;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -176,11 +179,14 @@ export type ResolversParentTypes = {
   ChallengeParticipation: ChallengeParticipation;
   CreateChallengeInput: Types.CreateChallengeInput;
   UpdateChallengeInput: Types.UpdateChallengeInput;
+  CreateParticipationInput: Types.CreateParticipationInput;
+  UpdateParticipationInput: Types.UpdateParticipationInput;
   Marking: Marking;
   Int: Types.Scalars["Int"];
   MarkingCreateInput: Types.MarkingCreateInput;
   MarkingUpdateInput: Types.MarkingUpdateInput;
   ChallengeFilters: Types.ChallengeFilters;
+  ParticipationFilters: Types.ParticipationFilters;
 };
 
 export type QueryResolvers<
@@ -216,11 +222,11 @@ export type QueryResolvers<
     ContextType,
     RequireFields<Types.QueryGetChallengesArgs, never>
   >;
-  getUserParticipations?: Resolver<
+  getParticipations?: Resolver<
     Array<ResolversTypes["ChallengeParticipation"]>,
     ParentType,
     ContextType,
-    RequireFields<Types.QueryGetUserParticipationsArgs, never>
+    RequireFields<Types.QueryGetParticipationsArgs, never>
   >;
   getParticipation?: Resolver<
     Types.Maybe<ResolversTypes["ChallengeParticipation"]>,
@@ -303,10 +309,7 @@ export type MutationResolvers<
     ResolversTypes["ChallengeParticipation"],
     ParentType,
     ContextType,
-    RequireFields<
-      Types.MutationCreateParticipationArgs,
-      "challengeId" | "isPrivate"
-    >
+    RequireFields<Types.MutationCreateParticipationArgs, "input">
   >;
   deleteParticipation?: Resolver<
     ResolversTypes["Boolean"],
@@ -391,6 +394,9 @@ export type ChallengeResolvers<
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   description?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes["ChallengeStatus"], ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  isPrivate?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   startDate?: Resolver<
     Types.Maybe<ResolversTypes["Date"]>,
     ParentType,
@@ -401,9 +407,6 @@ export type ChallengeResolvers<
     ParentType,
     ContextType
   >;
-  status?: Resolver<ResolversTypes["ChallengeStatus"], ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
-  isPrivate?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   participations?: Resolver<
     Array<ResolversTypes["ChallengeParticipation"]>,
     ParentType,
@@ -425,6 +428,16 @@ export type ChallengeParticipationResolvers<
     ContextType
   >;
   isPrivate?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  startDate?: Resolver<
+    Types.Maybe<ResolversTypes["Date"]>,
+    ParentType,
+    ContextType
+  >;
+  endDate?: Resolver<
+    Types.Maybe<ResolversTypes["Date"]>,
+    ParentType,
+    ContextType
+  >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

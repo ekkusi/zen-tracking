@@ -15,11 +15,11 @@ export const participationInfoFragment = gql`
   fragment ParticipationInfo on ChallengeParticipation {
     id
     isPrivate
+    startDate
+    endDate
     challenge {
       id
       name
-      startDate
-      endDate
       status
     }
   }

@@ -42,6 +42,8 @@ model ChallengeParticipation {
   is_private   Boolean   @default(true)
   challenge_id String    @db.Uuid
   user_name    String    @db.VarChar(254)
+  start_date   DateTime? @db.Timestamptz(6)
+  end_date     DateTime? @db.Timestamptz(6)
   Challenge    Challenge @relation(fields: [challenge_id], references: [id])
   User         User      @relation(fields: [user_name], references: [name])
   Marking      Marking[]

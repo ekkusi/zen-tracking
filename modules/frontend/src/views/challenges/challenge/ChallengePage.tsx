@@ -62,8 +62,10 @@ const ChallengePage = (): JSX.Element => {
     CreateParticipationVariables
   >(CREATE_PARTICIPATION, {
     variables: {
-      challengeId: id,
-      isPrivate: false,
+      input: {
+        challengeId: id,
+        isPrivate: false,
+      },
     },
   });
 

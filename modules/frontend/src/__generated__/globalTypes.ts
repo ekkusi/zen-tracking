@@ -23,8 +23,15 @@ export interface ChallengeFilters {
 
 export interface CreateChallengeInput {
   name: string;
-  isPrivate: boolean;
   description: string;
+  isPrivate: boolean;
+  startDate?: any | null;
+  endDate?: any | null;
+}
+
+export interface CreateParticipationInput {
+  challengeId: string;
+  isPrivate: boolean;
   startDate?: any | null;
   endDate?: any | null;
 }
@@ -52,6 +59,12 @@ export interface MarkingUpdateInput {
   photoUrl?: string | null;
 }
 
+export interface ParticipationFilters {
+  participantName?: string | null;
+  startDate?: DateFilter | null;
+  endDate?: DateFilter | null;
+}
+
 export interface PasswordInput {
   currentPassword: string;
   newPassword: string;
@@ -60,9 +73,9 @@ export interface PasswordInput {
 export interface UpdateChallengeInput {
   name?: string | null;
   description?: string | null;
+  isPrivate?: boolean | null;
   startDate?: any | null;
   endDate?: any | null;
-  isPrivate?: boolean | null;
 }
 
 //==============================================================

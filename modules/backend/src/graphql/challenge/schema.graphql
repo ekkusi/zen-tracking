@@ -1,7 +1,7 @@
 extend type Query {
   getChallenge(id: ID!): Challenge
   getChallenges(filters: ChallengeFilters): [Challenge!]!
-  getUserParticipations(filters: ChallengeFilters): [ChallengeParticipation!]!
+  getParticipations(filters: ParticipationFilters): [ChallengeParticipation!]!
   getParticipation(challengeId: ID!, userName: ID!): ChallengeParticipation
   getMarkings(participationId: ID!): [Marking!]!
   getUserTransferParticipation: ChallengeParticipation
@@ -11,10 +11,7 @@ extend type Mutation {
   createChallenge(challenge: CreateChallengeInput!): Challenge!
   updateChallenge(id: ID!, args: UpdateChallengeInput!): Challenge!
   deleteChallenge(id: ID!): Boolean!
-  createParticipation(
-    challengeId: ID!
-    isPrivate: Boolean!
-  ): ChallengeParticipation!
+  createParticipation(input: CreateParticipationInput!): ChallengeParticipation!
   deleteParticipation(challengeId: ID!): Boolean!
   addMarking(participationId: ID!, marking: MarkingCreateInput!): Marking!
   editMarking(id: ID!, marking: MarkingUpdateInput!): Marking!
@@ -33,11 +30,11 @@ type Challenge {
   id: ID!
   name: String!
   description: String!
-  startDate: Date
-  endDate: Date
   status: ChallengeStatus!
   creator: User!
   isPrivate: Boolean!
+  startDate: Date
+  endDate: Date
   participations: [ChallengeParticipation!]!
 }
 
@@ -47,12 +44,14 @@ type ChallengeParticipation {
   user: User!
   markings: [Marking!]!
   isPrivate: Boolean!
+  startDate: Date
+  endDate: Date
 }
 
 input CreateChallengeInput {
   name: String!
-  isPrivate: Boolean!
   description: String!
+  isPrivate: Boolean!
   startDate: Date
   endDate: Date
 }
@@ -60,9 +59,23 @@ input CreateChallengeInput {
 input UpdateChallengeInput {
   name: String
   description: String
+  isPrivate: Boolean
   startDate: Date
   endDate: Date
+}
+
+input CreateParticipationInput {
+  challengeId: ID!
+  isPrivate: Boolean!
+  startDate: Date
+  endDate: Date
+}
+
+input UpdateParticipationInput {
+  challengeId: ID
   isPrivate: Boolean
+  startDate: Date
+  endDate: Date
 }
 
 type Marking {
@@ -93,6 +106,12 @@ input MarkingUpdateInput {
 input ChallengeFilters {
   creatorName: ID
   status: ChallengeStatus
+  startDate: DateFilter
+  endDate: DateFilter
+}
+
+input ParticipationFilters {
+  participantName: ID
   startDate: DateFilter
   endDate: DateFilter
 }

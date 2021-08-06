@@ -13,8 +13,6 @@ export interface ParticipationInfo_challenge {
   __typename: "Challenge";
   id: string;
   name: string;
-  startDate: any | null;
-  endDate: any | null;
   status: ChallengeStatus;
 }
 
@@ -22,5 +20,7 @@ export interface ParticipationInfo {
   __typename: "ChallengeParticipation";
   id: string;
   isPrivate: boolean;
+  startDate: any | null;
+  endDate: any | null;
   challenge: ParticipationInfo_challenge;
 }

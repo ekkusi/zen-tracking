@@ -25,7 +25,7 @@ export type Query = {
   getUsers?: Maybe<Array<User>>;
   getChallenge?: Maybe<Challenge>;
   getChallenges: Array<Challenge>;
-  getUserParticipations: Array<ChallengeParticipation>;
+  getParticipations: Array<ChallengeParticipation>;
   getParticipation?: Maybe<ChallengeParticipation>;
   getMarkings: Array<Marking>;
   getUserTransferParticipation?: Maybe<ChallengeParticipation>;
@@ -43,8 +43,8 @@ export type QueryGetChallengesArgs = {
   filters?: Maybe<ChallengeFilters>;
 };
 
-export type QueryGetUserParticipationsArgs = {
-  filters?: Maybe<ChallengeFilters>;
+export type QueryGetParticipationsArgs = {
+  filters?: Maybe<ParticipationFilters>;
 };
 
 export type QueryGetParticipationArgs = {
@@ -117,8 +117,7 @@ export type MutationDeleteChallengeArgs = {
 };
 
 export type MutationCreateParticipationArgs = {
-  challengeId: Scalars["ID"];
-  isPrivate: Scalars["Boolean"];
+  input: CreateParticipationInput;
 };
 
 export type MutationDeleteParticipationArgs = {
@@ -187,11 +186,11 @@ export type Challenge = {
   id: Scalars["ID"];
   name: Scalars["String"];
   description: Scalars["String"];
-  startDate?: Maybe<Scalars["Date"]>;
-  endDate?: Maybe<Scalars["Date"]>;
   status: ChallengeStatus;
   creator: User;
   isPrivate: Scalars["Boolean"];
+  startDate?: Maybe<Scalars["Date"]>;
+  endDate?: Maybe<Scalars["Date"]>;
   participations: Array<ChallengeParticipation>;
 };
 
@@ -202,12 +201,14 @@ export type ChallengeParticipation = {
   user: User;
   markings: Array<Marking>;
   isPrivate: Scalars["Boolean"];
+  startDate?: Maybe<Scalars["Date"]>;
+  endDate?: Maybe<Scalars["Date"]>;
 };
 
 export type CreateChallengeInput = {
   name: Scalars["String"];
-  isPrivate: Scalars["Boolean"];
   description: Scalars["String"];
+  isPrivate: Scalars["Boolean"];
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
 };
@@ -215,9 +216,23 @@ export type CreateChallengeInput = {
 export type UpdateChallengeInput = {
   name?: Maybe<Scalars["String"]>;
   description?: Maybe<Scalars["String"]>;
+  isPrivate?: Maybe<Scalars["Boolean"]>;
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
+};
+
+export type CreateParticipationInput = {
+  challengeId: Scalars["ID"];
+  isPrivate: Scalars["Boolean"];
+  startDate?: Maybe<Scalars["Date"]>;
+  endDate?: Maybe<Scalars["Date"]>;
+};
+
+export type UpdateParticipationInput = {
+  challengeId?: Maybe<Scalars["ID"]>;
   isPrivate?: Maybe<Scalars["Boolean"]>;
+  startDate?: Maybe<Scalars["Date"]>;
+  endDate?: Maybe<Scalars["Date"]>;
 };
 
 export type Marking = {
@@ -249,6 +264,12 @@ export type MarkingUpdateInput = {
 export type ChallengeFilters = {
   creatorName?: Maybe<Scalars["ID"]>;
   status?: Maybe<ChallengeStatus>;
+  startDate?: Maybe<DateFilter>;
+  endDate?: Maybe<DateFilter>;
+};
+
+export type ParticipationFilters = {
+  participantName?: Maybe<Scalars["ID"]>;
   startDate?: Maybe<DateFilter>;
   endDate?: Maybe<DateFilter>;
 };

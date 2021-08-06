@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ChallengeStatus } from "./../../../../__generated__/globalTypes";
+import { CreateParticipationInput, ChallengeStatus } from "./../../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: CreateParticipation
@@ -13,8 +13,6 @@ export interface CreateParticipation_createParticipation_challenge {
   __typename: "Challenge";
   id: string;
   name: string;
-  startDate: any | null;
-  endDate: any | null;
   status: ChallengeStatus;
 }
 
@@ -32,6 +30,8 @@ export interface CreateParticipation_createParticipation {
   __typename: "ChallengeParticipation";
   id: string;
   isPrivate: boolean;
+  startDate: any | null;
+  endDate: any | null;
   challenge: CreateParticipation_createParticipation_challenge;
   markings: CreateParticipation_createParticipation_markings[];
 }
@@ -41,6 +41,5 @@ export interface CreateParticipation {
 }
 
 export interface CreateParticipationVariables {
-  challengeId: string;
-  isPrivate: boolean;
+  input: CreateParticipationInput;
 }

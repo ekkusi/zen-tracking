@@ -51,13 +51,13 @@
       "name": "Lenkittelyvä - käynnissä oleva",
       "description": "Joka päivä jonkinlainen lenkki, kävellen tai juosten",
       "creator_name": "main-user",
-      "start_date": "2021-07-01T00:00:00+02:00",
-      "end_date": "2021-07-30T00:00:00+02:00",
       "is_private": false,
       "participations": [
         {
           "user_name": "main-user",
           "is_private": false,
+          "start_date": "2021-07-01T00:00:00+02:00",
+          "end_date": "2021-07-30T00:00:00+02:00",
           "markings": [
             {
               "comment": "Ihanpa mukava lenkki",
@@ -79,6 +79,8 @@
         {
           "user_name": "some-user",
           "is_private": false,
+          "start_date": "2021-07-01T00:00:00+02:00",
+          "end_date": "2021-07-30T00:00:00+02:00",
           "markings": [
             {
               "comment": "Kakka lenkki",
@@ -103,13 +105,13 @@
       "name": "Meditointia - mennyt",
       "description": "Istu ja ajattele joka päivä",
       "creator_name": "main-user",
-      "start_date": "2021-02-01T00:00:00+02:00",
-      "end_date": "2021-02-28T23:59:59+02:00",
       "is_private": false,
       "participations": [
         {
           "user_name": "main-user",
           "is_private": false,
+          "start_date": "2021-02-01T00:00:00+02:00",
+          "end_date": "2021-02-28T23:59:59+02:00",
           "markings": [
             {
               "comment": "Tulipaha ajateltua 10min",
@@ -129,11 +131,11 @@
       "name": "Raakavegaanius - tuleva",
       "description": "Kuukauden ajan vihanneksia ja hetelmiä. Kylmänä vaan.",
       "creator_name": "some-user",
-      "start_date": "2021-08-01T00:00:00+02:00",
-      "end_date": "2021-08-30T23:59:59+02:00",
       "is_private": false,
       "participations": [
         {
+          "start_date": "2021-08-01T00:00:00+02:00",
+          "end_date": "2021-08-30T23:59:59+02:00",
           "user_name": "main-user"
         }
       ]

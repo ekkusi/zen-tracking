@@ -1,7 +1,6 @@
 import { Button, Flex, FlexProps, Text, useColorMode } from "@chakra-ui/react";
 import Heading from "components/primitives/Heading";
 import React from "react";
-import DateUtil from "util/DateUtil";
 import { Link, useHistory } from "react-router-dom";
 import { GetChallenges_getChallenges } from "../../__generated__/GetChallenges";
 import useGlobal from "../../store";
@@ -52,12 +51,12 @@ const ChallengeCard = ({
       {...rest}
     >
       <Heading.H3 mb="0">{challenge.name}</Heading.H3>
-      <Text as="span" fontStyle="italic" mb="0">
+      {/* <Text as="span" fontStyle="italic" mb="0">
         {challenge.startDate && challenge.endDate
           ? `${DateUtil.format(challenge.startDate)} -
             ${DateUtil.format(challenge.endDate)}`
           : "Ei päätettyä ajankohtaa"}
-      </Text>
+      </Text> */}
       <Text as="span">
         Tekijä:{" "}
         {challenge.creator.name === user.name ? "Sinä" : challenge.creator.name}

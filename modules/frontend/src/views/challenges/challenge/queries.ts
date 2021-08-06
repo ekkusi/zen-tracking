@@ -14,8 +14,8 @@ export const GET_CHALLENGE = gql`
 `;
 
 export const CREATE_PARTICIPATION = gql`
-  mutation CreateParticipation($challengeId: ID!, $isPrivate: Boolean!) {
-    createParticipation(challengeId: $challengeId, isPrivate: $isPrivate) {
+  mutation CreateParticipation($input: CreateParticipationInput!) {
+    createParticipation(input: $input) {
       ...ActiveParticipationInfo
     }
   }

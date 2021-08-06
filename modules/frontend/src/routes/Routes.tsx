@@ -94,14 +94,9 @@ const Routes = (): JSX.Element => {
         // Update activeParticipation as well when user is updated, wait for user to be updated first
         globalActions.updateActiveParticipation(newActiveParticipation);
 
-        console.log(openRecapModal);
-
         if (
           newActiveParticipation &&
-          isAfter(
-            new Date(),
-            new Date(newActiveParticipation.challenge.endDate)
-          ) &&
+          isAfter(new Date(), new Date(newActiveParticipation.endDate)) &&
           !user.finishedAndCheckedChallenges.includes(
             newActiveParticipation.challenge.id
           )

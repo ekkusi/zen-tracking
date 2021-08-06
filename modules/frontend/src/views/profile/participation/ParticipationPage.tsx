@@ -21,7 +21,7 @@ import { GET_WHOLE_PARTICIPATION } from "./queries";
 import useGlobal from "../../../store";
 import Progress from "../../../components/general/Progress";
 import {
-  getChallengeDateString,
+  getParticipationDateString,
   getChallengeLength,
 } from "../../../util/challengeUtils";
 import LeafRating from "../../../components/general/LeafRating";
@@ -184,7 +184,7 @@ const ParticipationPage = (): JSX.Element => {
               {participation.challenge.name}
             </Heading.H1>
             <Text as="span" fontSize="2xl">
-              {getChallengeDateString(participation.challenge)}
+              {getParticipationDateString(participation)}
             </Text>
           </BoxWithMotion>
           <Flex

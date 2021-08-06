@@ -48,6 +48,9 @@ export const resolvers: Resolvers = {
       return result;
     },
     isPrivate: ({ is_private }) => is_private,
+    endDate: ({ end_date }) => (end_date ? formatIsoString(end_date) : null),
+    startDate: ({ start_date }) =>
+      start_date ? formatIsoString(start_date) : null,
   },
   Challenge: {
     creator: async ({ creator_name }, _, { loaders: { userLoader } }) => {
@@ -101,13 +104,10 @@ export const resolvers: Resolvers = {
       });
       return challenges || [];
     },
-    getUserParticipations: async (_, args, { prisma, user }) => {
+    getParticipations: async (_, args, { prisma, user }) => {
       if (!user) throw new AuthenticationError();
       // Filter by user name and so that participation is not transfer participation
-      const filters = ChallengeMapper.mapUserParticipationsFilters(
-        args,
-        user.name
-      );
+      const filters = ChallengeMapper.mapParticipationsFilters(args, user.name);
       const allFilters = SharedMapper.notPrivateFilterMapper<Prisma.ChallengeParticipationWhereInput>(
         filters,
         { user_name: user.name }
@@ -341,23 +341,15 @@ export const resolvers: Resolvers = {
       }
       return false;
     },
-    createParticipation: async (
-      _,
-      { challengeId, isPrivate },
-      { prisma, loaders, user }
-    ) => {
+    createParticipation: async (_, { input }, { prisma, loaders, user }) => {
       if (!user) throw new AuthenticationError();
       await ChallengeValidator.validateCreateParticipation(
-        challengeId,
+        input.challengeId,
         user.name
       );
 
       const participation = await prisma.challengeParticipation.create({
-        data: {
-          challenge_id: challengeId,
-          user_name: user.name,
-          is_private: isPrivate,
-        },
+        data: ChallengeMapper.mapCreateParticipationInput(input, user.name),
       });
       // Clear participationsLoader cache by created participation id
       await loaderResetors.clearParticipationsCache(participation.id, loaders);

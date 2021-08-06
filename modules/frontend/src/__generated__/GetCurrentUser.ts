@@ -13,8 +13,6 @@ export interface GetCurrentUser_getCurrentUser_activeParticipation_challenge {
   __typename: "Challenge";
   id: string;
   name: string;
-  startDate: any | null;
-  endDate: any | null;
   status: ChallengeStatus;
 }
 
@@ -32,6 +30,8 @@ export interface GetCurrentUser_getCurrentUser_activeParticipation {
   __typename: "ChallengeParticipation";
   id: string;
   isPrivate: boolean;
+  startDate: any | null;
+  endDate: any | null;
   challenge: GetCurrentUser_getCurrentUser_activeParticipation_challenge;
   markings: GetCurrentUser_getCurrentUser_activeParticipation_markings[];
 }

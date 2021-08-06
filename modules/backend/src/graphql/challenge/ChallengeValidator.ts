@@ -270,6 +270,7 @@ export default class ChallengeValidator {
       );
   }
 
+  // TODO: This could be removed or atleast change validations to come from participation, not challenge
   public static async validateTransferUserMarking(
     userName: string,
     challengeId: string

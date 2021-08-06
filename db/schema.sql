@@ -38,6 +38,8 @@ CREATE TABLE "ChallengeParticipation" (
   is_private boolean DEFAULT true NOT NULL,
   challenge_id uuid NOT NULL,
   user_name varchar(254) NOT NULL,
+  start_date timestamp with time zone,
+  end_date timestamp with time zone CHECK (start_date <= end_date), 
   FOREIGN KEY (challenge_id) REFERENCES "Challenge"(id) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (user_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE,
   UNIQUE (challenge_id, user_name)

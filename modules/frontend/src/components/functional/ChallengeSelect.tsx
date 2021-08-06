@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Box, BoxProps, Text } from "@chakra-ui/react";
-import { GET_USER_PARTICIPATIONS_PLAIN } from "generalQueries";
+import { GET_PARTICIPATIONS_PLAIN } from "generalQueries";
 import React, {
   forwardRef,
   useImperativeHandle,
@@ -12,10 +12,9 @@ import React, {
 import { OptionsType } from "react-select";
 import useGlobal from "store";
 import {
-  GetUserParticipationsPlain,
-  GetUserParticipationsPlainVariables,
-} from "../../__generated__/GetUserParticipationsPlain";
-import { ChallengeStatus } from "../../__generated__/globalTypes";
+  GetParticipationsPlain,
+  GetParticipationsPlainVariables,
+} from "../../__generated__/GetParticipationsPlain";
 import Select from "../general/Select";
 
 type ChallengeSelectProps = {
@@ -36,6 +35,8 @@ export type SelectHandle = {
   nullValue: (value: OptionType | null) => void;
 };
 
+const currentDate = new Date();
+
 const ChallengeSelect = forwardRef(
   (
     {
@@ -48,30 +49,45 @@ const ChallengeSelect = forwardRef(
     ref
   ): JSX.Element => {
     const [value, setValue] = useState<OptionType | null>();
+    const user = useGlobal((state) => state.currentUser)[0];
     const activeParticipation = useGlobal(
       (state) => state.activeParticipation
     )[0];
 
+    console.log(currentDate);
+
     const { data, loading, error, refetch } = useQuery<
-      GetUserParticipationsPlain,
-      GetUserParticipationsPlainVariables
-    >(GET_USER_PARTICIPATIONS_PLAIN, {
+      GetParticipationsPlain,
+      GetParticipationsPlainVariables
+    >(GET_PARTICIPATIONS_PLAIN, {
       fetchPolicy: "no-cache",
       variables: {
         filters: {
-          status: ChallengeStatus.ACTIVE,
+          participantName: user.name,
+          startDate: { lte: currentDate.toISOString() },
+          endDate: { gte: currentDate.toISOString() },
         },
       },
     });
 
     const mapOptions = useMemo((): OptionsType<OptionType> => {
-      return (
-        data?.getUserParticipations.map((it) => ({
+      const mappedOptions =
+        data?.getParticipations.map((it) => ({
           value: it.challenge.id,
           label: it.challenge.name,
-        })) || []
-      );
-    }, [data]);
+        })) || [];
+      if (activeParticipation) {
+        const activeChallenge = activeParticipation.challenge;
+        return [
+          ...mappedOptions,
+          {
+            value: activeChallenge.id,
+            label: activeChallenge.name,
+          },
+        ];
+      }
+      return mappedOptions;
+    }, [data, activeParticipation]);
 
     const onChange = (selectedValue: OptionType | null) => {
       setValue(value);

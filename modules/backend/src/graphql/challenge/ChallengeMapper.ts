@@ -8,8 +8,9 @@ import {
   DateFilter,
   MarkingUpdateInput,
   MarkingCreateInput,
-  QueryGetUserParticipationsArgs,
   ChallengeFilters,
+  CreateParticipationInput,
+  QueryGetParticipationsArgs,
 } from "../../types/schema";
 
 import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "../../config.json";
@@ -67,6 +68,20 @@ export class ChallengeMapper {
     };
   }
 
+  public static mapCreateParticipationInput(
+    input: CreateParticipationInput,
+    participantName: string
+  ): Prisma.ChallengeParticipationCreateInput {
+    const { startDate, endDate, isPrivate, challengeId } = input;
+    return {
+      Challenge: { connect: { id: challengeId } },
+      User: { connect: { name: participantName } },
+      is_private: isPrivate,
+      end_date: endDate ? formatIsoString(endDate) : undefined,
+      start_date: startDate ? formatIsoString(startDate) : undefined,
+    };
+  }
+
   public static mapChallengeStatus(
     startDate: Date | null,
     endDate: Date | null
@@ -86,15 +101,16 @@ export class ChallengeMapper {
   public static mapEditChallengeInput(
     args: UpdateChallengeInput
   ): Prisma.ChallengeUpdateInput {
-    const { startDate, endDate, isPrivate, ...rest } = args;
+    // const { startDate, endDate, isPrivate, ...rest } = args;
+    const { isPrivate, ...rest } = args;
 
     return {
       ...rest,
       is_private: isPrivate ?? undefined,
       name: args.name ? args.name : undefined,
       description: args.description ? args.description : undefined,
-      end_date: endDate ? formatIsoString(endDate) : undefined,
-      start_date: startDate ? formatIsoString(startDate) : undefined,
+      // end_date: endDate ? formatIsoString(endDate) : undefined,
+      // start_date: startDate ? formatIsoString(startDate) : undefined,
     };
   }
 
@@ -186,8 +202,8 @@ export class ChallengeMapper {
     );
   }
 
-  public static mapUserParticipationsFilters(
-    args: QueryGetUserParticipationsArgs,
+  public static mapParticipationsFilters(
+    args: QueryGetParticipationsArgs,
     userName: string
   ): GetParticipationsFilters {
     const challengeFilters = this.mapChallengeFilters(args.filters || {});

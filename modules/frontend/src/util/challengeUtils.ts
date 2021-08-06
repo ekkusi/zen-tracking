@@ -1,5 +1,8 @@
 import { differenceInCalendarDays } from "date-fns";
-import { ParsedChallenge } from "../types/parsedBackendTypes";
+import {
+  ParsedChallenge,
+  ParsedChallengeParticipation,
+} from "../types/parsedBackendTypes";
 import DateUtil from "./DateUtil";
 
 export const getChallengeLength = (challenge: ParsedChallenge): number => {
@@ -10,11 +13,11 @@ export const getChallengeLength = (challenge: ParsedChallenge): number => {
   return 0;
 };
 
-export const getChallengeDateString = (
-  challenge: ParsedChallenge,
+export const getParticipationDateString = (
+  participation: ParsedChallengeParticipation,
   noDatesString?: string
 ): string => {
-  const { startDate, endDate } = challenge;
+  const { startDate, endDate } = participation;
   if (startDate && endDate) {
     return `${DateUtil.format(startDate)} - ${DateUtil.format(endDate)}`;
   }
