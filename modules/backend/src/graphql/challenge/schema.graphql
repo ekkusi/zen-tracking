@@ -4,6 +4,7 @@ extend type Query {
   getParticipations(filters: ParticipationFilters): [ChallengeParticipation!]!
   getParticipation(id: ID!): ChallengeParticipation
   getMarkings(participationId: ID!): [Marking!]!
+  getUserTransferParticipation: ChallengeParticipation
 }
 
 extend type Mutation {
@@ -19,6 +20,7 @@ extend type Mutation {
   addMarking(participationId: ID!, marking: MarkingCreateInput!): Marking!
   editMarking(id: ID!, marking: MarkingUpdateInput!): Marking!
   deleteMarking(id: ID!): Boolean!
+  transferUserMarkings(challengeId: ID!): Boolean!
 }
 
 enum ChallengeStatus {
