@@ -48,8 +48,7 @@ export type QueryGetParticipationsArgs = {
 };
 
 export type QueryGetParticipationArgs = {
-  challengeId: Scalars["ID"];
-  userName: Scalars["ID"];
+  id: Scalars["ID"];
 };
 
 export type QueryGetMarkingsArgs = {
@@ -69,6 +68,7 @@ export type Mutation = {
   updateChallenge: Challenge;
   deleteChallenge: Scalars["Boolean"];
   createParticipation: ChallengeParticipation;
+  updateParticipation: ChallengeParticipation;
   deleteParticipation: Scalars["Boolean"];
   addMarking: Marking;
   editMarking: Marking;
@@ -120,8 +120,12 @@ export type MutationCreateParticipationArgs = {
   input: CreateParticipationInput;
 };
 
+export type MutationUpdateParticipationArgs = {
+  input: UpdateParticipationInput;
+};
+
 export type MutationDeleteParticipationArgs = {
-  challengeId: Scalars["ID"];
+  id: Scalars["ID"];
 };
 
 export type MutationAddMarkingArgs = {
@@ -229,7 +233,6 @@ export type CreateParticipationInput = {
 };
 
 export type UpdateParticipationInput = {
-  challengeId?: Maybe<Scalars["ID"]>;
   isPrivate?: Maybe<Scalars["Boolean"]>;
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;

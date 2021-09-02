@@ -44,8 +44,8 @@ export const GET_PARTICIPATIONS = gql`
 `;
 
 export const GET_PARTICIPATION = gql`
-  query GetParticipation($challengeId: ID!, $userName: ID!) {
-    getParticipation(challengeId: $challengeId, userName: $userName) {
+  query GetParticipation($id: ID!) {
+    getParticipation(id: $id) {
       ...ActiveParticipationInfo
     }
   }
@@ -65,6 +65,8 @@ export const GET_PARTICIPATIONS_PLAIN = gql`
   query GetParticipationsPlain($filters: ParticipationFilters) {
     getParticipations(filters: $filters) {
       id
+      startDate
+      endDate
       challenge {
         id
         name

@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import ChallengeSelect, {
   OptionType,
   SelectHandle,
-} from "components/functional/ChallengeSelect";
+} from "components/functional/ParticipationSelect";
 import CustomLoadingOverlay from "components/general/LoadingOverlay";
 import EditMarking from "../../components/functional/EditMarking";
 import MarkingCalendar from "../../components/functional/MarkingCalendar";
@@ -49,12 +49,11 @@ const MainPage = (): JSX.Element => {
   };
 
   const onActiveChallengeSelect = async (value: OptionType | null) => {
-    const selectedChallengeId = value?.value ?? null;
-    if (selectedChallengeId) {
+    const selectedParticipationId = value?.value ?? null;
+    if (selectedParticipationId) {
       setLoading(true);
       const result = await getParticipation({
-        challengeId: selectedChallengeId,
-        userName: user.name,
+        id: selectedParticipationId,
       });
       updateActiveParticipation(result.data.getParticipation ?? null);
       setLoading(false);

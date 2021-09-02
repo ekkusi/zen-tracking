@@ -5,3 +5,5 @@ UPDATE "ChallengeParticipation" AS cp
 SET start_date = c.start_date, end_date = c.end_date
 FROM "Challenge" as c
 WHERE c.id = cp.challenge_id;
+
+Alter table "ChallengeParticipation" DROP CONSTRAINT "ChallengeParticipation_challenge_id_user_name_key";

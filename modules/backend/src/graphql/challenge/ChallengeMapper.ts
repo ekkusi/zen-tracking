@@ -10,6 +10,7 @@ import {
   MarkingCreateInput,
   ChallengeFilters,
   CreateParticipationInput,
+  UpdateParticipationInput,
   QueryGetParticipationsArgs,
 } from "../../types/schema";
 
@@ -77,6 +78,17 @@ export class ChallengeMapper {
       Challenge: { connect: { id: challengeId } },
       User: { connect: { name: participantName } },
       is_private: isPrivate,
+      end_date: endDate ? formatIsoString(endDate) : undefined,
+      start_date: startDate ? formatIsoString(startDate) : undefined,
+    };
+  }
+
+  public static mapUpdateParticipationInput(
+    input: UpdateParticipationInput
+  ): Prisma.ChallengeParticipationUpdateInput {
+    const { startDate, endDate, isPrivate } = input;
+    return {
+      is_private: isPrivate || undefined,
       end_date: endDate ? formatIsoString(endDate) : undefined,
       start_date: startDate ? formatIsoString(startDate) : undefined,
     };

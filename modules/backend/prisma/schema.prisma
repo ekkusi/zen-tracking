@@ -47,8 +47,6 @@ model ChallengeParticipation {
   Challenge    Challenge @relation(fields: [challenge_id], references: [id])
   User         User      @relation(fields: [user_name], references: [name])
   Marking      Marking[]
-
-  @@unique([challenge_id, user_name], name: "ChallengeParticipation_challenge_id_user_name_key")
 }
 
 model Marking {

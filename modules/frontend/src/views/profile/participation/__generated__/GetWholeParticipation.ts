@@ -9,24 +9,6 @@ import { ChallengeStatus } from "./../../../../__generated__/globalTypes";
 // GraphQL query operation: GetWholeParticipation
 // ====================================================
 
-export interface GetWholeParticipation_getParticipation_user {
-  __typename: "User";
-  name: string;
-  email: string | null;
-  isPrivate: boolean;
-  finishedAndCheckedChallenges: string[];
-}
-
-export interface GetWholeParticipation_getParticipation_markings {
-  __typename: "Marking";
-  id: string;
-  date: any;
-  comment: string | null;
-  photoUrl: string | null;
-  rating: number;
-  isPrivate: boolean;
-}
-
 export interface GetWholeParticipation_getParticipation_challenge_creator {
   __typename: "User";
   name: string;
@@ -55,12 +37,33 @@ export interface GetWholeParticipation_getParticipation_challenge {
   participations: GetWholeParticipation_getParticipation_challenge_participations[];
 }
 
+export interface GetWholeParticipation_getParticipation_user {
+  __typename: "User";
+  name: string;
+  email: string | null;
+  isPrivate: boolean;
+  finishedAndCheckedChallenges: string[];
+}
+
+export interface GetWholeParticipation_getParticipation_markings {
+  __typename: "Marking";
+  id: string;
+  date: any;
+  comment: string | null;
+  photoUrl: string | null;
+  rating: number;
+  isPrivate: boolean;
+}
+
 export interface GetWholeParticipation_getParticipation {
   __typename: "ChallengeParticipation";
   id: string;
+  isPrivate: boolean;
+  startDate: any | null;
+  endDate: any | null;
+  challenge: GetWholeParticipation_getParticipation_challenge;
   user: GetWholeParticipation_getParticipation_user;
   markings: GetWholeParticipation_getParticipation_markings[];
-  challenge: GetWholeParticipation_getParticipation_challenge;
 }
 
 export interface GetWholeParticipation {
@@ -68,6 +71,5 @@ export interface GetWholeParticipation {
 }
 
 export interface GetWholeParticipationVariables {
-  challengeId: string;
-  userName: string;
+  id: string;
 }

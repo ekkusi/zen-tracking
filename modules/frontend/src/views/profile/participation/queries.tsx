@@ -1,10 +1,15 @@
 import { gql } from "@apollo/client";
-import { markingDataFragment, userDataFragment } from "../../../fragments";
+import {
+  markingDataFragment,
+  userDataFragment,
+  participationInfoFragment,
+} from "../../../fragments";
 
 export const GET_WHOLE_PARTICIPATION = gql`
-  query GetWholeParticipation($challengeId: ID!, $userName: ID!) {
-    getParticipation(challengeId: $challengeId, userName: $userName) {
+  query GetWholeParticipation($id: ID!) {
+    getParticipation(id: $id) {
       id
+      ...ParticipationInfo
       user {
         ...UserData
       }
@@ -30,6 +35,7 @@ export const GET_WHOLE_PARTICIPATION = gql`
       }
     }
   }
+  ${participationInfoFragment}
   ${userDataFragment}
   ${markingDataFragment}
 `;

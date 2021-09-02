@@ -10,10 +10,12 @@ import {
 import { getEarliestMarking, getLatestMarking } from "../../utils/dateUtils";
 import {
   CreateChallengeInput,
+  CreateParticipationInput,
   MarkingCreateInput,
   MarkingUpdateInput,
   MutationAddMarkingArgs,
   UpdateChallengeInput,
+  UpdateParticipationInput,
 } from "../../types/schema";
 import ValidationError from "../../utils/errors/ValidationError";
 import prisma from "../client";
@@ -132,35 +134,61 @@ export default class ChallengeValidator {
   }
 
   public static async validateCreateParticipation(
-    challengeId: string,
+    input: CreateParticipationInput
+  ) {
+    const startDate = input.startDate ? new Date(input.startDate) : null;
+    const endDate = input.endDate ? new Date(input.endDate) : null;
+    this.validateParticipationDates(startDate, endDate);
+  }
+
+  public static async validateUpdateParticipation(
+    input: UpdateParticipationInput,
+    id: string,
     userName: string
   ) {
-    const existingParticipation = await prisma.challengeParticipation.findFirst(
-      {
-        where: {
-          AND: {
-            challenge_id: challengeId,
-            user_name: userName,
-          },
-        },
-      }
-    );
-    if (existingParticipation)
+    const participation = await prisma.challengeParticipation.findUnique({
+      where: { id },
+    });
+    if (!participation)
+      throw new ValidationError("Muokattavaa haastetta ei löytynyt");
+    if (participation.user_name !== userName)
+      throw new ValidationError("Et voi muokata haastetta, joka ei ole omasi");
+    const startDate = input.startDate
+      ? new Date(input.startDate)
+      : participation.start_date;
+    const endDate = input.endDate
+      ? new Date(input.endDate)
+      : participation.end_date;
+    this.validateParticipationDates(startDate, endDate);
+  }
+
+  public static validateParticipationDates(
+    startDate: Date | null,
+    endDate: Date | null
+  ) {
+    if (!startDate && !endDate) return;
+    if (!startDate || !endDate) {
       throw new ValidationError(
-        "Et voi ilmoittautua haasteeseen, johon olet jo osallistumassa."
+        "Jos jompikumpi alkupäivämäärästä ja loppupäivämäärästä on määritelty, pitää molempien olla. "
+      );
+    }
+    if (!isValid(startDate))
+      throw new ValidationError("Alkupäivämäärä ei ole oikeassa muodossa.");
+    if (!isValid(endDate))
+      throw new ValidationError("Loppupäivämäärä ei ole oikeassa muodossa.");
+    if (!isAfter(endDate, startDate) && !isSameDay(startDate, endDate))
+      throw new ValidationError(
+        "Loppupäivämäärän pitää tulla alkupäivämäärän jälkeen."
       );
   }
 
   public static async validateDeleteParticipation(
-    challengeId: string,
+    id: string,
     userName: string
   ) {
     const participation = await prisma.challengeParticipation.findFirst({
       where: {
-        AND: {
-          challenge_id: challengeId,
-          user_name: userName,
-        },
+        id,
       },
     });
     if (!participation)

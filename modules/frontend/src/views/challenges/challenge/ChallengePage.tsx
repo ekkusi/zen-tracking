@@ -1,7 +1,6 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
   Box,
-  Button,
   Grid,
   GridItem,
   ListItem,
@@ -13,19 +12,7 @@ import React, { useMemo } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import Heading from "../../../components/primitives/Heading";
 import useGlobal from "../../../store";
-import {
-  CREATE_PARTICIPATION,
-  DELETE_PARTICIPATION,
-  GET_CHALLENGE,
-} from "./queries";
-import {
-  CreateParticipation,
-  CreateParticipationVariables,
-} from "./__generated__/CreateParticipation";
-import {
-  DeleteParticipation,
-  DeleteParticipationVariables,
-} from "./__generated__/DeleteParticipation";
+import { GET_CHALLENGE } from "./queries";
 import {
   GetChallenge,
   GetChallengeVariables,
@@ -33,17 +20,12 @@ import {
 
 import Loading from "../../../components/general/Loading";
 import EditChallenge from "../../../components/functional/EditChallenge";
-import ConfirmationModal from "../../../components/general/ConfirmationModal";
-import DateUtil from "../../../util/DateUtil";
+import EditParticipation from "../../../components/functional/EditParticipation";
 
 const ChallengePage = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
 
   const user = useGlobal((state) => state.currentUser)[0];
-  const [activeParticipation, updateActiveParticipation] = useGlobal(
-    (state) => state.activeParticipation,
-    (actions) => actions.updateActiveParticipation
-  );
 
   const history = useHistory();
 
@@ -57,74 +39,63 @@ const ChallengePage = (): JSX.Element => {
     fetchPolicy: "network-only",
   });
 
-  const [addParticipation, { loading: addLoading }] = useMutation<
-    CreateParticipation,
-    CreateParticipationVariables
-  >(CREATE_PARTICIPATION, {
-    variables: {
-      input: {
-        challengeId: id,
-        isPrivate: false,
-      },
-    },
-  });
+  // const [addParticipation, { loading: addLoading }] = useMutation<
+  //   CreateParticipation,
+  //   CreateParticipationVariables
+  // >(CREATE_PARTICIPATION, {
+  //   variables: {
+  //     input: {
+  //       challengeId: id,
+  //       isPrivate: false,
+  //     },
+  //   },
+  // });
 
-  const [deleteParticipation] = useMutation<
-    DeleteParticipation,
-    DeleteParticipationVariables
-  >(DELETE_PARTICIPATION, {
-    variables: {
-      challengeId: id,
-    },
-  });
+  // const [deleteParticipation] = useMutation<
+  //   DeleteParticipation,
+  //   DeleteParticipationVariables
+  // >(DELETE_PARTICIPATION, {
+  //   variables: {
+  //     challengeId: id,
+  //   },
+  // });
 
   const challenge = useMemo(() => {
     return data?.getChallenge;
   }, [data]);
 
-  const dateString = useMemo(() => {
-    if (challenge?.startDate && challenge?.endDate) {
-      return `${DateUtil.format(challenge.startDate)} - ${DateUtil.format(
-        challenge.endDate
-      )}`;
-    }
-    return "Ei määritelty";
-  }, [challenge]);
+  // const removeParticipation = async () => {
+  //   try {
+  //     await deleteParticipation();
+  //     refetch();
+  //     // If deletedParticipation was the activeParticipation, update activeParticipation
+  //     if (activeParticipation && activeParticipation.challenge.id === id) {
+  //       updateActiveParticipation(null);
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
-  const removeParticipation = async () => {
-    try {
-      await deleteParticipation();
-      refetch();
-      // await updateChallenges();
-      // If deletedParticipation was the activeParticipation, update activeParticipation
-      if (activeParticipation && activeParticipation.challenge.id === id) {
-        updateActiveParticipation(null);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const createParticipation = async () => {
+  //   try {
+  //     const result = await addParticipation();
+  //     refetch();
+  //     // If activeparticipation isn't updated by updateChallenges -> update manually with created challenge
+  //     if (!activeParticipation && result.data) {
+  //       updateActiveParticipation(result.data.createParticipation);
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
-  const createParticipation = async () => {
-    try {
-      const result = await addParticipation();
-      refetch();
-      // await onEdit();
-      // If activeparticipation isn't updated by updateChallenges -> update manually with created challenge
-      if (!activeParticipation && result.data) {
-        updateActiveParticipation(result.data.createParticipation);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getUserParticipation = () => {
-    const participation = challenge?.participations.find(
-      (it) => it.user.name === user.name
-    );
-    return participation;
-  };
+  // const getUserParticipation = () => {
+  //   const participation = challenge?.participations.find(
+  //     (it) => it.user.name === user.name
+  //   );
+  //   return participation;
+  // };
 
   const isUserChallengeCreator = () => {
     return challenge?.creator.name === user.name;
@@ -152,17 +123,11 @@ const ChallengePage = (): JSX.Element => {
             mb="5"
             templateColumns={{
               base: "1fr",
-              sm: "repeat(3, 1fr)",
-              md: "repeat(3, 1fr)",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(2, 1fr)",
             }}
             gap="2"
           >
-            <GridItem as="span">
-              <Text as="span" fontWeight="bold">
-                Aika:{" "}
-              </Text>
-              {dateString}
-            </GridItem>
             <GridItem as="span">
               <Text as="span" fontWeight="bold">
                 Tekijä:{" "}
@@ -183,7 +148,7 @@ const ChallengePage = (): JSX.Element => {
             <UnorderedList>
               {challenge.participations.map((it) => (
                 <ListItem key={it.id}>
-                  <Link to={`/profile/${it.user.name}/${challenge.id}`}>
+                  <Link to={`/profile/${it.user.name}/participations/${it.id}`}>
                     {it.user.name}
                   </Link>
                 </ListItem>
@@ -191,13 +156,13 @@ const ChallengePage = (): JSX.Element => {
             </UnorderedList>
           ) : (
             <Text>
-              Kukaan ei ole vielä ilmottautunut haasteeseen. Ole ensimmäinen ja
-              ilmoittaudu alta!
+              Kukaan ei ole vielä suorittanut haastetta. Ole ensimmäinen ja
+              aloita haaste!
             </Text>
           )}
 
           <Box mt="5">
-            {getUserParticipation() ? (
+            {/* {getUserParticipation() ? (
               <>
                 <ConfirmationModal
                   variant="delete"
@@ -221,7 +186,8 @@ const ChallengePage = (): JSX.Element => {
               >
                 Ilmoittaudu
               </Button>
-            )}
+            )} */}
+            <EditParticipation challenge={challenge} />
             {isUserChallengeCreator() && (
               <EditChallenge
                 challenge={challenge}

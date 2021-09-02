@@ -17,7 +17,7 @@ import {
 } from "../../__generated__/GetParticipationsPlain";
 import Select from "../general/Select";
 
-type ChallengeSelectProps = {
+type ParticipationSelectProps = {
   initialValue?: OptionType;
   onSelect: (value: OptionType | null) => Promise<void> | void;
   isLoading?: boolean;
@@ -37,7 +37,7 @@ export type SelectHandle = {
 
 const currentDate = new Date();
 
-const ChallengeSelect = forwardRef(
+const ParticipationSelect = forwardRef(
   (
     {
       initialValue,
@@ -45,7 +45,7 @@ const ChallengeSelect = forwardRef(
       onSelect,
       containerProps,
       options,
-    }: ChallengeSelectProps,
+    }: ParticipationSelectProps,
     ref
   ): JSX.Element => {
     const [value, setValue] = useState<OptionType | null>();
@@ -53,8 +53,6 @@ const ChallengeSelect = forwardRef(
     const activeParticipation = useGlobal(
       (state) => state.activeParticipation
     )[0];
-
-    console.log(currentDate);
 
     const { data, loading, error, refetch } = useQuery<
       GetParticipationsPlain,
@@ -71,18 +69,19 @@ const ChallengeSelect = forwardRef(
     });
 
     const mapOptions = useMemo((): OptionsType<OptionType> => {
-      const mappedOptions =
-        data?.getParticipations.map((it) => ({
-          value: it.challenge.id,
+      const mappedOptions: OptionType[] = [];
+      data?.getParticipations.forEach((it) => {
+        mappedOptions.push({
+          value: it.id,
           label: it.challenge.name,
-        })) || [];
+        });
+      });
       if (activeParticipation) {
-        const activeChallenge = activeParticipation.challenge;
         return [
           ...mappedOptions,
           {
-            value: activeChallenge.id,
-            label: activeChallenge.name,
+            value: activeParticipation.id,
+            label: activeParticipation.challenge.name,
           },
         ];
       }
@@ -144,4 +143,4 @@ const ChallengeSelect = forwardRef(
   }
 );
 
-export default ChallengeSelect;
+export default ParticipationSelect;

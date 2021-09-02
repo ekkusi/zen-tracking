@@ -6,7 +6,7 @@ import { useQuery } from "@apollo/client";
 import ChallengeSelect, {
   OptionType,
   SelectHandle,
-} from "../../components/functional/ChallengeSelect";
+} from "../../components/functional/ParticipationSelect";
 import Heading from "../../components/primitives/Heading";
 import useGlobal from "../../store";
 import { getParticipation } from "../../util/apolloQueries";
@@ -99,12 +99,11 @@ const ProfilePage = (): JSX.Element => {
   }, [user, activeParticipation, userName]);
 
   const onActiveChallengeSelect = async (value: OptionType | null) => {
-    const selectedChallengeId = value?.value ?? null;
-    if (selectedChallengeId) {
+    const selectedParticipationId = value?.value ?? null;
+    if (selectedParticipationId) {
       setGetParticipationLoading(true);
       const result = await getParticipation({
-        challengeId: selectedChallengeId,
-        userName: currentUser.name,
+        id: selectedParticipationId,
       });
       updateActiveParticipation(result.data.getParticipation);
       setGetParticipationLoading(false);

@@ -35,9 +35,8 @@ const TextWithMotion = chakraMotionWrapper(Text);
 const FlexWithMotion = chakraMotionWrapper(Flex);
 
 const ParticipationPage = (): JSX.Element => {
-  const { challengeId, userName } = useParams<{
-    challengeId: string;
-    userName: string;
+  const { participationId } = useParams<{
+    participationId: string;
   }>();
   const history = useHistory<{ isRecap?: boolean }>();
   const isRecap = history.location.state?.isRecap ?? false;
@@ -52,8 +51,7 @@ const ParticipationPage = (): JSX.Element => {
     GetWholeParticipationVariables
   >(GET_WHOLE_PARTICIPATION, {
     variables: {
-      challengeId,
-      userName,
+      id: participationId,
     },
     onError: () => {},
   });
@@ -107,11 +105,11 @@ const ParticipationPage = (): JSX.Element => {
   const otherThanCurrentUserParticipations = useMemo(() => {
     if (participation) {
       return participation.challenge.participations.filter(
-        (it) => it.user.name !== userName
+        (it) => it.user.name !== participation.user.name
       );
     }
     return [];
-  }, [participation, userName]);
+  }, [participation]);
 
   const formatOpacityAnimationProps = (delay: number, duration = 1) => {
     return {

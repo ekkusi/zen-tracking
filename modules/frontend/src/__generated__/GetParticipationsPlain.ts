@@ -18,6 +18,8 @@ export interface GetParticipationsPlain_getParticipations_challenge {
 export interface GetParticipationsPlain_getParticipations {
   __typename: "ChallengeParticipation";
   id: string;
+  startDate: any | null;
+  endDate: any | null;
   challenge: GetParticipationsPlain_getParticipations_challenge;
 }
 

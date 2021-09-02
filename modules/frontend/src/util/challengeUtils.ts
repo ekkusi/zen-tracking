@@ -21,5 +21,5 @@ export const getParticipationDateString = (
   if (startDate && endDate) {
     return `${DateUtil.format(startDate)} - ${DateUtil.format(endDate)}`;
   }
-  return noDatesString || "Ei määritelty";
+  return noDatesString || "Ajankohtaa ei määritelty";
 };

@@ -232,7 +232,7 @@ export type QueryResolvers<
     Types.Maybe<ResolversTypes["ChallengeParticipation"]>,
     ParentType,
     ContextType,
-    RequireFields<Types.QueryGetParticipationArgs, "challengeId" | "userName">
+    RequireFields<Types.QueryGetParticipationArgs, "id">
   >;
   getMarkings?: Resolver<
     Array<ResolversTypes["Marking"]>,
@@ -311,11 +311,17 @@ export type MutationResolvers<
     ContextType,
     RequireFields<Types.MutationCreateParticipationArgs, "input">
   >;
+  updateParticipation?: Resolver<
+    ResolversTypes["ChallengeParticipation"],
+    ParentType,
+    ContextType,
+    RequireFields<Types.MutationUpdateParticipationArgs, "input">
+  >;
   deleteParticipation?: Resolver<
     ResolversTypes["Boolean"],
     ParentType,
     ContextType,
-    RequireFields<Types.MutationDeleteParticipationArgs, "challengeId">
+    RequireFields<Types.MutationDeleteParticipationArgs, "id">
   >;
   addMarking?: Resolver<
     ResolversTypes["Marking"],

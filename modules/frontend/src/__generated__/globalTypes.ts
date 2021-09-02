@@ -78,6 +78,12 @@ export interface UpdateChallengeInput {
   endDate?: any | null;
 }
 
+export interface UpdateParticipationInput {
+  isPrivate?: boolean | null;
+  startDate?: any | null;
+  endDate?: any | null;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================
