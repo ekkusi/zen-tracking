@@ -48,9 +48,17 @@ const createApolloClient = (additionalLinks?: ApolloLink) => {
         ChallengeParticipation: {
           keyFields: ["id"],
         },
+        User: {
+          keyFields: ["name"],
+        },
       },
     }),
     credentials: "include",
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: "cache-and-network",
+      },
+    },
   });
 
   apolloClient = client; // Update general client

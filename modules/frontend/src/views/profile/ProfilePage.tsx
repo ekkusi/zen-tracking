@@ -72,6 +72,8 @@ const ProfilePage = (): JSX.Element => {
     }
   );
 
+  console.log(userWithParticipationsData);
+
   const createdChallenges = useMemo(() => {
     return userChallengesData?.getChallenges;
   }, [userChallengesData]);
@@ -90,11 +92,13 @@ const ProfilePage = (): JSX.Element => {
       user.participations,
       activeParticipation
     );
+    console.log(sortedParticipations);
     if (user.name === userName) {
       sortedParticipations = sortedParticipations.filter(
         (it) => it.id !== activeParticipation?.id
       );
     }
+    console.log(sortedParticipations);
     return sortedParticipations;
   }, [user, activeParticipation, userName]);
 
@@ -188,7 +192,7 @@ const ProfilePage = (): JSX.Element => {
           <LinkList>
             {participations.map((it) => (
               <LinkListItem
-                to={`/profile/${userName}/${it.challenge.id}`}
+                to={`/profile/${userName}/participations/${it.id}`}
                 position="relative"
                 pr="10"
                 key={it.id}
@@ -196,14 +200,14 @@ const ProfilePage = (): JSX.Element => {
                 <Text as="span" fontSize={{ base: "md", md: "lg" }} mr="2">
                   {it.challenge.name}
                 </Text>
-                {it.challenge.startDate && it.challenge.endDate && (
+                {it.startDate && it.endDate && (
                   <Text
                     as="span"
                     display="inline-block"
                     fontSize={{ base: "sm", md: "md" }}
                   >
-                    {DateUtil.format(it.challenge.startDate)} -{" "}
-                    {DateUtil.format(it.challenge.endDate)}
+                    {DateUtil.format(it.startDate)} -{" "}
+                    {DateUtil.format(it.endDate)}
                   </Text>
                 )}
                 <ArrowForwardIcon

@@ -22,6 +22,8 @@ export interface GetWholeParticipation_getParticipation_challenge_participations
 export interface GetWholeParticipation_getParticipation_challenge_participations {
   __typename: "ChallengeParticipation";
   id: string;
+  startDate: any | null;
+  endDate: any | null;
   user: GetWholeParticipation_getParticipation_challenge_participations_user;
 }
 
@@ -33,6 +35,7 @@ export interface GetWholeParticipation_getParticipation_challenge {
   startDate: any | null;
   endDate: any | null;
   description: string;
+  isPrivate: boolean;
   creator: GetWholeParticipation_getParticipation_challenge_creator;
   participations: GetWholeParticipation_getParticipation_challenge_participations[];
 }

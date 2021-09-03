@@ -7,7 +7,7 @@ import {
   Checkbox,
   Button,
 } from "@chakra-ui/react";
-import { isBefore, isValid } from "date-fns";
+import { isBefore, isValid, add } from "date-fns";
 import React, { useState, useMemo } from "react";
 import DateUtil from "util/DateUtil";
 import { Form, Formik, FormikErrors } from "formik";
@@ -69,6 +69,8 @@ type FormValues = {
   endDate: string;
 };
 
+const inputDateFormat = "yyyy-MM-dd";
+
 const EditParticipation = ({
   challenge,
   participation,
@@ -107,18 +109,33 @@ const EditParticipation = ({
   });
 
   const initialValues = useMemo((): FormValues => {
-    const { startDate, endDate } = participation || {};
+    if (participation) {
+      const { startDate, endDate, isPrivate } = participation;
+      return {
+        startDate: startDate
+          ? DateUtil.format(startDate, {
+              formatString: inputDateFormat,
+            })
+          : "",
+        endDate: endDate
+          ? DateUtil.format(endDate, {
+              formatString: inputDateFormat,
+            })
+          : "",
+        isPrivate,
+      };
+    }
+    const startDate = new Date();
+    const endDate = add(startDate, {
+      months: 1,
+    });
     return {
-      startDate: startDate
-        ? DateUtil.format(startDate, {
-            formatString: "yyyy-MM-dd",
-          })
-        : "",
-      endDate: endDate
-        ? DateUtil.format(endDate, {
-            formatString: "yyyy-MM-dd",
-          })
-        : "",
+      startDate: DateUtil.format(startDate, {
+        formatString: inputDateFormat,
+      }),
+      endDate: DateUtil.format(endDate, {
+        formatString: inputDateFormat,
+      }),
       isPrivate: false,
     };
   }, [participation]);

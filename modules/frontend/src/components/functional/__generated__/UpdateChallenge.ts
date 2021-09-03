@@ -22,6 +22,8 @@ export interface UpdateChallenge_updateChallenge_participations_user {
 export interface UpdateChallenge_updateChallenge_participations {
   __typename: "ChallengeParticipation";
   id: string;
+  startDate: any | null;
+  endDate: any | null;
   user: UpdateChallenge_updateChallenge_participations_user;
 }
 

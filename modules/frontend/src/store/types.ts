@@ -1,6 +1,9 @@
 import { AuthenticatedUser } from "@ekkusi/zen-tracking-backend/lib/types/customContext";
 import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
-import { ParsedChallengeParticipation } from "types/parsedBackendTypes";
+import {
+  ParsedChallenge,
+  ParsedChallengeParticipation,
+} from "types/parsedBackendTypes";
 import { ConfirmationModalProps } from "../components/general/ConfirmationModal";
 
 export type ActionTypes = {
@@ -19,9 +22,10 @@ export type ActionTypes = {
 
 export type ActiveParticipation = Omit<
   ParsedChallengeParticipation,
-  "markings"
+  "markings" | "challenge"
 > & {
   markings: Marking[];
+  challenge: ParsedChallenge;
 };
 
 export type GlobalState = {

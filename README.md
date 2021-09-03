@@ -54,6 +54,8 @@ If you have database running through docker-compose, you can do this manually by
 
 Default email postgreadmin is "default@email.com" and password is "password"
 
+- Install [https://blog.timescale.com/blog/how-to-install-psql-on-mac-ubuntu-debian-windows/](psql) if you don't yet have it
+
 - Import database dump and generate mock data (needs to be done on first start, works for database running through docker-compose):
   ```bash
   yarn setup-db-and-prisma

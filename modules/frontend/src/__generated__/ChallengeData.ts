@@ -22,6 +22,8 @@ export interface ChallengeData_participations_user {
 export interface ChallengeData_participations {
   __typename: "ChallengeParticipation";
   id: string;
+  startDate: any | null;
+  endDate: any | null;
   user: ChallengeData_participations_user;
 }
 

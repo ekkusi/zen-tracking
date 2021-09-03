@@ -21,6 +21,7 @@ import {
 import Loading from "../../../components/general/Loading";
 import EditChallenge from "../../../components/functional/EditChallenge";
 import EditParticipation from "../../../components/functional/EditParticipation";
+import { getParticipationDateString } from "../../../util/challengeUtils";
 
 const ChallengePage = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
@@ -36,7 +37,6 @@ const ChallengePage = (): JSX.Element => {
     variables: {
       id,
     },
-    fetchPolicy: "network-only",
   });
 
   // const [addParticipation, { loading: addLoading }] = useMutation<
@@ -97,6 +97,10 @@ const ChallengePage = (): JSX.Element => {
   //   return participation;
   // };
 
+  const hasUserParticipated = () => {
+    return challenge?.participations.some((it) => it.user.name === user.name);
+  };
+
   const isUserChallengeCreator = () => {
     return challenge?.creator.name === user.name;
   };
@@ -149,7 +153,7 @@ const ChallengePage = (): JSX.Element => {
               {challenge.participations.map((it) => (
                 <ListItem key={it.id}>
                   <Link to={`/profile/${it.user.name}/participations/${it.id}`}>
-                    {it.user.name}
+                    {it.user.name} {getParticipationDateString(it, "")}
                   </Link>
                 </ListItem>
               ))}
@@ -162,32 +166,16 @@ const ChallengePage = (): JSX.Element => {
           )}
 
           <Box mt="5">
-            {/* {getUserParticipation() ? (
-              <>
-                <ConfirmationModal
-                  variant="delete"
-                  onAccept={removeParticipation}
-                  openButtonLabel="Poista ilmoittautuminen"
-                  openButtonProps={{ mr: "4" }}
-                  headerLabel="Poista ilmoittautuminen"
-                >
-                  <Text>
-                    Oletko varma, että haluat poistaa ilmoittautumisesi
-                    haasteesta {challenge.name}? Jos sinulla on merkkauksia
-                    kyseiseen haasteeseen, poistuvat nekin.
-                  </Text>
-                </ConfirmationModal>
-              </>
-            ) : (
-              <Button
-                isLoading={addLoading}
-                onClick={createParticipation}
-                mr="4"
-              >
-                Ilmoittaudu
-              </Button>
-            )} */}
-            <EditParticipation challenge={challenge} />
+            <EditParticipation
+              challenge={challenge}
+              openButtonProps={{ mr: 4 }}
+              openButtonLabel={
+                hasUserParticipated() ? "Aloita uudelleen" : "Aloita haaste"
+              }
+              onEdit={() => {
+                refetch();
+              }}
+            />
             {isUserChallengeCreator() && (
               <EditChallenge
                 challenge={challenge}

@@ -381,7 +381,7 @@ export const resolvers: Resolvers = {
       await loaderResetors.clearParticipationsCacheByUser(user.name, loaders);
       // This is temp solution, because prisma doesn't support NOT NULL constraint and ON DELETE CASCADE. Prisma delete results in relation delete violation.
       const deletedParticipations = await prisma.$executeRaw(
-        `DELETE FROM "ChallengeParticipation" WHERE id='${id};`
+        `DELETE FROM "ChallengeParticipation" WHERE id='${id}';`
       );
       if (deletedParticipations > 0) {
         // If more than 0 rows are affected by above query == participation deleted -> delete all related marking-images from s3

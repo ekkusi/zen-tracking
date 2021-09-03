@@ -58,7 +58,6 @@ const ParticipationSelect = forwardRef(
       GetParticipationsPlain,
       GetParticipationsPlainVariables
     >(GET_PARTICIPATIONS_PLAIN, {
-      fetchPolicy: "no-cache",
       variables: {
         filters: {
           participantName: user.name,

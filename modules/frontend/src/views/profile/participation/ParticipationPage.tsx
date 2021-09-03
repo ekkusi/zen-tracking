@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { differenceInCalendarDays } from "date-fns/esm";
 import { MotionProps, Target } from "framer-motion";
 import Heading from "../../../components/primitives/Heading";
@@ -29,6 +29,12 @@ import chakraMotionWrapper from "../../../util/chakraMotionWrapper";
 import theme from "../../../theme";
 import MarkingCalendar from "../../../components/functional/MarkingCalendar";
 import MarkingCard from "../../../components/functional/MarkingCard";
+import ConfirmationModal from "../../../components/general/ConfirmationModal";
+import { DELETE_PARTICIPATION } from "../../../components/functional/EditParticipation";
+import {
+  DeleteParticipation,
+  DeleteParticipationVariables,
+} from "../../../components/functional/__generated__/DeleteParticipation";
 
 const BoxWithMotion = chakraMotionWrapper(Box);
 const TextWithMotion = chakraMotionWrapper(Text);
@@ -44,6 +50,10 @@ const ParticipationPage = (): JSX.Element => {
   const isSmScreen = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)[0];
 
   const user = useGlobal((state) => state.currentUser)[0];
+  const [activeParticipation, updateActiveParticipation] = useGlobal(
+    (state) => state.activeParticipation,
+    (actions) => actions.updateActiveParticipation
+  );
   const hideNavigation = useGlobal((state) => state.hideNavigation)[0];
 
   const { data, loading, error, refetch } = useQuery<
@@ -55,6 +65,11 @@ const ParticipationPage = (): JSX.Element => {
     },
     onError: () => {},
   });
+
+  const [deleteParticipation, { loading: deleteLoading }] = useMutation<
+    DeleteParticipation,
+    DeleteParticipationVariables
+  >(DELETE_PARTICIPATION);
 
   const participation = data?.getParticipation;
 
@@ -111,6 +126,28 @@ const ParticipationPage = (): JSX.Element => {
     return [];
   }, [participation]);
 
+  const removeParticipation = async () => {
+    if (participation) {
+      try {
+        await deleteParticipation({
+          variables: {
+            id: participation.id,
+          },
+        });
+        // if deletedparticipation was the activeparticipation, update activeparticipation
+        if (
+          activeParticipation &&
+          activeParticipation.challenge.id === participation.id
+        ) {
+          updateActiveParticipation(null);
+        }
+        history.push(`/profile/${user.name}`);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
   const formatOpacityAnimationProps = (delay: number, duration = 1) => {
     return {
       initial: {
@@ -155,7 +192,7 @@ const ParticipationPage = (): JSX.Element => {
         <>
           {!isRecap && (
             <Flex justify="space-between">
-              <Link to="/">Takaisin etusivulle</Link>
+              <Link to={`/profile/${user.name}`}>Takaisin omiin tietoihin</Link>
 
               {participation && (
                 <Text as="span">
@@ -312,6 +349,23 @@ const ParticipationPage = (): JSX.Element => {
                   </ListItem>
                 ))}
               </UnorderedList>
+            </>
+          )}
+          {participation.user.name === user.name && (
+            <>
+              <ConfirmationModal
+                variant="delete"
+                onAccept={removeParticipation}
+                openButtonLabel="Poista osallistuminen"
+                openButtonProps={{ ml: "auto", isLoading: deleteLoading }}
+                headerLabel="Poista osallistuminen"
+              >
+                <Text>
+                  Oletko varma, että haluat poistaa osallistumisesi haasteesta{" "}
+                  {participation.challenge.name}? Tekemäsi merkkaukset poistuvat
+                  osallistumisen mukana.
+                </Text>
+              </ConfirmationModal>
             </>
           )}
         </>

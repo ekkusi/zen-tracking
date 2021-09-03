@@ -248,7 +248,7 @@ const EditMarking = ({
               new Date(activeParticipation.challenge.endDate)
             )
           ) {
-            openRecapModal(activeParticipation.challenge, user.name);
+            openRecapModal(activeParticipation, user.name);
           }
         }
       }

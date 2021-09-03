@@ -59,6 +59,8 @@ export const challengeDataFragment = gql`
     }
     participations {
       id
+      startDate
+      endDate
       user {
         name
       }

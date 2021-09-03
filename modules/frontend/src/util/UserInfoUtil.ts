@@ -10,7 +10,7 @@ export default class UserInfoUtil {
     participations: ParsedChallengeParticipation[]
   ): ParsedChallengeParticipation | null {
     const activeParticipations = participations.filter((it) => {
-      const { startDate, endDate } = it.challenge;
+      const { startDate, endDate } = it;
       if (!startDate || !endDate) return false;
       const currentDate = new Date();
       if (
@@ -53,13 +53,13 @@ export default class UserInfoUtil {
     return sortedMarkings[0] || null;
   }
 
-  public static sortParticipations(
-    participations: ParsedChallengeParticipation[],
+  public static sortParticipations<T extends ParsedChallengeParticipation>(
+    participations: T[],
     activeParticipation?: ActiveParticipation | null
-  ): ParsedChallengeParticipation[] {
+  ): T[] {
     const sortedParticipations = participations.slice().sort((a, b) => {
-      const { endDate: aEndDateString } = a.challenge;
-      const { endDate: bEndDateString } = b.challenge;
+      const { endDate: aEndDateString } = a;
+      const { endDate: bEndDateString } = b;
 
       if (activeParticipation) {
         if (a.id === activeParticipation.id) return -1;

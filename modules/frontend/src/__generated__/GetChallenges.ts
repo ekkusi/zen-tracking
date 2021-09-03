@@ -22,6 +22,8 @@ export interface GetChallenges_getChallenges_participations_user {
 export interface GetChallenges_getChallenges_participations {
   __typename: "ChallengeParticipation";
   id: string;
+  startDate: any | null;
+  endDate: any | null;
   user: GetChallenges_getChallenges_participations_user;
 }
 

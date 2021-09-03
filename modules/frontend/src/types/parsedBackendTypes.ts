@@ -15,7 +15,7 @@ export type ParsedChallengeParticipation = Omit<
 > & {
   id: string;
   user?: ParsedUser;
-  challenge: ParsedChallenge;
+  challenge?: ParsedChallenge;
 };
 
 export type ParsedUser = Omit<Partial<User>, "name"> & {

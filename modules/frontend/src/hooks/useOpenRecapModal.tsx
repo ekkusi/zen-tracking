@@ -4,11 +4,11 @@ import { useHistory } from "react-router-dom";
 import { Text } from "@chakra-ui/react";
 import { ADD_FINISHED_CHALLENGE } from "../generalQueries";
 import useGlobal from "../store";
-import { ParsedChallenge } from "../types/parsedBackendTypes";
 import {
   AddFinishedChallenge,
   AddFinishedChallengeVariables,
 } from "../__generated__/AddFinishedChallenge";
+import { ActiveParticipation } from "../store/types";
 
 const useOpenRecapModal = () => {
   const setModal = useGlobal(
@@ -22,23 +22,26 @@ const useOpenRecapModal = () => {
     AddFinishedChallengeVariables
   >(ADD_FINISHED_CHALLENGE);
 
-  const openModal = (challenge: ParsedChallenge, userName: string) => {
+  const openModal = (participation: ActiveParticipation, userName: string) => {
     setModal({
       onAccept: () => {
         setModal(null);
-        history.push(`/profile/${userName}/${challenge.id}`, {
-          isRecap: true,
-        });
+        history.push(
+          `/profile/${userName}/participations/${participation.id}`,
+          {
+            isRecap: true,
+          }
+        );
       },
       onClose: () => {
         addFinishedChallenge({
-          variables: { challengeId: challenge.id },
+          variables: { challengeId: participation.challenge.id },
         });
       },
       children: (
         <Text>
-          Haaste <i>{challenge.name}</i> on loppunut. Haluisitko kahtoo
-          yhteenvedon suorituksestasi?
+          Haaste <i>{participation.challenge.name}</i> on loppunut. Haluisitko
+          kahtoo yhteenvedon suorituksestasi?
         </Text>
       ),
       headerLabel: "Haaste on päättynyt",

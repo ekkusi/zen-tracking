@@ -1,6 +1,6 @@
 import { Tag } from "@chakra-ui/react";
 import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
-import { addHours, isSameDay } from "date-fns";
+import { addHours, isBefore, isSameDay } from "date-fns";
 import React, { useEffect, useRef, useState, useMemo } from "react";
 
 import {
@@ -127,12 +127,16 @@ const MarkingCalendar = ({
   };
 
   const getMaxDate = () => {
-    const challengeEndDateString = participation.challenge.endDate;
-    const challengeEndDate = challengeEndDateString
-      ? new Date(challengeEndDateString)
+    const participationEndDateString = participation.endDate;
+    const participationEndDate = participationEndDateString
+      ? new Date(participationEndDateString)
       : null;
-    if (challengeEndDate && challengeEndDate < DEFAULT_MAX_DATE) {
-      return challengeEndDate;
+
+    if (
+      participationEndDate &&
+      isBefore(participationEndDate, DEFAULT_MAX_DATE)
+    ) {
+      return participationEndDate;
     }
     return DEFAULT_MAX_DATE;
   };
@@ -158,8 +162,8 @@ const MarkingCalendar = ({
         onClickDay={onClickDay}
         maxDate={getMaxDate()}
         minDate={
-          participation.challenge.startDate
-            ? new Date(participation.challenge.startDate)
+          participation.startDate
+            ? new Date(participation.startDate)
             : DEFAULT_MIN_DATE
         }
         activeStartDate={

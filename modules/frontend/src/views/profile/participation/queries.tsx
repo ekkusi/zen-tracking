@@ -3,6 +3,7 @@ import {
   markingDataFragment,
   userDataFragment,
   participationInfoFragment,
+  challengeDataFragment,
 } from "../../../fragments";
 
 export const GET_WHOLE_PARTICIPATION = gql`
@@ -17,25 +18,12 @@ export const GET_WHOLE_PARTICIPATION = gql`
         ...MarkingData
       }
       challenge {
-        id
-        name
-        status
-        startDate
-        endDate
-        description
-        creator {
-          name
-        }
-        participations {
-          id
-          user {
-            name
-          }
-        }
+        ...ChallengeData
       }
     }
   }
   ${participationInfoFragment}
   ${userDataFragment}
   ${markingDataFragment}
+  ${challengeDataFragment}
 `;
