@@ -24,6 +24,7 @@ CREATE TABLE "Quote" (
 
 CREATE TABLE "Challenge" (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   name varchar(254) NOT NULL UNIQUE,
   description text NOT NULL,
   creator_name varchar(254) NOT NULL,
@@ -36,6 +37,7 @@ CREATE TABLE "Challenge" (
 CREATE TABLE "ChallengeParticipation" (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   is_private boolean DEFAULT true NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   challenge_id uuid NOT NULL,
   user_name varchar(254) NOT NULL,
   start_date timestamp with time zone,

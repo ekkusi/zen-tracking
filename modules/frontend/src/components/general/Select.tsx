@@ -1,3 +1,4 @@
+import { Text, Box, BoxProps } from "@chakra-ui/react";
 import React from "react";
 import ReactSelect, {
   OptionProps,
@@ -7,9 +8,21 @@ import ReactSelect, {
 import usePrimaryColor from "../../hooks/usePrimaryColor";
 import theme from "../../theme";
 
-type SelectProps = Omit<ReactSelectProps, "theme"> & {};
+type SelectProps = Omit<ReactSelectProps, "theme"> & {
+  containerProps?: BoxProps;
+  error?: string;
+};
 
-const Select = (props: SelectProps): JSX.Element => {
+export type OptionType = {
+  value: string;
+  label: string;
+};
+
+const Select = ({
+  containerProps,
+  error,
+  ...props
+}: SelectProps): JSX.Element => {
   const primaryModeColor = usePrimaryColor();
   const lightPrimaryModeColor = usePrimaryColor("light");
 
@@ -50,11 +63,16 @@ const Select = (props: SelectProps): JSX.Element => {
       },
     }),
   };
-  return <ReactSelect styles={customStyles} {...props} />;
-};
-
-Select.defaultProps = {
-  isSearchable: false,
+  return (
+    <Box
+      width={{ base: "100%", sm: "400px" }}
+      color="text.light"
+      {...containerProps}
+    >
+      <ReactSelect styles={customStyles} {...props} />
+      {error && <Text color="warning">{error}</Text>}
+    </Box>
+  );
 };
 
 export default Select;

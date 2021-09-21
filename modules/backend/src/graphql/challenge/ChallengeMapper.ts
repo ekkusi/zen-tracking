@@ -215,16 +215,18 @@ export class ChallengeMapper {
   }
 
   public static mapParticipationsFilters(
-    args: QueryGetParticipationsArgs,
-    userName: string
+    args: QueryGetParticipationsArgs
   ): GetParticipationsFilters {
-    const challengeFilters = this.mapChallengeFilters(args.filters || {});
-
-    return {
-      AND: {
-        user_name: userName,
-        Challenge: challengeFilters,
-      },
-    };
+    if (args.filters) {
+      const { participantName, startDate, endDate } = args.filters;
+      return {
+        AND: {
+          user_name: participantName || undefined,
+          start_date: startDate && this.mapDateFilter(startDate),
+          end_date: endDate && this.mapDateFilter(endDate),
+        },
+      };
+    }
+    return { AND: {} };
   }
 }

@@ -22,6 +22,7 @@ import Loading from "../../../components/general/Loading";
 import EditChallenge from "../../../components/functional/EditChallenge";
 import EditParticipation from "../../../components/functional/EditParticipation";
 import { getParticipationDateString } from "../../../util/challengeUtils";
+import DateUtil from "../../../util/DateUtil";
 
 const ChallengePage = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
@@ -39,63 +40,9 @@ const ChallengePage = (): JSX.Element => {
     },
   });
 
-  // const [addParticipation, { loading: addLoading }] = useMutation<
-  //   CreateParticipation,
-  //   CreateParticipationVariables
-  // >(CREATE_PARTICIPATION, {
-  //   variables: {
-  //     input: {
-  //       challengeId: id,
-  //       isPrivate: false,
-  //     },
-  //   },
-  // });
-
-  // const [deleteParticipation] = useMutation<
-  //   DeleteParticipation,
-  //   DeleteParticipationVariables
-  // >(DELETE_PARTICIPATION, {
-  //   variables: {
-  //     challengeId: id,
-  //   },
-  // });
-
   const challenge = useMemo(() => {
     return data?.getChallenge;
   }, [data]);
-
-  // const removeParticipation = async () => {
-  //   try {
-  //     await deleteParticipation();
-  //     refetch();
-  //     // If deletedParticipation was the activeParticipation, update activeParticipation
-  //     if (activeParticipation && activeParticipation.challenge.id === id) {
-  //       updateActiveParticipation(null);
-  //     }
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // const createParticipation = async () => {
-  //   try {
-  //     const result = await addParticipation();
-  //     refetch();
-  //     // If activeparticipation isn't updated by updateChallenges -> update manually with created challenge
-  //     if (!activeParticipation && result.data) {
-  //       updateActiveParticipation(result.data.createParticipation);
-  //     }
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // const getUserParticipation = () => {
-  //   const participation = challenge?.participations.find(
-  //     (it) => it.user.name === user.name
-  //   );
-  //   return participation;
-  // };
 
   const hasUserParticipated = () => {
     return challenge?.participations.some((it) => it.user.name === user.name);
@@ -127,11 +74,17 @@ const ChallengePage = (): JSX.Element => {
             mb="5"
             templateColumns={{
               base: "1fr",
-              sm: "repeat(2, 1fr)",
-              md: "repeat(2, 1fr)",
+              sm: "repeat(3, 1fr)",
+              md: "repeat(3, 1fr)",
             }}
             gap="2"
           >
+            <GridItem as="span">
+              <Text as="span" fontWeight="bold">
+                Luotu:{" "}
+              </Text>
+              {DateUtil.format(challenge.createdAt)}
+            </GridItem>
             <GridItem as="span">
               <Text as="span" fontWeight="bold">
                 Tekijä:{" "}

@@ -51,6 +51,7 @@ export const resolvers: Resolvers = {
     endDate: ({ end_date }) => (end_date ? formatIsoString(end_date) : null),
     startDate: ({ start_date }) =>
       start_date ? formatIsoString(start_date) : null,
+    createdAt: ({ created_at }) => formatIsoString(created_at),
   },
   Challenge: {
     creator: async ({ creator_name }, _, { loaders: { userLoader } }) => {
@@ -62,6 +63,7 @@ export const resolvers: Resolvers = {
     endDate: ({ end_date }) => (end_date ? formatIsoString(end_date) : null),
     startDate: ({ start_date }) =>
       start_date ? formatIsoString(start_date) : null,
+    createdAt: ({ created_at }) => formatIsoString(created_at),
     status: ({ start_date, end_date }) =>
       ChallengeMapper.mapChallengeStatus(start_date, end_date),
     participations: async (
@@ -107,7 +109,7 @@ export const resolvers: Resolvers = {
     getParticipations: async (_, args, { prisma, user }) => {
       if (!user) throw new AuthenticationError();
       // Filter by user name and so that participation is not transfer participation
-      const filters = ChallengeMapper.mapParticipationsFilters(args, user.name);
+      const filters = ChallengeMapper.mapParticipationsFilters(args);
       const allFilters = SharedMapper.notPrivateFilterMapper<Prisma.ChallengeParticipationWhereInput>(
         filters,
         { user_name: user.name }

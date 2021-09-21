@@ -315,7 +315,7 @@ export type MutationResolvers<
     ResolversTypes["ChallengeParticipation"],
     ParentType,
     ContextType,
-    RequireFields<Types.MutationUpdateParticipationArgs, "input">
+    RequireFields<Types.MutationUpdateParticipationArgs, "id" | "input">
   >;
   deleteParticipation?: Resolver<
     ResolversTypes["Boolean"],
@@ -360,6 +360,7 @@ export type UserResolvers<
 > = {
   name?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   isPrivate?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
   email?: Resolver<
     Types.Maybe<ResolversTypes["String"]>,
     ParentType,
@@ -403,6 +404,7 @@ export type ChallengeResolvers<
   status?: Resolver<ResolversTypes["ChallengeStatus"], ParentType, ContextType>;
   creator?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
   isPrivate?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
   startDate?: Resolver<
     Types.Maybe<ResolversTypes["Date"]>,
     ParentType,
@@ -434,6 +436,7 @@ export type ChallengeParticipationResolvers<
     ContextType
   >;
   isPrivate?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
   startDate?: Resolver<
     Types.Maybe<ResolversTypes["Date"]>,
     ParentType,

@@ -33,6 +33,7 @@ extend type Mutation {
 type User {
   name: ID!
   isPrivate: Boolean!
+  createdAt: Date!
   email: String
   participations: [ChallengeParticipation!]!
   activeParticipation(challengeId: ID): ChallengeParticipation

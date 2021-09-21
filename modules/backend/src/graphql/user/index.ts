@@ -13,6 +13,7 @@ import AuthenticationError from "../../utils/errors/AuthenticationError";
 import { UserMapper } from "./UserMapper";
 import UserInfoUtil from "../../utils/UserInfoUtil";
 import { SharedMapper } from "../shared/SharedMapper";
+import { formatIsoString } from "../../utils/dateUtils";
 
 // Construct a schema, using GraphQL schema language
 export const typeDef = readFileSync(
@@ -69,6 +70,7 @@ export const resolvers: UserResolvers = {
     },
     finishedAndCheckedChallenges: (user) =>
       user.finished_and_checked_challenges,
+    createdAt: ({ created_at }) => formatIsoString(created_at),
   },
   Query: {
     getUser: async (_, { name }, { prisma, user: currentUser }) => {

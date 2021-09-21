@@ -34,6 +34,7 @@ export interface GetWholeParticipation_getParticipation_challenge {
   status: ChallengeStatus;
   startDate: any | null;
   endDate: any | null;
+  createdAt: any;
   description: string;
   isPrivate: boolean;
   creator: GetWholeParticipation_getParticipation_challenge_creator;

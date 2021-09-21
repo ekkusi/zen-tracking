@@ -34,6 +34,7 @@ export interface CreateChallenge_createChallenge {
   status: ChallengeStatus;
   startDate: any | null;
   endDate: any | null;
+  createdAt: any;
   description: string;
   isPrivate: boolean;
   creator: CreateChallenge_createChallenge_creator;

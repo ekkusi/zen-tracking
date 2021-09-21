@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Box, BoxProps, Text } from "@chakra-ui/react";
+import { BoxProps } from "@chakra-ui/react";
 import { GET_PARTICIPATIONS_PLAIN } from "generalQueries";
 import React, {
   forwardRef,
@@ -15,7 +15,7 @@ import {
   GetParticipationsPlain,
   GetParticipationsPlainVariables,
 } from "../../__generated__/GetParticipationsPlain";
-import Select from "../general/Select";
+import Select, { OptionType } from "../general/Select";
 
 type ParticipationSelectProps = {
   initialValue?: OptionType;
@@ -23,11 +23,6 @@ type ParticipationSelectProps = {
   isLoading?: boolean;
   containerProps?: BoxProps;
   options?: OptionsType<OptionType>;
-};
-
-export type OptionType = {
-  value: string;
-  label: string;
 };
 
 export type SelectHandle = {
@@ -116,28 +111,23 @@ const ParticipationSelect = forwardRef(
     }, [activeParticipation, value]);
 
     return (
-      <Box
-        width={{ base: "100%", sm: "400px" }}
-        color="text.light"
-        {...containerProps}
-      >
-        <Select
-          isLoading={loading || isLoading}
-          isDisabled={loading || isLoading}
-          defaultValue={
-            initialValue &&
-            mapOptions?.find((it) => it.value === initialValue.value)
-          }
-          value={value}
-          options={options || mapOptions}
-          onChange={onChange}
-          noOptionsMessage={() =>
-            "Ei valittavia haasteita. Liity ensin johonkin haasteeseen"
-          }
-          placeholder="Valitse haaste"
-        />
-        {error && <Text color="warning">{error.message}</Text>}
-      </Box>
+      <Select
+        isLoading={loading || isLoading}
+        isDisabled={loading || isLoading}
+        defaultValue={
+          initialValue &&
+          mapOptions?.find((it) => it.value === initialValue.value)
+        }
+        value={value}
+        options={options || mapOptions}
+        onChange={onChange}
+        noOptionsMessage={() =>
+          "Ei valittavia haasteita. Liity ensin johonkin haasteeseen"
+        }
+        placeholder="Valitse haaste"
+        containerProps={containerProps}
+        error={error && error.message}
+      />
     );
   }
 );

@@ -4,7 +4,6 @@ import React, { useRef, useState, useMemo } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import ChallengeSelect, {
-  OptionType,
   SelectHandle,
 } from "../../components/functional/ParticipationSelect";
 import Heading from "../../components/primitives/Heading";
@@ -27,6 +26,7 @@ import {
 } from "../../__generated__/GetChallenges";
 import { GET_CHALLENGES } from "../../generalQueries";
 import UserEditModal from "../../components/functional/UserEditModal";
+import { OptionType } from "../../components/general/Select";
 
 const ProfilePage = (): JSX.Element => {
   const { userName } = useParams<{ userName: string }>();
@@ -72,8 +72,6 @@ const ProfilePage = (): JSX.Element => {
     }
   );
 
-  console.log(userWithParticipationsData);
-
   const createdChallenges = useMemo(() => {
     return userChallengesData?.getChallenges;
   }, [userChallengesData]);
@@ -98,7 +96,6 @@ const ProfilePage = (): JSX.Element => {
         (it) => it.id !== activeParticipation?.id
       );
     }
-    console.log(sortedParticipations);
     return sortedParticipations;
   }, [user, activeParticipation, userName]);
 

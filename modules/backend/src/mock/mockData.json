@@ -28,6 +28,7 @@
       "name": "NO_PARTICIPATION_MARKINGS_HOLDER",
       "description": "Holder for markings with no participation",
       "creator_name": "main-user",
+      "created_at": "2021-01-01T00:00:00+02:00",
       "is_private": true,
       "participations": [
         {
@@ -52,6 +53,7 @@
       "description": "Joka päivä jonkinlainen lenkki, kävellen tai juosten",
       "creator_name": "main-user",
       "is_private": false,
+      "created_at": "2021-07-01T00:00:00+02:00",
       "participations": [
         {
           "user_name": "main-user",
@@ -106,6 +108,7 @@
       "description": "Istu ja ajattele joka päivä",
       "creator_name": "main-user",
       "is_private": false,
+      "created_at": "2021-02-01T00:00:00+02:00",
       "participations": [
         {
           "user_name": "main-user",
@@ -132,6 +135,7 @@
       "description": "Kuukauden ajan vihanneksia ja hetelmiä. Kylmänä vaan.",
       "creator_name": "some-user",
       "is_private": false,
+      "created_at": "2021-08-01T00:00:00+02:00",
       "participations": [
         {
           "start_date": "2021-08-01T00:00:00+02:00",
@@ -145,6 +149,7 @@
       "description": "Kuukausi 50e/viikko budjetilla.",
       "creator_name": "private-user",
       "is_private": true,
+      "created_at": "2021-05-01T00:00:00+02:00",
       "participations": [
         {
           "user_name": "main-user",

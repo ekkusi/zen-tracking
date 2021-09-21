@@ -52,6 +52,7 @@ export const challengeDataFragment = gql`
     status
     startDate
     endDate
+    createdAt
     description
     isPrivate
     creator {

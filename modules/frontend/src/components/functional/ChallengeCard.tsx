@@ -5,6 +5,7 @@ import { Link, useHistory } from "react-router-dom";
 import { GetChallenges_getChallenges } from "../../__generated__/GetChallenges";
 import useGlobal from "../../store";
 import chakraMotionWrapper from "../../util/chakraMotionWrapper";
+import DateUtil from "../../util/DateUtil";
 
 type ChallengeCardProps = FlexProps & {
   challenge: GetChallenges_getChallenges;
@@ -57,11 +58,14 @@ const ChallengeCard = ({
             ${DateUtil.format(challenge.endDate)}`
           : "Ei päätettyä ajankohtaa"}
       </Text> */}
-      <Text as="span">
+      <Text as="span" fontSize="md">
+        Luotu: {DateUtil.format(challenge.createdAt)}
+      </Text>
+      <Text as="span" fontSize="md">
         Tekijä:{" "}
         {challenge.creator.name === user.name ? "Sinä" : challenge.creator.name}
       </Text>
-      <Text as="span" mb="3">
+      <Text as="span" mb="3" fontSize="md">
         Osallistujia: {challenge.participations.length}
       </Text>
 

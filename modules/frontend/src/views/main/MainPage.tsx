@@ -7,8 +7,7 @@ import DateUtil from "util/DateUtil";
 import { Link } from "react-router-dom";
 import chakraMotionWrapper from "util/chakraMotionWrapper";
 import { motion } from "framer-motion";
-import ChallengeSelect, {
-  OptionType,
+import ParticipationSelect, {
   SelectHandle,
 } from "components/functional/ParticipationSelect";
 import CustomLoadingOverlay from "components/general/LoadingOverlay";
@@ -16,6 +15,7 @@ import EditMarking from "../../components/functional/EditMarking";
 import MarkingCalendar from "../../components/functional/MarkingCalendar";
 import { getParticipation } from "../../util/apolloQueries";
 import { ChallengeStatus } from "../../__generated__/globalTypes";
+import { OptionType } from "../../components/general/Select";
 
 const MotionArrowForwardIcon = chakraMotionWrapper(ArrowForwardIcon);
 const MotionButton = motion(Button);
@@ -99,11 +99,11 @@ const MainPage = (): JSX.Element => {
           <Heading.H3 fontWeight="normal" mb="2">
             Aktiivinen haaste
           </Heading.H3>
-          <ChallengeSelect
+          <ParticipationSelect
             initialValue={
               activeParticipation
                 ? {
-                    value: activeParticipation.challenge.id,
+                    value: activeParticipation.id,
                     label: activeParticipation.challenge.name,
                   }
                 : undefined

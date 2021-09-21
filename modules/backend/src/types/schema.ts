@@ -121,6 +121,7 @@ export type MutationCreateParticipationArgs = {
 };
 
 export type MutationUpdateParticipationArgs = {
+  id: Scalars["ID"];
   input: UpdateParticipationInput;
 };
 
@@ -157,6 +158,7 @@ export type User = {
   __typename?: "User";
   name: Scalars["ID"];
   isPrivate: Scalars["Boolean"];
+  createdAt: Scalars["Date"];
   email?: Maybe<Scalars["String"]>;
   participations: Array<ChallengeParticipation>;
   activeParticipation?: Maybe<ChallengeParticipation>;
@@ -193,6 +195,7 @@ export type Challenge = {
   status: ChallengeStatus;
   creator: User;
   isPrivate: Scalars["Boolean"];
+  createdAt: Scalars["Date"];
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
   participations: Array<ChallengeParticipation>;
@@ -205,6 +208,7 @@ export type ChallengeParticipation = {
   user: User;
   markings: Array<Marking>;
   isPrivate: Scalars["Boolean"];
+  createdAt: Scalars["Date"];
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
 };

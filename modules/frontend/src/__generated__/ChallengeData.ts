@@ -34,6 +34,7 @@ export interface ChallengeData {
   status: ChallengeStatus;
   startDate: any | null;
   endDate: any | null;
+  createdAt: any;
   description: string;
   isPrivate: boolean;
   creator: ChallengeData_creator;
