@@ -27,15 +27,15 @@ model Challenge {
 }
 
 model User {
-  name                            String                   @id @db.VarChar(254)
-  password                        String                   @db.VarChar(254)
-  is_private                      Boolean                  @default(true)
-  email                           String?                  @unique @db.Citext
-  is_email_verified               Boolean                  @default(false)
-  created_at                      DateTime                 @default(now()) @db.Timestamptz(6)
-  finished_and_checked_challenges String[]                 @db.Uuid
-  Challenge                       Challenge[]
-  ChallengeParticipation          ChallengeParticipation[]
+  name                                String                   @id @db.VarChar(254)
+  password                            String                   @db.VarChar(254)
+  is_private                          Boolean                  @default(true)
+  email                               String?                  @unique @db.Citext
+  is_email_verified                   Boolean                  @default(false)
+  created_at                          DateTime                 @default(now()) @db.Timestamptz(6)
+  finished_and_checked_participations String[]                 @db.Uuid
+  Challenge                           Challenge[]
+  ChallengeParticipation              ChallengeParticipation[]
 }
 
 model ChallengeParticipation {

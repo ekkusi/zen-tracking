@@ -41,7 +41,7 @@ export interface Login_login_user {
   name: string;
   email: string | null;
   isPrivate: boolean;
-  finishedAndCheckedChallenges: string[];
+  finishedAndCheckedParticipations: string[];
   activeParticipation: Login_login_user_activeParticipation | null;
 }
 
@@ -58,5 +58,5 @@ export interface Login {
 export interface LoginVariables {
   name: string;
   password: string;
-  activeParticipationChallengeId?: string | null;
+  activeParticipationId?: string | null;
 }

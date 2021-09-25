@@ -47,8 +47,8 @@ const LoginPage = (): JSX.Element => {
         variables: {
           name: values.username,
           password: values.password,
-          activeParticipationChallengeId:
-            localStorage.getItem("activeParticipationChallengeId") ?? undefined,
+          activeParticipationId:
+            localStorage.getItem("activeParticipationId") ?? undefined,
         },
       });
       // If user is returned from query, password is correct or user is created
@@ -59,8 +59,8 @@ const LoginPage = (): JSX.Element => {
 
         const getUserResult = await getUser({
           name: user.name,
-          activeParticipationChallengeId:
-            localStorage.getItem("activeParticipationChallengeId") ?? undefined,
+          activeParticipationId:
+            localStorage.getItem("activeParticipationId") ?? undefined,
         });
 
         const activeParticipation =

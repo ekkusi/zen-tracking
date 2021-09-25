@@ -2,13 +2,13 @@ import React from "react";
 import { useMutation } from "@apollo/client";
 import { useHistory } from "react-router-dom";
 import { Text } from "@chakra-ui/react";
-import { ADD_FINISHED_CHALLENGE } from "../generalQueries";
+import { ADD_FINISHED_PARTICIPATION } from "../generalQueries";
 import useGlobal from "../store";
-import {
-  AddFinishedChallenge,
-  AddFinishedChallengeVariables,
-} from "../__generated__/AddFinishedChallenge";
 import { ActiveParticipation } from "../store/types";
+import {
+  AddFinishedParticipation,
+  AddFinishedParticipationVariables,
+} from "../__generated__/AddFinishedParticipation";
 
 const useOpenRecapModal = () => {
   const setModal = useGlobal(
@@ -17,10 +17,10 @@ const useOpenRecapModal = () => {
   )[1];
   const history = useHistory();
 
-  const [addFinishedChallenge] = useMutation<
-    AddFinishedChallenge,
-    AddFinishedChallengeVariables
-  >(ADD_FINISHED_CHALLENGE);
+  const [addFinishedParticipation] = useMutation<
+    AddFinishedParticipation,
+    AddFinishedParticipationVariables
+  >(ADD_FINISHED_PARTICIPATION);
 
   const openModal = (participation: ActiveParticipation, userName: string) => {
     setModal({
@@ -34,8 +34,8 @@ const useOpenRecapModal = () => {
         );
       },
       onClose: () => {
-        addFinishedChallenge({
-          variables: { challengeId: participation.challenge.id },
+        addFinishedParticipation({
+          variables: { id: participation.id },
         });
       },
       children: (

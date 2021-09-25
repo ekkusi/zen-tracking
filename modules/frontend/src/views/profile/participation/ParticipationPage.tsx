@@ -35,6 +35,7 @@ import {
   DeleteParticipation,
   DeleteParticipationVariables,
 } from "../../../components/functional/__generated__/DeleteParticipation";
+import BackNavigationLink from "../../../components/general/BackNavigationLink";
 
 const BoxWithMotion = chakraMotionWrapper(Box);
 const TextWithMotion = chakraMotionWrapper(Text);
@@ -191,8 +192,18 @@ const ParticipationPage = (): JSX.Element => {
       {participation && (
         <>
           {!isRecap && (
-            <Flex justify="space-between">
-              <Link to={`/profile/${user.name}`}>Takaisin omiin tietoihin</Link>
+            <Flex
+              direction={{ base: "column", sm: "row" }}
+              justify="space-between"
+              mb="5"
+            >
+              <BackNavigationLink
+                to={`/profile/${user.name}`}
+                mb="2"
+                fontSize="md"
+              >
+                Takaisin omiin tietoihin
+              </BackNavigationLink>
 
               {participation && (
                 <Text as="span">
@@ -351,7 +362,14 @@ const ParticipationPage = (): JSX.Element => {
               </UnorderedList>
             </>
           )}
-          {participation.user.name === user.name && (
+          {isRecap && (
+            <BoxWithMotion
+              {...formatOpacityAnimationProps(12 + sortedMarkings.length * 0.3)}
+            >
+              <Link to="/">Palaa kotisivulle</Link>
+            </BoxWithMotion>
+          )}
+          {!isRecap && participation.user.name === user.name && (
             <>
               <ConfirmationModal
                 variant="delete"

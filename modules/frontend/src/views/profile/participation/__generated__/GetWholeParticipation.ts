@@ -46,7 +46,7 @@ export interface GetWholeParticipation_getParticipation_user {
   name: string;
   email: string | null;
   isPrivate: boolean;
-  finishedAndCheckedChallenges: string[];
+  finishedAndCheckedParticipations: string[];
 }
 
 export interface GetWholeParticipation_getParticipation_markings {

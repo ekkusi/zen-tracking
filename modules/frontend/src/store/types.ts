@@ -11,21 +11,24 @@ export type ActionTypes = {
   updateError: (error: string | null) => void;
   updateActiveParticipationOld: (challengeId?: string | null) => Promise<void>;
   updateActiveParticipation: (
-    participation: ParsedChallengeParticipation | null
+    participation: ActiveParticipation | null
   ) => void;
   updateActiveParticipationMarkings: (markings: Marking[]) => void;
   logout: () => Promise<void>;
   updatePromptEvent: (event: BeforeInstallPromptEvent | null) => void;
   setHideNavigation: (state: boolean) => void;
   setModal: (modalProps: ConfirmationModalProps | null) => void;
+  setBottomNavigationBarState: (state: "hidden" | "visible") => void;
 };
 
 export type ActiveParticipation = Omit<
   ParsedChallengeParticipation,
-  "markings" | "challenge"
+  "markings" | "challenge" | "startDate" | "endDate"
 > & {
   markings: Marking[];
   challenge: ParsedChallenge;
+  startDate: string;
+  endDate: string;
 };
 
 export type GlobalState = {
@@ -36,4 +39,5 @@ export type GlobalState = {
   promptEvent: BeforeInstallPromptEvent | null;
   modalProps: ConfirmationModalProps | null;
   hideNavigation: boolean;
+  bottomNavigationBarState: "hidden" | "visible";
 };

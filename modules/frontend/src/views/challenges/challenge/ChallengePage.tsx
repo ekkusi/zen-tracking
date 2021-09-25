@@ -23,6 +23,7 @@ import EditChallenge from "../../../components/functional/EditChallenge";
 import EditParticipation from "../../../components/functional/EditParticipation";
 import { getParticipationDateString } from "../../../util/challengeUtils";
 import DateUtil from "../../../util/DateUtil";
+import BackNavigationLink from "../../../components/general/BackNavigationLink";
 
 const ChallengePage = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
@@ -54,15 +55,9 @@ const ChallengePage = (): JSX.Element => {
 
   return (
     <Box>
-      <Text
-        as={Link}
-        display="inline-block"
-        to="/challenges"
-        fontSize="lg"
-        mb="3"
-      >
+      <BackNavigationLink to="/challenges">
         Takaisin haasteisiin
-      </Text>
+      </BackNavigationLink>
 
       {loading && <Loading />}
       {challenge && (

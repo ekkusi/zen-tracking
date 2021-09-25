@@ -161,8 +161,9 @@ const BottomBarLink = ({
 const GridWithMotion = chakraMotionWrapper(SimpleGrid);
 
 const BottomNavigationBar = () => {
-  const [bottomBarState, setBottomBarState] = useState<"hidden" | "visible">(
-    "visible"
+  const [bottomBarState, setBottomBarState] = useGlobal(
+    (state) => state.bottomNavigationBarState,
+    (actions) => actions.setBottomNavigationBarState
   );
 
   const [isMobile] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);

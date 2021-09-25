@@ -63,7 +63,7 @@ export type Mutation = {
   login: LoginResult;
   register: LoginResult;
   logout: Scalars["Boolean"];
-  addFinishedChallenge: Scalars["Boolean"];
+  addFinishedParticipation: Scalars["Boolean"];
   createChallenge: Challenge;
   updateChallenge: Challenge;
   deleteChallenge: Scalars["Boolean"];
@@ -99,8 +99,8 @@ export type MutationRegisterArgs = {
   isPrivate: Scalars["Boolean"];
 };
 
-export type MutationAddFinishedChallengeArgs = {
-  challengeId: Scalars["ID"];
+export type MutationAddFinishedParticipationArgs = {
+  id: Scalars["ID"];
 };
 
 export type MutationCreateChallengeArgs = {
@@ -162,11 +162,11 @@ export type User = {
   email?: Maybe<Scalars["String"]>;
   participations: Array<ChallengeParticipation>;
   activeParticipation?: Maybe<ChallengeParticipation>;
-  finishedAndCheckedChallenges: Array<Scalars["String"]>;
+  finishedAndCheckedParticipations: Array<Scalars["String"]>;
 };
 
 export type UserActiveParticipationArgs = {
-  challengeId?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]>;
 };
 
 export type LoginResult = {

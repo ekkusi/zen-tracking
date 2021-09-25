@@ -4,5 +4,5 @@ export const notAuthorizedUser: AuthenticatedUser = {
   name: "not-authorized",
   email: "not-authorized@email.com",
   isPrivate: false,
-  finishedAndCheckedChallenges: [],
+  finishedAndCheckedParticipations: [],
 };

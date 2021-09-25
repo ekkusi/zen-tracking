@@ -14,7 +14,7 @@ export interface EditUser_editUser_user {
   name: string;
   email: string | null;
   isPrivate: boolean;
-  finishedAndCheckedChallenges: string[];
+  finishedAndCheckedParticipations: string[];
 }
 
 export interface EditUser_editUser {

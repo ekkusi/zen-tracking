@@ -5,16 +5,12 @@ import {
 } from "../../fragments";
 
 export const LOGIN = gql`
-  mutation Login(
-    $name: ID!
-    $password: String!
-    $activeParticipationChallengeId: ID
-  ) {
+  mutation Login($name: ID!, $password: String!, $activeParticipationId: ID) {
     login(name: $name, password: $password) {
       accessToken
       user {
         ...UserData
-        activeParticipation(challengeId: $activeParticipationChallengeId) {
+        activeParticipation(id: $activeParticipationId) {
           ...ActiveParticipationInfo
         }
       }

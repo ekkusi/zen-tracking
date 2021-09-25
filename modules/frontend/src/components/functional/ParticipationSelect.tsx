@@ -11,6 +11,7 @@ import React, {
 
 import { OptionsType } from "react-select";
 import useGlobal from "store";
+import { getParticipationDateString } from "../../util/challengeUtils";
 import {
   GetParticipationsPlain,
   GetParticipationsPlainVariables,
@@ -43,7 +44,7 @@ const ParticipationSelect = forwardRef(
     }: ParticipationSelectProps,
     ref
   ): JSX.Element => {
-    const [value, setValue] = useState<OptionType | null>();
+    const [selected, setSelected] = useState<OptionType | null>();
     const user = useGlobal((state) => state.currentUser)[0];
     const activeParticipation = useGlobal(
       (state) => state.activeParticipation
@@ -67,10 +68,13 @@ const ParticipationSelect = forwardRef(
       data?.getParticipations.forEach((it) => {
         mappedOptions.push({
           value: it.id,
-          label: it.challenge.name,
+          label: `${it.challenge.name} ${getParticipationDateString(it)}`,
         });
       });
-      if (activeParticipation) {
+      if (
+        activeParticipation &&
+        !mappedOptions.some((it) => it.value === activeParticipation.id)
+      ) {
         return [
           ...mappedOptions,
           {
@@ -83,7 +87,7 @@ const ParticipationSelect = forwardRef(
     }, [data, activeParticipation]);
 
     const onChange = (selectedValue: OptionType | null) => {
-      setValue(value);
+      setSelected(selectedValue);
       onSelect(selectedValue);
     };
 
@@ -92,23 +96,24 @@ const ParticipationSelect = forwardRef(
         refetch();
       },
       setValue(newValue: OptionType | null) {
-        setValue(newValue);
+        setSelected(newValue);
       },
     }));
 
     useEffect(() => {
-      const activeChallenge = activeParticipation?.challenge;
-      if (activeChallenge?.id !== value?.value) {
-        setValue(
-          activeChallenge
+      if (activeParticipation?.id !== selected?.value) {
+        setSelected(
+          activeParticipation
             ? {
-                value: activeChallenge.id,
-                label: activeChallenge.name,
+                value: activeParticipation.id,
+                label: `${
+                  activeParticipation.challenge.name
+                } ${getParticipationDateString(activeParticipation)}`,
               }
             : null
         );
       }
-    }, [activeParticipation, value]);
+    }, [activeParticipation, selected]);
 
     return (
       <Select
@@ -118,7 +123,7 @@ const ParticipationSelect = forwardRef(
           initialValue &&
           mapOptions?.find((it) => it.value === initialValue.value)
         }
-        value={value}
+        value={selected}
         options={options || mapOptions}
         onChange={onChange}
         noOptionsMessage={() =>

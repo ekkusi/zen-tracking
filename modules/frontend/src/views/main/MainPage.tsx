@@ -14,7 +14,6 @@ import CustomLoadingOverlay from "components/general/LoadingOverlay";
 import EditMarking from "../../components/functional/EditMarking";
 import MarkingCalendar from "../../components/functional/MarkingCalendar";
 import { getParticipation } from "../../util/apolloQueries";
-import { ChallengeStatus } from "../../__generated__/globalTypes";
 import { OptionType } from "../../components/general/Select";
 
 const MotionArrowForwardIcon = chakraMotionWrapper(ArrowForwardIcon);
@@ -55,6 +54,7 @@ const MainPage = (): JSX.Element => {
       const result = await getParticipation({
         id: selectedParticipationId,
       });
+
       updateActiveParticipation(result.data.getParticipation ?? null);
       setLoading(false);
     } else {
@@ -122,36 +122,42 @@ const MainPage = (): JSX.Element => {
           >
             Selaa muita haasteita
           </Text>
-          {activeParticipation.challenge.status === ChallengeStatus.ACTIVE && (
-            <Flex direction="column" alignItems="center" mb="7">
-              <EditMarking
-                openButtonLabel={
-                  hasUserMarkedToday()
-                    ? "Olet jo merkannut tänään"
-                    : "Merkkaa päivän suoritus"
-                }
-                openButtonProps={{
-                  isDisabled: hasUserMarkedToday() || loading,
-                  size: "lg",
-                  leftIcon: (
-                    <CheckIcon
-                      w={{ base: 6, md: 8 }}
-                      h={{ base: 6, md: 8 }}
-                      mb="1px"
-                    />
-                  ),
-                  mb: 1,
-                }}
-              />
-              <Text
-                as={Link}
-                to={`/profile/${user.name}/${activeParticipation.challenge.id}`}
-                fontSize="xl"
-              >
-                Tarkastele koko suoritusta
-              </Text>
-            </Flex>
-          )}
+          {activeParticipation.startDate &&
+            activeParticipation.endDate &&
+            DateUtil.isBetween(
+              new Date(),
+              new Date(activeParticipation.startDate),
+              new Date(activeParticipation.endDate)
+            ) && (
+              <Flex direction="column" alignItems="center" mb="7">
+                <EditMarking
+                  openButtonLabel={
+                    hasUserMarkedToday()
+                      ? "Olet jo merkannut tänään"
+                      : "Merkkaa päivän suoritus"
+                  }
+                  openButtonProps={{
+                    isDisabled: hasUserMarkedToday() || loading,
+                    size: "lg",
+                    leftIcon: (
+                      <CheckIcon
+                        w={{ base: 6, md: 8 }}
+                        h={{ base: 6, md: 8 }}
+                        mb="1px"
+                      />
+                    ),
+                    mb: 1,
+                  }}
+                />
+                <Text
+                  as={Link}
+                  to={`/profile/${user.name}/participations/${activeParticipation.id}`}
+                  fontSize="xl"
+                >
+                  Tarkastele koko suoritusta
+                </Text>
+              </Flex>
+            )}
         </>
       )}
 

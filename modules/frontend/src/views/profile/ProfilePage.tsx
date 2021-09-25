@@ -27,6 +27,7 @@ import {
 import { GET_CHALLENGES } from "../../generalQueries";
 import UserEditModal from "../../components/functional/UserEditModal";
 import { OptionType } from "../../components/general/Select";
+import BackNavigationLink from "../../components/general/BackNavigationLink";
 
 const ProfilePage = (): JSX.Element => {
   const { userName } = useParams<{ userName: string }>();
@@ -90,7 +91,6 @@ const ProfilePage = (): JSX.Element => {
       user.participations,
       activeParticipation
     );
-    console.log(sortedParticipations);
     if (user.name === userName) {
       sortedParticipations = sortedParticipations.filter(
         (it) => it.id !== activeParticipation?.id
@@ -115,6 +115,7 @@ const ProfilePage = (): JSX.Element => {
 
   return (
     <Box>
+      <BackNavigationLink to="/">Takaisin etusivulle</BackNavigationLink>
       {isCurrentUser() && (
         <>
           <UserEditModal
@@ -165,7 +166,7 @@ const ProfilePage = (): JSX.Element => {
               onClick={() => {
                 setHideNavigation(true);
                 history.push(
-                  `/profile/${userName}/${activeParticipation.challenge.id}`
+                  `/profile/${userName}/participations/${activeParticipation.id}`
                 );
               }}
               as="a"

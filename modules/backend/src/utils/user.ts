@@ -6,7 +6,7 @@ export const checkIfIsUser = (user: any): user is AuthenticatedUser => {
     user.name === undefined ||
     user.isPrivate === undefined ||
     user.email === undefined ||
-    !Array.isArray(user.finishedAndCheckedChallenges)
+    !Array.isArray(user.finishedAndCheckedParticipations)
   )
     return false;
   return true;

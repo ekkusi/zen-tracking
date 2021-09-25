@@ -14,7 +14,7 @@ CREATE TABLE "User" (
   email citext UNIQUE,
   is_email_verified boolean DEFAULT false NOT NULL,
   created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  finished_and_checked_challenges uuid[] NOT NULL DEFAULT array[]::uuid[]
+  finished_and_checked_participations uuid[] NOT NULL DEFAULT array[]::uuid[]
 );
 
 CREATE TABLE "Quote" (

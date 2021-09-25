@@ -30,7 +30,7 @@ export interface GetUserWithParticipations_getUser {
   name: string;
   email: string | null;
   isPrivate: boolean;
-  finishedAndCheckedChallenges: string[];
+  finishedAndCheckedParticipations: string[];
   participations: GetUserWithParticipations_getUser_participations[];
 }
 

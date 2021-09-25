@@ -80,11 +80,11 @@ const Routes = (): JSX.Element => {
           query: GET_CURRENT_USER,
           fetchPolicy: "no-cache",
           variables: {
-            activeParticipationChallengeId:
-              localStorage.getItem("activeParticipationChallengeId") ??
-              undefined,
+            activeParticipationId:
+              localStorage.getItem("activeParticipationId") ?? undefined,
           },
         });
+
         const { data } = result;
         const {
           activeParticipation: newActiveParticipation,
@@ -97,8 +97,8 @@ const Routes = (): JSX.Element => {
         if (
           newActiveParticipation &&
           isAfter(new Date(), new Date(newActiveParticipation.endDate)) &&
-          !user.finishedAndCheckedChallenges.includes(
-            newActiveParticipation.challenge.id
+          !user.finishedAndCheckedParticipations.includes(
+            newActiveParticipation.id
           )
         ) {
           openRecapModal(newActiveParticipation, user.name);

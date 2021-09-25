@@ -41,7 +41,7 @@ export const userDataFragment = gql`
     name
     email
     isPrivate
-    finishedAndCheckedChallenges
+    finishedAndCheckedParticipations
   }
 `;
 

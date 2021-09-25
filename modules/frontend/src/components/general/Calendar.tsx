@@ -38,7 +38,7 @@ const StyledCalendar = styled(ReactCalendar)<
         z-index: 1;
       }
       &:hover {
-        background: var(--hover-bg-color);
+        background: var(--active-bg-color);
         color: var(--hover-color);
       }
       &--now {
@@ -50,6 +50,10 @@ const StyledCalendar = styled(ReactCalendar)<
       &--marked {
         & > abbr {
           color: ${({ theme }) => theme.colors.white};
+        }
+        &:hover {
+          background: var(--active-bg-color);
+          color: var(--hover-color);
         }
       }
       &:before,

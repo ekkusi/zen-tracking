@@ -1,14 +1,14 @@
 import { ApolloQueryResult, FetchResult } from "@apollo/client";
 import { initializeApollo } from "../apollo/ApolloProvider";
 import {
-  ADD_FINISHED_CHALLENGE,
+  ADD_FINISHED_PARTICIPATION,
   GET_PARTICIPATION,
   GET_USER,
 } from "../generalQueries";
 import {
-  AddFinishedChallenge,
-  AddFinishedChallengeVariables,
-} from "../__generated__/AddFinishedChallenge";
+  AddFinishedParticipation,
+  AddFinishedParticipationVariables,
+} from "../__generated__/AddFinishedParticipation";
 import {
   GetParticipation,
   GetParticipationVariables,
@@ -38,12 +38,15 @@ export const getUser = async (
   });
 };
 
-export const addFinishedChallenge = async (
-  variables: AddFinishedChallengeVariables
-): Promise<FetchResult<AddFinishedChallenge>> => {
+export const addFinishedParticipation = async (
+  variables: AddFinishedParticipationVariables
+): Promise<FetchResult<AddFinishedParticipation>> => {
   const client = initializeApollo();
-  return client.mutate<AddFinishedChallenge, AddFinishedChallengeVariables>({
-    mutation: ADD_FINISHED_CHALLENGE,
+  return client.mutate<
+    AddFinishedParticipation,
+    AddFinishedParticipationVariables
+  >({
+    mutation: ADD_FINISHED_PARTICIPATION,
     variables,
   });
 };

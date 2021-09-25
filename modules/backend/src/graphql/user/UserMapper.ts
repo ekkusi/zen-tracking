@@ -9,7 +9,8 @@ export class UserMapper {
       name: user.name,
       isPrivate: user.is_private,
       email: user.email,
-      finishedAndCheckedChallenges: user.finished_and_checked_challenges,
+      finishedAndCheckedParticipations:
+        user.finished_and_checked_participations,
     };
   }
 

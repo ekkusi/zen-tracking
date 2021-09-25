@@ -12,6 +12,7 @@ const initialState: GlobalState = {
   promptEvent: null,
   hideNavigation: false,
   modalProps: null,
+  bottomNavigationBarState: "visible",
 };
 
 const useGlobal = globalHook<GlobalState, ActionTypes>(

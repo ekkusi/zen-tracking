@@ -4,13 +4,13 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: AddFinishedChallenge
+// GraphQL mutation operation: AddFinishedParticipation
 // ====================================================
 
-export interface AddFinishedChallenge {
-  addFinishedChallenge: boolean;
+export interface AddFinishedParticipation {
+  addFinishedParticipation: boolean;
 }
 
-export interface AddFinishedChallengeVariables {
-  challengeId: string;
+export interface AddFinishedParticipationVariables {
+  id: string;
 }

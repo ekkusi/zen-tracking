@@ -36,15 +36,11 @@ export const resolvers: UserResolvers = {
       // console.log(`User.participations : ${JSON.stringify(participations)}`);
       return notPrivateOrCurrentUserParticipations;
     },
-    activeParticipation: async (
-      { name },
-      { challengeId },
-      { prisma, user }
-    ) => {
+    activeParticipation: async ({ name }, { id }, { prisma, user }) => {
       // If challengeId arg is passed, return this as activeParticipation if it is found. Otherwise fetch latest modified participation
-      if (challengeId) {
-        const participation = await prisma.challengeParticipation.findFirst({
-          where: { challenge_id: challengeId, user_name: name },
+      if (id) {
+        const participation = await prisma.challengeParticipation.findUnique({
+          where: { id },
         });
 
         if (participation) {
@@ -68,8 +64,8 @@ export const resolvers: UserResolvers = {
         return null;
       return latestParticipation;
     },
-    finishedAndCheckedChallenges: (user) =>
-      user.finished_and_checked_challenges,
+    finishedAndCheckedParticipations: (user) =>
+      user.finished_and_checked_participations,
     createdAt: ({ created_at }) => formatIsoString(created_at),
   },
   Query: {
@@ -171,12 +167,12 @@ export const resolvers: UserResolvers = {
       };
     },
 
-    addFinishedChallenge: async (_, args, { prisma, user }) => {
+    addFinishedParticipation: async (_, args, { prisma, user }) => {
       if (!user) throw new AuthenticationError();
       await prisma.user.update({
         data: {
-          finished_and_checked_challenges: {
-            set: [args.challengeId, ...user.finishedAndCheckedChallenges],
+          finished_and_checked_participations: {
+            set: [args.id, ...user.finishedAndCheckedParticipations],
           },
         },
         where: { name: user.name },

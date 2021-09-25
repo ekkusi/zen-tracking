@@ -7,10 +7,10 @@ import {
 } from "fragments";
 
 export const GET_CURRENT_USER = gql`
-  query GetCurrentUser($activeParticipationChallengeId: ID) {
+  query GetCurrentUser($activeParticipationId: ID) {
     getCurrentUser {
       ...UserData
-      activeParticipation(challengeId: $activeParticipationChallengeId) {
+      activeParticipation(id: $activeParticipationId) {
         ...ActiveParticipationInfo
       }
     }
@@ -76,10 +76,10 @@ export const GET_PARTICIPATIONS_PLAIN = gql`
 `;
 
 export const GET_USER = gql`
-  query GetUser($name: ID!, $activeParticipationChallengeId: ID) {
+  query GetUser($name: ID!, $activeParticipationId: ID) {
     getUser(name: $name) {
       ...UserData
-      activeParticipation(challengeId: $activeParticipationChallengeId) {
+      activeParticipation(id: $activeParticipationId) {
         ...ActiveParticipationInfo
       }
     }
@@ -88,8 +88,8 @@ export const GET_USER = gql`
   ${activeParticipationInfoFragment}
 `;
 
-export const ADD_FINISHED_CHALLENGE = gql`
-  mutation AddFinishedChallenge($challengeId: ID!) {
-    addFinishedChallenge(challengeId: $challengeId)
+export const ADD_FINISHED_PARTICIPATION = gql`
+  mutation AddFinishedParticipation($id: ID!) {
+    addFinishedParticipation(id: $id)
   }
 `;

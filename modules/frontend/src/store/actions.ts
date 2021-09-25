@@ -39,12 +39,9 @@ const actions = {
     participation: ActiveParticipation | null
   ): void => {
     if (participation) {
-      localStorage.setItem(
-        "activeParticipationChallengeId",
-        participation.challenge.id
-      );
+      localStorage.setItem("activeParticipationId", participation.id);
     } else {
-      localStorage.removeItem("activeParticipationChallengeId");
+      localStorage.removeItem("activeParticipationId");
     }
 
     store.setState({
@@ -104,6 +101,12 @@ const actions = {
       ...store.state,
       modalProps: props,
     });
+  },
+  setBottomNavigationBarState: (
+    store: Store<GlobalState, ActionTypes>,
+    state: "hidden" | "visible"
+  ): void => {
+    store.setState({ ...store.state, bottomNavigationBarState: state });
   },
 };
 

@@ -15,10 +15,10 @@ export type AuthenticatedUser = Omit<
   | "is_private"
   | "is_email_verified"
   | "created_at"
-  | "finished_and_checked_challenges"
+  | "finished_and_checked_participations"
 > & {
   isPrivate: boolean;
-  finishedAndCheckedChallenges: string[];
+  finishedAndCheckedParticipations: string[];
 };
 
 export type DataLoaders = {

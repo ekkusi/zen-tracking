@@ -156,9 +156,9 @@ const CustomApolloProvider = ({
       } else {
         for (const err of graphQLErrors) {
           if (err.extensions && err.extensions.code === "UNAUTHENTICATED") {
-            if (!localStorage.getItem("hasLoggedInBefore"))
+            if (!localStorage.getItem("hasLoggedInBefore")) {
               history.push("/welcome");
-            else history.push("/login");
+            } else history.push("/login");
           }
         }
       }
