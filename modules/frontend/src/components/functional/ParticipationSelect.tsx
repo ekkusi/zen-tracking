@@ -79,7 +79,9 @@ const ParticipationSelect = forwardRef(
           ...mappedOptions,
           {
             value: activeParticipation.id,
-            label: activeParticipation.challenge.name,
+            label: `${
+              activeParticipation.challenge.name
+            } ${getParticipationDateString(activeParticipation)}`,
           },
         ];
       }
