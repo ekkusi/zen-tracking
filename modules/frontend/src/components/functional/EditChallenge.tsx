@@ -2,15 +2,12 @@ import { gql, useMutation } from "@apollo/client";
 import {
   useDisclosure,
   Text,
-  Flex,
   Box,
   Checkbox,
   Button,
   Textarea,
 } from "@chakra-ui/react";
-import { isValid } from "date-fns/esm";
 import React, { useState, useMemo } from "react";
-import DateUtil from "util/DateUtil";
 import { Form, Formik } from "formik";
 import ModalTemplate, { ModalTemplateProps } from "../general/ModalTemplate";
 import FormField from "../general/form/FormField";
@@ -59,33 +56,19 @@ type EditChallengeProps = Omit<ModalTemplateProps, "children"> & {
   onEdit?: (challenge: GetChallenges_getChallenges) => Promise<void> | void;
   onDelete?: (challenge: GetChallenges_getChallenges) => Promise<void> | void;
   saveButtonLabel?: string;
-  requireDates?: boolean;
-  minStartDate?: Date;
-  maxStartDate?: Date;
-  minEndDate?: Date;
-  maxEndDate?: Date;
 };
 
 type FormValues = {
   name: string;
   isPrivate: boolean;
   description: string;
-  startDate?: string;
-  endDate?: string;
 };
-
-const errorDateFormat = "dd.MM.yyyy";
 
 const EditChallenge = ({
   challenge,
   onEdit,
   onDelete,
   saveButtonLabel,
-  requireDates = false,
-  minStartDate,
-  maxStartDate,
-  minEndDate,
-  maxEndDate,
   ...modalTemplateProps
 }: EditChallengeProps): JSX.Element => {
   const [generalError, setGeneralError] = useState<string>();
@@ -112,26 +95,15 @@ const EditChallenge = ({
       if (modalTemplateProps.onClose) {
         modalTemplateProps.onClose();
       }
-
       setGeneralError(undefined);
     },
   });
 
   const initialValues = useMemo((): FormValues => {
-    const { name = "", description = "", startDate, endDate } = challenge || {};
+    const { name = "", description = "" } = challenge || {};
     return {
       name,
       description,
-      startDate: startDate
-        ? DateUtil.format(startDate, {
-            formatString: "yyyy-MM-dd",
-          })
-        : "",
-      endDate: endDate
-        ? DateUtil.format(endDate, {
-            formatString: "yyyy-MM-dd",
-          })
-        : "",
       isPrivate: false,
     };
   }, [challenge]);
@@ -149,69 +121,9 @@ const EditChallenge = ({
     return error;
   };
 
-  const validateStartDate = (value: string | undefined) => {
-    let error;
-    const startDate = value ? new Date(value) : undefined;
-    if (startDate && !isValid(startDate))
-      error = "Alkupäivämäärä ei ole validissa muodossa";
-    if (
-      minStartDate &&
-      (!startDate || !DateUtil.isSameDayOrAfter(startDate, minStartDate))
-    )
-      error = `Alkupäivämäärä pitää olla vähintään ${DateUtil.format(
-        minStartDate,
-        {
-          formatString: errorDateFormat,
-        }
-      )}`;
-    if (
-      maxStartDate &&
-      (!startDate || !DateUtil.isSameDayOrBefore(startDate, maxStartDate))
-    )
-      error = `Alkupäivämäärä saa olla enintään ${DateUtil.format(
-        maxStartDate,
-        {
-          formatString: errorDateFormat,
-        }
-      )}`;
-    if (requireDates && !startDate)
-      error = "Alkupäivämäärä täytyy olla asetettu";
-    return error;
-  };
-
-  const validateEndDate = (value: string | undefined) => {
-    let error;
-    const endDate = value ? new Date(value) : undefined;
-    if (endDate && !isValid(endDate))
-      error = "Alkupäivämäärä ei ole oikeassa muodossa";
-
-    if (
-      minEndDate &&
-      (!endDate || !DateUtil.isSameDayOrAfter(endDate, minEndDate))
-    )
-      error = `Loppupäivämäärä pitää olla vähintään ${DateUtil.format(
-        minEndDate,
-        {
-          formatString: errorDateFormat,
-        }
-      )}`;
-    if (
-      maxEndDate &&
-      (!endDate || !DateUtil.isSameDayOrBefore(endDate, maxEndDate))
-    )
-      error = `Loppupäivämäärä saa olla enintään ${DateUtil.format(maxEndDate, {
-        formatString: errorDateFormat,
-      })}`;
-    if (requireDates && !endDate)
-      error = "Loppupäivämäärä täytyy olla asetettu";
-    return error;
-  };
-
   const saveAndClose = async (values: FormValues) => {
     const input: FormValues = {
       ...values,
-      startDate: values.startDate ? values.startDate : undefined, // If string length === 0, pass undefined
-      endDate: values.endDate ? values.endDate : undefined, // If string length === 0, pass undefined
     };
     try {
       // If challenge exists, edit that
@@ -295,28 +207,6 @@ const EditChallenge = ({
               label="Nimi"
               validate={validateName}
             />
-            <Flex direction={{ base: "column", sm: "row" }}>
-              <FormField
-                name="startDate"
-                type="date"
-                label="Alkupäivämäärä"
-                validate={validateStartDate}
-                containerProps={{
-                  pt: "0",
-                  mb: { base: "2", sm: "0" },
-                  mr: { base: "0", sm: "3" },
-                }}
-              />
-              <FormField
-                name="endDate"
-                type="date"
-                label="Loppupäivämäärä"
-                validate={validateEndDate}
-                containerProps={{
-                  pt: "0",
-                }}
-              />
-            </Flex>
             <FormField
               as={Textarea}
               name="description"
@@ -342,17 +232,10 @@ const EditChallenge = ({
                 isDisabled={deleteLoading}
                 loadingText={challenge ? "Tallenetaan..." : "Luodaan..."}
                 mr={3}
-                // onClick={saveAndClose}
               >
                 {saveButtonLabel || (challenge ? "Tallenna" : "Luo haaste")}
               </Button>
               {challenge && (
-                // <AlertButton
-
-                //   onClick={deleteAndClose}
-                // >
-                //   Poista
-                // </AlertButton>
                 <ConfirmationModal
                   variant="delete"
                   onAccept={deleteAndClose}
