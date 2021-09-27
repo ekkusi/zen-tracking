@@ -19,8 +19,13 @@ const useOpenUpdatePageModal = () => {
     setModal({
       onAccept: () => {
         setModal(null);
-        checkLatestUpdate();
-        window.location.reload();
+        checkLatestUpdate()
+          .then(() => {
+            window.location.reload();
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       },
       children: (
         <Text>
