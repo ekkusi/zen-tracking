@@ -67,7 +67,6 @@ export const resolvers: UserResolvers = {
     finishedAndCheckedParticipations: (user) =>
       user.finished_and_checked_participations,
     createdAt: ({ created_at }) => formatIsoString(created_at),
-    hasCheckedLatestUpdate: (user) => user.has_checked_latest_update,
   },
   Query: {
     getUser: async (_, { name }, { prisma, user: currentUser }) => {
@@ -175,17 +174,6 @@ export const resolvers: UserResolvers = {
           finished_and_checked_participations: {
             set: [args.id, ...user.finishedAndCheckedParticipations],
           },
-        },
-        where: { name: user.name },
-      });
-      return true;
-    },
-
-    checkLatestUpdate: async (_, args, { prisma, user }) => {
-      if (!user) throw new AuthenticationError();
-      await prisma.user.update({
-        data: {
-          has_checked_latest_update: true,
         },
         where: { name: user.name },
       });

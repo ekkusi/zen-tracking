@@ -64,7 +64,6 @@ export type Mutation = {
   register: LoginResult;
   logout: Scalars["Boolean"];
   addFinishedParticipation: Scalars["Boolean"];
-  checkLatestUpdate: Scalars["Boolean"];
   createChallenge: Challenge;
   updateChallenge: Challenge;
   deleteChallenge: Scalars["Boolean"];
@@ -164,7 +163,6 @@ export type User = {
   participations: Array<ChallengeParticipation>;
   activeParticipation?: Maybe<ChallengeParticipation>;
   finishedAndCheckedParticipations: Array<Scalars["String"]>;
-  hasCheckedLatestUpdate: Scalars["Boolean"];
 };
 
 export type UserActiveParticipationArgs = {

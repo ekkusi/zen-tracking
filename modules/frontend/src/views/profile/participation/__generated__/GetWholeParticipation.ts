@@ -47,7 +47,6 @@ export interface GetWholeParticipation_getParticipation_user {
   email: string | null;
   isPrivate: boolean;
   finishedAndCheckedParticipations: string[];
-  hasCheckedLatestUpdate: boolean;
 }
 
 export interface GetWholeParticipation_getParticipation_markings {

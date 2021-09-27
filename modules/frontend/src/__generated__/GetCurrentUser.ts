@@ -42,7 +42,6 @@ export interface GetCurrentUser_getCurrentUser {
   email: string | null;
   isPrivate: boolean;
   finishedAndCheckedParticipations: string[];
-  hasCheckedLatestUpdate: boolean;
   activeParticipation: GetCurrentUser_getCurrentUser_activeParticipation | null;
 }
 
