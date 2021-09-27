@@ -31,7 +31,6 @@ export interface GetUserWithParticipations_getUser {
   email: string | null;
   isPrivate: boolean;
   finishedAndCheckedParticipations: string[];
-  hasCheckedLatestUpdate: boolean;
   participations: GetUserWithParticipations_getUser_participations[];
 }
 

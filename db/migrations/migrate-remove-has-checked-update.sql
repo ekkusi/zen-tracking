@@ -1,0 +1,1 @@
+ALTER TABLE "User" DROP COLUMN has_checked_latest_update; 

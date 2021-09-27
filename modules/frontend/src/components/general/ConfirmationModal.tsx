@@ -7,7 +7,6 @@ export type ConfirmationModalProps = Omit<ModalTemplateProps, "openButton"> & {
   variant?: "regular" | "delete";
   acceptLabel?: string;
   cancelLabel?: string;
-  hasCancelButton?: boolean;
 };
 
 const ConfirmationModal = ({
@@ -17,7 +16,6 @@ const ConfirmationModal = ({
   acceptLabel = "Poista",
   cancelLabel = "Peruuta",
   openButtonLabel = "Poista",
-  hasCancelButton = true,
   isOpen: isModalOpen = false,
   ...modalTemplateProps
 }: ConfirmationModalProps): JSX.Element => {
@@ -62,15 +60,13 @@ const ConfirmationModal = ({
           >
             {acceptLabel}
           </Button>
-          {hasCancelButton && (
-            <Button
-              variant="ghost"
-              isDisabled={loading}
-              onClick={() => disclosureProps.onClose()}
-            >
-              {cancelLabel}
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            isDisabled={loading}
+            onClick={() => disclosureProps.onClose()}
+          >
+            {cancelLabel}
+          </Button>
         </>
       }
       {...modalTemplateProps}

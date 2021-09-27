@@ -13,5 +13,4 @@ export interface UserData {
   email: string | null;
   isPrivate: boolean;
   finishedAndCheckedParticipations: string[];
-  hasCheckedLatestUpdate: boolean;
 }

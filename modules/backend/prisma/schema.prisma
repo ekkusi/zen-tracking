@@ -34,7 +34,6 @@ model User {
   is_email_verified                   Boolean                  @default(false)
   created_at                          DateTime                 @default(now()) @db.Timestamptz(6)
   finished_and_checked_participations String[]                 @db.Uuid
-  has_checked_latest_update           Boolean                  @default(false)
   Challenge                           Challenge[]
   ChallengeParticipation              ChallengeParticipation[]
 }
