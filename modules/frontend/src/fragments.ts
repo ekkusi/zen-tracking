@@ -42,6 +42,7 @@ export const userDataFragment = gql`
     email
     isPrivate
     finishedAndCheckedParticipations
+    hasCheckedLatestUpdate
   }
 `;
 

@@ -16,9 +16,11 @@ export type AuthenticatedUser = Omit<
   | "is_email_verified"
   | "created_at"
   | "finished_and_checked_participations"
+  | "has_checked_latest_update"
 > & {
   isPrivate: boolean;
   finishedAndCheckedParticipations: string[];
+  hasCheckedLatestUpdate: boolean;
 };
 
 export type DataLoaders = {

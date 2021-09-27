@@ -4,14 +4,9 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: UserData
+// GraphQL mutation operation: CheckLatestUpdate
 // ====================================================
 
-export interface UserData {
-  __typename: "User";
-  name: string;
-  email: string | null;
-  isPrivate: boolean;
-  finishedAndCheckedParticipations: string[];
-  hasCheckedLatestUpdate: boolean;
+export interface CheckLatestUpdate {
+  checkLatestUpdate: boolean;
 }

@@ -1,0 +1,1 @@
+UPDATE "User" SET has_checked_latest_update = false;

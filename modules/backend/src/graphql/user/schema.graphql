@@ -28,6 +28,7 @@ extend type Mutation {
   ): LoginResult!
   logout: Boolean!
   addFinishedParticipation(id: ID!): Boolean!
+  checkLatestUpdate: Boolean!
 }
 
 type User {
@@ -38,6 +39,7 @@ type User {
   participations: [ChallengeParticipation!]!
   activeParticipation(id: ID): ChallengeParticipation
   finishedAndCheckedParticipations: [String!]!
+  hasCheckedLatestUpdate: Boolean!
 }
 
 type LoginResult {

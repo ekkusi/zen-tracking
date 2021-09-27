@@ -93,3 +93,9 @@ export const ADD_FINISHED_PARTICIPATION = gql`
     addFinishedParticipation(id: $id)
   }
 `;
+
+export const CHECK_LATEST_UPDATE = gql`
+  mutation CheckLatestUpdate {
+    checkLatestUpdate
+  }
+`;

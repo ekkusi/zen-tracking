@@ -287,6 +287,11 @@ export type MutationResolvers<
     ContextType,
     RequireFields<Types.MutationAddFinishedParticipationArgs, "id">
   >;
+  checkLatestUpdate?: Resolver<
+    ResolversTypes["Boolean"],
+    ParentType,
+    ContextType
+  >;
   createChallenge?: Resolver<
     ResolversTypes["Challenge"],
     ParentType,
@@ -379,6 +384,11 @@ export type UserResolvers<
   >;
   finishedAndCheckedParticipations?: Resolver<
     Array<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
+  hasCheckedLatestUpdate?: Resolver<
+    ResolversTypes["Boolean"],
     ParentType,
     ContextType
   >;

@@ -11,6 +11,7 @@ export class UserMapper {
       email: user.email,
       finishedAndCheckedParticipations:
         user.finished_and_checked_participations,
+      hasCheckedLatestUpdate: user.has_checked_latest_update,
     };
   }
 

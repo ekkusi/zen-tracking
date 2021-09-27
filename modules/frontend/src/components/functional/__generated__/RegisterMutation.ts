@@ -13,6 +13,7 @@ export interface RegisterMutation_register_user {
   email: string | null;
   isPrivate: boolean;
   finishedAndCheckedParticipations: string[];
+  hasCheckedLatestUpdate: boolean;
 }
 
 export interface RegisterMutation_register {

@@ -32,6 +32,7 @@ import {
 import ProfilePage from "../views/profile/ProfilePage";
 import ParticipationPage from "../views/profile/participation/ParticipationPage";
 import useOpenRecapModal from "../hooks/useOpenRecapModal";
+import useOpenUpdatePageModal from "../hooks/useOpenUpdatePageModal";
 
 const NON_AUTHENTICATED_PATHS = ["/welcome", "/login"];
 
@@ -47,6 +48,7 @@ const Routes = (): JSX.Element => {
   const client = useApolloClient();
 
   const openRecapModal = useOpenRecapModal();
+  const openUpdatePageModal = useOpenUpdatePageModal();
 
   const isGlobalUserAuthorized = useMemo((): boolean => {
     return currentUser.name !== notAuthorizedUser.name;
@@ -103,13 +105,17 @@ const Routes = (): JSX.Element => {
         ) {
           openRecapModal(newActiveParticipation, user.name);
         }
+
+        if (!user.hasCheckedLatestUpdate) {
+          openUpdatePageModal();
+        }
       } catch (err) {
         globalActions.updateUser(null);
       }
     }
 
     setLoading(false);
-  }, [client, globalActions, location, openRecapModal]);
+  }, [client, globalActions, location, openRecapModal, openUpdatePageModal]);
 
   const currentPath = location.pathname;
 

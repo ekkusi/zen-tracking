@@ -42,6 +42,7 @@ export interface Login_login_user {
   email: string | null;
   isPrivate: boolean;
   finishedAndCheckedParticipations: string[];
+  hasCheckedLatestUpdate: boolean;
   activeParticipation: Login_login_user_activeParticipation | null;
 }
 

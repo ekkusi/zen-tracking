@@ -1,0 +1,1 @@
+ALTER TABLE "User" ADD COLUMN has_checked_latest_update boolean DEFAULT false NOT NULL;
