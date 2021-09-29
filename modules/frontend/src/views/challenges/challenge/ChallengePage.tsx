@@ -1,8 +1,10 @@
 import { useQuery } from "@apollo/client";
 import {
   Box,
+  Flex,
   Grid,
   GridItem,
+  Icon,
   ListItem,
   Text,
   UnorderedList,
@@ -10,6 +12,7 @@ import {
 import React, { useMemo } from "react";
 
 import { Link, useHistory, useParams } from "react-router-dom";
+import { BiShareAlt } from "react-icons/bi";
 import Heading from "../../../components/primitives/Heading";
 import useGlobal from "../../../store";
 import { GET_CHALLENGE } from "./queries";
@@ -24,6 +27,7 @@ import EditParticipation from "../../../components/functional/EditParticipation"
 import { getParticipationDateString } from "../../../util/challengeUtils";
 import DateUtil from "../../../util/DateUtil";
 import BackNavigationLink from "../../../components/general/BackNavigationLink";
+import ShareModal from "../../../components/functional/ShareModal";
 
 const ChallengePage = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
@@ -55,9 +59,31 @@ const ChallengePage = (): JSX.Element => {
 
   return (
     <Box>
-      <BackNavigationLink to="/challenges">
-        Takaisin haasteisiin
-      </BackNavigationLink>
+      <Flex justify="space-between" alignItems="center" mb="5">
+        <BackNavigationLink to="/challenges" mb="0">
+          Takaisin haasteisiin
+        </BackNavigationLink>
+        <ShareModal
+          headerLabel="Jaa haaste"
+          link={window.location.href}
+          openButtonLabel={
+            <Flex flexDirection="column" alignItems="center">
+              <Icon
+                as={BiShareAlt}
+                w={{ base: 7, sm: 8 }}
+                h={{ base: 7, sm: 8 }}
+              />
+              Jaa
+            </Flex>
+          }
+          openButtonProps={{
+            variant: "ghost",
+            fontSize: { base: "xs", sm: "sm" },
+            px: 0,
+            py: 0,
+          }}
+        />
+      </Flex>
 
       {loading && <Loading />}
       {challenge && (

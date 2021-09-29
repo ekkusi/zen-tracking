@@ -71,6 +71,11 @@ export const Button: ComponentSingleStyleConfig = {
       border: "none",
       bg: "warning",
     }),
+    link: () => ({
+      border: "none",
+      px: 0,
+      py: 0,
+    }),
   },
   sizes: {
     sm: ({ variant }) => ({
