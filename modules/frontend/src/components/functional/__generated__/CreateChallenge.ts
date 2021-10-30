@@ -37,6 +37,7 @@ export interface CreateChallenge_createChallenge {
   createdAt: any;
   description: string;
   isPrivate: boolean;
+  photoUrl: string | null;
   creator: CreateChallenge_createChallenge_creator;
   participations: CreateChallenge_createChallenge_participations[];
 }

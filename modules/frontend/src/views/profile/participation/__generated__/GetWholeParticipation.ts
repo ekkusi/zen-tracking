@@ -37,6 +37,7 @@ export interface GetWholeParticipation_getParticipation_challenge {
   createdAt: any;
   description: string;
   isPrivate: boolean;
+  photoUrl: string | null;
   creator: GetWholeParticipation_getParticipation_challenge_creator;
   participations: GetWholeParticipation_getParticipation_challenge_participations[];
 }

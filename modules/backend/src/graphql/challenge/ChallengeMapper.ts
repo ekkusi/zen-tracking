@@ -59,9 +59,10 @@ export class ChallengeMapper {
     challenge: CreateChallengeInput,
     creatorName: string
   ): Prisma.ChallengeCreateInput {
-    const { startDate, endDate, isPrivate, ...rest } = challenge;
+    const { startDate, endDate, isPrivate, photoUrl, ...rest } = challenge;
     return {
       ...rest,
+      photo_url: photoUrl,
       is_private: isPrivate,
       User: { connect: { name: creatorName } },
       end_date: endDate ? formatIsoString(endDate) : undefined,
@@ -114,10 +115,11 @@ export class ChallengeMapper {
     args: UpdateChallengeInput
   ): Prisma.ChallengeUpdateInput {
     // const { startDate, endDate, isPrivate, ...rest } = args;
-    const { isPrivate, ...rest } = args;
+    const { isPrivate, photoUrl, ...rest } = args;
 
     return {
       ...rest,
+      photo_url: photoUrl,
       is_private: isPrivate ?? undefined,
       name: args.name ? args.name : undefined,
       description: args.description ? args.description : undefined,

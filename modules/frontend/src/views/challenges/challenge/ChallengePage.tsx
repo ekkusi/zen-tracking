@@ -22,6 +22,7 @@ import {
 } from "./__generated__/GetChallenge";
 
 import Loading from "../../../components/general/Loading";
+import Image from "../../../components/primitives/Image";
 import EditChallenge from "../../../components/functional/EditChallenge";
 import EditParticipation from "../../../components/functional/EditParticipation";
 import { getParticipationDateString } from "../../../util/challengeUtils";
@@ -88,6 +89,11 @@ const ChallengePage = (): JSX.Element => {
       {loading && <Loading />}
       {challenge && (
         <>
+          {challenge.photoUrl && (
+            <Flex justifyContent="center" mb="5" mx="-4">
+              <Image src={challenge.photoUrl} maxHeight="40%" />
+            </Flex>
+          )}
           <Heading.H1 textAlign={{ base: "left", sm: "center" }}>
             {challenge.name}
           </Heading.H1>

@@ -198,6 +198,7 @@ export type Challenge = {
   createdAt: Scalars["Date"];
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
+  photoUrl?: Maybe<Scalars["String"]>;
   participations: Array<ChallengeParticipation>;
 };
 
@@ -219,6 +220,7 @@ export type CreateChallengeInput = {
   isPrivate: Scalars["Boolean"];
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
+  photoUrl?: Maybe<Scalars["String"]>;
 };
 
 export type UpdateChallengeInput = {
@@ -227,6 +229,7 @@ export type UpdateChallengeInput = {
   isPrivate?: Maybe<Scalars["Boolean"]>;
   startDate?: Maybe<Scalars["Date"]>;
   endDate?: Maybe<Scalars["Date"]>;
+  photoUrl?: Maybe<Scalars["String"]>;
 };
 
 export type CreateParticipationInput = {

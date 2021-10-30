@@ -7,6 +7,7 @@ import {
   isValid,
   startOfDay,
 } from "date-fns";
+import { Challenge } from "@prisma/client";
 import { getEarliestMarking, getLatestMarking } from "../../utils/dateUtils";
 import {
   CreateChallengeInput,
@@ -226,7 +227,7 @@ export default class ChallengeValidator {
     args: UpdateChallengeInput,
     challengeId: string,
     userName: string
-  ) {
+  ): Promise<Challenge> {
     const challenge = await prisma.challenge.findUnique({
       where: { id: challengeId },
     });
@@ -235,6 +236,7 @@ export default class ChallengeValidator {
     if (challenge.creator_name !== userName)
       throw new ValidationError("Et voi muokata haastetta, joka ei ole omasi");
     this.validateChallengeArgs(args);
+    return challenge;
   }
 
   public static validateChallengeArgs({
@@ -272,7 +274,7 @@ export default class ChallengeValidator {
   public static async validateDeleteChallengeArgs(
     id: string,
     userName: string
-  ) {
+  ): Promise<Challenge> {
     const challenge = await prisma.challenge.findFirst({
       where: {
         id,
@@ -296,6 +298,8 @@ export default class ChallengeValidator {
       throw new ValidationError(
         "Et voi poistaa haastetta, jossa on myös muita osallistujia. Voi olla, että haasteessa on yksityisiä osallistujia, jotka eivät ole näkyvissä."
       );
+
+    return challenge;
   }
 
   // TODO: This could be removed or atleast change validations to come from participation, not challenge

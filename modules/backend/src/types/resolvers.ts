@@ -415,6 +415,11 @@ export type ChallengeResolvers<
     ParentType,
     ContextType
   >;
+  photoUrl?: Resolver<
+    Types.Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
   participations?: Resolver<
     Array<ResolversTypes["ChallengeParticipation"]>,
     ParentType,

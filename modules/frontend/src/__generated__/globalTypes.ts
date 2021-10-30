@@ -27,6 +27,7 @@ export interface CreateChallengeInput {
   isPrivate: boolean;
   startDate?: any | null;
   endDate?: any | null;
+  photoUrl?: string | null;
 }
 
 export interface CreateParticipationInput {
@@ -76,6 +77,7 @@ export interface UpdateChallengeInput {
   isPrivate?: boolean | null;
   startDate?: any | null;
   endDate?: any | null;
+  photoUrl?: string | null;
 }
 
 export interface UpdateParticipationInput {

@@ -26,6 +26,9 @@ import {
 } from "./__generated__/UpdateChallenge";
 import { challengeDataFragment } from "../../fragments";
 import { GetChallenges_getChallenges } from "../../__generated__/GetChallenges";
+import ImageInput from "../general/form/ImageInput";
+import { MAX_UPLOAD_FILE_SIZE_MB } from "../../config.json";
+import { deleteImage, uploadImage } from "../../util/backend-api";
 
 const CREATE_CHALLENGE = gql`
   mutation CreateChallenge($challenge: CreateChallengeInput!) {
@@ -62,6 +65,7 @@ type FormValues = {
   name: string;
   isPrivate: boolean;
   description: string;
+  photo: File | string | null;
 };
 
 const EditChallenge = ({
@@ -72,6 +76,7 @@ const EditChallenge = ({
   ...modalTemplateProps
 }: EditChallengeProps): JSX.Element => {
   const [generalError, setGeneralError] = useState<string>();
+  const [loading, setLoading] = useState(false);
 
   const [deleteChallenge, { loading: deleteLoading }] = useMutation<
     DeleteChallenge,
@@ -100,11 +105,12 @@ const EditChallenge = ({
   });
 
   const initialValues = useMemo((): FormValues => {
-    const { name = "", description = "" } = challenge || {};
+    const { name = "", description = "", photoUrl } = challenge || {};
     return {
       name,
       description,
       isPrivate: false,
+      photo: photoUrl || null,
     };
   }, [challenge]);
 
@@ -121,10 +127,30 @@ const EditChallenge = ({
     return error;
   };
 
+  const validateFile = (file: File | null): string => {
+    // * 1024 * 1024 is for converting mb size to bytes, which file.size is in
+    if (file && file.size > MAX_UPLOAD_FILE_SIZE_MB * 1024 * 1024) {
+      return `Tiedosto saa olla enintään ${MAX_UPLOAD_FILE_SIZE_MB}MB kokoinen.`;
+    }
+    return "";
+  };
+
   const saveAndClose = async (values: FormValues) => {
-    const input: FormValues = {
-      ...values,
-    };
+    setLoading(true);
+    const { photo, ...input } = values;
+    // If photo is defined -> initialize as undefined to avoid unnecessary delete in backend, if null then null to delete. If value is File -> next upload will handle updating this variable
+    let photoUrl: string | undefined | null = photo ? undefined : null;
+    // If this photo is File and not string or undefined, it is new file -> upload
+    if (photo instanceof File) {
+      try {
+        const uploadData = await uploadImage(photo);
+        photoUrl = uploadData.url;
+      } catch (e) {
+        setLoading(false);
+        console.error(`Jokin meni vikaan kuvan lisäyksessä: ${e.message}`);
+        return;
+      }
+    }
     try {
       // If challenge exists, edit that
       if (challenge) {
@@ -133,6 +159,7 @@ const EditChallenge = ({
             id: challenge.id,
             args: {
               ...input,
+              photoUrl,
             },
           },
         });
@@ -146,6 +173,7 @@ const EditChallenge = ({
           variables: {
             challenge: {
               ...input,
+              photoUrl,
             },
           },
         });
@@ -155,6 +183,15 @@ const EditChallenge = ({
       }
       disclosureProps.onClose();
     } catch (e) {
+      if (photoUrl) {
+        try {
+          await deleteImage(photoUrl);
+        } catch (deleteError) {
+          console.error(
+            `Jokin meni pieleen kuvan poistossa ${deleteError.message}`
+          );
+        }
+      }
       setGeneralError(e.message);
     }
   };
@@ -198,7 +235,7 @@ const EditChallenge = ({
         validateOnChange={false}
         validateOnBlur={false}
       >
-        {({ values, setFieldValue }) => (
+        {({ values, errors, setFieldValue, setFieldError }) => (
           <Form>
             <FormField
               name="name"
@@ -215,6 +252,31 @@ const EditChallenge = ({
               label="Kuvaus"
               validate={validateDescription}
             />
+            <Box mb="7">
+              <ImageInput
+                id="challenge-photo"
+                accept="image/*"
+                buttonLabel="Valitse haasteen kuva"
+                initialValue={values.photo}
+                buttonProps={{ mb: 0 }}
+                containerProps={{ mb: 3 }}
+                onChange={(photo: File | null) => {
+                  const fileError = validateFile(photo);
+                  if (fileError) {
+                    setFieldError("photo", fileError);
+                    setFieldValue("photo", null);
+                  } else {
+                    setFieldError("photo", undefined);
+                    setFieldValue("photo", photo);
+                  }
+                }}
+              />
+              {errors.photo && (
+                <Text as="span" display="block" color="warning">
+                  {errors.photo}
+                </Text>
+              )}
+            </Box>
             <Checkbox
               isChecked={values.isPrivate}
               onChange={(event) =>
@@ -228,7 +290,7 @@ const EditChallenge = ({
             <Box my="5">
               <Button
                 type="submit"
-                isLoading={createLoading || updateLoading}
+                isLoading={createLoading || updateLoading || loading}
                 isDisabled={deleteLoading}
                 loadingText={challenge ? "Tallenetaan..." : "Luodaan..."}
                 mr={3}
@@ -242,7 +304,7 @@ const EditChallenge = ({
                   headerLabel="Poista haaste"
                   openButtonProps={{
                     isLoading: deleteLoading,
-                    isDisabled: createLoading || updateLoading,
+                    isDisabled: createLoading || updateLoading || loading,
                     loadingText: "Poistetaan...",
                   }}
                 >

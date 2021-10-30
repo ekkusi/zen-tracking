@@ -55,6 +55,7 @@ export const challengeDataFragment = gql`
     createdAt
     description
     isPrivate
+    photoUrl
     creator {
       name
     }

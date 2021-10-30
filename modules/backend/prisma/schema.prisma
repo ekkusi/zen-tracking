@@ -20,6 +20,7 @@ model Challenge {
   description            String
   creator_name           String                   @db.VarChar(254)
   is_private             Boolean                  @default(true)
+  photo_url              String?                  @db.VarChar(254)
   start_date             DateTime?                @db.Timestamptz(6)
   end_date               DateTime?                @db.Timestamptz(6)
   User                   User                     @relation(fields: [creator_name], references: [name])

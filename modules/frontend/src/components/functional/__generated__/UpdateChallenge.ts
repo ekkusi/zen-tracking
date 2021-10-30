@@ -37,6 +37,7 @@ export interface UpdateChallenge_updateChallenge {
   createdAt: any;
   description: string;
   isPrivate: boolean;
+  photoUrl: string | null;
   creator: UpdateChallenge_updateChallenge_creator;
   participations: UpdateChallenge_updateChallenge_participations[];
 }

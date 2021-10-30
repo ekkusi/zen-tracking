@@ -1,0 +1,1 @@
+ALTER TABLE "Challenge" ADD COLUMN "photo_url" varchar(254);

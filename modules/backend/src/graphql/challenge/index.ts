@@ -78,6 +78,7 @@ export const resolvers: Resolvers = {
       return notPrivateOrCurrentUserParticipations;
     },
     isPrivate: ({ is_private }) => is_private,
+    photoUrl: ({ photo_url }) => photo_url,
   },
   Marking: {
     date: ({ date }) => formatIsoString(date),
@@ -221,8 +222,6 @@ export const resolvers: Resolvers = {
       const marking = await prisma.marking.findUnique({
         where: { id },
       });
-      // Clear markingsLoader cache
-      await loaderResetors.clearMarkingsCache(id, loaders);
       // This is temp solution, because prisma doesn't support NOT NULL constraint and ON DELETE CASCADE. Prisma delete results in relation delete violation.
       const deletedMarkings = await prisma.$executeRaw(
         `DELETE FROM "Marking" WHERE id='${id}';`
@@ -239,6 +238,8 @@ export const resolvers: Resolvers = {
             );
           }
         }
+        // Clear markingsLoader cache
+        await loaderResetors.clearMarkingsCache(id, loaders);
         return true;
       }
       return false;
@@ -290,20 +291,45 @@ export const resolvers: Resolvers = {
       );
       return createChallenge;
     },
-    updateChallenge: async (_, { id, args }, { prisma, loaders, user }) => {
+    updateChallenge: async (
+      _,
+      { id, args },
+      { prisma, loaders, user, s3Client }
+    ) => {
       if (!user) throw new AuthenticationError();
-      await ChallengeValidator.validateUpdateChallenge(args, id, user.name);
+      const oldChallenge = await ChallengeValidator.validateUpdateChallenge(
+        args,
+        id,
+        user.name
+      );
       const updatedChallenge = await prisma.challenge.update({
         where: { id },
         data: ChallengeMapper.mapEditChallengeInput(args),
       });
+      // If oldMarking data has photoUrl, new photo url is not undefined (== no modifications) and is not the same as old -> delete old from s3
+      if (
+        oldChallenge.photo_url &&
+        updatedChallenge.photo_url !== undefined &&
+        updatedChallenge.photo_url !== oldChallenge.photo_url
+      ) {
+        try {
+          await s3Client.deleteImage(oldChallenge.photo_url);
+        } catch (error) {
+          console.log(
+            `Couldn't delete marking image: ${oldChallenge.photo_url} error: ${error.message}`
+          );
+        }
+      }
       // Clear challengeLoader cache by challenge id
       loaders.challengeLoader.clear(id);
       return updatedChallenge;
     },
     deleteChallenge: async (_, { id }, { prisma, s3Client, loaders, user }) => {
       if (!user) throw new AuthenticationError();
-      await ChallengeValidator.validateDeleteChallengeArgs(id, user.name);
+      const challengeToDelete = await ChallengeValidator.validateDeleteChallengeArgs(
+        id,
+        user.name
+      );
       // Get markings to delete from s3 here, later this data won't be available
       const challengeMarkings = await prisma.marking.findMany({
         where: {
@@ -322,14 +348,18 @@ export const resolvers: Resolvers = {
         // If more than 0 rows are affected by above query == challenge deleted -> delete all related marking-images from s3
 
         try {
-          await Promise.all(
-            challengeMarkings.map((it: Marking) => {
-              if (it.photo_url) {
-                return s3Client.deleteImage(it.photo_url);
-              }
-              return false;
-            })
-          );
+          const deletePromises = challengeMarkings.map((it: Marking) => {
+            if (it.photo_url) {
+              return s3Client.deleteImage(it.photo_url);
+            }
+            return false;
+          });
+          if (challengeToDelete.photo_url) {
+            deletePromises.push(
+              s3Client.deleteImage(challengeToDelete.photo_url)
+            );
+          }
+          await Promise.all(deletePromises);
         } catch (error) {
           console.log(
             `Something went wrong when deleting challenge: ${id} marking images from s3: ${error.message}`

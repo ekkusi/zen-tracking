@@ -37,6 +37,7 @@ export interface ChallengeData {
   createdAt: any;
   description: string;
   isPrivate: boolean;
+  photoUrl: string | null;
   creator: ChallengeData_creator;
   participations: ChallengeData_participations[];
 }

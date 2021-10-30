@@ -40,6 +40,7 @@ type Challenge {
   createdAt: Date!
   startDate: Date
   endDate: Date
+  photoUrl: String
   participations: [ChallengeParticipation!]!
 }
 
@@ -60,6 +61,7 @@ input CreateChallengeInput {
   isPrivate: Boolean!
   startDate: Date
   endDate: Date
+  photoUrl: String
 }
 
 input UpdateChallengeInput {
@@ -68,6 +70,7 @@ input UpdateChallengeInput {
   isPrivate: Boolean
   startDate: Date
   endDate: Date
+  photoUrl: String
 }
 
 input CreateParticipationInput {

@@ -29,6 +29,7 @@ CREATE TABLE "Challenge" (
   description text NOT NULL,
   creator_name varchar(254) NOT NULL,
   is_private boolean DEFAULT true NOT NULL,
+  photo_url varchar(254),
   start_date timestamp with time zone,
   end_date timestamp with time zone CHECK (start_date <= end_date), 
   FOREIGN KEY (creator_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE
