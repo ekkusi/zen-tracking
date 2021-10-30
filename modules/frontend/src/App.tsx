@@ -10,6 +10,7 @@ import theme from "./theme";
 import Fonts from "./theme/Fonts";
 import AddToHomeScreenPrompt from "./components/functional/AddToHomeScreenPrompts";
 import GeneralPromptModal from "./components/functional/GeneralPromptModal";
+import NewVersionPrompt from "./components/functional/NewVersionPrompt";
 
 const App = (): JSX.Element => {
   return (
@@ -20,6 +21,7 @@ const App = (): JSX.Element => {
           <ApolloProvider>
             <ScrollToTop />
             <AddToHomeScreenPrompt />
+            <NewVersionPrompt />
             <GeneralPromptModal />
             <Routes />
           </ApolloProvider>

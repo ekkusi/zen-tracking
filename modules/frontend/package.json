@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://localhost:4000",
   "dependencies": {
+    "@3m1/service-worker-updater": "^2.0.2",
     "@apollo/client": "^3.3.6",
     "@apollo/link-error": "^2.0.0-beta.3",
     "@chakra-ui/icons": "^1.0.5",

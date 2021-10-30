@@ -4,6 +4,7 @@ import "react-calendar/dist/Calendar.css";
 import { ColorModeScript } from "@chakra-ui/react";
 import theme from "theme";
 import ReactGA from "react-ga";
+import { onServiceWorkerUpdate } from "@3m1/service-worker-updater";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
@@ -17,7 +18,9 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-serviceWorkerRegistration.register();
+serviceWorkerRegistration.register({
+  onUpdate: onServiceWorkerUpdate,
+});
 
 ReactDOM.render(
   <React.StrictMode>
