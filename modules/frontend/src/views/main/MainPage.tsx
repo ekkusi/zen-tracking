@@ -129,7 +129,7 @@ const MainPage = (): JSX.Element => {
               new Date(activeParticipation.startDate),
               new Date(activeParticipation.endDate)
             ) && (
-              <Flex direction="column" alignItems="center" mb="7">
+              <Flex direction="column" alignItems="center" mb="2">
                 <EditMarking
                   openButtonLabel={
                     hasUserMarkedToday()
@@ -146,16 +146,8 @@ const MainPage = (): JSX.Element => {
                         mb="1px"
                       />
                     ),
-                    mb: 1,
                   }}
                 />
-                <Text
-                  as={Link}
-                  to={`/profile/${user.name}/participations/${activeParticipation.id}`}
-                  fontSize="xl"
-                >
-                  Tarkastele koko suoritusta
-                </Text>
               </Flex>
             )}
         </>
@@ -164,7 +156,22 @@ const MainPage = (): JSX.Element => {
       <Box>
         {loading && <CustomLoadingOverlay />}
         {activeParticipation && (
-          <MarkingCalendar participation={activeParticipation} />
+          <>
+            <Text
+              as={Link}
+              display="block"
+              to={`/profile/${user.name}/participations/${activeParticipation.id}`}
+              fontSize="xl"
+              textAlign="center"
+              mb="2"
+            >
+              Tarkastele koko suoritusta
+            </Text>
+            <MarkingCalendar
+              key={activeParticipation.id}
+              participation={activeParticipation}
+            />
+          </>
         )}
       </Box>
     </Box>

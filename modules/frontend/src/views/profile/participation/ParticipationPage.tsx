@@ -325,6 +325,7 @@ const ParticipationPage = (): JSX.Element => {
           <BoxWithMotion {...formatOpacityAnimationProps(11)} mb="20">
             <Heading.H2 textAlign="center">Merkkaukset</Heading.H2>
             <MarkingCalendar
+              key={participation.id}
               participation={participation}
               onEdit={() => refetch()}
               isEditable={participation.user.name === user.name}

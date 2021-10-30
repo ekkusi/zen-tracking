@@ -133,13 +133,6 @@ const MarkingCalendar = ({
     return DEFAULT_MAX_DATE;
   };
 
-  console.log(`Max date: ${getMaxDate()}`);
-  console.log(
-    participation.startDate
-      ? new Date(participation.startDate)
-      : DEFAULT_MIN_DATE
-  );
-
   return (
     <>
       <EditMarking
