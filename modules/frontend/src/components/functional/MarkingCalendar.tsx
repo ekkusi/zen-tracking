@@ -1,7 +1,7 @@
 import { Tag } from "@chakra-ui/react";
 import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
-import { addHours, isBefore, isSameDay } from "date-fns";
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import { addHours, isAfter, isBefore, isSameDay } from "date-fns";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
   CalendarProps,
@@ -41,14 +41,6 @@ const MarkingCalendar = ({
   const primaryColor = usePrimaryColor();
 
   const { markings } = participation;
-
-  const sortedMarkings = useMemo(() => {
-    const sorted = [...markings];
-    sorted.sort((a, b) => {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    });
-    return sorted;
-  }, [markings]);
 
   const getTileContent = ({ date, view }: CalendarTileProperties) => {
     if (view === "month") {
@@ -141,6 +133,13 @@ const MarkingCalendar = ({
     return DEFAULT_MAX_DATE;
   };
 
+  console.log(`Max date: ${getMaxDate()}`);
+  console.log(
+    participation.startDate
+      ? new Date(participation.startDate)
+      : DEFAULT_MIN_DATE
+  );
+
   return (
     <>
       <EditMarking
@@ -166,10 +165,8 @@ const MarkingCalendar = ({
             ? new Date(participation.startDate)
             : DEFAULT_MIN_DATE
         }
-        activeStartDate={
-          sortedMarkings.length > 0
-            ? new Date(sortedMarkings[sortedMarkings.length - 1].date)
-            : new Date()
+        defaultActiveStartDate={
+          isAfter(getMaxDate(), new Date()) ? new Date() : getMaxDate()
         }
         tileDisabled={() => !isEditable}
         tileContent={getTileContent}
