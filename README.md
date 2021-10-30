@@ -1,4 +1,4 @@
-# Track-your-streak
+# Zen tracking
 
 ## View site live: [https:/zen-tracking.com](https://zen-tracking.com)
 
