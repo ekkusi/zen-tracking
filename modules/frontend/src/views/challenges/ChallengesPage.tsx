@@ -122,6 +122,7 @@ const ChallengesPage = (): JSX.Element => {
           placeholder="Järjestä haasteet"
           defaultValue={sortOptions[0]}
           onChange={onSortChange}
+          isSearchable={false}
         />
       </Box>
       {!loading && !error && (
