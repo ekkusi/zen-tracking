@@ -65,7 +65,7 @@ const FormField = ({
   return (
     <FormControl
       isInvalid={!!meta.error && meta.touched}
-      mb="4"
+      mb="7"
       {...containerProps}
     >
       <FormLabel htmlFor={rest.name} {...labelProps}>

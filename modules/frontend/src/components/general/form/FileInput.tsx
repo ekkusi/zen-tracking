@@ -1,7 +1,7 @@
 import { Box, InputProps, Button, ButtonProps, Input } from "@chakra-ui/react";
 import React from "react";
 
-type FileInputProps = InputProps & {
+export type FileInputProps = InputProps & {
   id: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   buttonLabel?: string;

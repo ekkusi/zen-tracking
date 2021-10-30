@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Checkbox,
-  Flex,
   FormLabel,
   Icon,
   IconButton,
@@ -18,19 +17,16 @@ import { UploadImageSuccessResult } from "@ekkusi/zen-tracking-backend/lib/types
 import ModalTemplate, {
   ModalTemplateProps,
 } from "components/general/ModalTemplate";
-import FileInput from "components/general/form/FileInput";
 import React, { useMemo, useState } from "react";
 import useGlobal from "store";
 import DateUtil from "util/DateUtil";
 import LogRocket from "logrocket";
-import { IoMdCamera } from "react-icons/io";
 import { IoLeaf } from "react-icons/io5";
 import { Form, Formik, FormikErrors } from "formik";
 import { markingDataFragment } from "fragments";
 import { mode } from "@chakra-ui/theme-tools";
 import { isSameDay } from "date-fns";
 import FormField from "../general/form/FormField";
-import PreviewImage from "../general/form/PreviewImage";
 import ConfirmationModal from "../general/ConfirmationModal";
 import {
   DeleteMarking,
@@ -44,6 +40,7 @@ import {
 
 import { MAX_UPLOAD_FILE_SIZE_MB } from "../../config.json";
 import useOpenRecapModal from "../../hooks/useOpenRecapModal";
+import ImageInput from "../general/form/ImageInput";
 
 export const ADD_MARKING = gql`
   mutation AddMarking($participationId: ID!, $marking: MarkingCreateInput!) {
@@ -147,14 +144,6 @@ const EditMarking = ({
       isPrivate: marking?.isPrivate || activeParticipation?.isPrivate || false,
     };
   }, [marking, photoSrc, activeParticipation]);
-
-  const getPhotoSrc = useMemo(() => {
-    if (!photoSrc) return undefined;
-    if (typeof photoSrc === "string") {
-      return photoSrc;
-    }
-    return URL.createObjectURL(photoSrc);
-  }, [photoSrc]);
 
   const saveAndClose = async (values: FormValues) => {
     // This shouldn't get triggered, activeParticipation should be found if EditMarking is open
@@ -348,7 +337,7 @@ const EditMarking = ({
       {...disclosureProps}
     >
       <Stack pt="0">
-        <Stack>
+        <Stack mb="3">
           {(marking || date) && (
             <FormLabel>
               Päivämäärä:{" "}
@@ -370,7 +359,7 @@ const EditMarking = ({
         >
           {({ values, setFieldValue, errors, setFieldError }) => (
             <Form>
-              <Box mb="2">
+              <Box mb="7">
                 <FormLabel>Kuinka hyvin meni päivän setti</FormLabel>
                 {[1, 2, 3, 4, 5].map((it) => (
                   <IconButton
@@ -422,61 +411,31 @@ const EditMarking = ({
                 </Text>
               </FormField>
 
-              <Flex
-                direction={{ base: "column", sm: "row" }}
-                alignItems={{ base: "flex-start", sm: "center" }}
-                mb="3"
-              >
-                <FileInput
+              <Box mb="7">
+                <ImageInput
                   id="photo"
                   accept="image/*"
                   buttonLabel="Valitse päivän kuva"
-                  buttonProps={{
-                    rightIcon: (
-                      <Icon as={IoMdCamera} w={4} h={4} mb="1px" ml="1" />
-                    ),
-                  }}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    const newPhoto =
-                      event.target.files == null ||
-                      event.target.files.length <= 0
-                        ? null
-                        : event.target.files[0];
-                    const fileError = validateFile(newPhoto);
+                  initialValue={values.photo}
+                  buttonProps={{ mb: 0 }}
+                  containerProps={{ mb: 3 }}
+                  onChange={(photo: File | null) => {
+                    const fileError = validateFile(photo);
                     if (fileError) {
                       setFieldError("photo", fileError);
+                      setFieldValue("photo", null);
                     } else {
-                      setFieldValue("photo", newPhoto);
-                      setPhotoSrc(newPhoto);
+                      setFieldError("photo", undefined);
+                      setFieldValue("photo", photo);
                     }
                   }}
                 />
-                <Text
-                  as="span"
-                  ml={{ base: "0", sm: "2" }}
-                  fontSize="sm"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                >
-                  {!values.photo && "Ei valittua tiedostoa"}
-                </Text>
                 {errors.photo && (
                   <Text as="span" display="block" color="warning">
                     {errors.photo}
                   </Text>
                 )}
-              </Flex>
-              {values.photo && (
-                <PreviewImage
-                  maxWidth="100%"
-                  maxHeight="300px"
-                  src={getPhotoSrc}
-                  onClose={() => {
-                    setFieldValue("photo", null);
-                    setPhotoSrc(null);
-                  }}
-                />
-              )}
+              </Box>
 
               <Checkbox
                 isChecked={values.isPrivate}
@@ -491,7 +450,7 @@ const EditMarking = ({
               </Checkbox>
 
               {error && <Text color="warning">{error}</Text>}
-              <Box mt="5" mb="5">
+              <Box mt="3" mb="5">
                 <Button
                   type="submit"
                   isLoading={loading || createLoading || updateLoading}
