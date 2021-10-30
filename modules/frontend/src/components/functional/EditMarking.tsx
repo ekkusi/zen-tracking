@@ -13,14 +13,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Marking } from "@ekkusi/zen-tracking-backend/lib/types/schema";
-import { UploadImageSuccessResult } from "@ekkusi/zen-tracking-backend/lib/types/restApiResponses";
 import ModalTemplate, {
   ModalTemplateProps,
 } from "components/general/ModalTemplate";
 import React, { useMemo, useState } from "react";
 import useGlobal from "store";
 import DateUtil from "util/DateUtil";
-import LogRocket from "logrocket";
 import { IoLeaf } from "react-icons/io5";
 import { Form, Formik, FormikErrors } from "formik";
 import { markingDataFragment } from "fragments";
@@ -41,6 +39,7 @@ import {
 import { MAX_UPLOAD_FILE_SIZE_MB } from "../../config.json";
 import useOpenRecapModal from "../../hooks/useOpenRecapModal";
 import ImageInput from "../general/form/ImageInput";
+import { deleteImage, uploadImage } from "../../util/backend-api";
 
 export const ADD_MARKING = gql`
   mutation AddMarking($participationId: ID!, $marking: MarkingCreateInput!) {
@@ -81,8 +80,6 @@ type FormValues = {
   isPrivate: boolean;
 };
 const MAX_COMMENT_LENGTH = 2000;
-
-const backendApiBaseUrl = process.env.REACT_APP_BACKEND_API_BASE_URL || "";
 
 const EditMarking = ({
   marking,
@@ -161,14 +158,8 @@ const EditMarking = ({
     // If this photo is File and not string or undefined, it is new file -> upload
     if (photo instanceof File) {
       try {
-        const formData = new FormData();
-        formData.append("photo", photo);
-        const response = await fetch(`${backendApiBaseUrl}/upload-image`, {
-          method: "POST",
-          body: formData,
-        });
-        const data: UploadImageSuccessResult = await response.json();
-        photoUrl = data.url;
+        const uploadData = await uploadImage(photo);
+        photoUrl = uploadData.url;
       } catch (e) {
         setLoading(false);
         setError(`Jokin meni vikaan kuvan lisäyksessä: ${e.message}`);
@@ -250,16 +241,10 @@ const EditMarking = ({
       disclosureProps.onClose();
     } catch (e) {
       if (photoUrl) {
-        const formData = new FormData();
-        formData.append("fileName", photoUrl);
-        const response = await fetch(`${backendApiBaseUrl}/delete-image`, {
-          method: "POST",
-          body: formData,
-        });
-        if (response.status !== 200) {
-          LogRocket.error(
-            `Something went wrong with file ${photoUrl} delete: ${await response.text()}`
-          );
+        try {
+          await deleteImage(photoUrl);
+        } catch (deleteError) {
+          setError(`Jokin meni pieleen kuvan poistossa ${deleteError.message}`);
         }
       }
       setLoading(false);
