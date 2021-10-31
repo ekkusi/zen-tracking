@@ -16,7 +16,7 @@ const NewVersionPrompt = ({
     onLoadNewServiceWorkerAccept();
   };
 
-  if (true) {
+  if (newServiceWorkerDetected) {
     return (
       <ModalTemplate
         hasOpenButton={false}
