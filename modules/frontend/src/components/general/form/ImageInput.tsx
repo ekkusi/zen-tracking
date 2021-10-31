@@ -23,8 +23,6 @@ const ImageInput = ({
 
   useEffect(() => {
     if (initialValue !== undefined && initialValue !== photoSrc) {
-      console.log("Running use effect");
-      console.log("Setting photo in useeffect");
       setPhoto(initialValue);
     }
   }, [initialValue, photoSrc]);
