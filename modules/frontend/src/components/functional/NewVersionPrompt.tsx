@@ -16,12 +16,12 @@ const NewVersionPrompt = ({
     onLoadNewServiceWorkerAccept();
   };
 
-  if (newServiceWorkerDetected) {
+  if (true) {
     return (
       <ModalTemplate
         hasOpenButton={false}
         isOpen
-        onClose={updateVersion}
+        // onClose={updateVersion}
         headerLabel="Päivitä sovellus"
         modalFooter={
           <Flex justifyContent="center" mb="5">
