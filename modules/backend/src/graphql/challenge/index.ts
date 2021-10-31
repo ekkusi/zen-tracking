@@ -11,6 +11,7 @@ import { loaderResetors } from "../loaders";
 
 import { NO_PARTICIPATION_MARKINGS_HOLDER_NAME } from "../../config.json";
 import { SharedMapper } from "../shared/SharedMapper";
+import { deleteMarking } from "../../utils/prismaHelpers";
 
 // Construct a schema, using GraphQL schema language
 export const typeDef = readFileSync(
@@ -48,9 +49,8 @@ export const resolvers: Resolvers = {
       return result;
     },
     isPrivate: ({ is_private }) => is_private,
-    endDate: ({ end_date }) => (end_date ? formatIsoString(end_date) : null),
-    startDate: ({ start_date }) =>
-      start_date ? formatIsoString(start_date) : null,
+    endDate: ({ end_date }) => formatIsoString(end_date),
+    startDate: ({ start_date }) => formatIsoString(start_date),
     createdAt: ({ created_at }) => formatIsoString(created_at),
   },
   Challenge: {
@@ -215,32 +215,16 @@ export const resolvers: Resolvers = {
       loaders.markingsLoader.clear(editMarking.participation_id);
       return editMarking;
     },
-    deleteMarking: async (_, { id }, { prisma, s3Client, loaders, user }) => {
+    deleteMarking: async (_, { id }, context) => {
+      const { prisma, user } = context;
       if (!user) throw new AuthenticationError();
       await ChallengeValidator.validateDeleteMarking(id, user.name);
 
       const marking = await prisma.marking.findUnique({
         where: { id },
       });
-      // This is temp solution, because prisma doesn't support NOT NULL constraint and ON DELETE CASCADE. Prisma delete results in relation delete violation.
-      const deletedMarkings = await prisma.$executeRaw(
-        `DELETE FROM "Marking" WHERE id='${id}';`
-      );
-      if (deletedMarkings > 0) {
-        // If more than 0 rows are affected by above query -> marking deleted -> delete related photo from s3
-        if (marking?.photo_url) {
-          // If marking has photoUrl, try to delete it from aws
-          try {
-            await s3Client.deleteImage(marking.photo_url);
-          } catch (error) {
-            console.log(
-              `Couldn't delete marking ${marking.id} image: ${marking.photo_url} error: ${error.message}`
-            );
-          }
-        }
-        // Clear markingsLoader cache
-        await loaderResetors.clearMarkingsCache(id, loaders);
-        return true;
+      if (marking) {
+        return deleteMarking(context, marking);
       }
       return false;
     },
@@ -380,14 +364,40 @@ export const resolvers: Resolvers = {
       await loaderResetors.clearParticipationsCache(participation.id, loaders);
       return participation;
     },
-    updateParticipation: async (_, { input }, { prisma, loaders, user }) => {
+    updateParticipation: async (_, { input, id }, context) => {
+      const { prisma, loaders, user } = context;
       if (!user) throw new AuthenticationError();
-      const id = "terve";
-      await ChallengeValidator.validateUpdateChallenge(input, id, user.name);
+      await ChallengeValidator.validateUpdateParticipation(
+        input,
+        id,
+        user.name
+      );
       const updatedParticipation = await prisma.challengeParticipation.update({
         where: { id },
         data: ChallengeMapper.mapUpdateParticipationInput(input),
       });
+      const leftOutMarkings = await prisma.marking.findMany({
+        where: {
+          OR: [
+            {
+              date: { gt: updatedParticipation.end_date },
+            },
+            {
+              date: { lt: updatedParticipation.start_date },
+            },
+          ],
+          ChallengeParticipation: { id },
+        },
+      });
+      leftOutMarkings.forEach((it) => {
+        console.log(`Deleting marking: ${it.id} date: ${it.date}`);
+      });
+
+      // This could be changed to only call one deleteMarkings(), I was lazy here.
+      await Promise.all(
+        leftOutMarkings.map((it) => deleteMarking(context, it))
+      );
+
       // Clear challengeLoader cache by challenge id
       await loaderResetors.clearParticipationsCache(
         updatedParticipation.id,

@@ -147,7 +147,8 @@ export default class ChallengeValidator {
     id: string,
     userName: string
   ) {
-    const participation = await prisma.challengeParticipation.findUnique({
+    console.log(`Trying to find participation with id: ${id}`);
+    const participation = await prisma.challengeParticipation.findFirst({
       where: { id },
     });
     if (!participation)

@@ -79,8 +79,8 @@ export class ChallengeMapper {
       Challenge: { connect: { id: challengeId } },
       User: { connect: { name: participantName } },
       is_private: isPrivate,
-      end_date: endDate ? formatIsoString(endDate) : undefined,
-      start_date: startDate ? formatIsoString(startDate) : undefined,
+      end_date: formatIsoString(endDate),
+      start_date: formatIsoString(startDate),
     };
   }
 
@@ -155,9 +155,7 @@ export class ChallengeMapper {
     };
   }
 
-  public static mapDateFilter(
-    dateFilter: DateFilter
-  ): Prisma.DateTimeNullableFilter {
+  public static mapDateFilter(dateFilter: DateFilter): Prisma.DateTimeFilter {
     const { gte, gt, lte, lt } = dateFilter;
     return {
       gte: gte ? new Date(gte) : undefined,
@@ -224,8 +222,8 @@ export class ChallengeMapper {
       return {
         AND: {
           user_name: participantName || undefined,
-          start_date: startDate && this.mapDateFilter(startDate),
-          end_date: endDate && this.mapDateFilter(endDate),
+          start_date: startDate ? this.mapDateFilter(startDate) : undefined,
+          end_date: endDate ? this.mapDateFilter(endDate) : undefined,
         },
       };
     }

@@ -41,8 +41,8 @@ CREATE TABLE "ChallengeParticipation" (
   created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   challenge_id uuid NOT NULL,
   user_name varchar(254) NOT NULL,
-  start_date timestamp with time zone,
-  end_date timestamp with time zone CHECK (start_date <= end_date), 
+  start_date timestamp with time zone NOT NULL,
+  end_date timestamp with time zone CHECK (start_date <= end_date) NOT NULL,
   FOREIGN KEY (challenge_id) REFERENCES "Challenge"(id) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (user_name) REFERENCES "User"(name) ON UPDATE CASCADE ON DELETE CASCADE
 );

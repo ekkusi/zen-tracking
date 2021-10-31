@@ -442,16 +442,8 @@ export type ChallengeParticipationResolvers<
   >;
   isPrivate?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
-  startDate?: Resolver<
-    Types.Maybe<ResolversTypes["Date"]>,
-    ParentType,
-    ContextType
-  >;
-  endDate?: Resolver<
-    Types.Maybe<ResolversTypes["Date"]>,
-    ParentType,
-    ContextType
-  >;
+  startDate?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
+  endDate?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

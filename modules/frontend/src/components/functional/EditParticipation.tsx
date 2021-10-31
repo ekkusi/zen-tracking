@@ -14,7 +14,10 @@ import { Form, Formik, FormikErrors } from "formik";
 import ModalTemplate, { ModalTemplateProps } from "../general/ModalTemplate";
 import FormField from "../general/form/FormField";
 import ConfirmationModal from "../general/ConfirmationModal";
-import { participationInfoFragment } from "../../fragments";
+import {
+  markingDataFragment,
+  participationInfoFragment,
+} from "../../fragments";
 import { ParticipationInfo } from "../../__generated__/ParticipationInfo";
 import {
   DeleteParticipation,
@@ -30,6 +33,7 @@ import {
   UpdateParticipation,
   UpdateParticipationVariables,
 } from "./__generated__/UpdateParticipation";
+import useGlobal from "../../store";
 
 export const CREATE_PARTICIPATION = gql`
   mutation CreateParticipation($input: CreateParticipationInput!) {
@@ -44,9 +48,13 @@ export const UPDATE_PARTICIPATION = gql`
   mutation UpdateParticipation($id: ID!, $input: UpdateParticipationInput!) {
     updateParticipation(id: $id, input: $input) {
       ...ParticipationInfo
+      markings {
+        ...MarkingData
+      }
     }
   }
   ${participationInfoFragment}
+  ${markingDataFragment}
 `;
 
 export const DELETE_PARTICIPATION = gql`
@@ -80,6 +88,10 @@ const EditParticipation = ({
   ...modalTemplateProps
 }: EditParticipationProps): JSX.Element => {
   const [generalError, setGeneralError] = useState<string>();
+  const [activeParticipation, updateActiveParticipation] = useGlobal(
+    (state) => state.activeParticipation,
+    (actions) => actions.updateActiveParticipation
+  );
 
   const [deleteParticipation, { loading: deleteLoading }] = useMutation<
     DeleteParticipation,
@@ -182,8 +194,17 @@ const EditParticipation = ({
             input,
           },
         });
-        if (result.data && onEdit) {
-          await onEdit(result.data.updateParticipation);
+        if (result.data) {
+          const updatedParticipation = result.data.updateParticipation;
+          if (
+            activeParticipation &&
+            updatedParticipation.id === activeParticipation.id
+          ) {
+            updateActiveParticipation(updatedParticipation);
+          }
+          if (onEdit) {
+            await onEdit(result.data.updateParticipation);
+          }
         }
       }
       // Otherwise create new challenge
@@ -231,9 +252,15 @@ const EditParticipation = ({
     <ModalTemplate
       openButtonLabel="Aloita haaste"
       headerLabel={
-        participation
-          ? `Muokataan haasteen ${challenge.name} osallistumistasi`
-          : `Aloita haaste ${challenge.name}`
+        participation ? (
+          <Text as="span">
+            Muokataan haasteen <i>{challenge.name}</i> osallistumistasi
+          </Text>
+        ) : (
+          <Text>
+            Aloita haaste <i>{challenge.name}</i>
+          </Text>
+        )
       }
       openButtonProps={{ size: "md" }}
       modalBodyProps={{ pt: "0" }}
@@ -250,7 +277,7 @@ const EditParticipation = ({
         validateOnBlur={false}
         validate={validate}
       >
-        {({ values, setFieldValue }) => (
+        {({ values, setFieldValue, submitForm }) => (
           <Form>
             <Flex direction={{ base: "column", sm: "row" }}>
               <FormField
@@ -284,37 +311,60 @@ const EditParticipation = ({
                 Tämä on yksityinen osallistuminen.
               </Text>
             </Checkbox>
-            <Box my="5">
-              <Button
-                type="submit"
-                isLoading={createLoading || updateLoading}
-                isDisabled={deleteLoading}
-                loadingText={participation ? "Tallenetaan..." : "Luodaan..."}
-                mr={3}
-              >
-                {saveButtonLabel ||
-                  (participation ? "Tallenna" : "Aloita haaste")}
-              </Button>
-              {participation && (
-                <ConfirmationModal
-                  variant="delete"
-                  onAccept={deleteAndClose}
-                  headerLabel="Poista osallistuminen"
-                  openButtonProps={{
-                    isLoading: deleteLoading,
-                    isDisabled: createLoading,
-                    loadingText: "Poistetaan...",
-                  }}
+            <Box mb="2" mt="5">
+              {!participation && (
+                <Button
+                  type="submit"
+                  isLoading={createLoading || updateLoading}
+                  isDisabled={deleteLoading}
                 >
-                  <Text>
-                    Oletko varma, että haluat poistaa ajan
-                    {getParticipationDateString(participation)}
-                    osallistumisesi haasteesta {challenge.name}?
-                    <br />
-                    HUOM! tällöin myös kaikki merkkauksesi kyseisestä
-                    osallistumesta poistuvat.
-                  </Text>
-                </ConfirmationModal>
+                  {saveButtonLabel ||
+                    (participation ? "Tallenna" : "Aloita haaste")}
+                </Button>
+              )}
+              {participation && (
+                <>
+                  <ConfirmationModal
+                    onAccept={submitForm}
+                    headerLabel="Tarkista päivämäärät"
+                    acceptLabel="Tallenna"
+                    openButtonLabel="Tallenna"
+                    openButtonProps={{
+                      isLoading: createLoading || updateLoading,
+                      isDisabled: deleteLoading,
+                      loadingText: "Tallenetaan...",
+                      mr: 3,
+                    }}
+                  >
+                    <Text fontSize="md">
+                      <strong>HUOM!</strong>
+                      <br />
+                      Uusien päivämäärien ulkopuolelle jäävät merkkaukset
+                      poistuvat pysyvästi. Mikäli haluat, ettei merkkauksia
+                      poistu, varmista, että uudet päivämäärät kattavat kaikki
+                      merkkauksesi.
+                    </Text>
+                  </ConfirmationModal>
+                  <ConfirmationModal
+                    variant="delete"
+                    onAccept={deleteAndClose}
+                    headerLabel="Poista osallistuminen"
+                    openButtonProps={{
+                      isLoading: deleteLoading,
+                      isDisabled: createLoading,
+                      loadingText: "Poistetaan...",
+                    }}
+                  >
+                    <Text>
+                      Oletko varma, että haluat poistaa ajan
+                      {getParticipationDateString(participation)}
+                      osallistumisesi haasteesta {challenge.name}?
+                      <br />
+                      HUOM! tällöin myös kaikki merkkauksesi kyseisestä
+                      osallistumesta poistuvat.
+                    </Text>
+                  </ConfirmationModal>
+                </>
               )}
             </Box>
 

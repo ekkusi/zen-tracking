@@ -104,6 +104,8 @@ const ParticipationSelect = forwardRef(
 
     useEffect(() => {
       if (activeParticipation?.id !== selected?.value) {
+        console.log("Updating selected particiaption");
+
         setSelected(
           activeParticipation
             ? {

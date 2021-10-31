@@ -51,8 +51,8 @@ type ChallengeParticipation {
   markings: [Marking!]!
   isPrivate: Boolean!
   createdAt: Date!
-  startDate: Date
-  endDate: Date
+  startDate: Date!
+  endDate: Date!
 }
 
 input CreateChallengeInput {
@@ -76,8 +76,8 @@ input UpdateChallengeInput {
 input CreateParticipationInput {
   challengeId: ID!
   isPrivate: Boolean!
-  startDate: Date
-  endDate: Date
+  startDate: Date!
+  endDate: Date!
 }
 
 input UpdateParticipationInput {

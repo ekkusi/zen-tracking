@@ -210,8 +210,8 @@ export type ChallengeParticipation = {
   markings: Array<Marking>;
   isPrivate: Scalars["Boolean"];
   createdAt: Scalars["Date"];
-  startDate?: Maybe<Scalars["Date"]>;
-  endDate?: Maybe<Scalars["Date"]>;
+  startDate: Scalars["Date"];
+  endDate: Scalars["Date"];
 };
 
 export type CreateChallengeInput = {
@@ -235,8 +235,8 @@ export type UpdateChallengeInput = {
 export type CreateParticipationInput = {
   challengeId: Scalars["ID"];
   isPrivate: Scalars["Boolean"];
-  startDate?: Maybe<Scalars["Date"]>;
-  endDate?: Maybe<Scalars["Date"]>;
+  startDate: Scalars["Date"];
+  endDate: Scalars["Date"];
 };
 
 export type UpdateParticipationInput = {

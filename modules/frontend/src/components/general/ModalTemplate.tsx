@@ -26,7 +26,7 @@ export type ModalTemplateProps = Omit<
   hasHeader?: boolean;
   hasFooter?: boolean;
   openButtonLabel?: JSX.Element | string;
-  headerLabel?: string;
+  headerLabel?: JSX.Element | string;
   modalFooter?: JSX.Element;
   openButtonProps?: ButtonProps;
   openButton?: JSX.Element;

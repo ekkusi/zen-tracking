@@ -22,7 +22,7 @@ import useGlobal from "../../../store";
 import Progress from "../../../components/general/Progress";
 import {
   getParticipationDateString,
-  getChallengeLength,
+  getParticipationLength,
 } from "../../../util/challengeUtils";
 import LeafRating from "../../../components/general/LeafRating";
 import chakraMotionWrapper from "../../../util/chakraMotionWrapper";
@@ -30,7 +30,9 @@ import theme from "../../../theme";
 import MarkingCalendar from "../../../components/functional/MarkingCalendar";
 import MarkingCard from "../../../components/functional/MarkingCard";
 import ConfirmationModal from "../../../components/general/ConfirmationModal";
-import { DELETE_PARTICIPATION } from "../../../components/functional/EditParticipation";
+import EditParticipation, {
+  DELETE_PARTICIPATION,
+} from "../../../components/functional/EditParticipation";
 import {
   DeleteParticipation,
   DeleteParticipationVariables,
@@ -86,11 +88,11 @@ const ParticipationPage = (): JSX.Element => {
   }, [participation]);
 
   const currentProgressDayValue = useMemo(() => {
-    if (participation && participation.challenge.startDate) {
+    if (participation) {
       const currentDate = new Date();
       return differenceInCalendarDays(
         currentDate,
-        new Date(participation.challenge.startDate)
+        new Date(participation.startDate)
       );
     }
     return 0;
@@ -99,7 +101,7 @@ const ParticipationPage = (): JSX.Element => {
   const daysRemaining = useMemo(() => {
     if (participation) {
       const differenceFromLength =
-        getChallengeLength(participation.challenge) - currentProgressDayValue;
+        getParticipationLength(participation) - currentProgressDayValue;
       return differenceFromLength > 0 ? differenceFromLength : 0;
     }
     return 0;
@@ -264,7 +266,7 @@ const ParticipationPage = (): JSX.Element => {
                 <Progress
                   height={{ base: "2.5em", sm: "3em" }}
                   value={currentProgressDayValue}
-                  max={getChallengeLength(participation.challenge)}
+                  max={getParticipationLength(participation)}
                   transition={{
                     ease: "easeInOut",
                     duration: 1.5,
@@ -333,14 +335,16 @@ const ParticipationPage = (): JSX.Element => {
           </BoxWithMotion>
           <Flex
             wrap="wrap"
-            justify={{ base: "start", sm: "space-around", lg: "space-between" }}
+            justify={{ base: "start", sm: "space-around", md: "start" }}
+            pl={{ base: 0, md: 3 }}
+            mb="10"
           >
             {sortedMarkings.map((it, index) => (
               <BoxWithMotion
                 flex={{ base: 1, sm: 0 }}
                 key={it.id}
                 {...formatOpacityAnimationProps(12 + index * 0.3)}
-                mr={{ base: 0, sm: 2 }}
+                mr={{ base: 0, sm: 4 }}
                 mb="4"
               >
                 <MarkingCard marking={it} />
@@ -371,12 +375,24 @@ const ParticipationPage = (): JSX.Element => {
             </BoxWithMotion>
           )}
           {!isRecap && participation.user.name === user.name && (
-            <>
+            <Flex wrap="nowrap" direction={{ base: "column", sm: "row" }}>
+              <EditParticipation
+                challenge={participation.challenge}
+                participation={participation}
+                openButtonProps={{
+                  mr: { base: 0, sm: 4 },
+                  mb: { base: 3, sm: 0 },
+                }}
+                openButtonLabel="Muokkaa osallistumista"
+                onEdit={() => {
+                  refetch();
+                }}
+              />
               <ConfirmationModal
                 variant="delete"
                 onAccept={removeParticipation}
                 openButtonLabel="Poista osallistuminen"
-                openButtonProps={{ ml: "auto", isLoading: deleteLoading }}
+                openButtonProps={{ isLoading: deleteLoading }}
                 headerLabel="Poista osallistuminen"
               >
                 <Text>
@@ -385,7 +401,7 @@ const ParticipationPage = (): JSX.Element => {
                   osallistumisen mukana.
                 </Text>
               </ConfirmationModal>
-            </>
+            </Flex>
           )}
         </>
       )}
