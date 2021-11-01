@@ -39,7 +39,7 @@
     "graphql": "^15.4.0",
     "jsonwebtoken": "^8.5.1",
     "lodash.merge": "^4.6.2",
-    "textract": "^2.5.0",
+    "node-fetch": "2.6.1",
     "uuid": "^8.3.2"
   },
   "scripts": {
@@ -56,6 +56,7 @@
     "update-prisma": "yarn prisma-introspect && yarn prisma-generate",
     "init-mock-data": "ts-node src/mock/initMockData.ts",
     "stop": "kill -9 $(lsof -t -i:4000)",
-    "generate-quotes": "ts-node ./src/utils/extractText.ts"
+    "generate-quotes": "ts-node ./src/utils/extractQuoteTexts.ts",
+    "test": "ts-node ./src/test.ts"
   }
 }
