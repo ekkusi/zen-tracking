@@ -20,6 +20,7 @@ model Challenge {
   description            String
   creator_name           String                   @db.VarChar(254)
   is_private             Boolean                  @default(true)
+  photo_url              String?                  @db.VarChar(254)
   start_date             DateTime?                @db.Timestamptz(6)
   end_date               DateTime?                @db.Timestamptz(6)
   User                   User                     @relation(fields: [creator_name], references: [name])
@@ -27,15 +28,15 @@ model Challenge {
 }
 
 model User {
-  name                            String                   @id @db.VarChar(254)
-  password                        String                   @db.VarChar(254)
-  is_private                      Boolean                  @default(true)
-  email                           String?                  @unique @db.Citext
-  is_email_verified               Boolean                  @default(false)
-  created_at                      DateTime                 @default(now()) @db.Timestamptz(6)
-  finished_and_checked_challenges String[]                 @db.Uuid
-  Challenge                       Challenge[]
-  ChallengeParticipation          ChallengeParticipation[]
+  name                                String                   @id @db.VarChar(254)
+  password                            String                   @db.VarChar(254)
+  is_private                          Boolean                  @default(true)
+  email                               String?                  @unique @db.Citext
+  is_email_verified                   Boolean                  @default(false)
+  created_at                          DateTime                 @default(now()) @db.Timestamptz(6)
+  finished_and_checked_participations String[]                 @db.Uuid
+  Challenge                           Challenge[]
+  ChallengeParticipation              ChallengeParticipation[]
 }
 
 model ChallengeParticipation {
@@ -44,8 +45,8 @@ model ChallengeParticipation {
   created_at   DateTime  @default(now()) @db.Timestamptz(6)
   challenge_id String    @db.Uuid
   user_name    String    @db.VarChar(254)
-  start_date   DateTime? @db.Timestamptz(6)
-  end_date     DateTime? @db.Timestamptz(6)
+  start_date   DateTime  @db.Timestamptz(6)
+  end_date     DateTime  @db.Timestamptz(6)
   Challenge    Challenge @relation(fields: [challenge_id], references: [id])
   User         User      @relation(fields: [user_name], references: [name])
   Marking      Marking[]
