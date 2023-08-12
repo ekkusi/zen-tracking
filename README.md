@@ -1,6 +1,6 @@
 # Zen tracking
 
-## View site live: [https:/zen-tracking.com](https://zen-tracking.com)
+## View site live: [Go to app](https://zen-tracking.arwi.fi)
 
 ## Prerequirements
 
