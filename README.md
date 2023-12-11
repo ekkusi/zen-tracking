@@ -1,6 +1,6 @@
 # Zen tracking
 
-## View site live: [Go to app](https://zen-tracking.ekkustech.com)
+## View site live: [Go to app](https://zen-tracking.ekkustech.com/login)
 
 ## Prerequirements
 
